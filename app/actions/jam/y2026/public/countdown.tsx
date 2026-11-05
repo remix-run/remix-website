@@ -2,194 +2,35 @@ import { prefersReducedMotion } from "@remix-run/ui/animation";
 import { css, type Handle } from "remix/component";
 import { theme } from "../../../../ui/public/styles/theme.ts";
 
+import {
+  advanceIntroCountdown,
+  advanceLiveCountdown,
+  countdownUnits,
+  getJam2026Countdown,
+  initialCountdownState,
+  introTickCount,
+  type CountdownState,
+} from "./countdown-state.ts";
 import { jamTheme } from "./theme.ts";
 
-const EVENT_START = new Date("2026-10-02T09:00:00-04:00").getTime();
-const SECOND = 1000;
-const MINUTE = SECOND * 60;
-const HOUR = MINUTE * 60;
-const DAY = HOUR * 24;
-
-type CountdownValue = {
-  days: string;
-  hrs: string;
-  min: string;
-  sec: string;
-};
-
-type CountdownUnit = keyof CountdownValue;
-
-type CountdownState = {
-  values: CountdownValue;
-  flips: Record<CountdownUnit, number>;
-};
-
-const countdownUnits: Array<[CountdownUnit, string]> = [
-  ["days", "days"],
-  ["hrs", "hrs"],
-  ["min", "min"],
-  ["sec", "sec"],
-];
-
-function formatCountdownUnit(unit: CountdownUnit, value: number) {
-  return String(value).padStart(unit === "days" ? 3 : 2, "0");
-}
-
-function getJam2026Countdown(now = Date.now()): CountdownValue {
-  let remaining = Math.max(EVENT_START - now, 0);
-  let days = Math.floor(remaining / DAY);
-  let hrs = Math.floor((remaining % DAY) / HOUR);
-  let min = Math.floor((remaining % HOUR) / MINUTE);
-  let sec = Math.floor((remaining % MINUTE) / SECOND);
-
-  return {
-    days: formatCountdownUnit("days", days),
-    hrs: formatCountdownUnit("hrs", hrs),
-    min: formatCountdownUnit("min", min),
-    sec: formatCountdownUnit("sec", sec),
-  };
-}
-
-function getIntroCountdownValue({
-  unit,
-  currentValue,
-  targetValue,
-  turnsRemaining,
-  random,
-}: {
-  unit: CountdownUnit;
-  currentValue: string;
-  targetValue: string;
-  turnsRemaining: number;
-  random?: () => number;
-}) {
-  let current = Number(currentValue);
-  let target = Number(targetValue);
-  let remaining = target - current;
-
-  if (remaining <= 0) return formatCountdownUnit(unit, target);
-  if (turnsRemaining <= 1) return formatCountdownUnit(unit, target);
-
-  let minStep = Math.ceil(remaining / turnsRemaining);
-  let maxStep = Math.max(minStep, remaining - (turnsRemaining - 1));
-  let nextValue =
-    current +
-    minStep +
-    Math.floor((random ?? Math.random)() * (maxStep - minStep + 1));
-
-  return formatCountdownUnit(unit, Math.min(nextValue, target));
-}
-
 export function Jam2026Countdown(handle: Handle) {
-  let countdown: CountdownState = {
-    values: {
-      days: "000",
-      hrs: "00",
-      min: "00",
-      sec: "00",
-    },
-    flips: {
-      days: 0,
-      hrs: 0,
-      min: 0,
-      sec: 0,
-    },
-  };
+  let countdown = initialCountdownState;
 
-  function updateCountdownToLive() {
-    let liveCountdown = getJam2026Countdown();
-    let changed = false;
-    let nextFlips = { ...countdown.flips };
-
-    for (let [unit] of countdownUnits) {
-      if (liveCountdown[unit] !== countdown.values[unit]) {
-        nextFlips[unit] += 1;
-        changed = true;
-      }
-    }
-
-    if (!changed) return;
-    countdown = { values: liveCountdown, flips: nextFlips };
+  function apply(next: CountdownState | undefined) {
+    if (!next) return;
+    countdown = next;
     handle.update();
   }
 
   handle.queueTask(() => {
-    let liveInterval: number | undefined;
-
-    let startLiveCountdown = () => {
-      updateCountdownToLive();
-      liveInterval = window.setInterval(updateCountdownToLive, SECOND);
-    };
-
-    if (prefersReducedMotion()) {
-      startLiveCountdown();
-      handle.signal.addEventListener(
-        "abort",
-        () => {
-          if (liveInterval) window.clearInterval(liveInterval);
-        },
-        { once: true },
-      );
-      return;
-    }
-
-    let introFlipPlan: Record<
-      CountdownUnit,
-      { startAt: number; flips: number }
-    > = {
-      days: { startAt: 0, flips: 5 },
-      hrs: { startAt: 1, flips: 5 },
-      min: { startAt: 2, flips: 6 },
-      sec: { startAt: 3, flips: 6 },
-    };
-    let introFlipCount = Math.max(
-      ...Object.values(introFlipPlan).map(
-        ({ startAt, flips }) => startAt + flips,
-      ),
-    );
-    let introTick = 0;
-    let introInterval = window.setInterval(() => {
-      introTick += 1;
-      let liveCountdown = getJam2026Countdown();
-      let changed = false;
-      let nextValues = { ...countdown.values };
-      let nextFlips = { ...countdown.flips };
-
-      for (let [unit] of countdownUnits) {
-        let { startAt, flips } = introFlipPlan[unit];
-        let unitTick = introTick - startAt;
-
-        if (unitTick <= 0 || unitTick > flips) continue;
-
-        nextValues[unit] = getIntroCountdownValue({
-          unit,
-          currentValue: nextValues[unit],
-          targetValue: liveCountdown[unit],
-          turnsRemaining: flips - unitTick + 1,
-        });
-        nextFlips[unit] += 1;
-        changed = true;
-      }
-
-      if (changed) {
-        countdown = { values: nextValues, flips: nextFlips };
-        handle.update();
-      }
-
-      if (introTick >= introFlipCount) {
-        window.clearInterval(introInterval);
-        startLiveCountdown();
-      }
-    }, 150);
-
-    handle.signal.addEventListener(
-      "abort",
-      () => {
-        window.clearInterval(introInterval);
-        if (liveInterval) window.clearInterval(liveInterval);
-      },
-      { once: true },
-    );
+    startCountdownTimers({
+      signal: handle.signal,
+      skipIntro: prefersReducedMotion(),
+      onIntroTick: (tick) =>
+        apply(advanceIntroCountdown(countdown, getJam2026Countdown(), tick)),
+      onLiveTick: () =>
+        apply(advanceLiveCountdown(countdown, getJam2026Countdown())),
+    });
   });
 
   return () => (
@@ -198,11 +39,11 @@ export function Jam2026Countdown(handle: Handle) {
       mix={jam2026CountdownStyle}
     >
       <span aria-hidden="true" mix={jam2026CountdownDisplayStyle}>
-        {countdownUnits.map(([unit, label]) => {
+        {countdownUnits.map((unit) => {
           let value = countdown.values[unit];
           let flip = countdown.flips[unit];
           return (
-            <span key={label} mix={jam2026CountdownPairStyle}>
+            <span key={unit} mix={jam2026CountdownPairStyle}>
               <strong>
                 <span aria-hidden="true" mix={jam2026CountdownNumberStyle}>
                   {value.split("").map((digit, index) => (
@@ -215,13 +56,61 @@ export function Jam2026Countdown(handle: Handle) {
                   ))}
                 </span>
               </strong>
-              <span>{label}</span>
+              <span>{unit}</span>
             </span>
           );
         })}
         <span mix={jam2026CountdownLabelStyle}>remaining</span>
       </span>
     </div>
+  );
+}
+
+/**
+ * Runs the 150ms intro ticks (unless skipped), then a 1s live tick. All timers
+ * are cleared when `signal` aborts.
+ */
+function startCountdownTimers({
+  signal,
+  skipIntro,
+  onIntroTick,
+  onLiveTick,
+}: {
+  signal: AbortSignal;
+  skipIntro: boolean;
+  onIntroTick: (tick: number) => void;
+  onLiveTick: () => void;
+}) {
+  let introInterval: number | undefined;
+  let liveInterval: number | undefined;
+
+  let startLive = () => {
+    onLiveTick();
+    liveInterval = window.setInterval(onLiveTick, 1000);
+  };
+
+  if (skipIntro) {
+    startLive();
+  } else {
+    let introTick = 0;
+    introInterval = window.setInterval(() => {
+      introTick += 1;
+      onIntroTick(introTick);
+
+      if (introTick >= introTickCount) {
+        window.clearInterval(introInterval);
+        startLive();
+      }
+    }, 150);
+  }
+
+  signal.addEventListener(
+    "abort",
+    () => {
+      if (introInterval !== undefined) window.clearInterval(introInterval);
+      if (liveInterval) window.clearInterval(liveInterval);
+    },
+    { once: true },
   );
 }
 

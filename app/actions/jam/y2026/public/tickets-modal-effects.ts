@@ -13,56 +13,39 @@ type Jam2026TicketsModalEffectsOptions = {
   requestClose: () => void;
 };
 
+/**
+ * Document-level modal behavior for the tickets dialog: scroll lock, inert
+ * page background, initial focus, focus trapping, Escape to close, and focus
+ * restoration when the dialog closes or unmounts.
+ */
 export function createJam2026TicketsModalEffects(
   handle: Jam2026TicketsModalHandle,
   options: Jam2026TicketsModalEffectsOptions,
 ) {
+  let { isActive } = options;
   let modalEffectsOpen = false;
   let previousFocus: HTMLElement | null = null;
   let unlockScroll = () => {};
   let syncQueued = false;
 
-  function isActive() {
-    return options.isActive();
-  }
-
-  function getModalRoot() {
-    return document.querySelector<HTMLElement>(
-      "[role='dialog'][aria-labelledby='tickets-modal-title']",
-    );
-  }
-
-  function setBackgroundInert(nextInert: boolean) {
-    // The modal frame is hydrated separately from the page background, so this
-    // document-level effect keeps the unhydrated page content inaccessible.
-    let background = document.getElementById(
-      ticketModalConfig.pageBackgroundId,
-    );
-    if (!background) return;
-
-    if (nextInert) {
-      background.setAttribute("inert", "");
-      background.setAttribute("aria-hidden", "true");
-    } else {
-      background.removeAttribute("inert");
-      background.removeAttribute("aria-hidden");
-    }
-  }
-
-  function focusFirstModalControl(root: HTMLElement) {
-    let focusableElements = getFocusableElementsWithin(root);
-    if (focusableElements.length > 0) {
-      focusableElements[0].focus({ preventScroll: true });
-      return;
+  function applyPageState(modal: HTMLElement) {
+    if (!previousFocus) {
+      let active = document.activeElement;
+      previousFocus = active instanceof HTMLElement ? active : null;
     }
 
-    root.focus({ preventScroll: true });
-  }
+    let scrollX = window.scrollX;
+    let scrollY = window.scrollY;
+    unlockScroll();
+    unlockScroll = lockScroll();
+    setBackgroundInert(true);
+    preserveScrollPosition(scrollX, scrollY, handle.signal);
 
-  function preserveScrollPosition(scrollX: number, scrollY: number) {
-    window.scrollTo(scrollX, scrollY);
     window.requestAnimationFrame(() => {
-      if (!handle.signal.aborted) window.scrollTo(scrollX, scrollY);
+      if (handle.signal.aborted) return;
+
+      focusFirstModalControl(modal);
+      preserveScrollPosition(scrollX, scrollY, handle.signal);
     });
   }
 
@@ -86,30 +69,8 @@ export function createJam2026TicketsModalEffects(
     if (modalEffectsOpen === nextOpen) return;
 
     modalEffectsOpen = nextOpen;
-
-    if (!nextOpen || !modal) {
-      restorePageState();
-      return;
-    }
-
-    if (!previousFocus) {
-      let active = document.activeElement;
-      previousFocus = active instanceof HTMLElement ? active : null;
-    }
-
-    let scrollX = window.scrollX;
-    let scrollY = window.scrollY;
-    unlockScroll();
-    unlockScroll = lockScroll();
-    setBackgroundInert(true);
-    preserveScrollPosition(scrollX, scrollY);
-
-    window.requestAnimationFrame(() => {
-      if (handle.signal.aborted) return;
-
-      focusFirstModalControl(modal);
-      preserveScrollPosition(scrollX, scrollY);
-    });
+    if (nextOpen && modal) applyPageState(modal);
+    else restorePageState();
   }
 
   function keepFocusInModal(event: FocusEvent) {
@@ -123,35 +84,18 @@ export function createJam2026TicketsModalEffects(
     focusFirstModalControl(modal);
   }
 
-  function handleTab(event: KeyboardEvent) {
-    if (!isActive() || event.defaultPrevented || event.key !== "Tab") {
+  function handleKeydown(event: KeyboardEvent) {
+    if (!isActive() || event.defaultPrevented) return;
+
+    if (event.key === "Tab") {
+      let modal = getModalRoot();
+      if (modal) trapTabFocus(event, modal);
       return;
     }
 
-    let modal = getModalRoot();
-    if (!modal) return;
-
-    let focusableElements = getFocusableElementsWithin(modal);
-    if (focusableElements.length === 0) {
-      event.preventDefault();
-      modal.focus({ preventScroll: true });
-      return;
-    }
-
-    let first = focusableElements[0];
-    let last = focusableElements[focusableElements.length - 1];
-    let active = document.activeElement;
-
-    if (event.shiftKey && active === first) {
-      event.preventDefault();
-      last.focus({ preventScroll: true });
-      return;
-    }
-
-    if (!event.shiftKey && active === last) {
-      event.preventDefault();
-      first.focus({ preventScroll: true });
-    }
+    if (event.key !== "Escape") return;
+    event.preventDefault();
+    options.requestClose();
   }
 
   function queueStateSync() {
@@ -166,33 +110,74 @@ export function createJam2026TicketsModalEffects(
   handle.queueTask(() => {
     syncModalState();
 
-    document.addEventListener(
-      "keydown",
-      (event) => {
-        handleTab(event);
-        if (!isActive() || event.defaultPrevented || event.key !== "Escape") {
-          return;
-        }
-
-        event.preventDefault();
-        options.requestClose();
-      },
-      { signal: handle.signal },
-    );
+    document.addEventListener("keydown", handleKeydown, {
+      signal: handle.signal,
+    });
     document.addEventListener("focusin", keepFocusInModal, {
       signal: handle.signal,
     });
-
-    handle.signal.addEventListener(
-      "abort",
-      () => {
-        restorePageState();
-      },
-      { once: true },
-    );
+    handle.signal.addEventListener("abort", restorePageState, { once: true });
   });
 
   return {
     queueStateSync,
   };
+}
+
+function getModalRoot() {
+  return document.querySelector<HTMLElement>(
+    "[role='dialog'][aria-labelledby='tickets-modal-title']",
+  );
+}
+
+function setBackgroundInert(nextInert: boolean) {
+  // The modal frame is hydrated separately from the page background, so this
+  // document-level effect keeps the unhydrated page content inaccessible.
+  let background = document.getElementById(ticketModalConfig.pageBackgroundId);
+  if (!background) return;
+
+  if (nextInert) {
+    background.setAttribute("inert", "");
+    background.setAttribute("aria-hidden", "true");
+  } else {
+    background.removeAttribute("inert");
+    background.removeAttribute("aria-hidden");
+  }
+}
+
+function focusFirstModalControl(root: HTMLElement) {
+  let focusableElements = getFocusableElementsWithin(root);
+  let target = focusableElements[0] ?? root;
+  target.focus({ preventScroll: true });
+}
+
+function preserveScrollPosition(
+  scrollX: number,
+  scrollY: number,
+  signal: AbortSignal,
+) {
+  window.scrollTo(scrollX, scrollY);
+  window.requestAnimationFrame(() => {
+    if (!signal.aborted) window.scrollTo(scrollX, scrollY);
+  });
+}
+
+/** Wraps Tab / Shift+Tab focus around the first and last modal controls. */
+function trapTabFocus(event: KeyboardEvent, modal: HTMLElement) {
+  let focusableElements = getFocusableElementsWithin(modal);
+  if (focusableElements.length === 0) {
+    event.preventDefault();
+    modal.focus({ preventScroll: true });
+    return;
+  }
+
+  let first = focusableElements[0];
+  let last = focusableElements[focusableElements.length - 1];
+  let active = document.activeElement;
+  let wrapFrom = event.shiftKey ? first : last;
+  let wrapTo = event.shiftKey ? last : first;
+  if (active !== wrapFrom) return;
+
+  event.preventDefault();
+  wrapTo.focus({ preventScroll: true });
 }

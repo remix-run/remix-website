@@ -34,6 +34,10 @@ const scheduleSchema = s.array(
   }),
 );
 
+type ScheduleSource = s.InferOutput<typeof scheduleSchema>[number];
+type SpeakerSource = s.InferOutput<typeof speakerSchema>;
+type ImageUrlByFilename = Map<string, string>;
+
 export const getJam2026Schedule = memoizeAsync(loadJam2026Schedule);
 
 async function loadJam2026Schedule(): Promise<ScheduleItem[]> {
@@ -41,7 +45,7 @@ async function loadJam2026Schedule(): Promise<ScheduleItem[]> {
     readFile(SCHEDULE_FILE_PATH, "utf8"),
     readdir(SCHEDULE_IMAGES_DIRECTORY, { withFileTypes: true }),
   ]);
-  let imageUrlByFilename = new Map(
+  let imageUrlByFilename: ImageUrlByFilename = new Map(
     imageEntries
       .filter(
         (entry) =>
@@ -54,37 +58,55 @@ async function loadJam2026Schedule(): Promise<ScheduleItem[]> {
   );
   let schedule = s.parse(scheduleSchema, yaml.parse(source));
 
-  function resolveImage(filename: string | undefined, owner: string) {
-    if (!filename) return undefined;
-    let src = imageUrlByFilename.get(filename);
-    assert(src, `"${owner}" references missing schedule image "${filename}".`);
-    return src;
-  }
-
   return Promise.all(
-    schedule.map(async (item) => {
-      let [{ html: description }, speakers] = await Promise.all([
-        processMarkdown(item.description),
-        Promise.all(
-          (item.speakers ?? []).map(async (speaker) => {
-            let imgSrc = resolveImage(speaker.imgFilename, speaker.name);
-            let bio = speaker.bio
-              ? (await processMarkdown(speaker.bio)).html
-              : undefined;
-
-            return { name: speaker.name, imgSrc, bio };
-          }),
-        ),
-      ]);
-
-      return {
-        time: item.time,
-        title: item.title,
-        description,
-        emoji: item.emoji,
-        imgSrc: resolveImage(item.imgFilename, item.title),
-        speakers,
-      };
-    }),
+    schedule.map((item) => loadScheduleItem(item, imageUrlByFilename)),
   );
+}
+
+async function loadScheduleItem(
+  item: ScheduleSource,
+  imageUrlByFilename: ImageUrlByFilename,
+): Promise<ScheduleItem> {
+  let [{ html: description }, speakers] = await Promise.all([
+    processMarkdown(item.description),
+    Promise.all(
+      (item.speakers ?? []).map((speaker) =>
+        loadSpeaker(speaker, imageUrlByFilename),
+      ),
+    ),
+  ]);
+
+  return {
+    time: item.time,
+    title: item.title,
+    description,
+    emoji: item.emoji,
+    imgSrc: resolveImage(imageUrlByFilename, item.imgFilename, item.title),
+    speakers,
+  };
+}
+
+async function loadSpeaker(
+  speaker: SpeakerSource,
+  imageUrlByFilename: ImageUrlByFilename,
+) {
+  let imgSrc = resolveImage(
+    imageUrlByFilename,
+    speaker.imgFilename,
+    speaker.name,
+  );
+  let bio = speaker.bio ? (await processMarkdown(speaker.bio)).html : undefined;
+
+  return { name: speaker.name, imgSrc, bio };
+}
+
+function resolveImage(
+  imageUrlByFilename: ImageUrlByFilename,
+  filename: string | undefined,
+  owner: string,
+) {
+  if (!filename) return undefined;
+  let src = imageUrlByFilename.get(filename);
+  assert(src, `"${owner}" references missing schedule image "${filename}".`);
+  return src;
 }

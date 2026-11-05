@@ -39,23 +39,6 @@ let usdFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
 });
 
-function shouldAnimateEntrance(animateEntrance = true) {
-  return animateEntrance && !prefersReducedMotion();
-}
-
-function restoreScrollPosition(
-  scrollX: number,
-  scrollY: number,
-  signal?: AbortSignal,
-) {
-  if (typeof window === "undefined" || signal?.aborted) return;
-
-  window.scrollTo(scrollX, scrollY);
-  window.requestAnimationFrame(() => {
-    if (!signal?.aborted) window.scrollTo(scrollX, scrollY);
-  });
-}
-
 export let Jam2026TicketsModalFrame = clientEntry(
   import.meta.url,
   function Jam2026TicketsModalFrame(handle: Handle<Jam2026TicketsModalProps>) {
@@ -65,8 +48,11 @@ export let Jam2026TicketsModalFrame = clientEntry(
       isActive: () => isOpen() && !modalClosing,
       requestClose,
     });
-    let headSyncQueued = false;
-    let navigationEntrySyncQueued = false;
+    let queueHeadSync = queueOnce(handle, () => syncTicketsModalHead(isOpen()));
+    let queueNavigationEntrySync = queueOnce(handle, () => {
+      if (handle.frame === handle.frames.top) return;
+      syncTicketModalNavigationEntry(isOpen());
+    });
 
     function isOpen() {
       return Boolean(handle.props.open);
@@ -81,19 +67,14 @@ export let Jam2026TicketsModalFrame = clientEntry(
       let scrollY = window.scrollY;
       handle.update();
 
-      let navigationDelay = prefersReducedMotion() ? 0 : 220;
-
-      closeNavigationTimer = setTimeout(() => {
-        closeNavigationTimer = undefined;
-        void navigate(routes.jam.y2026.index.href(), {
-          target: ticketModalConfig.frameName,
-          history: "replace",
-          resetScroll: "manual",
-          resetFocus: "manual",
-        }).finally(() => {
-          restoreScrollPosition(scrollX, scrollY, handle.signal);
-        });
-      }, navigationDelay);
+      // Let the closing animation play before the frame navigation unmounts it.
+      closeNavigationTimer = setTimeout(
+        () => {
+          closeNavigationTimer = undefined;
+          void navigateModalFrameHome(scrollX, scrollY, handle.signal);
+        },
+        prefersReducedMotion() ? 0 : 220,
+      );
     }
 
     handle.signal.addEventListener(
@@ -104,44 +85,13 @@ export let Jam2026TicketsModalFrame = clientEntry(
       { once: true },
     );
 
-    function queueHeadSync() {
-      if (headSyncQueued) return;
-      headSyncQueued = true;
-
-      handle.queueTask(() => {
-        headSyncQueued = false;
-        let head = getJam2026HeadContent({
-          ticketsModalOpen: isOpen(),
-        });
-
-        syncDocumentHead(
-          {
-            title: head.title,
-            headTags: getJam2026ClientManagedHeadTags(head),
-          },
-          { syncTheme: false },
-        );
-      });
-    }
-
-    function queueNavigationEntrySync(open: boolean) {
-      if (navigationEntrySyncQueued) return;
-      navigationEntrySyncQueued = true;
-
-      handle.queueTask(() => {
-        navigationEntrySyncQueued = false;
-        if (handle.frame === handle.frames.top) return;
-        syncTicketModalNavigationEntry(open);
-      });
-    }
-
     return () => {
       let open = isOpen();
 
       if (!open) modalClosing = false;
 
       modalEffects.queueStateSync();
-      queueNavigationEntrySync(open);
+      queueNavigationEntrySync();
       queueHeadSync();
 
       // The frame runtime needs a stable child when toggling between empty
@@ -162,46 +112,6 @@ export let Jam2026TicketsModalFrame = clientEntry(
   },
 );
 
-function syncTicketModalNavigationEntry(open: boolean) {
-  let navigation = window.navigation;
-  if (!navigation?.currentEntry) return;
-
-  let homeHref = routes.jam.y2026.index.href();
-  let ticketHref = routes.jam.y2026.ticket.index.href();
-  let pathname = window.location.pathname;
-
-  if (pathname !== homeHref && pathname !== ticketHref) return;
-
-  // Direct document loads start with top-frame history state. Once the named
-  // modal frame hydrates, mark Jam ticket entries as frame-owned so browser
-  // Back closes the modal without remounting the animated page.
-  let state = {
-    $rmx: true,
-    resetScroll: "manual",
-    resetFocus: "after-transition",
-    src: new URL(open ? ticketHref : homeHref, window.location.href).href,
-    target: ticketModalConfig.frameName,
-  };
-  let currentState = navigation.currentEntry.getState();
-
-  if (
-    isRecord(currentState) &&
-    currentState.$rmx === state.$rmx &&
-    currentState.resetScroll === state.resetScroll &&
-    currentState.resetFocus === state.resetFocus &&
-    currentState.src === state.src &&
-    currentState.target === state.target
-  ) {
-    return;
-  }
-
-  navigation.updateCurrentEntry({ state });
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
-}
-
 type Jam2026TicketsModalContentProps = {
   animateEntrance?: boolean;
   closing?: boolean;
@@ -212,71 +122,14 @@ type Jam2026TicketsModalContentProps = {
 export function Jam2026TicketsModalContent(
   handle: Handle<Jam2026TicketsModalContentProps>,
 ) {
-  let ticket = remixJam2026Ticket;
-  let quantity = handle.props.ticketCheckout?.initialQuantity ?? 1;
-  let submitting = false;
-
-  function resetSubmitting() {
-    if (!submitting) return;
-    submitting = false;
-    handle.update();
-  }
-
-  handle.queueTask(() => {
-    window.addEventListener(
-      "pageshow",
-      (event) => {
-        if (event.persisted) resetSubmitting();
-      },
-      { signal: handle.signal },
-    );
-  });
-
-  function setQuantity(nextQuantity: number) {
-    quantity = Math.min(getMaxQuantity(), Math.max(1, nextQuantity));
-    handle.update();
-  }
-
-  function getMaxQuantity() {
-    return handle.props.ticketCheckout?.maxQuantity ?? ticket.maxQuantity;
-  }
-
   return () => {
-    let ticketCheckout = handle.props.ticketCheckout;
-    let maxQuantity = getMaxQuantity();
-    let checkoutEnabled = Boolean(
-      ticketCheckout?.availableForSale && ticketCheckout.productId,
+    let state = handle.props.closing ? "closing" : "open";
+    let entrance = getEntranceMixes(
+      (handle.props.animateEntrance ?? true) && !prefersReducedMotion(),
     );
-    let checkoutDisabled = !checkoutEnabled || submitting;
-    let useEntranceMotion = shouldAnimateEntrance(handle.props.animateEntrance);
-    let scrimMix = useEntranceMotion
-      ? [
-          ticketsModalScrimStyle,
-          animateEntrance({
-            opacity: 0,
-            duration: 100,
-            easing: "ease-out",
-          }),
-        ]
-      : ticketsModalScrimStyle;
-    let windowMix = useEntranceMotion
-      ? [
-          ticketsModalWindowStyle,
-          animateEntrance({
-            clipPath: "inset(0 0 100% 0 round 8px)",
-            ...spring("snappy", { duration: 220 }),
-          }),
-        ]
-      : ticketsModalWindowStyle;
-    let keyringMix = useEntranceMotion
-      ? [ticketsModalFigureImageStyle, ticketsModalFigureImageEntranceStyle]
-      : ticketsModalFigureImageStyle;
 
     return (
-      <div
-        data-state={handle.props.closing ? "closing" : "open"}
-        mix={scrimMix}
-      >
+      <div data-state={state} mix={entrance.scrim}>
         <a
           aria-label="Close tickets"
           href={routes.jam.y2026.index.href()}
@@ -291,10 +144,10 @@ export function Jam2026TicketsModalContent(
         <section
           aria-labelledby="tickets-modal-title"
           aria-modal="true"
-          data-state={handle.props.closing ? "closing" : "open"}
+          data-state={state}
           role="dialog"
           tabIndex={-1}
-          mix={windowMix}
+          mix={entrance.window}
         >
           <div mix={ticketsModalTitlebarStyle}>
             <a
@@ -333,7 +186,7 @@ export function Jam2026TicketsModalContent(
                   alt=""
                   draggable={false}
                   src={assetPaths.jam2026.keyring}
-                  mix={keyringMix}
+                  mix={entrance.keyring}
                 />
               </div>
               <div mix={ticketsModalBottomStyle}>
@@ -342,9 +195,9 @@ export function Jam2026TicketsModalContent(
                   mix={ticketCardStyle}
                 >
                   <span mix={ticketCardTopRowStyle}>
-                    <span>{ticket.label}</span>
+                    <span>{remixJam2026Ticket.label}</span>
                     <span mix={ticketCardPriceStyle}>
-                      {formatCurrency(ticket.price)}
+                      {formatCurrency(remixJam2026Ticket.price)}
                     </span>
                   </span>
                   <span mix={ticketCardDateStyle}>October 2, 2026</span>
@@ -352,125 +205,285 @@ export function Jam2026TicketsModalContent(
                     Conference and afterparty. Food and drinks included.
                   </span>
                 </article>
-                <form
-                  aria-busy={submitting ? "true" : undefined}
-                  action={routes.jam.y2026.ticket.action.href()}
-                  method="post"
-                  mix={[
-                    ticketsModalCheckoutStyle,
-                    on("submit", (event) => {
-                      if (!checkoutEnabled || submitting) {
-                        event.preventDefault();
-                        return;
-                      }
-
-                      submitting = true;
-                      handle.update();
-                    }),
-                  ]}
-                >
-                  <input type="hidden" name="ticketType" value={ticket.type} />
-                  <input
-                    type="hidden"
-                    name="productId"
-                    value={ticketCheckout?.productId ?? ""}
-                  />
-                  <input
-                    type="hidden"
-                    name="quantity"
-                    value={String(quantity)}
-                  />
-                  <div mix={ticketsModalCheckoutGroupStyle}>
-                    <span mix={ticketsModalCheckoutLabelStyle}>Qty</span>
-                    <div mix={ticketsModalQuantityStyle}>
-                      <button
-                        aria-label="Decrease quantity"
-                        disabled={submitting || quantity <= 1}
-                        type="button"
-                        mix={[
-                          ticketsModalQuantityButtonStyle,
-                          on("click", () => {
-                            if (quantity <= 1) return;
-                            setQuantity(quantity - 1);
-                          }),
-                        ]}
-                      >
-                        <Icon
-                          name="circle-minus"
-                          aria-hidden="true"
-                          focusable="false"
-                          mix={ticketsModalQuantityIconStyle}
-                          viewBox="0 0 24 24"
-                        />
-                      </button>
-                      <span
-                        aria-live="polite"
-                        mix={ticketsModalQuantityValueStyle}
-                      >
-                        {quantity}
-                      </span>
-                      <button
-                        aria-label="Increase quantity"
-                        disabled={submitting || quantity >= maxQuantity}
-                        type="button"
-                        mix={[
-                          ticketsModalQuantityButtonStyle,
-                          on("click", () => {
-                            if (quantity >= maxQuantity) return;
-                            setQuantity(quantity + 1);
-                          }),
-                        ]}
-                      >
-                        <Icon
-                          name="circle-plus"
-                          aria-hidden="true"
-                          focusable="false"
-                          mix={ticketsModalQuantityIconStyle}
-                          viewBox="0 0 24 24"
-                        />
-                      </button>
-                    </div>
-                  </div>
-                  <div mix={ticketsModalCheckoutGroupStyle}>
-                    <span mix={ticketsModalCheckoutLabelStyle}>Subtotal</span>
-                    <div mix={ticketsModalSubtotalStyle}>
-                      <span mix={ticketsModalSubtotalAmountStyle}>
-                        {formatCurrency(ticket.price * quantity)}
-                      </span>
-                      <span mix={ticketsModalSubtotalCurrencyStyle}>USD</span>
-                    </div>
-                  </div>
-                  <button
-                    disabled={checkoutDisabled}
-                    type="submit"
-                    mix={ticketsModalCheckoutButtonStyle}
-                  >
-                    {submitting ? (
-                      <>
-                        <span
-                          aria-hidden="true"
-                          mix={ticketsModalBusyDotStyle}
-                        />
-                        <span>Checking out...</span>
-                      </>
-                    ) : checkoutEnabled ? (
-                      "Check out"
-                    ) : (
-                      "Unavailable"
-                    )}
-                  </button>
-                  {ticketCheckout?.error ? (
-                    <p role="alert" mix={ticketsModalCheckoutErrorStyle}>
-                      {ticketCheckout.error}
-                    </p>
-                  ) : null}
-                </form>
+                <TicketCheckoutForm
+                  ticketCheckout={handle.props.ticketCheckout}
+                />
               </div>
             </div>
           </div>
         </section>
       </div>
     );
+  };
+}
+
+/**
+ * Quantity picker and checkout submit. Owns the selected quantity and the
+ * pending-submit state, which resets when the page is restored from the
+ * back/forward cache after leaving for checkout.
+ */
+function TicketCheckoutForm(
+  handle: Handle<{ ticketCheckout?: Jam2026TicketCheckoutState }>,
+) {
+  let ticket = remixJam2026Ticket;
+  let quantity = handle.props.ticketCheckout?.initialQuantity ?? 1;
+  let submitting = false;
+
+  handle.queueTask(() => {
+    window.addEventListener(
+      "pageshow",
+      (event) => {
+        if (!event.persisted || !submitting) return;
+        submitting = false;
+        handle.update();
+      },
+      { signal: handle.signal },
+    );
+  });
+
+  function getMaxQuantity() {
+    return handle.props.ticketCheckout?.maxQuantity ?? ticket.maxQuantity;
+  }
+
+  function setQuantity(nextQuantity: number) {
+    quantity = Math.min(getMaxQuantity(), Math.max(1, nextQuantity));
+    handle.update();
+  }
+
+  return () => {
+    let ticketCheckout = handle.props.ticketCheckout;
+    let maxQuantity = getMaxQuantity();
+    let checkoutEnabled = Boolean(
+      ticketCheckout?.availableForSale && ticketCheckout.productId,
+    );
+
+    return (
+      <form
+        aria-busy={submitting ? "true" : undefined}
+        action={routes.jam.y2026.ticket.action.href()}
+        method="post"
+        mix={[
+          ticketsModalCheckoutStyle,
+          on("submit", (event) => {
+            if (!checkoutEnabled || submitting) {
+              event.preventDefault();
+              return;
+            }
+
+            submitting = true;
+            handle.update();
+          }),
+        ]}
+      >
+        <input type="hidden" name="ticketType" value={ticket.type} />
+        <input
+          type="hidden"
+          name="productId"
+          value={ticketCheckout?.productId ?? ""}
+        />
+        <input type="hidden" name="quantity" value={String(quantity)} />
+        <div mix={ticketsModalCheckoutGroupStyle}>
+          <span mix={ticketsModalCheckoutLabelStyle}>Qty</span>
+          <div mix={ticketsModalQuantityStyle}>
+            <QuantityButton
+              label="Decrease quantity"
+              icon="circle-minus"
+              disabled={submitting || quantity <= 1}
+              onPress={() => setQuantity(quantity - 1)}
+            />
+            <span aria-live="polite" mix={ticketsModalQuantityValueStyle}>
+              {quantity}
+            </span>
+            <QuantityButton
+              label="Increase quantity"
+              icon="circle-plus"
+              disabled={submitting || quantity >= maxQuantity}
+              onPress={() => setQuantity(quantity + 1)}
+            />
+          </div>
+        </div>
+        <div mix={ticketsModalCheckoutGroupStyle}>
+          <span mix={ticketsModalCheckoutLabelStyle}>Subtotal</span>
+          <div mix={ticketsModalSubtotalStyle}>
+            <span mix={ticketsModalSubtotalAmountStyle}>
+              {formatCurrency(ticket.price * quantity)}
+            </span>
+            <span mix={ticketsModalSubtotalCurrencyStyle}>USD</span>
+          </div>
+        </div>
+        <button
+          disabled={!checkoutEnabled || submitting}
+          type="submit"
+          mix={ticketsModalCheckoutButtonStyle}
+        >
+          {submitting ? (
+            <>
+              <span aria-hidden="true" mix={ticketsModalBusyDotStyle} />
+              <span>Checking out...</span>
+            </>
+          ) : checkoutEnabled ? (
+            "Check out"
+          ) : (
+            "Unavailable"
+          )}
+        </button>
+        {ticketCheckout?.error ? (
+          <p role="alert" mix={ticketsModalCheckoutErrorStyle}>
+            {ticketCheckout.error}
+          </p>
+        ) : null}
+      </form>
+    );
+  };
+}
+
+function QuantityButton(
+  handle: Handle<{
+    label: string;
+    icon: "circle-minus" | "circle-plus";
+    disabled: boolean;
+    onPress: () => void;
+  }>,
+) {
+  return () => (
+    <button
+      aria-label={handle.props.label}
+      disabled={handle.props.disabled}
+      type="button"
+      mix={[
+        ticketsModalQuantityButtonStyle,
+        on("click", () => {
+          if (!handle.props.disabled) handle.props.onPress();
+        }),
+      ]}
+    >
+      <Icon
+        name={handle.props.icon}
+        aria-hidden="true"
+        focusable="false"
+        mix={ticketsModalQuantityIconStyle}
+        viewBox="0 0 24 24"
+      />
+    </button>
+  );
+}
+
+/**
+ * Returns a function that schedules `task` for after the next render, at most
+ * once until it has run.
+ */
+function queueOnce(handle: Pick<Handle, "queueTask">, task: () => void) {
+  let queued = false;
+
+  return () => {
+    if (queued) return;
+    queued = true;
+    handle.queueTask(() => {
+      queued = false;
+      task();
+    });
+  };
+}
+
+function syncTicketsModalHead(ticketsModalOpen: boolean) {
+  let head = getJam2026HeadContent({ ticketsModalOpen });
+
+  syncDocumentHead(
+    {
+      title: head.title,
+      headTags: getJam2026ClientManagedHeadTags(head),
+    },
+    { syncTheme: false },
+  );
+}
+
+async function navigateModalFrameHome(
+  scrollX: number,
+  scrollY: number,
+  signal: AbortSignal,
+) {
+  try {
+    await navigate(routes.jam.y2026.index.href(), {
+      target: ticketModalConfig.frameName,
+      history: "replace",
+      resetScroll: "manual",
+      resetFocus: "manual",
+    });
+  } finally {
+    restoreScrollPosition(scrollX, scrollY, signal);
+  }
+}
+
+function restoreScrollPosition(
+  scrollX: number,
+  scrollY: number,
+  signal: AbortSignal,
+) {
+  if (signal.aborted) return;
+
+  window.scrollTo(scrollX, scrollY);
+  window.requestAnimationFrame(() => {
+    if (!signal.aborted) window.scrollTo(scrollX, scrollY);
+  });
+}
+
+function syncTicketModalNavigationEntry(open: boolean) {
+  let navigation = window.navigation;
+  if (!navigation?.currentEntry) return;
+
+  let homeHref = routes.jam.y2026.index.href();
+  let ticketHref = routes.jam.y2026.ticket.index.href();
+  let pathname = window.location.pathname;
+
+  if (pathname !== homeHref && pathname !== ticketHref) return;
+
+  // Direct document loads start with top-frame history state. Once the named
+  // modal frame hydrates, mark Jam ticket entries as frame-owned so browser
+  // Back closes the modal without remounting the animated page.
+  let state = {
+    $rmx: true,
+    resetScroll: "manual",
+    resetFocus: "after-transition",
+    src: new URL(open ? ticketHref : homeHref, window.location.href).href,
+    target: ticketModalConfig.frameName,
+  };
+  let currentState = navigation.currentEntry.getState();
+  if (isMatchingState(currentState, state)) return;
+
+  navigation.updateCurrentEntry({ state });
+}
+
+function isMatchingState(value: unknown, expected: Record<string, unknown>) {
+  if (typeof value !== "object" || value === null) return false;
+  let record = value as Record<string, unknown>;
+  return Object.entries(expected).every(([key, item]) => record[key] === item);
+}
+
+function getEntranceMixes(useEntranceMotion: boolean) {
+  if (!useEntranceMotion) {
+    return {
+      scrim: ticketsModalScrimStyle,
+      window: ticketsModalWindowStyle,
+      keyring: ticketsModalFigureImageStyle,
+    };
+  }
+
+  return {
+    scrim: [
+      ticketsModalScrimStyle,
+      animateEntrance({ opacity: 0, duration: 100, easing: "ease-out" }),
+    ],
+    window: [
+      ticketsModalWindowStyle,
+      animateEntrance({
+        clipPath: "inset(0 0 100% 0 round 8px)",
+        ...spring("snappy", { duration: 220 }),
+      }),
+    ],
+    keyring: [
+      ticketsModalFigureImageStyle,
+      ticketsModalFigureImageEntranceStyle,
+    ],
   };
 }
 
