@@ -7,7 +7,7 @@ import {
   landingContent,
   packageRunners,
 } from "./public/remix-landing/landing-content.ts";
-import { stackCategories } from "./public/remix-landing/components/stack-explorer-content.tsx";
+import { stackCategories } from "./public/remix-landing/stack-explorer-content.tsx";
 import { createAppRouter } from "../router.ts";
 import { routes } from "../routes.ts";
 import { CACHE } from "../utils/cache-control.ts";

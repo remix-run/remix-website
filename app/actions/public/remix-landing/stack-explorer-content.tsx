@@ -1,5 +1,5 @@
 import type { RemixNode } from "remix/component";
-import { CodeSnippet } from "./code-snippet.tsx";
+import { CodeSnippet } from "./components/code-snippet.tsx";
 
 export type StackExample = {
   id: string;
@@ -61,7 +61,7 @@ export const stackCategories = [
         title: "Receive a standard Request",
         body: "Your server adapter turns an incoming HTTP request into a Web Request, then hands it to the router. The Request remains the common language all the way through.",
         code: `import { createRequestListener } from "remix/node-fetch-server"
-import { router } from "./app/router.ts"
+import { router } from "./components/app/router.ts"
 
 let server = http.createServer(
   createRequestListener(router.fetch),
@@ -200,7 +200,7 @@ async function create({ get }) {
         filename: "database.ts",
         code: `import { createPostgresDatabase } from "remix/data-table/postgres"
 
-import { pool } from "./postgres.ts"
+import { pool } from "./components/postgres.ts"
 
 export let db = createPostgresDatabase(pool)`,
       },
@@ -223,7 +223,7 @@ export let db = createPostgresDatabase(pool)`,
         title: "Model relational data in TypeScript",
         body: "Describe real tables with typed columns, constraints, and named relationships. The same definitions drive type-safe reads and writes across your app.",
         code: `import { belongsTo, column as c, table } from "remix/data-table"
-import { artists } from "./artists.ts"
+import { artists } from "./components/artists.ts"
 
 export const albums = table({
   name: "albums",
@@ -244,7 +244,7 @@ export const albumArtist = belongsTo(albums, artists)
         label: "CRUD",
         title: "Read and write records directly",
         body: "Use focused helpers when you do not need to build a full query. Find records and create, update, or delete them through the same typed database API.",
-        code: `import { albums } from "./schema.ts"
+        code: `import { albums } from "./components/schema.ts"
 
 let allAlbums = await db.findMany(albums, {
   where: { artistId },
@@ -262,7 +262,7 @@ let thriller = await db.create(albums, {
         label: "Query builder",
         title: "Build typed SQL queries",
         body: "Compose conditions, ordering, joins, projections, and related records with a reusable query object that stays type-safe across supported SQL dialects.",
-        code: `import { albumArtist, albums } from "./schema.ts"
+        code: `import { albumArtist, albums } from "./components/schema.ts"
 
 let albumsByArtist = await db
   .query(albums)
@@ -523,7 +523,7 @@ let assets = createAssetServer({
         body: "Your imports stay the same while the import map updates each module’s fingerprinted file URL. Only changed modules need new cache entries.",
         filename: "document.tsx",
         code: `import { ImportMap } from "remix/component/server"
-import { assets } from "./assets.ts"
+import { assets } from "./components/assets.ts"
 
 let { href, importMap } =
   await assets.getScriptEntry(
@@ -545,7 +545,7 @@ let { href, importMap } =
         body: "A script entry includes preload URLs for its dependencies, letting the browser fetch the module graph while it parses the document.",
         filename: "document.tsx",
         code: `import { ImportMap } from "remix/component/server"
-import { assets } from "./assets.ts"
+import { assets } from "./components/assets.ts"
 
 let { href, importMap, preloads } =
   await assets.getScriptEntry(
@@ -569,7 +569,7 @@ let { href, importMap, preloads } =
         title: "Load CSS through the asset server",
         body: "Write modern CSS and let the asset server compile it for your browser targets. Relative @import and url() references resolve through the same pipeline, and production CSS is minified and fingerprinted just like your scripts.",
         filename: "app.css",
-        code: `@import "./reset.css";
+        code: `@import "./components/reset.css";
 
 .hero {
   background-image: url("./hero.png");
@@ -726,7 +726,7 @@ export let Counter = clientEntry(
         ),
         filename: "dashboard.tsx",
         code: `import { Frame } from "remix/component"
-import { routes } from "../routes.ts"
+import { routes } from "./routes.ts"
 
 function Dashboard() {
   return () => (
@@ -748,7 +748,7 @@ function Dashboard() {
         body: "Attach events and attributes with built-in mixins, or package your own reusable behavior as a mixin, all without wrapping or replacing the element.",
         filename: "album-toolbar.tsx",
         code: `import { attrs, on } from "remix/component"
-import { tooltip } from "./tooltip.ts"
+import { tooltip } from "./components/tooltip.ts"
 
 <button
   mix={[

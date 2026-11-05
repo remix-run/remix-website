@@ -9,7 +9,7 @@ import {
   JamLineupAccordionItem,
   scheduleGridStyle,
 } from "./public/lineup-accordion-item.tsx";
-import { breakpointMedia, theme } from "../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../ui/public/styles/theme.ts";
 
 type Schedule = Awaited<ReturnType<typeof getJam2025Schedule>>;
 

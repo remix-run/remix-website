@@ -17,7 +17,7 @@ import { JamFadeInBadge } from "./public/fade-in-badge.tsx";
 import { JamNewsletterForm } from "./public/newsletter-form.tsx";
 import { assetPaths } from "../../../utils/public/asset-paths.ts";
 import { Icon } from "../../../ui/public/icon.tsx";
-import { breakpointMedia, theme } from "../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../ui/public/styles/theme.ts";
 
 type EventStatus = "before" | "live" | "after";
 

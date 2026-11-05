@@ -1,7 +1,7 @@
 import { css, type Handle } from "remix/component";
-import { breakpoints } from "../../../../ui/public/theme.ts";
-import { clamp01 } from "../utils/math.ts";
-import { reducedMotion } from "../utils/reduced-motion.ts";
+import { breakpoints } from "../../../../ui/public/styles/theme.ts";
+import { clamp01 } from "../math.ts";
+import { reducedMotion } from "../reduced-motion.ts";
 
 const LOGOS = [
   { src: "/landing/remix-package-auth.svg", alt: "Auth", ratio: "904 / 245" },
@@ -57,9 +57,9 @@ function logoOpacity(
   viewportHeight: number,
   index: number,
 ) {
-  const inStart = index * STAGGER;
-  const fadeIn = clamp01((revealProgress - inStart) / FADE_IN);
-  const fadeOut = clamp01(
+  let inStart = index * STAGGER;
+  let fadeIn = clamp01((revealProgress - inStart) / FADE_IN);
+  let fadeOut = clamp01(
     (panelBottomInViewport - viewportHeight * FADE_OUT_VIEWPORT_END) /
       (viewportHeight * (FADE_OUT_VIEWPORT_START - FADE_OUT_VIEWPORT_END)),
   );
@@ -78,11 +78,11 @@ export function PackageLogos(handle: Handle) {
 
   function measurePanel(): boolean {
     if (!panelElement) return false;
-    const rect = panelElement.getBoundingClientRect();
-    const nextTop = rect.top + window.scrollY;
-    const nextLeft = rect.left + window.scrollX;
-    const nextWidth = rect.width;
-    const nextHeight = rect.height;
+    let rect = panelElement.getBoundingClientRect();
+    let nextTop = rect.top + window.scrollY;
+    let nextLeft = rect.left + window.scrollX;
+    let nextWidth = rect.width;
+    let nextHeight = rect.height;
     if (
       nextTop === panelTop &&
       nextLeft === panelLeft &&
@@ -149,34 +149,34 @@ export function PackageLogos(handle: Handle) {
   return () => {
     if (!panelElement || !panelElement.isConnected) locatePanel();
 
-    const reduceMotion = reducedMotion.current;
-    const revealDistance = Math.min(900, Math.max(650, window.innerHeight));
-    const revealProgress = clamp01(
+    let reduceMotion = reducedMotion.current;
+    let revealDistance = Math.min(900, Math.max(650, window.innerHeight));
+    let revealProgress = clamp01(
       (window.scrollY + window.innerHeight * 0.68 - panelTop) / revealDistance,
     );
-    const panelBottomInViewport = panelTop + panelHeight - window.scrollY;
-    const inSection =
+    let panelBottomInViewport = panelTop + panelHeight - window.scrollY;
+    let inSection =
       panelTop < window.scrollY + window.innerHeight &&
       panelBottomInViewport > 0;
-    const stackedHeight = panelHeight * 0.94;
-    const logoScale =
+    let stackedHeight = panelHeight * 0.94;
+    let logoScale =
       window.innerWidth < Number.parseInt(breakpoints.md, 10) ? 0.8 : 1;
-    const logoLayouts = LOGOS.map((logo, index) => {
-      const [intrinsicWidth, intrinsicHeight] = logo.ratio
+    let logoLayouts = LOGOS.map((logo, index) => {
+      let [intrinsicWidth, intrinsicHeight] = logo.ratio
         .split("/")
         .map((value) => parseFloat(value.trim()));
-      const width =
+      let width =
         Math.min(
           LOGO_MAX_WIDTHS[index],
           panelWidth * LOGO_STAGE_WIDTHS[index],
         ) * logoScale;
       return { width, height: width * (intrinsicHeight / intrinsicWidth) };
     });
-    const logoHeight = logoLayouts.reduce(
+    let logoHeight = logoLayouts.reduce(
       (total, layout) => total + layout.height,
       0,
     );
-    const rowGap = (stackedHeight - logoHeight) / (LOGOS.length - 1);
+    let rowGap = (stackedHeight - logoHeight) / (LOGOS.length - 1);
 
     return (
       <div
@@ -190,8 +190,8 @@ export function PackageLogos(handle: Handle) {
         }}
       >
         {LOGOS.map((logo, i) => {
-          const layout = logoLayouts[i];
-          const top = logoLayouts
+          let layout = logoLayouts[i];
+          let top = logoLayouts
             .slice(0, i)
             .reduce((offset, row) => offset + row.height + rowGap, 0);
           return (

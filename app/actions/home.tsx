@@ -1,10 +1,10 @@
 import { css, type Handle } from "remix/component";
 import { RemixLandingEnhancements } from "./public/remix-landing/landing-enhancements.tsx";
 import { RUNNER_AVIF_SRC } from "./public/remix-landing/runner-media.ts";
-import { colors } from "./public/remix-landing/styles/tokens.ts";
+import { colors } from "./public/remix-landing/tokens.ts";
 import { Document } from "../ui/document.tsx";
 import { LandingContent } from "./home-landing-content.tsx";
-import type { StackExplorerCodeHighlights } from "./public/remix-landing/components/stack-explorer-content.tsx";
+import type { StackExplorerCodeHighlights } from "./public/remix-landing/stack-explorer-content.tsx";
 
 type HomePageProps = {
   explorerCodeHighlights?: StackExplorerCodeHighlights;

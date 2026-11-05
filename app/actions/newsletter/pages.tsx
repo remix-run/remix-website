@@ -15,8 +15,8 @@ import {
   pageSecondaryTextStyle,
   pageTitleExtraSmallStyle,
   pageTitleStyle,
-} from "../../ui/public/marketing-styles.ts";
-import { breakpointMedia, theme } from "../../ui/public/theme.ts";
+} from "../../ui/public/styles/marketing-styles.ts";
+import { breakpointMedia, theme } from "../../ui/public/styles/theme.ts";
 import type { NewsletterSubscriptionStatus } from "../../ui/public/newsletter-frame-form.tsx";
 import { getSocialHeadTagsForRequest } from "../../utils/social-head-tags-for-request.ts";
 

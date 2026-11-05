@@ -6,7 +6,7 @@ import {
   AccordionTrigger,
 } from "./accordion.tsx";
 import { Icon } from "../../../../ui/public/icon.tsx";
-import { theme } from "../../../../ui/public/theme.ts";
+import { theme } from "../../../../ui/public/styles/theme.ts";
 import { jamTheme } from "./theme.ts";
 
 import type { ScheduleItem } from "./schedule-types.ts";

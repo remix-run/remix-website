@@ -1,7 +1,7 @@
 import { css } from "remix/component";
 
-import { headingExtraLargeStyle } from "../../ui/public/marketing-styles.ts";
-import { breakpointMedia, theme } from "../../ui/public/theme.ts";
+import { headingExtraLargeStyle } from "../../ui/public/styles/marketing-styles.ts";
+import { breakpointMedia, theme } from "../../ui/public/styles/theme.ts";
 import { TimelineDiagramDesktop } from "./timeline-section-desktop.tsx";
 import { TimelineDiagramMobile } from "./timeline-section-mobile.tsx";
 

@@ -6,7 +6,7 @@ import {
 } from "../../../../ui/public/newsletter-frame-form.tsx";
 import { routes } from "../../../../routes.ts";
 import { newsletterTagIds } from "../../../../utils/public/newsletter-tags.ts";
-import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
 
 export let JamNewsletterForm = clientEntry(
   import.meta.url,

@@ -1,5 +1,5 @@
 import { css } from "remix/component";
-import { theme } from "../../../../ui/public/theme.ts";
+import { theme } from "../../../../ui/public/styles/theme.ts";
 import { jamTheme } from "./theme.ts";
 
 export let jam2026WindowSurfaceStyle = css({

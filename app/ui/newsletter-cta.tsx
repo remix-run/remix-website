@@ -1,7 +1,10 @@
 import { css, type Handle } from "remix/component";
 
 import { NewsletterFrame } from "./newsletter-frame.tsx";
-import { pageBodyStyle, pageTitleStyle } from "./public/marketing-styles.ts";
+import {
+  pageBodyStyle,
+  pageTitleStyle,
+} from "./public/styles/marketing-styles.ts";
 import type { NewsletterSubscriptionStatus } from "./public/newsletter-frame-form.tsx";
 
 export function NewsletterCta(

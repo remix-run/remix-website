@@ -1,5 +1,5 @@
 import { css, type Handle, type Props, type RemixNode } from "remix/component";
-import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
 
 export function Title(
   handle: Handle<{ children: RemixNode; mix?: Props<"h1">["mix"] }>,

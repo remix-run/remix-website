@@ -5,7 +5,7 @@ import { JamTextPage } from "./document.tsx";
 import { JamScrambleText } from "./public/scramble-text.tsx";
 import { Paragraph, Subheader } from "./public/typography.tsx";
 import { assetPaths } from "../../../utils/public/asset-paths.ts";
-import { breakpointMedia } from "../../../ui/public/theme.ts";
+import { breakpointMedia } from "../../../ui/public/styles/theme.ts";
 
 export function Jam2025CocPage(handle: Handle<{ requestUrl: string }>) {
   return () => (

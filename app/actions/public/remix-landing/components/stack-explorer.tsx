@@ -9,8 +9,8 @@ import {
   tween,
 } from "@remix-run/ui/animation";
 import * as tabs from "@remix-run/ui/tabs";
-import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
-import { colors, pageMaxWidth } from "../styles/tokens.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
+import { colors, pageMaxWidth } from "../tokens.ts";
 
 import {
   stackCategories,
@@ -20,7 +20,7 @@ import {
   type StackExample,
   type StackExplorerCodeHighlights,
   type StackExplorerCodeToken,
-} from "./stack-explorer-content.tsx";
+} from "../stack-explorer-content.tsx";
 
 export let StackExplorer = clientEntry(
   import.meta.url,

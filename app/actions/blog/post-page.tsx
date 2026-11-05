@@ -9,8 +9,8 @@ import {
   pageTitleExtraSmallStyle,
   pageTitleSmallStyle,
   pageTitleStyle,
-} from "../../ui/public/marketing-styles.ts";
-import { breakpointMedia, theme } from "../../ui/public/theme.ts";
+} from "../../ui/public/styles/marketing-styles.ts";
+import { breakpointMedia, theme } from "../../ui/public/styles/theme.ts";
 import { NewsletterCta } from "../../ui/newsletter-cta.tsx";
 import type { BlogImageAsset } from "../../utils/blog-image-assets.ts";
 import { getSocialHeadTagsForRequest } from "../../utils/social-head-tags-for-request.ts";

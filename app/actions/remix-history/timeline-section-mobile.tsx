@@ -1,7 +1,7 @@
 import { css, type Handle, type Props, type RemixNode } from "remix/component";
 
-import { captionStyle } from "../../ui/public/marketing-styles.ts";
-import { theme } from "../../ui/public/theme.ts";
+import { captionStyle } from "../../ui/public/styles/marketing-styles.ts";
+import { theme } from "../../ui/public/styles/theme.ts";
 
 const YEARS = Array.from({ length: 13 }, (_, index) => 2014 + index);
 const ROW_HEIGHT = 57;

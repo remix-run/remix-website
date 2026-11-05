@@ -22,7 +22,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 ## Keep These Non-Obvious Invariants
 
 - Route declarations live in `app/routes.ts`; router mappings in `app/router.ts`; keep them aligned. Run `pnpm remix doctor` and make sure it reports no issues.
-- Disk layout under `app/actions/**` mirrors the route map: every route map with direct routes owns `app/actions/<key-path>/controller.tsx` (root map owns `app/actions/controller.tsx`), and route-local modules are flat files beside their controller. Do not introduce non-route directories such as `ui/` or `sections/` inside `app/actions/**`.
+- Disk layout under `app/actions/**` mirrors the route map: every route map with direct routes owns `app/actions/<key-path>/controller.tsx` (root map owns `app/actions/controller.tsx`), and route-local modules live beside their controller.
 - Handle unmatched requests with `createRouter({ defaultHandler })` instead of registering a wildcard route.
 - In `app/actions/**`, keep the exported controller first and helper/details below.
 - For route-local, single-use UI, keep it in the route file; extract to `app/ui/**` only when shared.

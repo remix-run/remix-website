@@ -5,8 +5,8 @@ import {
   bodyStyle,
   headingExtraLargeStyle,
   headingSmallStyle,
-} from "../../ui/public/marketing-styles.ts";
-import { breakpointMedia, theme } from "../../ui/public/theme.ts";
+} from "../../ui/public/styles/marketing-styles.ts";
+import { breakpointMedia, theme } from "../../ui/public/styles/theme.ts";
 
 export function StayInTheLoopSection() {
   return () => (

@@ -9,8 +9,8 @@ import {
 } from "remix/component";
 
 import { routes } from "../../routes.ts";
-import { visuallyHiddenStyle } from "./css-mixins.ts";
-import { breakpointMedia, theme } from "./theme.ts";
+import { visuallyHiddenStyle } from "./styles/css-mixins.ts";
+import { breakpointMedia, theme } from "./styles/theme.ts";
 
 export const NEWSLETTER_SUBSCRIBE_FRAME_NAME = "newsletter-subscribe";
 

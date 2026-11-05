@@ -1,11 +1,11 @@
 import { css, type Handle } from "remix/component";
-import { visuallyHiddenStyle } from "../../../ui/public/css-mixins.ts";
+import { visuallyHiddenStyle } from "../../../ui/public/styles/css-mixins.ts";
 import type { ScheduleItem } from "./public/schedule-types.ts";
 import {
   ScheduleDetails,
   ScheduleSpeakerSummary,
 } from "./public/schedule-content.tsx";
-import { breakpointMedia, theme } from "../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../ui/public/styles/theme.ts";
 import { Jam2026ScheduleAccordion } from "./public/schedule-accordion.tsx";
 import {
   jam2026WindowBodyStyle,

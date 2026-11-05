@@ -1,10 +1,10 @@
 import { presets } from "./engine/presets.ts";
-import { clamp } from "./utils/math.ts";
+import { clamp } from "./math.ts";
 import {
   initReducedMotion,
   motionScrollBehavior,
   reducedMotion,
-} from "./utils/reduced-motion.ts";
+} from "./reduced-motion.ts";
 
 export type LandingScrollState = {
   /** Continuous preset position, snapped to `activeIndex` for reduced motion. */
@@ -40,12 +40,12 @@ const SCROLL_MORPH_PLATEAU = 0.46;
 const SCROLL_MORPH_EDGE_PLATEAU = 0.2;
 
 function createLandingScroll() {
-  const state: LandingScrollState = {
+  let state: LandingScrollState = {
     morphValue: 0,
     activeIndex: 0,
     scrollY: 0,
   };
-  const listeners = new Set<() => void>();
+  let listeners = new Set<() => void>();
   let sectionStops: number[] | null = null;
   let frame = 0;
   let tracking: AbortController | null = null;
@@ -63,23 +63,23 @@ function createLandingScroll() {
 
   function getSectionScrollStop(index: number): number | undefined {
     if (index === 0) return 0;
-    const id = LANDING_SECTION_IDS[index];
+    let id = LANDING_SECTION_IDS[index];
     if (!id) return undefined;
-    const el = document.getElementById(id);
+    let el = document.getElementById(id);
     if (!el) return undefined;
     if (el.offsetHeight > window.innerHeight) {
       return clampScrollY(el.offsetTop);
     }
-    const sectionCenter = el.offsetTop + el.offsetHeight / 2;
+    let sectionCenter = el.offsetTop + el.offsetHeight / 2;
     return clampScrollY(sectionCenter - window.innerHeight / 2);
   }
 
   function getSectionScrollStops(): number[] | undefined {
     if (sectionStops) return sectionStops;
 
-    const stops: number[] = [];
+    let stops: number[] = [];
     for (let index = 0; index < presets.length; index++) {
-      const stop = getSectionScrollStop(index);
+      let stop = getSectionScrollStop(index);
       if (stop === undefined) return undefined;
       stops.push(stop);
     }
@@ -88,23 +88,23 @@ function createLandingScroll() {
   }
 
   function getMorphValue(scrollY: number) {
-    const maxValue = presets.length - 1;
-    const stops = getSectionScrollStops();
+    let maxValue = presets.length - 1;
+    let stops = getSectionScrollStops();
     if (!stops) {
-      const linearMorph = (clampScrollY(scrollY) / getScrollRange()) * maxValue;
+      let linearMorph = (clampScrollY(scrollY) / getScrollRange()) * maxValue;
       return morphPlateauAcrossIndices(linearMorph, maxValue);
     }
 
-    const clampedScrollY = clampScrollY(scrollY);
+    let clampedScrollY = clampScrollY(scrollY);
     if (clampedScrollY <= stops[0]) return 0;
 
     for (let index = 0; index < maxValue; index++) {
-      const from = stops[index];
-      const to = stops[index + 1];
+      let from = stops[index];
+      let to = stops[index + 1];
       if (clampedScrollY > to) continue;
-      const span = to - from;
+      let span = to - from;
       if (span <= 1) return index + 1;
-      const t = (clampedScrollY - from) / span;
+      let t = (clampedScrollY - from) / span;
       return (
         index +
         morphPlateauWithinUnitSpan(t, scrollMorphPlateauForSegment(index))
@@ -115,8 +115,8 @@ function createLandingScroll() {
   }
 
   function refresh() {
-    const rawMorphValue = getMorphValue(window.scrollY);
-    const activeIndex = Math.round(clamp(rawMorphValue, 0, presets.length - 1));
+    let rawMorphValue = getMorphValue(window.scrollY);
+    let activeIndex = Math.round(clamp(rawMorphValue, 0, presets.length - 1));
     state.morphValue = reducedMotion.current ? activeIndex : rawMorphValue;
     state.activeIndex = activeIndex;
     state.scrollY = window.scrollY;
@@ -124,7 +124,7 @@ function createLandingScroll() {
 
   function measure() {
     refresh();
-    for (const listener of listeners) listener();
+    for (let listener of listeners) listener();
   }
 
   function scheduleMeasure() {
@@ -137,7 +137,7 @@ function createLandingScroll() {
 
   function startTracking() {
     tracking = new AbortController();
-    const { signal } = tracking;
+    let { signal } = tracking;
     initReducedMotion(signal, measure);
     window.addEventListener("scroll", scheduleMeasure, { signal });
     window.addEventListener(
@@ -182,7 +182,7 @@ function createLandingScroll() {
     },
 
     jumpToPreset(index: number) {
-      const top = getSectionScrollStop(index);
+      let top = getSectionScrollStop(index);
       if (top === undefined) return;
       window.scrollTo({ top, behavior: motionScrollBehavior() });
     },
@@ -191,8 +191,8 @@ function createLandingScroll() {
 
 function morphPlateauWithinUnitSpan(t: number, plateau: number): number {
   if (plateau <= 1e-6) return t;
-  const lo = plateau * 0.5;
-  const hi = 1 - lo;
+  let lo = plateau * 0.5;
+  let hi = 1 - lo;
   if (t <= lo) return 0;
   if (t >= hi) return 1;
   return (t - lo) / (hi - lo);
@@ -200,16 +200,16 @@ function morphPlateauWithinUnitSpan(t: number, plateau: number): number {
 
 /** `segmentIndex` is the morph integer at the start of the segment (0 for 0→1, …). */
 function scrollMorphPlateauForSegment(segmentIndex: number): number {
-  const maxMorph = presets.length - 1;
+  let maxMorph = presets.length - 1;
   return segmentIndex === 0 || segmentIndex === maxMorph - 1
     ? SCROLL_MORPH_EDGE_PLATEAU
     : SCROLL_MORPH_PLATEAU;
 }
 
 function morphPlateauAcrossIndices(linearMorph: number, maxValue: number) {
-  const clamped = clamp(linearMorph, 0, maxValue);
+  let clamped = clamp(linearMorph, 0, maxValue);
   if (maxValue < 1) return clamped;
-  const base = Math.floor(clamped);
+  let base = Math.floor(clamped);
   if (base >= maxValue) return maxValue;
   return (
     base +

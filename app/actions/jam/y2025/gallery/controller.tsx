@@ -19,7 +19,7 @@ import {
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { css, type Handle, type Props, type RemixNode } from "remix/component";
-import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
 
 export default createController(routes.jam.y2025.gallery, {
   actions: {

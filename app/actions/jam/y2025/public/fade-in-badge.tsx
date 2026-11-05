@@ -1,7 +1,7 @@
 import { prefersReducedMotion } from "@remix-run/ui/animation";
 import { clientEntry, css, type Handle, type RemixNode } from "remix/component";
 
-import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
 
 type JamFadeInBadgeProps = {
   delay?: number;

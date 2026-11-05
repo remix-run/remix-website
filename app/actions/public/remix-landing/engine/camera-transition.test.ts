@@ -13,7 +13,7 @@ const preset = (overrides: Partial<Preset>): Preset => ({
 });
 
 it("orbits between opposite views without passing through the model", () => {
-  const presets = [
+  let presets = [
     preset({ cameraPosition: [0, 20, 80], cameraTarget: [0, 0, 0] }),
     preset({
       cameraPosition: [0, 8, -30],
@@ -21,8 +21,8 @@ it("orbits between opposite views without passing through the model", () => {
       cameraTransition: "orbit-left",
     }),
   ];
-  const position = new Vector3();
-  const target = new Vector3();
+  let position = new Vector3();
+  let target = new Vector3();
 
   setDesiredCameraInto(presets, 0.5, position, target);
 

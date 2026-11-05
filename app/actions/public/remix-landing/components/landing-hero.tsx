@@ -3,10 +3,10 @@ import {
   breakpointMedia,
   breakpoints,
   theme,
-} from "../../../../ui/public/theme.ts";
-import { textBoxTrim } from "../../../../ui/public/css-mixins.ts";
+} from "../../../../ui/public/styles/theme.ts";
+import { textBoxTrim } from "../../../../ui/public/styles/css-mixins.ts";
 import { RemixLandingSectionNav } from "../landing-enhancements.tsx";
-import { colors, glowWhite } from "../styles/tokens.ts";
+import { colors, glowWhite } from "../tokens.ts";
 import { landingContent } from "../landing-content.ts";
 import { CreateRemixCommand } from "./create-remix-command.tsx";
 

@@ -1,6 +1,6 @@
 import { css, type Handle, type RemixNode } from "remix/component";
-import { theme } from "../../../../ui/public/theme.ts";
-import { colors } from "../styles/tokens.ts";
+import { theme } from "../../../../ui/public/styles/theme.ts";
+import { colors } from "../tokens.ts";
 
 const codeStyles = css({
   display: "inline-block",

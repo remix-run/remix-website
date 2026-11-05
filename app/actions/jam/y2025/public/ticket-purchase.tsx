@@ -1,7 +1,7 @@
 import { clientEntry, css, on, type Handle } from "remix/component";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { JamButton } from "./jam-button.tsx";
-import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
 
 type JamTicketPurchaseProps = {
   initialQuantity?: number;

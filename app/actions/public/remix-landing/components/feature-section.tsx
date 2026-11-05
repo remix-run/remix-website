@@ -4,10 +4,10 @@ import {
   NewsletterSubscribeFrameHost,
   type NewsletterSubscriptionStatus,
 } from "../../../../ui/public/newsletter-frame-form.tsx";
-import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
 import { routes } from "../../../../routes.ts";
-import { textBoxTrim } from "../../../../ui/public/css-mixins.ts";
-import { colors, glowWhite, pageMaxWidth } from "../styles/tokens.ts";
+import { textBoxTrim } from "../../../../ui/public/styles/css-mixins.ts";
+import { colors, glowWhite, pageMaxWidth } from "../tokens.ts";
 
 // Vertically center the inner row inside each section's `min-height: 100vh`
 // box. `align-items: center` handles grid-cell alignment, but this single
@@ -131,10 +131,10 @@ const SYNTAX_KEYWORDS = new Set([
 type SyntaxToken = { text: string; kind: SyntaxKind };
 
 function tokenizeCode(code: string): SyntaxToken[] {
-  const tokens: SyntaxToken[] = [];
+  let tokens: SyntaxToken[] = [];
   // Ordered alternation: comments, strings, JSX open/close tags (with name),
   // numbers, identifiers. Everything else falls through as "default".
-  const regex =
+  let regex =
     /(\/\*[\s\S]*?\*\/|\/\/[^\n]*)|('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|`(?:\\.|[^`\\])*`)|(<\/?[A-Za-z][\w-]*)|(\b\d+(?:\.\d+)?\b)|(\b[A-Za-z_$][\w$]*\b)/g;
 
   let cursor = 0;
@@ -142,7 +142,7 @@ function tokenizeCode(code: string): SyntaxToken[] {
     if (match.index > cursor) {
       tokens.push({ text: code.slice(cursor, match.index), kind: "default" });
     }
-    const [full, comment, str, jsxOpen, num, ident] = match;
+    let [full, comment, str, jsxOpen, num, ident] = match;
     if (comment !== undefined) {
       tokens.push({ text: full, kind: "default" });
     } else if (str !== undefined) {
@@ -191,9 +191,9 @@ function buildHighlightedCode(code: string) {
 }
 
 function renderHighlightedCode(code: string) {
-  const cached = highlightedSnippetCache.get(code);
+  let cached = highlightedSnippetCache.get(code);
   if (cached !== undefined) return cached;
-  const rendered = buildHighlightedCode(code);
+  let rendered = buildHighlightedCode(code);
   highlightedSnippetCache.set(code, rendered);
   return rendered;
 }
@@ -450,7 +450,7 @@ export let LandingNewsletterSubscribeForm = clientEntry(
 
 export function FeatureSection(handle: Handle<FeatureSectionProps>) {
   return () => {
-    const primaryPanelStyles =
+    let primaryPanelStyles =
       PRIMARY_PANEL_STYLES_BY_ID[handle.props.id] ??
       (handle.props.align === "right"
         ? rightPanelStyles
@@ -460,8 +460,8 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
               gridColumn: "2 / span 5",
             },
           }));
-    const rowVariantStyles = ROW_STYLES_BY_ID[handle.props.id];
-    const pointListVariantStyles =
+    let rowVariantStyles = ROW_STYLES_BY_ID[handle.props.id];
+    let pointListVariantStyles =
       handle.props.id === "smaller-mental-model"
         ? css({
             gridTemplateColumns: "1fr",
@@ -485,7 +485,7 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
               },
             })
           : undefined;
-    const pointVariantStyles =
+    let pointVariantStyles =
       handle.props.id === "smaller-mental-model"
         ? css({
             padding: "24px",

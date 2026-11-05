@@ -2,9 +2,9 @@ import { css, on, type Handle } from "remix/component";
 import { routes } from "../../../../routes.ts";
 import { Wordmark } from "../../../../ui/public/wordmark.tsx";
 import { brandContextMenu } from "../../../../ui/public/brand-context-menu.ts";
-import { theme } from "../../../../ui/public/theme.ts";
-import { clamp01, lerp } from "../utils/math.ts";
-import { reducedMotion } from "../utils/reduced-motion.ts";
+import { theme } from "../../../../ui/public/styles/theme.ts";
+import { clamp01, lerp } from "../math.ts";
+import { reducedMotion } from "../reduced-motion.ts";
 
 const SMALL_HEIGHT = 16;
 const LARGE_TOP = 92;
@@ -33,7 +33,7 @@ function readEdgeInset() {
 }
 
 function getScrollProgress(scrollY: number) {
-  const linear = clamp01(scrollY / SCROLL_PX);
+  let linear = clamp01(scrollY / SCROLL_PX);
   return linear < 0.5
     ? 4 * linear * linear * linear
     : 1 - Math.pow(-2 * linear + 2, 3) / 2;
@@ -93,15 +93,15 @@ const ghostSvgStyles = css({
 });
 
 async function replaceCurrentUrl(href: string) {
-  const navigation = window.navigation;
+  let navigation = window.navigation;
 
   if (!navigation) {
     window.history.replaceState(window.history.state, "", href);
     return;
   }
 
-  const state = navigation.currentEntry?.getState();
-  const transition = navigation.navigate(href, { history: "replace" });
+  let state = navigation.currentEntry?.getState();
+  let transition = navigation.navigate(href, { history: "replace" });
   await transition.committed;
   navigation.updateCurrentEntry({ state });
 }
@@ -114,7 +114,7 @@ export function ScrollLogo(handle: Handle) {
   // Navigation resets scroll after creating the next page's components, so
   // initialize for the top of the landing page instead of inheriting the
   // previous page's scroll position.
-  const ghostState = GHOST_TAUS.map(() => ({
+  let ghostState = GHOST_TAUS.map(() => ({
     width: largeWidth,
     top: LARGE_TOP,
   }));
@@ -123,8 +123,8 @@ export function ScrollLogo(handle: Handle) {
   let lastTime = 0;
   let canAnimateScroll = false;
 
-  const brandMenu = brandContextMenu(routes.brand.href());
-  const scrollHomeToTop = on<HTMLAnchorElement>("click", (event) => {
+  let brandMenu = brandContextMenu(routes.brand.href());
+  let scrollHomeToTop = on<HTMLAnchorElement>("click", (event) => {
     if (
       event instanceof MouseEvent &&
       event.button === 0 &&
@@ -140,21 +140,19 @@ export function ScrollLogo(handle: Handle) {
   });
 
   function tick(now: number) {
-    const dt = lastTime === 0 ? 0 : Math.min((now - lastTime) / 1000, 0.1);
+    let dt = lastTime === 0 ? 0 : Math.min((now - lastTime) / 1000, 0.1);
     lastTime = now;
 
     scrollY = window.scrollY;
-    const t = getScrollProgress(scrollY);
-    const targetWidth = lerp(largeWidth, SMALL_WIDTH, t);
-    const targetTop = lerp(LARGE_TOP, edgeInset, t);
+    let t = getScrollProgress(scrollY);
+    let targetWidth = lerp(largeWidth, SMALL_WIDTH, t);
+    let targetTop = lerp(LARGE_TOP, edgeInset, t);
 
     let active = false;
     for (let i = 0; i < GHOST_TAUS.length; i++) {
-      const gs = ghostState[i];
+      let gs = ghostState[i];
       // Framerate-independent exponential approach toward the target.
-      const alpha = reducedMotion.current
-        ? 1
-        : 1 - Math.exp(-dt / GHOST_TAUS[i]);
+      let alpha = reducedMotion.current ? 1 : 1 - Math.exp(-dt / GHOST_TAUS[i]);
       gs.width += (targetWidth - gs.width) * alpha;
       gs.top += (targetTop - gs.top) * alpha;
       if (
@@ -170,7 +168,7 @@ export function ScrollLogo(handle: Handle) {
     if (active && !reducedMotion.current) {
       rafId = requestAnimationFrame(tick);
     } else {
-      for (const gs of ghostState) {
+      for (let gs of ghostState) {
         gs.width = targetWidth;
         gs.top = targetTop;
       }
@@ -181,10 +179,10 @@ export function ScrollLogo(handle: Handle) {
 
   function syncToScroll() {
     scrollY = window.scrollY;
-    const t = getScrollProgress(scrollY);
-    const width = lerp(largeWidth, SMALL_WIDTH, t);
-    const top = lerp(LARGE_TOP, edgeInset, t);
-    for (const ghost of ghostState) {
+    let t = getScrollProgress(scrollY);
+    let width = lerp(largeWidth, SMALL_WIDTH, t);
+    let top = lerp(LARGE_TOP, edgeInset, t);
+    for (let ghost of ghostState) {
       ghost.width = width;
       ghost.top = top;
     }
@@ -229,20 +227,20 @@ export function ScrollLogo(handle: Handle) {
   });
 
   return () => {
-    const t = getScrollProgress(scrollY);
-    const mainWidth = lerp(largeWidth, SMALL_WIDTH, t);
-    const mainTop = lerp(LARGE_TOP, edgeInset, t);
-    const isCollapsed = t >= 1;
+    let t = getScrollProgress(scrollY);
+    let mainWidth = lerp(largeWidth, SMALL_WIDTH, t);
+    let mainTop = lerp(LARGE_TOP, edgeInset, t);
+    let isCollapsed = t >= 1;
 
     return (
       <div mix={[shellStyles]}>
         {BRAND_COLORS.map((color, i) => {
-          const gs = ghostState[i];
-          const deltaW = gs.width - mainWidth;
+          let gs = ghostState[i];
+          let deltaW = gs.width - mainWidth;
           // Opacity tracks how far this ghost trails the main logo, so it
           // fades in/out smoothly without any hard threshold.
-          const intensity = clamp01(Math.abs(deltaW) / OPACITY_FALLOFF_PX);
-          const opacity = intensity * (0.55 - i * 0.075);
+          let intensity = clamp01(Math.abs(deltaW) / OPACITY_FALLOFF_PX);
+          let opacity = intensity * (0.55 - i * 0.075);
           return (
             <Wordmark
               key={i}

@@ -16,6 +16,7 @@ import {
   WebGLRenderTarget,
   type WebGLRenderer,
 } from "three";
+import { clamp } from "../math.ts";
 import { BAKE_TEX_W, computeBakeTexHeight } from "./rest-baker.ts";
 
 // Reused so the constructor's clear-pass doesn't allocate.
@@ -107,6 +108,14 @@ void main() {
 `;
 }
 
+/**
+ * Clamps a frame delta (seconds) to [0, 1/30] so a long pause, such as a
+ * background tab, can't make one step overshoot.
+ */
+export function clampSimDt(dt: number): number {
+  return clamp(dt, 0, 1 / 30);
+}
+
 export class MouseSim {
   private renderer: WebGLRenderer;
   private slots: [WebGLRenderTarget, WebGLRenderTarget];
@@ -121,7 +130,7 @@ export class MouseSim {
     this.renderer = renderer;
     this.bakeTexHeight = computeBakeTexHeight(count);
 
-    const targetOptions = {
+    let targetOptions = {
       type: FloatType,
       format: RGBAFormat,
       depthBuffer: false,
@@ -133,7 +142,7 @@ export class MouseSim {
       wrapT: ClampToEdgeWrapping,
     } as const;
 
-    const makeSlot = () =>
+    let makeSlot = () =>
       new WebGLRenderTarget(BAKE_TEX_W, this.bakeTexHeight, targetOptions);
     this.slots = [makeSlot(), makeSlot()];
 
@@ -168,9 +177,9 @@ export class MouseSim {
     this.scene.add(this.mesh);
 
     // Initialize both displacement textures to zero.
-    const prev = renderer.getRenderTarget();
-    const prevClearColor = renderer.getClearColor(_scratchClearColor).getHex();
-    const prevClearAlpha = renderer.getClearAlpha();
+    let prev = renderer.getRenderTarget();
+    let prevClearColor = renderer.getClearColor(_scratchClearColor).getHex();
+    let prevClearAlpha = renderer.getClearAlpha();
     renderer.setClearColor(0x000000, 0);
     renderer.setRenderTarget(this.slots[0]);
     renderer.clear(true, false, false);
@@ -200,7 +209,7 @@ export class MouseSim {
 
   /** NDC coords matching `Vector3.set(x, y, z).unproject(camera)` normalization. */
   setMouseNDC(ndcX: number, ndcY: number) {
-    const v = this.material.uniforms.uMouseNDC.value as number[];
+    let v = this.material.uniforms.uMouseNDC.value as number[];
     v[0] = ndcX;
     v[1] = ndcY;
   }
@@ -211,8 +220,8 @@ export class MouseSim {
   }
 
   setCamBasis(right: Vector3, up: Vector3) {
-    const r = this.material.uniforms.uCamRight.value as number[];
-    const u = this.material.uniforms.uCamUp.value as number[];
+    let r = this.material.uniforms.uCamRight.value as number[];
+    let u = this.material.uniforms.uCamUp.value as number[];
     r[0] = right.x;
     r[1] = right.y;
     r[2] = right.z;
@@ -249,15 +258,14 @@ export class MouseSim {
    * writes the next; swaps. `dt` is clamped for tab-switch stability.
    */
   step(dt: number) {
-    const u = this.material.uniforms;
-    const clampedDt = Math.min(Math.max(dt, 0), 1 / 30);
-    u.uDt.value = clampedDt;
+    let u = this.material.uniforms;
+    u.uDt.value = clampSimDt(dt);
 
-    const prev = this.slots[this.current];
-    const next = this.slots[1 - this.current];
+    let prev = this.slots[this.current];
+    let next = this.slots[1 - this.current];
     u.uDispPrev.value = prev.texture;
 
-    const prevTarget = this.renderer.getRenderTarget();
+    let prevTarget = this.renderer.getRenderTarget();
     this.renderer.setRenderTarget(next);
     this.renderer.render(this.scene, this.camera);
     this.renderer.setRenderTarget(prevTarget);

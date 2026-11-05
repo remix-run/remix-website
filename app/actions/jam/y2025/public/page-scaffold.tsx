@@ -3,7 +3,7 @@ import { Icon } from "../../../../ui/public/icon.tsx";
 import { MobileMenu } from "../../../../ui/public/mobile-menu.tsx";
 import { routes } from "../../../../routes.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
-import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
 import { jamButtonStyle } from "./jam-button.tsx";
 
 export function JamPageScaffold(

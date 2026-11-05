@@ -3,7 +3,7 @@ import { css, type Handle } from "remix/component";
 import { MobileMenu } from "./public/mobile-menu.tsx";
 import { WordmarkLink } from "./public/wordmark-link.tsx";
 import { routes } from "../routes.ts";
-import { theme } from "./public/theme.ts";
+import { theme } from "./public/styles/theme.ts";
 
 export type HeaderSection = "blog" | "newsletter" | "jam";
 

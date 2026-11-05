@@ -47,7 +47,7 @@ export function listenForKonamiCode(
         return;
       }
 
-      const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+      let key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
       // Capture before navigation and focused controls, including the final
       // Enter and a cancelling key. Held arrows must not initiate the code.
       if (index >= 2 || (index === 1 && key === "ArrowUp" && !event.repeat)) {

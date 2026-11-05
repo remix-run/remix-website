@@ -6,7 +6,7 @@ import {
   type Handle,
 } from "remix/component";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
-import { breakpointMedia } from "../../../../ui/public/theme.ts";
+import { breakpointMedia } from "../../../../ui/public/styles/theme.ts";
 
 type KeepsakeId =
   | "photo-1"

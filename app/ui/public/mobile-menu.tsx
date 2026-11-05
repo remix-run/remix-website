@@ -6,9 +6,9 @@ import {
   type Handle,
   type RemixNode,
 } from "remix/component";
-import { visuallyHiddenStyle } from "./css-mixins.ts";
+import { visuallyHiddenStyle } from "./styles/css-mixins.ts";
 import { Icon } from "./icon.tsx";
-import { theme } from "./theme.ts";
+import { theme } from "./styles/theme.ts";
 
 // Match the docs site's mobile navigation
 const navHoverBackground = "light-dark(rgb(0 0 0 / 5%), #2a2a30)";

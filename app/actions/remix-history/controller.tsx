@@ -9,7 +9,7 @@ import { IntroMaskReveal } from "./intro-mask-reveal.tsx";
 import { PitchSection } from "./pitch-section.tsx";
 import { StayInTheLoopSection } from "./stay-in-the-loop-section.tsx";
 import { TimelineSection } from "./timeline-section.tsx";
-import { theme } from "../../ui/public/theme.ts";
+import { theme } from "../../ui/public/styles/theme.ts";
 import { getSocialHeadTagsForRequest } from "../../utils/social-head-tags-for-request.ts";
 import { routes } from "../../routes.ts";
 export default createController(routes.remixHistory, {

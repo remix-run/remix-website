@@ -1,5 +1,5 @@
 import { css, type Handle, type RemixNode } from "remix/component";
-import { breakpointMedia } from "../../../ui/public/theme.ts";
+import { breakpointMedia } from "../../../ui/public/styles/theme.ts";
 import { Document } from "../../../ui/document.tsx";
 import { getSocialHeadTagsForRequest } from "../../../utils/social-head-tags-for-request.ts";
 import { JamPageScaffold } from "./public/page-scaffold.tsx";

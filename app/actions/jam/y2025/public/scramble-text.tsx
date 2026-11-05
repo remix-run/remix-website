@@ -1,6 +1,6 @@
 import { clientEntry, css, type Handle } from "remix/component";
 
-import { theme } from "../../../../ui/public/theme.ts";
+import { theme } from "../../../../ui/public/styles/theme.ts";
 
 const SCRAMBLE_CHARS =
   "!@#$%^&*(){}[]<>~`'\",.?/\\|=+-_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";

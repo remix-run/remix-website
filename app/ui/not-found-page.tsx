@@ -1,6 +1,6 @@
 import { css, type Handle } from "remix/component";
 import { Document } from "./document.tsx";
-import { theme } from "./public/theme.ts";
+import { theme } from "./public/styles/theme.ts";
 import { CACHE } from "../utils/cache-control.ts";
 
 /** Response init for rendering `StatusErrorDocument` as a 404. */

@@ -1,5 +1,5 @@
 import { css, unsafeHTML, type Handle } from "remix/component";
-import { theme } from "../../../../ui/public/theme.ts";
+import { theme } from "../../../../ui/public/styles/theme.ts";
 import { jamTheme } from "./theme.ts";
 import type { ScheduleItem } from "./schedule-types.ts";
 

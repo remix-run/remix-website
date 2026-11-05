@@ -17,8 +17,8 @@ import {
   type ShaderId,
   type SystemSettings,
 } from "../engine/types.ts";
-import { clamp, clamp01, lerp } from "../utils/math.ts";
-import { reducedMotion } from "../utils/reduced-motion.ts";
+import { clamp, clamp01, lerp } from "../math.ts";
+import { reducedMotion } from "../reduced-motion.ts";
 
 const PARTICLE_INTRO_DURATION_S = 3.5;
 const BRAND_MODE_SETTINGS: SystemSettings = {
@@ -62,7 +62,7 @@ function copyControlsInto(source: number[], target: number[]) {
 }
 
 function buildInitialControls(preset: Preset): number[] {
-  const controls = [0, 0, 0, 0, 0, 0, 0, 0];
+  let controls = [0, 0, 0, 0, 0, 0, 0, 0];
   for (let i = 0; i < Math.min(preset.controls.length, 8); i++) {
     controls[i] = preset.controls[i].initial;
   }
@@ -70,8 +70,8 @@ function buildInitialControls(preset: Preset): number[] {
 }
 
 function adaptiveParticleCount(base: number): number {
-  const nav = navigator as Navigator & { deviceMemory?: number };
-  const lowEnd =
+  let nav = navigator as Navigator & { deviceMemory?: number };
+  let lowEnd =
     window.matchMedia("(pointer: coarse)").matches ||
     (nav.hardwareConcurrency || 8) <= 4 ||
     (nav.deviceMemory ?? 8) <= 4;
@@ -108,29 +108,29 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
   let particles: ParticleSystem | null = null;
   let restBaker: RestBaker | null = null;
   let mouseSim: MouseSim | null = null;
-  const appliedModelSlots = new Set<number>();
+  let appliedModelSlots = new Set<number>();
   let frameId = 0;
   let startTime = 0;
   let reveal: Promise<void> | null = null;
   let introStartTime: number | null = null;
   let introFinished = false;
   let frozenTime: number | null = null;
-  const rotationClock = new PausableClock();
+  let rotationClock = new PausableClock();
   let initFailed = false;
-  const desiredCameraPos = new Vector3();
-  const desiredCameraTarget = new Vector3();
-  const scratchViewProj = new Matrix4();
-  const scratchCamRight = new Vector3();
-  const scratchCamUp = new Vector3();
+  let desiredCameraPos = new Vector3();
+  let desiredCameraTarget = new Vector3();
+  let scratchViewProj = new Matrix4();
+  let scratchCamRight = new Vector3();
+  let scratchCamUp = new Vector3();
   let lastFrameNow = 0;
   let renderDeadline = 0;
   let renderWasIdle = false;
   let lastActivityAt = 0;
   let lastActivityMorph = NaN;
   let lastStaticKey: string | null = null;
-  const scratchControlsA = [0, 0, 0, 0, 0, 0, 0, 0];
-  const scratchControlsB = [0, 0, 0, 0, 0, 0, 0, 0];
-  const morphBlend: MorphBlend = { fromIndex: 0, toIndex: 0, blend: 0 };
+  let scratchControlsA = [0, 0, 0, 0, 0, 0, 0, 0];
+  let scratchControlsB = [0, 0, 0, 0, 0, 0, 0, 0];
+  let morphBlend: MorphBlend = { fromIndex: 0, toIndex: 0, blend: 0 };
 
   let mouseNormX = 0;
   let mouseNormY = 0;
@@ -145,43 +145,43 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
   let prevCarLane = 0;
   let laneActivity = 0;
 
-  const MOUSE_RANGE = 1;
-  const MOUSE_LERP = 0.04;
-  const CAR_LANE_LERP = 0.06;
-  const ACTIVITY_DECAY = 0.97;
-  const ACTIVITY_GAIN = 20.0;
+  let MOUSE_RANGE = 1;
+  let MOUSE_LERP = 0.04;
+  let CAR_LANE_LERP = 0.06;
+  let ACTIVITY_DECAY = 0.97;
+  let ACTIVITY_GAIN = 20.0;
   /**
    * Racetrack (no car): parallax uses the same base as other slides, multiplied
    * by RACETRACK_MOUSE_STRAFE_ATTENUATION (less lateral drift), then clamped to
    * ±(trackW × RACETRACK_MOUSE_STRAFE_OF_TRACKW) so it can never exceed road width.
    */
-  const RACETRACK_MOUSE_STRAFE_ATTENUATION = 0.4;
-  const RACETRACK_MOUSE_STRAFE_OF_TRACKW = 0.18;
+  let RACETRACK_MOUSE_STRAFE_ATTENUATION = 0.4;
+  let RACETRACK_MOUSE_STRAFE_OF_TRACKW = 0.18;
 
   // Mouse sim: screen-space falloff (NDC) + camera right/up → tracks the pointer
   // through preset cameras. Peak offset @ ref repulsion:
   //   PEAK_DISP ≈ PUSH_GAIN × (STRENGTH_SCALE × REF_REPULSION).
-  const MOUSE_SIM_STRENGTH_SCALE = 3900;
-  const MOUSE_SIM_REPULSION_REF = 0.2;
-  const MOUSE_SIM_PEAK_DISP = 17.0;
-  const MOUSE_SIM_FOLLOW_TAU = 10;
+  let MOUSE_SIM_STRENGTH_SCALE = 3900;
+  let MOUSE_SIM_REPULSION_REF = 0.2;
+  let MOUSE_SIM_PEAK_DISP = 17.0;
+  let MOUSE_SIM_FOLLOW_TAU = 10;
   // Screen-space halo size at full velocity (NDC −1…1 spans). Effective radius scales
   // down when the cursor is steady so displaced particles can settle back.
-  const MOUSE_SIM_NDC_RADIUS = 0.154;
+  let MOUSE_SIM_NDC_RADIUS = 0.154;
   /** /s smoothing of measured NDC speed (higher = snappier). */
-  const MOUSE_SIM_VEL_SMOOTH_TAU = 22;
+  let MOUSE_SIM_VEL_SMOOTH_TAU = 22;
   /** Below this smoothed speed (NDC/sec) the brush is essentially off — kills pointer jitter. */
-  const MOUSE_SIM_VEL_GATE = 0.14;
+  let MOUSE_SIM_VEL_GATE = 0.14;
   /** Smoothed speed at which radius/strength reach full strength. */
-  const MOUSE_SIM_VEL_FULL = 5.5;
+  let MOUSE_SIM_VEL_FULL = 5.5;
   /**
    * Smooth the applied brush toward the velocity-derived target (/s).
    * Decouples visible falloff/strength step from uneven frame deltas and removes stair-step jitter.
    */
-  const MOUSE_SIM_BRUSH_SMOOTH_TAU = 14;
-  const MOUSE_SIM_PUSH_GAIN =
+  let MOUSE_SIM_BRUSH_SMOOTH_TAU = 14;
+  let MOUSE_SIM_PUSH_GAIN =
     MOUSE_SIM_PEAK_DISP / (MOUSE_SIM_STRENGTH_SCALE * MOUSE_SIM_REPULSION_REF);
-  const MOUSE_SIM_SETTLE_S = 1.0;
+  let MOUSE_SIM_SETTLE_S = 1.0;
   let mouseSimSettleS = MOUSE_SIM_SETTLE_S;
 
   function setMousePosition(clientX: number, clientY: number) {
@@ -189,11 +189,11 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
     // movement must not wake rendering, parallax, or particle displacement.
     if (handle.props.interactionPausedRef.current) return;
     lastActivityAt = performance.now();
-    const vp = containerEl ?? canvasEl;
+    let vp = containerEl ?? canvasEl;
     if (vp) {
-      const rect = vp.getBoundingClientRect();
-      const rw = rect.width > 1e-4 ? rect.width : window.innerWidth;
-      const rh = rect.height > 1e-4 ? rect.height : window.innerHeight;
+      let rect = vp.getBoundingClientRect();
+      let rw = rect.width > 1e-4 ? rect.width : window.innerWidth;
+      let rh = rect.height > 1e-4 ? rect.height : window.innerHeight;
       mouseNormX = ((clientX - rect.left) / rw) * 2 - 1;
       mouseNormY = ((clientY - rect.top) / rh) * 2 - 1;
     } else {
@@ -259,7 +259,7 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
   function syncModelTextures() {
     if (!restBaker) return;
 
-    for (const preset of presets) {
+    for (let preset of presets) {
       if (
         preset.modelUrl == null ||
         preset.modelSlot == null ||
@@ -267,7 +267,7 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
       )
         continue;
 
-      const model = handle.props.modelData[presets.indexOf(preset)];
+      let model = handle.props.modelData[presets.indexOf(preset)];
       if (!model) continue;
 
       restBaker.setModelTexture(
@@ -284,13 +284,13 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
     if (initFailed || engine || !containerEl || !canvasEl) return;
 
     try {
-      const settings = handle.props.brandGradientMode
+      let settings = handle.props.brandGradientMode
         ? BRAND_MODE_SETTINGS
         : DEFAULT_SETTINGS;
       engine = new Engine();
       engine.init(canvasEl, containerEl, settings);
 
-      const particleCount = adaptiveParticleCount(settings.particleCount);
+      let particleCount = adaptiveParticleCount(settings.particleCount);
       restBaker = new RestBaker(engine.renderer, particleCount);
       restBaker.setCount(particleCount);
 
@@ -337,7 +337,7 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
       // samples populated rest textures. This also forces the baker's
       // RawShaderMaterial to compile here, hiding the link/upload cost from
       // the first animate() frame.
-      const initialIndex = Math.min(
+      let initialIndex = Math.min(
         Math.max(0, Math.floor(handle.props.morphValueRef.current)),
         presets.length - 1,
       );
@@ -364,7 +364,7 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
       return;
     }
 
-    const animate = () => {
+    let animate = () => {
       try {
         renderFrame();
       } catch (error) {
@@ -377,20 +377,20 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
     function renderFrame() {
       if (!engine || !particles || !restBaker || !mouseSim) return;
 
-      const now = performance.now();
-      const morphValue = handle.props.morphValueRef.current;
-      const reduceMotion = reducedMotion.current;
+      let now = performance.now();
+      let morphValue = handle.props.morphValueRef.current;
+      let reduceMotion = reducedMotion.current;
 
       if (morphValue !== lastActivityMorph) {
         lastActivityMorph = morphValue;
         lastActivityAt = now;
       }
-      const idle = introFinished && now - lastActivityAt >= IDLE_AFTER_MS;
+      let idle = introFinished && now - lastActivityAt >= IDLE_AFTER_MS;
       if (idle !== renderWasIdle) {
         renderWasIdle = idle;
         renderDeadline = 0;
       }
-      const nextDeadline = nextRenderDeadline(now, renderDeadline, idle);
+      let nextDeadline = nextRenderDeadline(now, renderDeadline, idle);
       if (nextDeadline === null) {
         frameId = requestAnimationFrame(animate);
         return;
@@ -402,7 +402,7 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
         lastStaticKey = null;
       }
 
-      const staticKey =
+      let staticKey =
         reduceMotion &&
         introFinished &&
         mouseSimSettleS >= MOUSE_SIM_SETTLE_S &&
@@ -415,26 +415,25 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
       }
       lastStaticKey = staticKey;
 
-      const time = now / 1000 - startTime;
+      let time = now / 1000 - startTime;
       // Real-time delta for the mouse sim. First frame falls back to a 60fps
       // step; afterwards it tracks actual frame pacing. MouseSim.step() also
       // clamps internally to keep the explicit Euler integrator stable.
-      const dtSeconds =
-        lastFrameNow === 0 ? 1 / 60 : (now - lastFrameNow) / 1000;
+      let dtSeconds = lastFrameNow === 0 ? 1 / 60 : (now - lastFrameNow) / 1000;
       lastFrameNow = now;
-      const settings = handle.props.brandGradientMode
+      let settings = handle.props.brandGradientMode
         ? BRAND_MODE_SETTINGS
         : DEFAULT_SETTINGS;
-      const presetData = PRESET_RUNTIME_DATA;
+      let presetData = PRESET_RUNTIME_DATA;
 
       if (reduceMotion) {
         frozenTime ??= Math.max(time, PARTICLE_INTRO_DURATION_S);
       } else {
         frozenTime = null;
       }
-      const visualTime = frozenTime ?? time;
-      const interactionPaused = handle.props.interactionPausedRef.current;
-      const rotationTime = rotationClock.read(visualTime, interactionPaused);
+      let visualTime = frozenTime ?? time;
+      let interactionPaused = handle.props.interactionPausedRef.current;
+      let rotationTime = rotationClock.read(visualTime, interactionPaused);
 
       if (interactionPaused !== interactionWasPaused) {
         interactionWasPaused = interactionPaused;
@@ -445,14 +444,14 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
 
       engine.updateSettings(settings);
 
-      const screenScale = engine.getScreenScale();
+      let screenScale = engine.getScreenScale();
       particles.setPointSize(settings.pointSize);
       particles.setHdrIntensity(settings.hdrIntensity * screenScale);
-      const effectiveMouseNormX = reduceMotion ? 0 : mouseNormX;
-      const effectiveMouseNormY = reduceMotion ? 0 : mouseNormY;
+      let effectiveMouseNormX = reduceMotion ? 0 : mouseNormX;
+      let effectiveMouseNormY = reduceMotion ? 0 : mouseNormY;
 
       let mouseBrushFactor = 0;
-      const dtClamp = Math.max(dtSeconds, 1e-4);
+      let dtClamp = Math.max(dtSeconds, 1e-4);
       if (reduceMotion) {
         mouseVelPrimed = false;
         mouseNdcSpeedSmoothed = 0;
@@ -463,21 +462,21 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
           prevMouseNormY = effectiveMouseNormY;
           mouseVelPrimed = true;
         } else {
-          const speed = Math.hypot(
+          let speed = Math.hypot(
             (effectiveMouseNormX - prevMouseNormX) / dtClamp,
             (effectiveMouseNormY - prevMouseNormY) / dtClamp,
           );
-          const kVel = 1 - Math.exp(-MOUSE_SIM_VEL_SMOOTH_TAU * dtClamp);
+          let kVel = 1 - Math.exp(-MOUSE_SIM_VEL_SMOOTH_TAU * dtClamp);
           mouseNdcSpeedSmoothed += (speed - mouseNdcSpeedSmoothed) * kVel;
         }
         prevMouseNormX = effectiveMouseNormX;
         prevMouseNormY = effectiveMouseNormY;
-        const span = Math.max(MOUSE_SIM_VEL_FULL - MOUSE_SIM_VEL_GATE, 1e-4);
-        const linear = clamp01(
+        let span = Math.max(MOUSE_SIM_VEL_FULL - MOUSE_SIM_VEL_GATE, 1e-4);
+        let linear = clamp01(
           (mouseNdcSpeedSmoothed - MOUSE_SIM_VEL_GATE) / span,
         );
-        const brushTarget = linear * linear * (3 - 2 * linear);
-        const kBrush = 1 - Math.exp(-MOUSE_SIM_BRUSH_SMOOTH_TAU * dtClamp);
+        let brushTarget = linear * linear * (3 - 2 * linear);
+        let kBrush = 1 - Math.exp(-MOUSE_SIM_BRUSH_SMOOTH_TAU * dtClamp);
         mouseBrushSmoothed += (brushTarget - mouseBrushSmoothed) * kBrush;
         if (mouseBrushSmoothed < 1e-3) mouseBrushSmoothed = 0;
         mouseBrushFactor = mouseBrushSmoothed;
@@ -490,9 +489,9 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
         // preference changes while this component is mounted.
         introFinished = true;
       }
-      const introTime =
+      let introTime =
         introStartTime === null ? 0 : Math.max(0, visualTime - introStartTime);
-      const introProgress =
+      let introProgress =
         reduceMotion || introFinished
           ? 1.5
           : Math.min(introTime / PARTICLE_INTRO_DURATION_S, 1.5);
@@ -503,9 +502,9 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
       particles.setIntroProgress(introProgress);
       particles.setTime(visualTime);
 
-      const maxValue = presets.length - 1;
+      let maxValue = presets.length - 1;
       getMorphBlend(morphValue, maxValue, morphBlend);
-      const { fromIndex, toIndex, blend } = morphBlend;
+      let { fromIndex, toIndex, blend } = morphBlend;
 
       let separation: number;
 
@@ -516,20 +515,20 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
       } else {
         copyControlsInto(presetData.controls[fromIndex], scratchControlsA);
         copyControlsInto(presetData.controls[toIndex], scratchControlsB);
-        const easedBlend = blend * blend * (3 - 2 * blend);
+        let easedBlend = blend * blend * (3 - 2 * blend);
         separation =
           presets[fromIndex].separation * (1 - easedBlend) +
           presets[toIndex].separation * easedBlend;
       }
 
-      const racetrackIndex = presetData.racetrackIndex;
-      const racetrackDist =
+      let racetrackIndex = presetData.racetrackIndex;
+      let racetrackDist =
         racetrackIndex >= 0 ? Math.abs(morphValue - racetrackIndex) : 0;
-      const departingRacetrack =
+      let departingRacetrack =
         !reduceMotion && racetrackDist > 0.01 && racetrackDist < 1.0;
 
       if (departingRacetrack) {
-        const surge = racetrackDist * racetrackDist * 32;
+        let surge = racetrackDist * racetrackDist * 32;
         if (blend < 0.001) {
           if (fromIndex === racetrackIndex || toIndex === racetrackIndex) {
             scratchControlsA[7] = surge;
@@ -547,50 +546,50 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
       // early-exit branch and ignores uMorphT, so any value is safe.
       let morphT = 0;
       if (blend > 0.001) {
-        const ease = settings.morphEase;
-        const tk = Math.pow(blend, ease);
+        let ease = settings.morphEase;
+        let tk = Math.pow(blend, ease);
         morphT = tk / (tk + Math.pow(1 - blend, ease));
       }
       particles.setBlend(blend);
       particles.setMorphT(morphT);
       particles.setSeparation(separation);
 
-      const overridesA = presets[fromIndex].systemOverrides;
-      const overridesB = presets[toIndex].systemOverrides;
-      const easedBlend = blend * blend * (3 - 2 * blend);
-      const effectiveTrail =
+      let overridesA = presets[fromIndex].systemOverrides;
+      let overridesB = presets[toIndex].systemOverrides;
+      let easedBlend = blend * blend * (3 - 2 * blend);
+      let effectiveTrail =
         (1 - easedBlend) *
           (overridesA?.trailIntensity ?? settings.trailIntensity) +
         easedBlend * (overridesB?.trailIntensity ?? settings.trailIntensity);
-      const effectiveRepulsion =
+      let effectiveRepulsion =
         (1 - easedBlend) *
           (overridesA?.cursorRepulsion ?? settings.cursorRepulsion) +
         easedBlend * (overridesB?.cursorRepulsion ?? settings.cursorRepulsion);
-      const trailBoost = departingRacetrack
+      let trailBoost = departingRacetrack
         ? Math.sin(racetrackDist * Math.PI) * 0.75
         : 0;
-      const afterImageDamp = reduceMotion
+      let afterImageDamp = reduceMotion
         ? 0
         : Math.min(effectiveTrail + trailBoost, 0.97);
       engine.afterImagePass.uniforms.damp.value = afterImageDamp;
       engine.afterImagePass.enabled = afterImageDamp > 0.001;
 
-      const driveIndex = presetData.driveIndex;
-      const racetrackFogDist =
+      let driveIndex = presetData.driveIndex;
+      let racetrackFogDist =
         racetrackIndex >= 0 ? Math.abs(morphValue - racetrackIndex) : Infinity;
-      const driveFogDist =
+      let driveFogDist =
         driveIndex >= 0 ? Math.abs(morphValue - driveIndex) : Infinity;
-      const fogProximity = Math.max(
+      let fogProximity = Math.max(
         0,
         1 - Math.min(racetrackFogDist, driveFogDist),
       );
       particles.setFog(fogProximity, 10, 180);
 
-      const driveProximity =
+      let driveProximity =
         driveIndex >= 0 ? clamp01(1 - Math.abs(morphValue - driveIndex)) : 0;
       // Racetrack (no car): scale/cap lateral camera follow from live track width;
       // × (1 − driveProximity) so Drive keeps uncapped parallax for steering context.
-      const racetrackRoadLock =
+      let racetrackRoadLock =
         racetrackIndex >= 0
           ? clamp01(1 - racetrackDist) * (1 - driveProximity)
           : 0;
@@ -600,7 +599,7 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
         smoothCarLane += (0 - smoothCarLane) * CAR_LANE_LERP;
       }
 
-      const laneDelta = Math.abs(smoothCarLane - prevCarLane);
+      let laneDelta = Math.abs(smoothCarLane - prevCarLane);
       laneActivity = Math.max(
         laneActivity * ACTIVITY_DECAY,
         clamp01(laneDelta * ACTIVITY_GAIN),
@@ -608,9 +607,9 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
       prevCarLane = smoothCarLane;
 
       // Car uniforms feed the baker (used only by the racetrackCar preset).
-      const carLaneOffset = smoothCarLane * driveProximity;
-      const carLaneActivity = laneActivity * driveProximity;
-      const carPosY =
+      let carLaneOffset = smoothCarLane * driveProximity;
+      let carLaneActivity = laneActivity * driveProximity;
+      let carPosY =
         driveIndex >= 0 ? presetData.driveCarPosY * driveProximity : 0;
       restBaker.setCarUniforms(carLaneOffset, carLaneActivity, carPosY);
 
@@ -647,16 +646,16 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
         engine.controls.target.lerp(desiredCameraTarget, CAM_LERP_SPEED);
       }
 
-      const parallaxScale = 1 - driveProximity;
+      let parallaxScale = 1 - driveProximity;
       smoothMouseOffsetX +=
         (effectiveMouseNormX * MOUSE_RANGE - smoothMouseOffsetX) * MOUSE_LERP;
       if (!reduceMotion) {
-        const parallaxUncapped = smoothMouseOffsetX * parallaxScale;
+        let parallaxUncapped = smoothMouseOffsetX * parallaxScale;
         let parallaxX = parallaxUncapped;
         if (racetrackIndex >= 0 && racetrackRoadLock > 0) {
-          const trackW = presetData.controls[racetrackIndex][1] ?? 40;
-          const strafeCap = trackW * RACETRACK_MOUSE_STRAFE_OF_TRACKW;
-          const parallaxRacetrack = clamp(
+          let trackW = presetData.controls[racetrackIndex][1] ?? 40;
+          let strafeCap = trackW * RACETRACK_MOUSE_STRAFE_OF_TRACKW;
+          let parallaxRacetrack = clamp(
             parallaxUncapped * RACETRACK_MOUSE_STRAFE_ATTENUATION,
             -strafeCap,
             strafeCap,
@@ -681,13 +680,13 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
           MOUSE_SIM_SETTLE_S,
         );
       }
-      const displacementActive = mouseSimSettleS < MOUSE_SIM_SETTLE_S;
+      let displacementActive = mouseSimSettleS < MOUSE_SIM_SETTLE_S;
       if (displacementActive) {
         scratchViewProj.multiplyMatrices(
           engine.camera.projectionMatrix,
           engine.camera.matrixWorldInverse,
         );
-        const ew = engine.camera.matrixWorld.elements;
+        let ew = engine.camera.matrixWorld.elements;
         scratchCamRight.set(ew[0], ew[1], ew[2]).normalize();
         scratchCamUp.set(ew[4], ew[5], ew[6]).normalize();
         mouseSim.setViewProj(scratchViewProj);

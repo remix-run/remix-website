@@ -4,7 +4,7 @@ import { JamScrambleText } from "./public/scramble-text.tsx";
 import { Paragraph, Subheader } from "./public/typography.tsx";
 import { routes } from "../../../routes.ts";
 import { assetPaths } from "../../../utils/public/asset-paths.ts";
-import { breakpointMedia, theme } from "../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../ui/public/styles/theme.ts";
 
 function slugify(input: string) {
   return input

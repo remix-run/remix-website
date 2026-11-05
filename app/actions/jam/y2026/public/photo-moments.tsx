@@ -12,7 +12,7 @@ import {
   jam2026WindowTitleStyle,
 } from "./window-styles.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
-import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 
 type PhotoMoment = {

@@ -12,7 +12,7 @@ import { JamTicketCard } from "../public/ticket-card.tsx";
 import { JamTicketPurchase } from "../public/ticket-purchase.tsx";
 import { routes } from "../../../../routes.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
-import { breakpointMedia } from "../../../../ui/public/theme.ts";
+import { breakpointMedia } from "../../../../ui/public/styles/theme.ts";
 
 export function Jam2025TicketPage(
   handle: Handle<{

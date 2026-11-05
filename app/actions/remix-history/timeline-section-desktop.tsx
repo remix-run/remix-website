@@ -1,7 +1,7 @@
 import { css, type Handle, type Props } from "remix/component";
 
-import { captionStyle } from "../../ui/public/marketing-styles.ts";
-import { theme } from "../../ui/public/theme.ts";
+import { captionStyle } from "../../ui/public/styles/marketing-styles.ts";
+import { theme } from "../../ui/public/styles/theme.ts";
 
 export function TimelineDiagramDesktop(
   handle: Handle<{ mix?: Props<"svg">["mix"] }>,

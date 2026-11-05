@@ -5,9 +5,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./accordion.tsx";
-import { theme } from "../../../../ui/public/theme.ts";
+import { theme } from "../../../../ui/public/styles/theme.ts";
 import { jamTheme } from "./theme.ts";
-import { textBoxTrim } from "../../../../ui/public/css-mixins.ts";
+import { textBoxTrim } from "../../../../ui/public/styles/css-mixins.ts";
 
 export type Faq = {
   id: string;

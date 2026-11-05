@@ -6,8 +6,8 @@ import {
 } from "../../../../ui/public/newsletter-frame-form.tsx";
 import { jamTheme } from "./theme.ts";
 import { routes } from "../../../../routes.ts";
-import { textBoxTrim } from "../../../../ui/public/css-mixins.ts";
-import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
+import { textBoxTrim } from "../../../../ui/public/styles/css-mixins.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
 import { newsletterTagIds } from "../../../../utils/public/newsletter-tags.ts";
 
 export let Jam2026NewsletterForm = clientEntry(

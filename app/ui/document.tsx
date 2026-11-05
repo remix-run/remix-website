@@ -24,7 +24,7 @@ import {
   type ManagedHeadTag,
   type ManagedLinkTag,
 } from "./public/document-head.ts";
-import { theme } from "./public/theme.ts";
+import { theme } from "./public/styles/theme.ts";
 
 // Inlined once per document so `<use href="#name">` icon references resolve
 // immediately, with no separate sprite request or per-deploy URL plumbing.

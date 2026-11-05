@@ -5,25 +5,29 @@ const TEX_WIDTH = 512;
 const TEX_HEIGHT = 256;
 
 export function createModelTexture(model: ModelData): DataTexture {
-  const data = new Float32Array(TEX_WIDTH * TEX_HEIGHT * 4);
-  const count = Math.min(model.positions.length / 3, TEX_WIDTH * TEX_HEIGHT);
-  for (let i = 0; i < count; i++) {
-    const si = i * 3;
-    const di = i * 4;
-    data[di] = model.positions[si];
-    data[di + 1] = model.positions[si + 1];
-    data[di + 2] = model.positions[si + 2];
-    data[di + 3] = 0;
-  }
-  const tex = new DataTexture(
-    data,
-    TEX_WIDTH,
-    TEX_HEIGHT,
-    RGBAFormat,
-    FloatType,
-  );
+  let data = packModelPositions(model.positions, TEX_WIDTH * TEX_HEIGHT);
+  let tex = new DataTexture(data, TEX_WIDTH, TEX_HEIGHT, RGBAFormat, FloatType);
   tex.minFilter = NearestFilter;
   tex.magFilter = NearestFilter;
   tex.needsUpdate = true;
   return tex;
+}
+
+/**
+ * Packs xyz model positions into an RGBA float buffer with one texel per
+ * point (alpha 0). Points beyond `texelCount` are dropped and unused texels
+ * stay zero.
+ */
+export function packModelPositions(
+  positions: ArrayLike<number>,
+  texelCount: number,
+): Float32Array {
+  let data = new Float32Array(texelCount * 4);
+  let count = Math.min(Math.floor(positions.length / 3), texelCount);
+  for (let i = 0; i < count; i++) {
+    data[i * 4] = positions[i * 3];
+    data[i * 4 + 1] = positions[i * 3 + 1];
+    data[i * 4 + 2] = positions[i * 3 + 2];
+  }
+  return data;
 }

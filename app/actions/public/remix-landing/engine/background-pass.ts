@@ -157,16 +157,16 @@ function srgbToLinear(c: number): number {
 }
 
 function hexToOklab(hex: string): [number, number, number] {
-  const n = parseInt(hex.slice(1), 16);
-  const r = srgbToLinear(((n >> 16) & 0xff) / 255);
-  const g = srgbToLinear(((n >> 8) & 0xff) / 255);
-  const b = srgbToLinear((n & 0xff) / 255);
-  const l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
-  const m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b;
-  const s = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b;
-  const lc = Math.cbrt(l);
-  const mc = Math.cbrt(m);
-  const sc = Math.cbrt(s);
+  let n = parseInt(hex.slice(1), 16);
+  let r = srgbToLinear(((n >> 16) & 0xff) / 255);
+  let g = srgbToLinear(((n >> 8) & 0xff) / 255);
+  let b = srgbToLinear((n & 0xff) / 255);
+  let l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
+  let m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b;
+  let s = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b;
+  let lc = Math.cbrt(l);
+  let mc = Math.cbrt(m);
+  let sc = Math.cbrt(s);
   return [
     0.2104542553 * lc + 0.793617785 * mc - 0.0040720468 * sc,
     1.9779984951 * lc - 2.428592205 * mc + 0.4505937099 * sc,
@@ -215,16 +215,14 @@ export class BackgroundPass extends Pass {
   constructor() {
     super();
 
-    const positions = DEFAULT_BLOBS.map((b) => new Vector2(b.pos[0], b.pos[1]));
-    const sigmas = DEFAULT_BLOBS.map(
-      (b) => new Vector2(b.sigma[0], b.sigma[1]),
-    );
-    const colors = DEFAULT_BLOBS.map((b) => {
-      const [l, a, bb] = hexToOklab(b.color);
+    let positions = DEFAULT_BLOBS.map((b) => new Vector2(b.pos[0], b.pos[1]));
+    let sigmas = DEFAULT_BLOBS.map((b) => new Vector2(b.sigma[0], b.sigma[1]));
+    let colors = DEFAULT_BLOBS.map((b) => {
+      let [l, a, bb] = hexToOklab(b.color);
       return new Vector3(l, a, bb);
     });
-    const gains = DEFAULT_BLOBS.map((b) => b.gain);
-    const baseOk = hexToOklab(BASE_HEX);
+    let gains = DEFAULT_BLOBS.map((b) => b.gain);
+    let baseOk = hexToOklab(BASE_HEX);
 
     this.material = new ShaderMaterial({
       vertexShader: VERTEX_SHADER,
@@ -269,7 +267,7 @@ export class BackgroundPass extends Pass {
     _writeBuffer: WebGLRenderTarget,
     readBuffer: WebGLRenderTarget,
   ): void {
-    const previousTarget = renderer.getRenderTarget();
+    let previousTarget = renderer.getRenderTarget();
     if (this.renderToScreen) {
       renderer.setRenderTarget(null);
     } else {

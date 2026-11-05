@@ -1,7 +1,7 @@
 import { css } from "remix/component";
 import { Jam2026FaqAccordion, type Faq } from "./public/faq-accordion.tsx";
-import { textBoxTrim } from "../../../ui/public/css-mixins.ts";
-import { breakpointMedia, theme } from "../../../ui/public/theme.ts";
+import { textBoxTrim } from "../../../ui/public/styles/css-mixins.ts";
+import { breakpointMedia, theme } from "../../../ui/public/styles/theme.ts";
 import { jamTheme } from "./public/theme.ts";
 
 let faqs: Faq[] = [

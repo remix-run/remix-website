@@ -4,7 +4,7 @@ import {
   NewsletterSubscribeForm,
   type NewsletterSubscriptionStatus,
 } from "../../ui/public/newsletter-frame-form.tsx";
-import { theme } from "../../ui/public/theme.ts";
+import { theme } from "../../ui/public/styles/theme.ts";
 
 export function NewsletterSubscribeFrame(
   handle: Handle<{ status?: NewsletterSubscriptionStatus | null }>,

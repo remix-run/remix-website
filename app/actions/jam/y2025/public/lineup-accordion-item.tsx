@@ -8,7 +8,7 @@ import {
 } from "remix/component";
 import { spring } from "@remix-run/ui/animation";
 import { Icon } from "../../../../ui/public/icon.tsx";
-import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
 
 type LineupItem = {
   time: string;

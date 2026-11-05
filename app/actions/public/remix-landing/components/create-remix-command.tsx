@@ -2,10 +2,10 @@ import { clientEntry, css, on, type Handle } from "remix/component";
 import * as popover from "@remix-run/ui/popover";
 import * as select from "@remix-run/ui/select";
 
-import { visuallyHiddenStyle } from "../../../../ui/public/css-mixins.ts";
+import { visuallyHiddenStyle } from "../../../../ui/public/styles/css-mixins.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
-import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
-import { colors } from "../styles/tokens.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
+import { colors } from "../tokens.ts";
 import { packageRunners as PACKAGE_RUNNERS } from "../landing-content.ts";
 
 type PackageRunner = (typeof PACKAGE_RUNNERS)[number];
@@ -36,7 +36,7 @@ export let CreateRemixCommand = clientEntry(
     }
 
     async function copyCommand() {
-      const requestId = ++copyRequestId;
+      let requestId = ++copyRequestId;
       if (resetTimer) {
         clearTimeout(resetTimer);
         resetTimer = null;
@@ -135,7 +135,7 @@ function PackageRunnerSelect(
   }
 
   function restoreScrollPosition() {
-    const restore = () => {
+    let restore = () => {
       if (
         window.scrollX !== scrollPosition.x ||
         window.scrollY !== scrollPosition.y
@@ -173,7 +173,7 @@ function PackageRunnerSelect(
             }),
             select.trigger(),
             select.onSelectChange((event) => {
-              const runner = PACKAGE_RUNNERS.find(
+              let runner = PACKAGE_RUNNERS.find(
                 (option) => option.value === event.value,
               );
               if (runner) handle.props.onChange(runner);

@@ -8,7 +8,7 @@ import {
   stackExplorerCodeSamples,
   type StackExplorerCodeHighlights,
   type StackExplorerCodeToken,
-} from "./public/remix-landing/components/stack-explorer-content.tsx";
+} from "./public/remix-landing/stack-explorer-content.tsx";
 
 const DEFAULT_TOKEN_COLOR = "#FFFFFF";
 

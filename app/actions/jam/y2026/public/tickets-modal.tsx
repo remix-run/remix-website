@@ -5,7 +5,7 @@ import {
   spring,
 } from "@remix-run/ui/animation";
 import { Icon } from "../../../../ui/public/icon.tsx";
-import { theme } from "../../../../ui/public/theme.ts";
+import { theme } from "../../../../ui/public/styles/theme.ts";
 
 import { syncDocumentHead } from "../../../../ui/public/document-head-sync.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
