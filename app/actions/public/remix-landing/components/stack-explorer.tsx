@@ -1,4 +1,10 @@
-import { clientEntry, css, ref, type Handle } from "remix/component";
+import {
+  clientEntry,
+  css,
+  ref,
+  type Handle,
+  type RemixNode,
+} from "remix/component";
 import {
   animateEntrance,
   animateExit,
@@ -22,7 +28,7 @@ import {
   type StackExplorerCodeToken,
 } from "../stack-explorer-content.tsx";
 
-export let StackExplorer = clientEntry(
+export const StackExplorer = clientEntry(
   import.meta.url,
   function StackExplorer(
     handle: Handle<{
@@ -30,253 +36,221 @@ export let StackExplorer = clientEntry(
     }>,
   ) {
     let categoryId: string = stackCategories[0].id;
-    let exampleId: string = stackCategories[0].examples[0].id;
-    return () => {
-      let category: StackCategory =
-        stackCategories.find((candidate) => candidate.id === categoryId) ??
-        stackCategories[0];
-      let example: StackExample =
-        category.examples.find((candidate) => candidate.id === exampleId) ??
-        category.examples[0];
-      let hasCategoryIntro = category.introTitle !== undefined;
-      let showExampleCopy = category.showExampleCopy === true;
-      let editorPreview = example.animation ?? example.component;
-      let codePanel = (
-        <CodePanel
-          code={example.code}
-          codeTokens={
-            handle.props.codeHighlights?.[`${category.id}/${example.id}`]
-          }
-          filename={example.filename ?? "app.tsx"}
-        />
-      );
-      return (
-        <section id="single-package" mix={[sectionStyles]}>
-          <div mix={[cardSlotStyles]}>
-            <tabs.Context
-              activeTab={category.id}
-              onActiveTabChange={(nextCategoryId) => {
-                let nextCategory = stackCategories.find(
+    return () => (
+      <section id="single-package" mix={[sectionStyles]}>
+        <div mix={[cardSlotStyles]}>
+          <tabs.Context
+            activeTab={categoryId}
+            onActiveTabChange={(nextCategoryId) => {
+              if (
+                !stackCategories.some(
                   (candidate) => candidate.id === nextCategoryId,
-                );
-                if (!nextCategory) return;
+                )
+              ) {
+                return;
+              }
 
-                categoryId = nextCategory.id;
-                exampleId = nextCategory.examples[0].id;
-                void handle.update();
-              }}
-            >
-              <div data-home-card="" mix={[tabs.root(), cardStyles]}>
-                <div
-                  aria-label="Remix stack layers"
-                  mix={[tabs.list(), categoryTabsStyles]}
-                >
-                  {stackCategories.map((candidate) => {
-                    return (
-                      <button
-                        key={candidate.id}
-                        mix={[
-                          tabs.tab({ name: candidate.id }),
-                          categoryTabStyles,
-                        ]}
-                      >
-                        {candidate.label}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {stackCategories.map((categoryPanel) => (
-                  <div
-                    key={categoryPanel.id}
-                    mix={[tabs.panel({ name: categoryPanel.id }), panelStyles]}
+              categoryId = nextCategoryId;
+              void handle.update();
+            }}
+          >
+            <div data-home-card="" mix={[tabs.root(), cardStyles]}>
+              <div
+                aria-label="Remix stack layers"
+                mix={[tabs.list(), categoryTabsStyles]}
+              >
+                {stackCategories.map((candidate) => (
+                  <button
+                    key={candidate.id}
+                    mix={[tabs.tab({ name: candidate.id }), categoryTabStyles]}
                   >
-                    {categoryPanel.id === category.id ? (
-                      <tabs.Context
-                        activeTab={example.id}
-                        onActiveTabChange={(nextExampleId) => {
-                          if (
-                            !category.examples.some(
-                              (candidate) => candidate.id === nextExampleId,
-                            )
-                          ) {
-                            return;
-                          }
-
-                          exampleId = nextExampleId;
-                          void handle.update();
-                        }}
-                      >
-                        <div
-                          key={category.id}
-                          data-stack-category-content={category.id}
-                          mix={tabs.root()}
-                        >
-                          {hasCategoryIntro ? (
-                            <div data-category-intro="" mix={[copyStyles]}>
-                              <h3 mix={[exampleTitleStyles]}>
-                                {category.introTitle}
-                              </h3>
-                              {category.introBody !== undefined ? (
-                                <p mix={[exampleBodyStyles]}>
-                                  {category.introBody}
-                                </p>
-                              ) : null}
-                            </div>
-                          ) : null}
-
-                          <div
-                            aria-label={`${category.label} examples`}
-                            mix={[
-                              tabs.list(),
-                              exampleTabsStyles,
-                              ...(hasCategoryIntro
-                                ? [categoryIntroTabsStyles]
-                                : []),
-                            ]}
-                          >
-                            {category.examples.map((candidate) => {
-                              return (
-                                <button
-                                  key={candidate.id}
-                                  mix={[
-                                    tabs.tab({ name: candidate.id }),
-                                    exampleTabStyles,
-                                  ]}
-                                >
-                                  {candidate.label}
-                                </button>
-                              );
-                            })}
-                          </div>
-
-                          {category.examples.map((examplePanel) => (
-                            <div
-                              key={examplePanel.id}
-                              mix={tabs.panel({ name: examplePanel.id })}
-                            >
-                              {examplePanel.id === example.id ? (
-                                <div
-                                  key={`${category.id}-${example.id}`}
-                                  data-stack-example-content={example.id}
-                                  mix={[
-                                    exampleContentStyles,
-                                    ...(editorPreview
-                                      ? [editorExampleContentStyles]
-                                      : []),
-                                  ]}
-                                >
-                                  {showExampleCopy ? (
-                                    <div mix={[featureSummaryStyles]}>
-                                      <strong mix={[exampleFeatureLeadStyles]}>
-                                        {example.title}
-                                      </strong>
-                                      <span mix={[featureSummaryBodyStyles]}>
-                                        {example.body}
-                                      </span>
-                                    </div>
-                                  ) : null}
-                                  {editorPreview ? (
-                                    <div mix={[editorContentStyles]}>
-                                      <CodeChrome
-                                        filename={example.filename ?? "app.tsx"}
-                                      />
-                                      <div mix={[editorPanesStyles]}>
-                                        {example.animation ? (
-                                          <AnimationPreview
-                                            kind={example.animation}
-                                            compact
-                                            embedded
-                                            editorPane
-                                          />
-                                        ) : (
-                                          <ComponentPreview
-                                            kind={example.component!}
-                                            compact
-                                            embedded
-                                            editorPane
-                                          />
-                                        )}
-                                        <div mix={[editorCodePaneStyles]}>
-                                          <CodeBody
-                                            code={example.code}
-                                            codeTokens={
-                                              handle.props.codeHighlights?.[
-                                                `${category.id}/${example.id}`
-                                              ]
-                                            }
-                                          />
-                                        </div>
-                                      </div>
-                                    </div>
-                                  ) : (
-                                    <div mix={[codeColumnStyles]}>
-                                      {codePanel}
-                                    </div>
-                                  )}
-                                </div>
-                              ) : null}
-                            </div>
-                          ))}
-                        </div>
-                      </tabs.Context>
-                    ) : null}
-                  </div>
+                    {candidate.label}
+                  </button>
                 ))}
               </div>
-            </tabs.Context>
-          </div>
-          <div
-            aria-hidden="true"
-            data-package-logos-panel="true"
-            mix={[packageLogoStageStyles]}
-          />
-        </section>
-      );
-    };
+
+              {stackCategories.map((category) => (
+                <div
+                  key={category.id}
+                  mix={[tabs.panel({ name: category.id }), panelStyles]}
+                >
+                  {category.id === categoryId ? (
+                    <CategoryPanel
+                      category={category}
+                      codeHighlights={handle.props.codeHighlights}
+                    />
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          </tabs.Context>
+        </div>
+        <div
+          aria-hidden="true"
+          data-package-logos-panel="true"
+          mix={[packageLogoStageStyles]}
+        />
+      </section>
+    );
   },
 );
 
-function ComponentPreview(
+// Mounted only while its category is active, so each visit starts on the
+// category's first example.
+function CategoryPanel(
   handle: Handle<{
-    kind: ComponentKind;
-    compact?: boolean;
-    embedded?: boolean;
-    editorPane?: boolean;
+    category: StackCategory;
+    codeHighlights?: StackExplorerCodeHighlights;
   }>,
 ) {
-  return () => (
-    <div
-      aria-hidden="true"
-      data-stack-component={handle.props.kind}
-      data-stack-editor-preview={handle.props.editorPane || undefined}
-      inert={true}
-      mix={[
-        componentPreviewStyles,
-        ...(handle.props.compact ? [compactComponentPreviewStyles] : []),
-        ...(handle.props.embedded ? [embeddedComponentPreviewStyles] : []),
-        ...(handle.props.editorPane ? [editorComponentPreviewStyles] : []),
-      ]}
-    >
-      {handle.props.kind === "menus" ? (
-        <MenusPreview />
-      ) : handle.props.kind === "combobox" ? (
-        <ComboboxPreview />
-      ) : handle.props.kind === "select" ? (
-        <SelectPreview />
-      ) : handle.props.kind === "tabs" ? (
-        <TabsPreview />
-      ) : handle.props.kind === "accordion" ? (
-        <AccordionPreview />
-      ) : handle.props.kind === "popovers" ? (
-        <PopoversPreview />
-      ) : handle.props.kind === "toggle" ? (
-        <TogglePreview />
-      ) : (
-        <ListboxPreview />
-      )}
-    </div>
-  );
+  let exampleId = handle.props.category.examples[0].id;
+
+  return () => {
+    let { category } = handle.props;
+    let example: StackExample =
+      category.examples.find((candidate) => candidate.id === exampleId) ??
+      category.examples[0];
+    let hasCategoryIntro = category.introTitle !== undefined;
+
+    return (
+      <tabs.Context
+        activeTab={example.id}
+        onActiveTabChange={(nextExampleId) => {
+          if (
+            !category.examples.some(
+              (candidate) => candidate.id === nextExampleId,
+            )
+          ) {
+            return;
+          }
+
+          exampleId = nextExampleId;
+          void handle.update();
+        }}
+      >
+        <div
+          key={category.id}
+          data-stack-category-content={category.id}
+          mix={tabs.root()}
+        >
+          {hasCategoryIntro ? (
+            <div data-category-intro="" mix={[copyStyles]}>
+              <h3 mix={[exampleTitleStyles]}>{category.introTitle}</h3>
+              {category.introBody !== undefined ? (
+                <p mix={[exampleBodyStyles]}>{category.introBody}</p>
+              ) : null}
+            </div>
+          ) : null}
+
+          <div
+            aria-label={`${category.label} examples`}
+            mix={[
+              tabs.list(),
+              exampleTabsStyles,
+              hasCategoryIntro ? categoryIntroTabsStyles : undefined,
+            ]}
+          >
+            {category.examples.map((candidate) => (
+              <button
+                key={candidate.id}
+                mix={[tabs.tab({ name: candidate.id }), exampleTabStyles]}
+              >
+                {candidate.label}
+              </button>
+            ))}
+          </div>
+
+          {category.examples.map((candidate) => (
+            <div key={candidate.id} mix={tabs.panel({ name: candidate.id })}>
+              {candidate.id === example.id ? (
+                <ExamplePanel
+                  key={`${category.id}-${example.id}`}
+                  example={example}
+                  showCopy={category.showExampleCopy === true}
+                  codeTokens={
+                    handle.props.codeHighlights?.[
+                      `${category.id}/${example.id}`
+                    ]
+                  }
+                />
+              ) : null}
+            </div>
+          ))}
+        </div>
+      </tabs.Context>
+    );
+  };
+}
+
+function ExamplePanel(
+  handle: Handle<{
+    example: StackExample;
+    showCopy: boolean;
+    codeTokens?: readonly StackExplorerCodeToken[];
+  }>,
+) {
+  return () => {
+    let { example, showCopy, codeTokens } = handle.props;
+    let filename = example.filename ?? "app.tsx";
+    let preview = example.animation ? (
+      <AnimationPreview kind={example.animation} />
+    ) : example.component ? (
+      <ComponentPreview kind={example.component} />
+    ) : null;
+
+    return (
+      <div
+        data-stack-example-content={example.id}
+        mix={[
+          exampleContentStyles,
+          preview ? editorExampleContentStyles : undefined,
+        ]}
+      >
+        {showCopy ? (
+          <div mix={[featureSummaryStyles]}>
+            <strong mix={[exampleFeatureLeadStyles]}>{example.title}</strong>
+            <span mix={[featureSummaryBodyStyles]}>{example.body}</span>
+          </div>
+        ) : null}
+        {preview ? (
+          <div mix={[editorContentStyles]}>
+            <CodeChrome filename={filename} />
+            <div mix={[editorPanesStyles]}>
+              {preview}
+              <div mix={[editorCodePaneStyles]}>
+                <CodeBody code={example.code} codeTokens={codeTokens} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div mix={[codeColumnStyles]}>
+            <CodePanel
+              code={example.code}
+              codeTokens={codeTokens}
+              filename={filename}
+            />
+          </div>
+        )}
+      </div>
+    );
+  };
+}
+
+function ComponentPreview(handle: Handle<{ kind: ComponentKind }>) {
+  return () => {
+    let Preview = componentPreviews[handle.props.kind];
+    return (
+      <div
+        aria-hidden="true"
+        data-stack-component={handle.props.kind}
+        data-stack-editor-preview={true}
+        inert={true}
+        mix={[componentPreviewStyles]}
+      >
+        <Preview />
+      </div>
+    );
+  };
 }
 
 function TogglePreview() {
@@ -443,14 +417,18 @@ function PopoversPreview() {
   );
 }
 
-function AnimationPreview(
-  handle: Handle<{
-    kind: AnimationKind;
-    compact?: boolean;
-    embedded?: boolean;
-    editorPane?: boolean;
-  }>,
-) {
+const componentPreviews = {
+  menus: MenusPreview,
+  combobox: ComboboxPreview,
+  select: SelectPreview,
+  tabs: TabsPreview,
+  accordion: AccordionPreview,
+  popovers: PopoversPreview,
+  toggle: TogglePreview,
+  listbox: ListboxPreview,
+} satisfies Record<ComponentKind, () => () => RemixNode>;
+
+function AnimationPreview(handle: Handle<{ kind: AnimationKind }>) {
   let showPresenceItem = true;
   let animatePresence = false;
   let presenceCycle = 0;
@@ -510,9 +488,6 @@ function AnimationPreview(
       aria-label={`${handle.props.kind} animation preview`}
       mix={[
         animationPreviewStyles,
-        ...(handle.props.compact ? [compactAnimationPreviewStyles] : []),
-        ...(handle.props.embedded ? [embeddedAnimationPreviewStyles] : []),
-        ...(handle.props.editorPane ? [editorAnimationPreviewStyles] : []),
         ref((node) => {
           previewElement = node;
           if (!node || observer) return;
@@ -971,28 +946,23 @@ const exampleFeatureLeadStyles = css({
   lineHeight: "1.3",
 });
 
+// Previews render inside the editor frame beside the code pane, so the frame
+// owns the outer border and `borderLeft` draws the md divider.
 const componentPreviewStyles = css({
   position: "relative",
   display: "grid",
   minHeight: "230px",
-  marginTop: "28px",
+  margin: "0",
   padding: "22px",
   boxSizing: "border-box",
   placeItems: "center",
-  border: "1px solid rgba(255, 255, 255, 0.1)",
-  borderRadius: "18px",
+  border: "0 !important",
+  borderRadius: "0",
   background:
     "radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--brand-cycle) 13%, transparent), transparent 60%), rgba(0,0,0,.26)",
   overflow: "hidden",
   pointerEvents: "none",
   userSelect: "none",
-});
-const compactComponentPreviewStyles = css({ marginTop: "0 !important" });
-const embeddedComponentPreviewStyles = css({
-  border: "0 !important",
-  borderRadius: "0 !important",
-});
-const editorComponentPreviewStyles = css({
   [breakpointMedia.md]: {
     alignSelf: "stretch",
     height: "100%",
@@ -1387,22 +1357,15 @@ const animationPreviewStyles = css({
   position: "relative",
   display: "grid",
   minHeight: "190px",
-  marginTop: "28px",
+  margin: "0",
   padding: "24px",
   boxSizing: "border-box",
   placeItems: "center",
-  border: "1px solid rgba(255, 255, 255, 0.1)",
-  borderRadius: "18px",
+  border: "0 !important",
+  borderRadius: "0",
   background:
     "radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--brand-cycle) 13%, transparent), transparent 60%), rgba(0,0,0,.26)",
   overflow: "hidden",
-});
-const compactAnimationPreviewStyles = css({ marginTop: "0 !important" });
-const embeddedAnimationPreviewStyles = css({
-  border: "0 !important",
-  borderRadius: "0 !important",
-});
-const editorAnimationPreviewStyles = css({
   [breakpointMedia.md]: {
     alignSelf: "stretch",
     height: "100%",

@@ -10,7 +10,7 @@ import { textBoxTrim } from "../../../../ui/public/styles/css-mixins.ts";
 import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
 import { newsletterTagIds } from "../../../../utils/public/newsletter-tags.ts";
 
-export let Jam2026NewsletterForm = clientEntry(
+export const Jam2026NewsletterForm = clientEntry(
   import.meta.url,
   function Jam2026NewsletterForm(
     handle: Handle<{ status?: NewsletterSubscriptionStatus | null }>,
@@ -101,7 +101,7 @@ export let Jam2026NewsletterForm = clientEntry(
   },
 );
 
-let newsletterSectionStyle = css({
+const newsletterSectionStyle = css({
   position: "relative",
   zIndex: 1,
   paddingBlock: "36px",
@@ -110,7 +110,7 @@ let newsletterSectionStyle = css({
   color: jamTheme.ink,
 });
 
-let newsletterContentStyle = css({
+const newsletterContentStyle = css({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -134,7 +134,7 @@ let newsletterContentStyle = css({
   },
 });
 
-let newsletterHeadingStyle = css({
+const newsletterHeadingStyle = css({
   margin: 0,
   color: jamTheme.ink,
   fontFamily: theme.fontFamily.mono,
@@ -147,7 +147,7 @@ let newsletterHeadingStyle = css({
   ...textBoxTrim,
 });
 
-let newsletterFormStyle = css({
+const newsletterFormStyle = css({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -161,7 +161,7 @@ let newsletterFormStyle = css({
   },
 });
 
-let labelStyle = css({
+const labelStyle = css({
   color: jamTheme.brandRed,
   fontFamily: theme.fontFamily.mono,
   fontSize: "11px",
@@ -172,7 +172,7 @@ let labelStyle = css({
   ...textBoxTrim,
 });
 
-let newsletterInputStyle = css({
+const newsletterInputStyle = css({
   width: "100%",
   minHeight: 0,
   minWidth: 0,
@@ -200,7 +200,7 @@ let newsletterInputStyle = css({
   },
 });
 
-let newsletterButtonStyle = css({
+const newsletterButtonStyle = css({
   width: "100%",
   minHeight: 0,
   border: 0,
@@ -240,7 +240,7 @@ let newsletterButtonStyle = css({
   },
 });
 
-let newsletterMessageStyle = css({
+const newsletterMessageStyle = css({
   maxWidth: "240px",
   minHeight: "24px",
   color: jamTheme.brandRed,

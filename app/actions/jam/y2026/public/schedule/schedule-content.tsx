@@ -1,6 +1,6 @@
 import { css, unsafeHTML, type Handle } from "remix/component";
-import { theme } from "../../../../ui/public/styles/theme.ts";
-import { jamTheme } from "./theme.ts";
+import { theme } from "../../../../../ui/public/styles/theme.ts";
+import { jamTheme } from "../theme.ts";
 import type { ScheduleItem } from "./schedule-types.ts";
 
 type Presentation = "mobile" | "accordion";
@@ -141,7 +141,7 @@ function ScheduleImage(handle: Handle<{ src: string; alt: string }>) {
   );
 }
 
-export let scheduleGridStyle = css({
+export const scheduleGridStyle = css({
   display: "grid",
   gridTemplateColumns: "72px 24px minmax(0, 1fr) 16px 18px",
   paddingInline: "8px",
@@ -152,7 +152,7 @@ export let scheduleGridStyle = css({
   },
 });
 
-let speakerSummaryStyle = css({
+const speakerSummaryStyle = css({
   gridColumn: 3,
   gridRow: 1,
   color: jamTheme.ink,
@@ -187,13 +187,13 @@ let speakerSummaryStyle = css({
   },
 });
 
-let mobileDetailsStyle = css({
+const mobileDetailsStyle = css({
   display: "grid",
   gap: "20px",
   padding: "0 8px 24px",
 });
 
-let accordionDetailsStyle = css({
+const accordionDetailsStyle = css({
   rowGap: "24px",
   paddingBlock: "4px 32px",
   "@media (min-width: 900px)": {
@@ -202,7 +202,7 @@ let accordionDetailsStyle = css({
   },
 });
 
-let descriptionStyle = css({
+const descriptionStyle = css({
   gridColumn: "1 / -1",
   color: jamTheme.ink,
   fontFamily: theme.fontFamily.sans,
@@ -224,7 +224,7 @@ let descriptionStyle = css({
   },
 });
 
-let supportingDetailsStyle = css({
+const supportingDetailsStyle = css({
   gridColumn: "1 / -1",
   display: "grid",
   gap: "20px",
@@ -233,7 +233,7 @@ let supportingDetailsStyle = css({
   },
 });
 
-let speakerPortraitsStyle = css({
+const speakerPortraitsStyle = css({
   display: "grid",
   gridTemplateColumns: "minmax(0, 1fr)",
   gap: "16px",
@@ -242,7 +242,7 @@ let speakerPortraitsStyle = css({
   },
 });
 
-let speakerPortraitStyle = css({
+const speakerPortraitStyle = css({
   display: "flex",
   minWidth: 0,
   margin: 0,
@@ -250,7 +250,7 @@ let speakerPortraitStyle = css({
   gap: "10px",
 });
 
-let imageStyle = css({
+const imageStyle = css({
   display: "block",
   width: "100%",
   borderRadius: "0.5rem",
@@ -259,7 +259,7 @@ let imageStyle = css({
   '[data-schedule-presentation="accordion"] &': { maxWidth: "420px" },
 });
 
-let speakerNameStyle = css({
+const speakerNameStyle = css({
   color: jamTheme.ink,
   fontFamily: theme.fontFamily.mono,
   fontSize: "10px",
@@ -270,7 +270,7 @@ let speakerNameStyle = css({
   textTransform: "uppercase",
 });
 
-let speakerBioNameStyle = css({
+const speakerBioNameStyle = css({
   margin: "0 0 6px",
   color: jamTheme.ink,
   fontFamily: theme.fontFamily.mono,
@@ -281,7 +281,7 @@ let speakerBioNameStyle = css({
   textTransform: "uppercase",
 });
 
-let bioStyle = css({
+const bioStyle = css({
   color: jamTheme.inkMuted,
   fontFamily: theme.fontFamily.sans,
   fontSize: "12px",

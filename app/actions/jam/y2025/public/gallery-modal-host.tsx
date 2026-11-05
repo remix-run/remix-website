@@ -13,8 +13,8 @@ import {
 import {
   getFocusableElementsWithin,
   isFocusable,
-} from "../../../../ui/public/focus-trap.ts";
-import { lockScroll } from "../../../../ui/public/scroll-lock.ts";
+} from "../../../../ui/public/dom/focus-trap.ts";
+import { lockScroll } from "../../../../ui/public/dom/scroll-lock.ts";
 import {
   getGalleryKeyAction,
   getGalleryPhotoIndex,
@@ -26,7 +26,7 @@ import {
 import { blackAlpha } from "./theme.ts";
 
 /** Which chevron to focus after keyboard prev/next (URL updates before the new modal paints). */
-let PENDING_KEYBOARD_CHEVRON_KEY = "jam-gallery-pending-chevron-focus";
+const PENDING_KEYBOARD_CHEVRON_KEY = "jam-gallery-pending-chevron-focus";
 
 /** Keyboard / programmatic navigation targets for the gallery modal (anchors use the same values). */
 export type JamGalleryModalNav = {
@@ -70,7 +70,7 @@ export function JamGalleryModalHost(handle: Handle<JamGalleryModalHostProps>) {
 
 // Keep styled modal children outside client-entry props: CSS mix descriptors are
 // runtime values and cannot survive client-entry serialization.
-export let JamGalleryModalBehavior = clientEntry(
+export const JamGalleryModalBehavior = clientEntry(
   import.meta.url,
   function JamGalleryModalBehavior(
     handle: Handle<Pick<JamGalleryModalHostProps, "photoCount" | "nav">>,

@@ -103,7 +103,7 @@ type PhotoMomentLayer = {
 
 type CloseOptions = { restoreFocus: boolean };
 
-export let Jam2026PhotoMoments = clientEntry(
+export const Jam2026PhotoMoments = clientEntry(
   import.meta.url,
   function Jam2026PhotoMoments(handle: Handle<Jam2026PhotoMomentsProps>) {
     let layers = Object.fromEntries(
@@ -375,7 +375,7 @@ function formatTranslate({ x, y }: { x: number; y: number }) {
   return `translate(${x}px, ${y}px)`;
 }
 
-let photoMomentsLayerStyle = css({
+const photoMomentsLayerStyle = css({
   isolation: "isolate",
   overflowX: "clip",
   pointerEvents: "none",
@@ -386,7 +386,7 @@ let photoMomentsLayerStyle = css({
   zIndex: 4,
 });
 
-let photoMomentWindowStyle = css({
+const photoMomentWindowStyle = css({
   pointerEvents: "auto",
   position: "absolute",
   top: "var(--jam-2026-photo-y)",
@@ -395,7 +395,7 @@ let photoMomentWindowStyle = css({
   },
 });
 
-let photoMomentDraggableStyle = css({
+const photoMomentDraggableStyle = css({
   cursor: "grab",
   touchAction: "none",
   userSelect: "none",
@@ -405,21 +405,21 @@ let photoMomentDraggableStyle = css({
   },
 });
 
-let photoMomentRightAnchorStyle = css({
+const photoMomentRightAnchorStyle = css({
   right: "var(--jam-2026-photo-x)",
   [breakpointMedia.xl]: {
     right: "var(--jam-2026-photo-x-wide)",
   },
 });
 
-let photoMomentLeftAnchorStyle = css({
+const photoMomentLeftAnchorStyle = css({
   left: "var(--jam-2026-photo-x)",
   [breakpointMedia.xl]: {
     left: "var(--jam-2026-photo-x-wide)",
   },
 });
 
-let photoMomentPopInStyle = css({
+const photoMomentPopInStyle = css({
   animation:
     "jam-2026-photo-pop-in 350ms cubic-bezier(0.22, 1.5, 0.36, 1) both",
   opacity: 0,
@@ -440,7 +440,7 @@ let photoMomentPopInStyle = css({
   },
 });
 
-let photoMomentSurfaceStyle = css({
+const photoMomentSurfaceStyle = css({
   display: "flex",
   width: "196px",
   flexDirection: "column",
@@ -471,14 +471,14 @@ let photoMomentSurfaceStyle = css({
   },
 });
 
-let photoMomentTitlebarStyle = css({
+const photoMomentTitlebarStyle = css({
   alignItems: "center",
   display: "flex",
   gap: "6px",
   width: "100%",
 });
 
-let photoMomentCloseStyle = css({
+const photoMomentCloseStyle = css({
   alignItems: "center",
   background: "transparent",
   border: 0,
@@ -513,7 +513,7 @@ let photoMomentCloseStyle = css({
   },
 });
 
-let photoMomentLinkStyle = css({
+const photoMomentLinkStyle = css({
   color: "inherit",
   cursor: "pointer",
   display: "block",
@@ -525,7 +525,7 @@ let photoMomentLinkStyle = css({
   },
 });
 
-let photoMomentImageFrameStyle = css({
+const photoMomentImageFrameStyle = css({
   borderRadius: "0.25rem",
   flex: "0 0 auto",
   height: "180px",

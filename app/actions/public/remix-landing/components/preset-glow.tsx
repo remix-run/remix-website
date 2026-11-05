@@ -31,16 +31,10 @@ function buildGradient(morphValue: number, brandGradientMode: boolean): string {
   return `radial-gradient(ellipse at 50% 50%, rgba(${r},${g},${bl},0.40) 0%, rgba(${r},${g},${bl},0.12) 40%, transparent 70%)`;
 }
 
-// Previously implemented inline in App as a full-viewport <div> whose
-// `background` (a radial-gradient string) was recomputed and re-assigned via
-// an inline `style` prop on every scroll frame. That forced the browser to
-// re-rasterize the entire viewport-sized layer 60x/s during scroll —
-// competing with the particle canvas for main-thread budget.
-//
-// Instead we own an internal rAF, read morphValue from a mutable ref set by
-// the parent (so App.handle.update() doesn't have to walk through us),
-// quantize the value to avoid writing unchanged backgrounds, and write
-// directly to the DOM.
+// Owns its own rAF loop and writes `background` straight to the DOM. The
+// parent passes morphValue through a mutable ref, so scroll frames don't
+// re-render App, and the quantized morph value means unchanged gradients are
+// never re-assigned, avoiding a re-raster of this viewport-sized layer.
 export function PresetGlow(
   handle: Handle<{
     morphValueRef: { current: number };

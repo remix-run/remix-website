@@ -25,23 +25,28 @@ import {
  * caller asked for (frame redirect, frame render, JSON, or document redirect).
  * Never throws: upstream failures are logged and answered with a 500.
  */
-export async function submitNewsletter(
-  request: Request,
-  formData: FormData,
-  render: AppRenderer,
-): Promise<Response> {
+export async function submitNewsletter({
+  formData,
+  render,
+  request,
+}: {
+  formData: FormData;
+  render: AppRenderer;
+  request: Request;
+}): Promise<Response> {
   let result = s.parseSafe(newsletterSubmission, {
     email: formData.get("email"),
     tags: formData.getAll("tag"),
   });
 
   if (!result.success) {
-    let status: NewsletterSubscriptionStatus | "invalid-submission" =
-      result.issues.some((issue) => issue.path?.includes("email"))
-        ? "invalid-email"
-        : result.issues.some((issue) => issue.path?.includes("tags"))
-          ? "invalid-tag"
-          : "invalid-submission";
+    let status: SubmissionOutcome = result.issues.some((issue) =>
+      issue.path?.includes("email"),
+    )
+      ? "invalid-email"
+      : result.issues.some((issue) => issue.path?.includes("tags"))
+        ? "invalid-tag"
+        : "invalid-submission";
     return createSubscriptionResponse(request, render, status, 400);
   }
 
@@ -61,7 +66,7 @@ export async function submitNewsletter(
 // the generic error notice for it.
 type SubmissionOutcome = NewsletterSubscriptionStatus | "invalid-submission";
 
-let jsonErrors: Record<SubmissionOutcome, string | null> = {
+const jsonErrors: Record<SubmissionOutcome, string | null> = {
   success: null,
   "invalid-email": "Invalid Email",
   "invalid-tag": "Invalid Tag",
@@ -69,7 +74,7 @@ let jsonErrors: Record<SubmissionOutcome, string | null> = {
   error: "Something went wrong",
 };
 
-let newsletterSubmission = s.object({
+const newsletterSubmission = s.object({
   email: s.string().pipe(c.email()),
   tags: s
     .array(coerce.number())
@@ -129,11 +134,11 @@ function createSubscriptionResponse(
   });
 }
 
-let newsletterFrameRoutes: Record<NewsletterSubscribeFrameContext, string> = {
-  newsletter: routes.newsletter.signup.href(),
-  home: routes.homeNewsletterSignup.href(),
-  jam2025: routes.jam.y2025.newsletterSignup.href(),
-  jam2026: routes.jam.y2026.newsletterSignup.href(),
+const newsletterFrameRoutes: Record<NewsletterSubscribeFrameContext, string> = {
+  newsletter: routes.newsletter.subscribeForm.href(),
+  home: routes.homeNewsletterSubscribeForm.href(),
+  jam2025: routes.jam.y2025.newsletterSubscribeForm.href(),
+  jam2026: routes.jam.y2026.newsletterSubscribeForm.href(),
 };
 
 function getNewsletterSubscribeFrameContext(

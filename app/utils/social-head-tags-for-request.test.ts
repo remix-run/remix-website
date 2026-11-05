@@ -1,7 +1,7 @@
 import { expect } from "remix/assert";
 import { describe, it } from "remix/test";
 
-import type { ManagedHeadTag } from "../ui/public/document-head.ts";
+import type { ManagedHeadTag } from "../ui/public/document/document-head.ts";
 import { assetPaths } from "./public/asset-paths.ts";
 import { getSocialHeadTagsForRequest } from "./social-head-tags-for-request.ts";
 

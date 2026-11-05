@@ -4,7 +4,9 @@ import { createMatcher } from "remix/route-pattern/match";
 
 import { assets, getWebpHref } from "./assets.ts";
 
-let imageSourceMatcher = createMatcher("http(s)://remix.run/:directory/*path");
+const imageSourceMatcher = createMatcher(
+  "http(s)://remix.run/:directory/*path",
+);
 
 export interface BlogImageAsset {
   fullSrc?: string;
@@ -14,9 +16,9 @@ export interface BlogImageAsset {
   width?: number;
 }
 
-let authorAssetBySource = new Map<string, Promise<BlogImageAsset>>();
-let blogAssetBySource = new Map<string, Promise<BlogImageAsset>>();
-let failedSources = new Set<string>();
+const authorAssetBySource = new Map<string, Promise<BlogImageAsset>>();
+const blogAssetBySource = new Map<string, Promise<BlogImageAsset>>();
+const failedSources = new Set<string>();
 
 /**
  * Sources whose optimization failed and fell back to the original image.

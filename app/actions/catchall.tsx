@@ -5,7 +5,7 @@ import type { AppRenderer } from "../middleware/render.ts";
 import {
   NOT_FOUND_RESPONSE,
   StatusErrorDocument,
-} from "../ui/not-found-page.tsx";
+} from "../ui/status-error-document.tsx";
 
 const SAFE_STATIC_FILE_EXTENSIONS = [
   ".html",

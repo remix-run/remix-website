@@ -2,7 +2,7 @@ import { css } from "remix/component";
 import { theme } from "../../../../ui/public/styles/theme.ts";
 import { jamTheme } from "./theme.ts";
 
-export let jam2026WindowSurfaceStyle = css({
+export const jam2026WindowSurfaceStyle = css({
   borderRadius: "0.5rem",
   background: "light-dark(rgb(255 255 255 / 0.9), rgb(10 29 39 / 0.82))",
   boxShadow:
@@ -11,7 +11,7 @@ export let jam2026WindowSurfaceStyle = css({
   padding: "0.5rem",
 });
 
-export let jam2026WindowTitleStyle = css({
+export const jam2026WindowTitleStyle = css({
   minWidth: 0,
   margin: 0,
   overflow: "hidden",
@@ -26,7 +26,7 @@ export let jam2026WindowTitleStyle = css({
   whiteSpace: "nowrap",
 });
 
-export let jam2026WindowBodyStyle = css({
+export const jam2026WindowBodyStyle = css({
   minWidth: 0,
   borderRadius: "0.25rem",
   background: "light-dark(rgb(0 0 0 / 0.05), rgb(0 0 0 / 0.15))",

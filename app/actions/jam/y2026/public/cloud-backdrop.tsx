@@ -1,6 +1,6 @@
 import { clientEntry, css, ref, type Handle } from "remix/component";
 
-import { ticketModalConfig } from "./tickets-modal-contract.ts";
+import { ticketModalConfig } from "./tickets/tickets-modal-contract.ts";
 import { jamTheme } from "./theme.ts";
 
 import {
@@ -39,7 +39,7 @@ const darkCloudSettings: Partial<CloudBackdropSettings> = {
   },
 };
 
-export let Jam2026CloudBackdrop = clientEntry(
+export const Jam2026CloudBackdrop = clientEntry(
   import.meta.url,
   function Jam2026CloudBackdrop(_handle: Handle) {
     return () => (
@@ -136,7 +136,9 @@ async function createCloudRenderer(
   let clouds: CloudRendererModule;
   try {
     clouds = await import("./clouds/volumetric-cloud-renderer.ts");
-  } catch {
+  } catch (error) {
+    console.error("[jam-clouds] renderer unavailable", error);
+    host.dataset.cloudState = "fallback";
     return undefined;
   }
 
@@ -149,7 +151,8 @@ async function createCloudRenderer(
       reducedMotion,
       settings: createCloudSettings(DEFAULT_CLOUD_SETTINGS),
     });
-  } catch {
+  } catch (error) {
+    console.error("[jam-clouds] renderer unavailable", error);
     host.dataset.cloudState = "fallback";
     return undefined;
   }
@@ -306,7 +309,7 @@ function getResolvedTheme() {
   return root.classList.contains("dark") ? "dark" : "light";
 }
 
-let cloudBackdropStyle = css({
+const cloudBackdropStyle = css({
   position: "fixed",
   inset: 0,
   zIndex: 0,

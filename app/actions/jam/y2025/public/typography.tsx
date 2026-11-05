@@ -80,7 +80,7 @@ export function Paragraph(
   );
 }
 
-let titleStyle = css({
+const titleStyle = css({
   display: "flex",
   flexDirection: "column",
   gap: "8px",
@@ -94,9 +94,9 @@ let titleStyle = css({
   [breakpointMedia.md]: { fontSize: "4.5rem", lineHeight: 1 },
 });
 
-let infoTextStyle = css({ textAlign: "center" });
+const infoTextStyle = css({ textAlign: "center" });
 
-let subheaderStyle = css({
+const subheaderStyle = css({
   color: jamColors.white,
   fontSize: "1.5rem",
   fontWeight: theme.fontWeight.bold,
@@ -105,7 +105,7 @@ let subheaderStyle = css({
   [breakpointMedia.md]: { fontSize: "1.875rem", lineHeight: 1.2 },
 });
 
-let paragraphStyle = css({
+const paragraphStyle = css({
   color: whiteAlpha(0.8),
   "& a": { color: jamColors.link },
   "& a:hover": { textDecoration: "underline" },

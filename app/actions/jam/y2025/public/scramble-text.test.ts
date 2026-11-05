@@ -6,13 +6,17 @@ import {
   type ScrambleState,
 } from "./scramble-text.tsx";
 
-let resolved: ScrambleState = { visible: true, iteration: 10, resolved: true };
-let scrambling: ScrambleState = {
+const resolved: ScrambleState = {
+  visible: true,
+  iteration: 10,
+  resolved: true,
+};
+const scrambling: ScrambleState = {
   visible: true,
   iteration: 3,
   resolved: false,
 };
-let hidden: ScrambleState = { visible: false, iteration: 0, resolved: false };
+const hidden: ScrambleState = { visible: false, iteration: 0, resolved: false };
 
 describe("advanceScrambleChar", () => {
   it("waits until every earlier character has resolved", () => {

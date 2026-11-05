@@ -4,34 +4,33 @@ import { FpsCounterToggle } from "../../../ui/public/fps-counter-toggle.tsx";
 import { Jam2026CloudBackdrop } from "./public/cloud-backdrop.tsx";
 import { Jam2026Header } from "./public/header.tsx";
 import { NewsletterSubscribeFrameHost } from "../../../ui/public/newsletter-frame-form.tsx";
-import { Jam2026TicketsModalFrame } from "./public/tickets-modal.tsx";
+import { Jam2026TicketsModalFrame } from "./public/tickets/tickets-modal.tsx";
 import { routes } from "../../../routes.ts";
 import { Document } from "../../../ui/document.tsx";
 import { Footer } from "../../../ui/footer.tsx";
-import { getJam2026HeadContent } from "./public/head-content.ts";
-import { getJam2026ServerHeadTags } from "./public/head-content.ts";
+import {
+  getJam2026HeadContent,
+  getJam2026ServerHeadTags,
+} from "./public/head-content.ts";
 import {
   jamTheme,
   jamThemeStyle,
   type Jam2026ThemeMode,
 } from "./public/theme.ts";
-import { ticketModalConfig } from "./public/tickets-modal-contract.ts";
+import {
+  ticketModalConfig,
+  type Jam2026TicketCheckout,
+} from "./public/tickets/tickets-modal-contract.ts";
 import { Jam2026Faq } from "./faq.tsx";
 import { Jam2026Hero } from "./hero.tsx";
 import { Jam2026Schedule } from "./schedule.tsx";
-import type { ScheduleItem } from "./public/schedule-types.ts";
+import type { ScheduleItem } from "./public/schedule/schedule-types.ts";
 
 type Jam2026HomePageProps = {
   requestUrl: string;
   schedule: ScheduleItem[];
   ticketsModalOpen?: boolean;
-  ticketCheckout?: {
-    availableForSale: boolean;
-    error?: string;
-    initialQuantity: number;
-    maxQuantity: number;
-    productId?: string;
-  };
+  ticketCheckout?: Jam2026TicketCheckout;
   theme?: Jam2026ThemeMode;
 };
 
@@ -104,7 +103,7 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
               <Jam2026Schedule items={handle.props.schedule} />
               <Jam2026Faq />
               <NewsletterSubscribeFrameHost
-                src={routes.jam.y2026.newsletterSignup.href()}
+                src={routes.jam.y2026.newsletterSubscribeForm.href()}
               />
             </main>
             <Footer

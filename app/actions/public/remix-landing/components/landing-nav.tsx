@@ -2,7 +2,7 @@ import { css, navigate, on, type Handle } from "remix/component";
 import * as popover from "@remix-run/ui/popover";
 import { routes } from "../../../../routes.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
-import { isEditableKeyTarget } from "../../../../ui/public/keyboard.ts";
+import { isEditableKeyTarget } from "../../../../ui/public/dom/keyboard.ts";
 import {
   breakpointMedia,
   breakpoints,

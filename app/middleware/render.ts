@@ -27,7 +27,7 @@ export interface AppRenderer {
  * Server-resolved frame requests also carry `X-Remix-Ssr-Frame: true`, which
  * routes use to skip entrance animations for frames rendered during SSR.
  */
-export let renderMiddleware = renderWith(
+export const renderMiddleware = renderWith(
   (context): AppRenderer =>
     function render(node, init) {
       let stream = renderToStream(node, {

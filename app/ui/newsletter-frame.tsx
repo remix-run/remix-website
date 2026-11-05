@@ -13,7 +13,7 @@ export function NewsletterFrame(
   }>,
 ) {
   return () => {
-    let src = routes.newsletter.signup.href();
+    let src = routes.newsletter.subscribeForm.href();
     if (handle.props.status) {
       src += `?subscription=${handle.props.status}`;
     }

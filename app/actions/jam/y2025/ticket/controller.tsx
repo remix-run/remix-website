@@ -1,20 +1,32 @@
+import * as s from "remix/data-schema";
+import { max, min } from "remix/data-schema/checks";
+import * as coerce from "remix/data-schema/coerce";
+import * as f from "remix/data-schema/form-data";
 import { createController } from "remix/router";
 
-import { createCart, getProduct } from "../../../../data/jam-storefront.ts";
+import {
+  createCart,
+  getProduct,
+  MAX_QUANTITY,
+} from "../../../../data/jam-storefront.ts";
 import { CACHE } from "../../../../utils/cache-control.ts";
 import { routes } from "../../../../routes.ts";
 import { documentRedirect } from "../../../../utils/document-redirect.ts";
-import { Jam2025TicketPage, parseTicketPurchaseSubmission } from "./page.tsx";
+import { Jam2025TicketPage } from "./page.tsx";
 
 export default createController(routes.jam.y2025.ticket, {
   actions: {
     async index({ render, request }) {
+      let product = await getProduct("remix-jam-2025");
       return render(
         <Jam2025TicketPage
           initialQuantity={1}
-          product={await getProduct("remix-jam-2025")}
+          product={product}
           requestUrl={request.url}
         />,
+        // A missing product usually means Storefront is down; don't let the
+        // CDN keep serving the "unavailable" page after it recovers.
+        product ? undefined : { headers: CACHE.PRIVATE },
       );
     },
 
@@ -67,4 +79,20 @@ export default createController(routes.jam.y2025.ticket, {
       );
     },
   },
+});
+
+function parseTicketPurchaseSubmission(formData: FormData) {
+  let result = s.parseSafe(ticketPurchaseSubmissionSchema, formData);
+  if (!result.success) {
+    return { success: false as const, error: "Invalid ticket request" };
+  }
+
+  return { success: true as const, value: result.value };
+}
+
+const ticketPurchaseSubmissionSchema = f.object({
+  productId: f.field(s.string()),
+  quantity: f.field(
+    coerce.number().refine(Number.isInteger).pipe(min(1), max(MAX_QUANTITY)),
+  ),
 });

@@ -4,42 +4,37 @@ import {
   prefersReducedMotion,
   spring,
 } from "@remix-run/ui/animation";
-import { Icon } from "../../../../ui/public/icon.tsx";
-import { theme } from "../../../../ui/public/styles/theme.ts";
+import { Icon } from "../../../../../ui/public/icon.tsx";
+import { theme } from "../../../../../ui/public/styles/theme.ts";
 
-import { syncDocumentHead } from "../../../../ui/public/document-head-sync.ts";
-import { assetPaths } from "../../../../utils/public/asset-paths.ts";
+import { syncDocumentHead } from "../../../../../ui/public/document/document-head-sync.ts";
+import { assetPaths } from "../../../../../utils/public/asset-paths.ts";
 import {
   getJam2026ClientManagedHeadTags,
   getJam2026HeadContent,
-} from "./head-content.ts";
+} from "../head-content.ts";
 import { remixJam2026Ticket } from "./ticket-data.ts";
-import { jamTheme } from "./theme.ts";
-import { ticketModalConfig } from "./tickets-modal-contract.ts";
-import { routes } from "../../../../routes.ts";
+import { jamLogoFilterStyle, jamTheme } from "../theme.ts";
+import {
+  ticketModalConfig,
+  type Jam2026TicketCheckout,
+} from "./tickets-modal-contract.ts";
+import { routes } from "../../../../../routes.ts";
 import { createJam2026TicketsModalEffects } from "./tickets-modal-effects.ts";
 
 type Jam2026TicketsModalProps = {
   animateEntrance?: boolean;
   open?: boolean;
-  ticketCheckout?: Jam2026TicketCheckoutState;
+  ticketCheckout?: Jam2026TicketCheckout;
 };
 
-type Jam2026TicketCheckoutState = {
-  availableForSale: boolean;
-  error?: string;
-  initialQuantity: number;
-  maxQuantity: number;
-  productId?: string;
-};
-
-let usdFormatter = new Intl.NumberFormat("en-US", {
+const usdFormatter = new Intl.NumberFormat("en-US", {
   currency: "USD",
   maximumFractionDigits: 0,
   style: "currency",
 });
 
-export let Jam2026TicketsModalFrame = clientEntry(
+export const Jam2026TicketsModalFrame = clientEntry(
   import.meta.url,
   function Jam2026TicketsModalFrame(handle: Handle<Jam2026TicketsModalProps>) {
     let modalClosing = false;
@@ -116,7 +111,7 @@ type Jam2026TicketsModalContentProps = {
   animateEntrance?: boolean;
   closing?: boolean;
   onRequestClose: (event: Event) => void;
-  ticketCheckout?: Jam2026TicketCheckoutState;
+  ticketCheckout?: Jam2026TicketCheckout;
 };
 
 export function Jam2026TicketsModalContent(
@@ -178,7 +173,7 @@ export function Jam2026TicketsModalContent(
                 <img
                   alt="Remix Jam Toronto 2026"
                   src={assetPaths.jam2026.horizontalLockup}
-                  mix={ticketsModalLockupStyle}
+                  mix={[jamLogoFilterStyle, ticketsModalLockupStyle]}
                 />
               </div>
               <div aria-hidden="true" mix={ticketsModalFigureStyle}>
@@ -223,7 +218,7 @@ export function Jam2026TicketsModalContent(
  * back/forward cache after leaving for checkout.
  */
 function TicketCheckoutForm(
-  handle: Handle<{ ticketCheckout?: Jam2026TicketCheckoutState }>,
+  handle: Handle<{ ticketCheckout?: Jam2026TicketCheckout }>,
 ) {
   let ticket = remixJam2026Ticket;
   let quantity = handle.props.ticketCheckout?.initialQuantity ?? 1;
@@ -491,7 +486,7 @@ function formatCurrency(value: number) {
   return usdFormatter.format(value);
 }
 
-let ticketsModalScrimStyle = css({
+const ticketsModalScrimStyle = css({
   alignItems: "center",
   background: "rgb(0 0 0 / 0.85)",
   display: "flex",
@@ -510,14 +505,14 @@ let ticketsModalScrimStyle = css({
   },
 });
 
-let ticketsModalBackdropStyle = css({
+const ticketsModalBackdropStyle = css({
   background: "transparent",
   display: "block",
   inset: 0,
   position: "absolute",
 });
 
-let ticketsModalWindowStyle = css({
+const ticketsModalWindowStyle = css({
   background: "light-dark(rgb(255 255 255 / 0.82), rgb(10 29 39 / 0.82))",
   borderRadius: "8px",
   boxShadow:
@@ -540,7 +535,7 @@ let ticketsModalWindowStyle = css({
   },
 });
 
-let ticketsModalTitlebarStyle = css({
+const ticketsModalTitlebarStyle = css({
   alignItems: "center",
   display: "flex",
   flexShrink: 0,
@@ -549,7 +544,7 @@ let ticketsModalTitlebarStyle = css({
   width: "100%",
 });
 
-let ticketsModalCloseStyle = css({
+const ticketsModalCloseStyle = css({
   alignItems: "center",
   background: "transparent",
   borderRadius: "50%",
@@ -571,13 +566,13 @@ let ticketsModalCloseStyle = css({
   },
 });
 
-let ticketsModalCloseIconStyle = css({
+const ticketsModalCloseIconStyle = css({
   display: "block",
   height: "14px",
   width: "14px",
 });
 
-let ticketsModalFilenameStyle = css({
+const ticketsModalFilenameStyle = css({
   color: jamTheme.ink,
   fontFamily: theme.fontFamily.mono,
   fontSize: "10px",
@@ -589,7 +584,7 @@ let ticketsModalFilenameStyle = css({
   whiteSpace: "nowrap",
 });
 
-let ticketsModalBodyStyle = css({
+const ticketsModalBodyStyle = css({
   background:
     "radial-gradient(ellipse 64% 60% at 50% 50%, light-dark(rgb(255 255 255), rgb(10 29 39 / 0.9)) 18%, transparent 100%)",
   display: "flex",
@@ -604,7 +599,7 @@ let ticketsModalBodyStyle = css({
   },
 });
 
-let ticketsModalContentStyle = css({
+const ticketsModalContentStyle = css({
   alignItems: "center",
   display: "flex",
   flex: "1 1 auto",
@@ -616,7 +611,7 @@ let ticketsModalContentStyle = css({
   width: "100%",
 });
 
-let ticketsModalHeadingStyle = css({
+const ticketsModalHeadingStyle = css({
   alignItems: "center",
   display: "flex",
   flexDirection: "column",
@@ -624,26 +619,14 @@ let ticketsModalHeadingStyle = css({
   textAlign: "center",
 });
 
-let ticketsModalLockupStyle = css({
+const ticketsModalLockupStyle = css({
   display: "block",
-  filter:
-    "brightness(0) saturate(100%) invert(14%) sepia(48%) saturate(1162%) hue-rotate(171deg) brightness(91%) contrast(97%)",
   height: "auto",
   maxWidth: "100%",
   width: "clamp(280px, 38vw, 484px)",
-  "@media (prefers-color-scheme: dark)": {
-    filter: "brightness(0) invert(1)",
-  },
-  ":root[data-theme='light'] &": {
-    filter:
-      "brightness(0) saturate(100%) invert(14%) sepia(48%) saturate(1162%) hue-rotate(171deg) brightness(91%) contrast(97%)",
-  },
-  ":root[data-theme='dark'] &": {
-    filter: "brightness(0) invert(1)",
-  },
 });
 
-let ticketsModalFigureStyle = css({
+const ticketsModalFigureStyle = css({
   alignItems: "center",
   aspectRatio: "1 / 1",
   display: "flex",
@@ -653,7 +636,7 @@ let ticketsModalFigureStyle = css({
   padding: "24px",
 });
 
-let ticketsModalFigureImageStyle = css({
+const ticketsModalFigureImageStyle = css({
   display: "block",
   height: "100%",
   maxWidth: "none",
@@ -663,7 +646,7 @@ let ticketsModalFigureImageStyle = css({
   width: "auto",
 });
 
-let ticketsModalFigureImageEntranceStyle = css({
+const ticketsModalFigureImageEntranceStyle = css({
   animation:
     "jam-2026-ticket-keychain-pop 260ms cubic-bezier(0.16, 1, 0.3, 1) both",
   "@keyframes jam-2026-ticket-keychain-pop": {
@@ -685,7 +668,7 @@ let ticketsModalFigureImageEntranceStyle = css({
   },
 });
 
-let ticketsModalBottomStyle = css({
+const ticketsModalBottomStyle = css({
   alignItems: "center",
   display: "flex",
   flexDirection: "column",
@@ -693,7 +676,7 @@ let ticketsModalBottomStyle = css({
   width: "100%",
 });
 
-let ticketCardStyle = css({
+const ticketCardStyle = css({
   background: "light-dark(rgb(255 255 255), rgb(255 255 255 / 0.12))",
   borderRadius: "8px",
   color: jamTheme.ink,
@@ -705,7 +688,7 @@ let ticketCardStyle = css({
   width: "100%",
 });
 
-let ticketCardTopRowStyle = css({
+const ticketCardTopRowStyle = css({
   alignItems: "center",
   display: "flex",
   fontFamily: theme.fontFamily.mono,
@@ -724,12 +707,12 @@ let ticketCardTopRowStyle = css({
   },
 });
 
-let ticketCardPriceStyle = css({
+const ticketCardPriceStyle = css({
   color: jamTheme.brandRed,
   flexShrink: 0,
 });
 
-let ticketCardDateStyle = css({
+const ticketCardDateStyle = css({
   color: jamTheme.ink,
   fontFamily: theme.fontFamily.mono,
   fontSize: "11px",
@@ -739,7 +722,7 @@ let ticketCardDateStyle = css({
   textTransform: "uppercase",
 });
 
-let ticketCardDescriptionStyle = css({
+const ticketCardDescriptionStyle = css({
   color: jamTheme.ink,
   fontFamily: theme.fontFamily.sans,
   fontSize: "12px",
@@ -747,7 +730,7 @@ let ticketCardDescriptionStyle = css({
   lineHeight: 1.4,
 });
 
-let ticketsModalCheckoutStyle = css({
+const ticketsModalCheckoutStyle = css({
   alignItems: "center",
   background: "light-dark(rgb(255 255 255), rgb(255 255 255 / 0.08))",
   borderRadius: "8px",
@@ -763,14 +746,14 @@ let ticketsModalCheckoutStyle = css({
   },
 });
 
-let ticketsModalCheckoutGroupStyle = css({
+const ticketsModalCheckoutGroupStyle = css({
   display: "flex",
   flexDirection: "column",
   gap: "10px",
   minWidth: 0,
 });
 
-let ticketsModalCheckoutLabelStyle = css({
+const ticketsModalCheckoutLabelStyle = css({
   color: jamTheme.ink,
   fontFamily: theme.fontFamily.mono,
   fontSize: "11px",
@@ -781,13 +764,13 @@ let ticketsModalCheckoutLabelStyle = css({
   textTransform: "uppercase",
 });
 
-let ticketsModalQuantityStyle = css({
+const ticketsModalQuantityStyle = css({
   alignItems: "center",
   display: "flex",
   gap: "12px",
 });
 
-let ticketsModalQuantityButtonStyle = css({
+const ticketsModalQuantityButtonStyle = css({
   alignItems: "center",
   background: "transparent",
   border: 0,
@@ -812,13 +795,13 @@ let ticketsModalQuantityButtonStyle = css({
   },
 });
 
-let ticketsModalQuantityIconStyle = css({
+const ticketsModalQuantityIconStyle = css({
   display: "block",
   height: "18px",
   width: "18px",
 });
 
-let ticketsModalQuantityValueStyle = css({
+const ticketsModalQuantityValueStyle = css({
   color: jamTheme.ink,
   fontFamily: theme.fontFamily.mono,
   fontSize: "11px",
@@ -831,7 +814,7 @@ let ticketsModalQuantityValueStyle = css({
   textTransform: "uppercase",
 });
 
-let ticketsModalSubtotalStyle = css({
+const ticketsModalSubtotalStyle = css({
   alignItems: "center",
   display: "flex",
   flexWrap: "wrap",
@@ -844,17 +827,17 @@ let ticketsModalSubtotalStyle = css({
   textTransform: "uppercase",
 });
 
-let ticketsModalSubtotalAmountStyle = css({
+const ticketsModalSubtotalAmountStyle = css({
   color: jamTheme.brandRed,
   fontWeight: theme.fontWeight.bold,
 });
 
-let ticketsModalSubtotalCurrencyStyle = css({
+const ticketsModalSubtotalCurrencyStyle = css({
   color: jamTheme.ink,
   fontWeight: theme.fontWeight.normal,
 });
 
-let ticketsModalCheckoutButtonStyle = css({
+const ticketsModalCheckoutButtonStyle = css({
   appearance: "none",
   alignItems: "center",
   background: jamTheme.brandRed,
@@ -904,7 +887,7 @@ let ticketsModalCheckoutButtonStyle = css({
   },
 });
 
-let ticketsModalBusyDotStyle = css({
+const ticketsModalBusyDotStyle = css({
   animation: "jam-2026-ticket-checkout-pulse 720ms ease-in-out infinite",
   background: "currentColor",
   borderRadius: "50%",
@@ -929,7 +912,7 @@ let ticketsModalBusyDotStyle = css({
   },
 });
 
-let ticketsModalCheckoutErrorStyle = css({
+const ticketsModalCheckoutErrorStyle = css({
   color: jamTheme.brandRed,
   fontFamily: theme.fontFamily.sans,
   fontSize: "12px",

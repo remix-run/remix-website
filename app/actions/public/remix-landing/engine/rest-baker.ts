@@ -15,6 +15,7 @@ import {
   type WebGLRenderer,
 } from "three";
 import { PRESET_GLSL, PRESET_UNIFORMS_GLSL } from "./preset-glsl.ts";
+import type { ModelSlot } from "./types.ts";
 
 // MRT bake of "rest" particle state (position + color) into RGBA32F textures.
 // One slot per morph endpoint (A, B). Each slot owns a render target with
@@ -90,7 +91,8 @@ void main() {
 }
 `;
 
-export type Slot = 0 | 1;
+/** One of the two rest-texture bake targets (current and next preset). */
+export type BakeSlot = 0 | 1;
 
 type SlotCache = {
   presetId: number;
@@ -189,21 +191,10 @@ export class RestBaker {
     this.invalidate();
   }
 
-  setModelTexture(slot: number, texture: DataTexture, pointCount: number) {
+  setModelTexture(slot: ModelSlot, texture: DataTexture, pointCount: number) {
     let u = this.material.uniforms;
-    if (slot === 0) {
-      u.uModelTex0.value = texture;
-      u.uModelCount0.value = pointCount;
-    } else if (slot === 1) {
-      u.uModelTex1.value = texture;
-      u.uModelCount1.value = pointCount;
-    } else if (slot === 2) {
-      u.uModelTex2.value = texture;
-      u.uModelCount2.value = pointCount;
-    } else {
-      u.uModelTex3.value = texture;
-      u.uModelCount3.value = pointCount;
-    }
+    u[`uModelTex${slot}`].value = texture;
+    u[`uModelCount${slot}`].value = pointCount;
     this.invalidate();
   }
 
@@ -221,7 +212,7 @@ export class RestBaker {
    * skip calling for the inactive endpoint when `blend < eps` to save a pass.
    */
   bake(
-    slot: Slot,
+    slot: BakeSlot,
     presetId: number,
     ctrl: number[],
     time: number,
@@ -273,11 +264,11 @@ export class RestBaker {
     this.cacheB = initCache();
   }
 
-  getPosTexture(slot: Slot): Texture {
+  getPosTexture(slot: BakeSlot): Texture {
     return slot === 0 ? this.slotA.textures[0] : this.slotB.textures[0];
   }
 
-  getColTexture(slot: Slot): Texture {
+  getColTexture(slot: BakeSlot): Texture {
     return slot === 0 ? this.slotA.textures[1] : this.slotB.textures[1];
   }
 

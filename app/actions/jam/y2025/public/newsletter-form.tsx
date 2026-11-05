@@ -8,8 +8,9 @@ import { routes } from "../../../../routes.ts";
 import { newsletterTagIds } from "../../../../utils/public/newsletter-tags.ts";
 import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
 import { jamColors, whiteAlpha } from "./theme.ts";
+import { SectionLabel } from "./typography.tsx";
 
-export let JamNewsletterForm = clientEntry(
+export const JamNewsletterForm = clientEntry(
   import.meta.url,
   function JamNewsletterForm(
     handle: Handle<{
@@ -42,19 +43,9 @@ export let JamNewsletterForm = clientEntry(
             name="tag"
             value={String(newsletterTagIds.jam2025Updates)}
           />
-          <p
-            mix={css({
-              color: whiteAlpha(0.5),
-              fontFamily: theme.fontFamily.mono,
-              fontSize: "0.75rem",
-              lineHeight: 1.333,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              [breakpointMedia.md]: { fontSize: "1rem", lineHeight: 1.5 },
-            })}
-          >
+          <SectionLabel>
             <label htmlFor="jam-newsletter-email">email</label>
-          </p>
+          </SectionLabel>
           <input
             type="email"
             id="jam-newsletter-email"
@@ -152,4 +143,4 @@ export let JamNewsletterForm = clientEntry(
   },
 );
 
-let newsletterErrorStyle = css({ color: theme.colors.brand.red });
+const newsletterErrorStyle = css({ color: theme.colors.brand.red });

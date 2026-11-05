@@ -4,8 +4,7 @@ import { readdir } from "node:fs/promises";
 import path from "node:path";
 import yaml from "yaml";
 import * as s from "remix/data-schema";
-import { LRUCache } from "lru-cache";
-import { processMarkdown } from "../../../data/md.ts";
+import { renderMarkdown } from "../../../data/markdown.ts";
 import { memoizeAsync } from "../../../utils/memoize-async.ts";
 
 const SCHEDULE_IMAGES_DIRECTORY = path.join(
@@ -46,27 +45,18 @@ function addNonBreakingSpaces(text: string): string {
   return text.replace(/Remix 3/g, "Remix\u00A03");
 }
 
-let cache = new LRUCache<string, ScheduleItem[]>({
-  max: 250,
-  maxSize: 1024 * 1024 * 12,
-  sizeCalculation(value, key) {
-    return JSON.stringify(value).length + (key ? key.length : 0);
-  },
-});
+export const getJam2025Schedule = memoizeAsync(loadJam2025Schedule);
 
-export async function getJam2025Schedule(): Promise<ScheduleItem[]> {
-  let cached = cache.get("jam:schedule");
-  if (cached) return cached;
-
+async function loadJam2025Schedule(): Promise<ScheduleItem[]> {
   let imageUrlByKey = await getScheduleImageUrlByKey();
   let rawUnknown = yaml.parse(readFileSync(SCHEDULE_FILE_PATH, "utf8"));
   let raw = parseScheduleItems(rawUnknown);
 
-  let schedule: ScheduleItem[] = await Promise.all(
+  return Promise.all(
     raw.map(async (item) => {
       let [{ html: description }, { html: bio }] = await Promise.all([
-        processMarkdown(item.description),
-        processMarkdown(item.bio ?? ""),
+        renderMarkdown(item.description),
+        renderMarkdown(item.bio ?? ""),
       ]);
 
       let imgSrc: string | undefined;
@@ -88,9 +78,6 @@ export async function getJam2025Schedule(): Promise<ScheduleItem[]> {
       };
     }),
   );
-
-  cache.set("jam:schedule", schedule);
-  return schedule;
 }
 
 const getScheduleImageUrlByKey = memoizeAsync(loadScheduleImageUrlByKey);

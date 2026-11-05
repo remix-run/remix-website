@@ -18,3 +18,19 @@ export function getCanonicalOrigin(url: URL) {
 export function getCanonicalUrl(url: URL, pathname = url.pathname) {
   return `${getCanonicalOrigin(url)}${pathname}`;
 }
+
+/**
+ * Canonical page and share-image URLs for a page served at `url`, so social
+ * tags agree with the page's `<link rel="canonical">`. Relative image paths
+ * resolve against the canonical origin; absolute image URLs pass through.
+ */
+export function getCanonicalPageUrls(url: URL, image: string) {
+  let origin = getCanonicalOrigin(url);
+
+  return {
+    pageUrl: getCanonicalUrl(url),
+    imageUrl: /^https?:\/\//.test(image)
+      ? image
+      : new URL(image, origin).toString(),
+  };
+}

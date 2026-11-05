@@ -10,25 +10,26 @@ import { loadConfig } from "remix/cli";
 import { componentHmr } from "remix/component-hmr/assets";
 import sharp from "sharp";
 
-let nodeEnv = process.env.NODE_ENV ?? "development";
-let isDevelopment = nodeEnv === "development";
-let isProduction = nodeEnv === "production";
-let isHmr = Boolean(isDevelopment && process.env.REMIX_NODE_HMR);
-let config = await loadConfig(import.meta.dirname);
+const nodeEnv = process.env.NODE_ENV ?? "development";
+const isDevelopment = nodeEnv === "development";
+const isProduction = nodeEnv === "production";
+const isHmr = Boolean(isDevelopment && process.env.REMIX_NODE_HMR);
+const config = await loadConfig(import.meta.dirname);
 if (!config.assets) throw new Error("Missing assets configuration");
 if (!config.assets.files) throw new Error("Missing asset file configuration");
-let rootDir = config.assets.rootDir;
+const rootDir = config.assets.rootDir;
 
 // The Docker image ships a transform cache filled at build time (see
 // `warm-image-cache.ts`), so production points both values at it. Elsewhere
 // keys are per process, so each process gets its own directory: the built-in
 // cache supports one instance per directory, and test workers and dev servers
 // otherwise race on shared files.
-let fileCacheDirectory =
+const fileCacheDirectory =
   process.env.ASSET_FILE_CACHE_DIR ?? createProcessFileCacheDirectory();
-let fileCacheKey = process.env.ASSET_FILE_CACHE_KEY ?? `process-${process.pid}`;
-let webpInputExtensions = [".jpeg", ".jpg", ".png"] as const;
-let webpTransforms = {
+const fileCacheKey =
+  process.env.ASSET_FILE_CACHE_KEY ?? `process-${process.pid}`;
+const webpInputExtensions = [".jpeg", ".jpg", ".png"] as const;
+const webpTransforms = {
   webp: createWebpTransform(),
   "webp-64": createWebpTransform(64),
   "webp-128": createWebpTransform(128),
@@ -39,7 +40,7 @@ let webpTransforms = {
   "webp-1600": createWebpTransform(1600),
 };
 
-export let assets = createAssetServer({
+export const assets = createAssetServer({
   ...config.assets,
   target: {
     chrome: "109",

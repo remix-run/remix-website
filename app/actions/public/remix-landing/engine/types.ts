@@ -19,11 +19,14 @@ export type ShaderId =
   | "remixLogo"
   | "racetrackCar";
 
+/** Model-texture uniform slot; the shaders declare uModelTex0..uModelTex3. */
+export type ModelSlot = 0 | 1 | 2 | 3;
+
 export interface Preset {
   name: string;
   shaderId: ShaderId;
   modelUrl?: string;
-  modelSlot?: number;
+  modelSlot?: ModelSlot;
   cameraPosition?: [number, number, number];
   cameraTarget?: [number, number, number];
   /** How the camera moves from the preceding preset into this one. */

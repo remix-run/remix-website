@@ -1,4 +1,4 @@
-import { isEditableKeyTarget } from "../../../ui/public/keyboard.ts";
+import { isEditableKeyTarget } from "../../../ui/public/dom/keyboard.ts";
 
 /** ↑↑↓↓←→←→BA Enter. Reserve keys after ↑↑, not ordinary single-arrow navigation. */
 const KONAMI_KEYS = [

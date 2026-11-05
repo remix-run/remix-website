@@ -5,8 +5,9 @@ import { env } from "../utils/env.ts";
 
 // Jam Storefront reads never throw. Missing configuration, transport failures,
 // GraphQL errors and unexpected response shapes are logged and reported as
-// `null` (product), `[]` (photos) or `{ error }` (cart) so pages can render a
-// degraded state.
+// `null` (product, photos) or `{ error }` (cart) so pages can render a degraded
+// state. Photos keep "unavailable" (`null`) distinct from "none" (`[]`) so a
+// transient outage is never cached as an empty gallery.
 
 export const MAX_QUANTITY = 10;
 const STOREFRONT_ORIGIN = "https://jam.remix.run";
@@ -62,17 +63,17 @@ export async function getProduct(handle: string): Promise<Product | null> {
 }
 
 /**
- * Returns the images attached to a `remix_jam_photos` metaobject, or an empty
- * list when it can't be loaded. Invalid images are skipped individually.
+ * Returns the images attached to a `remix_jam_photos` metaobject, or `null`
+ * when Storefront can't be loaded. Invalid images are skipped individually.
  */
-export async function getPhotos(handle: string): Promise<Photo[]> {
+export async function getPhotos(handle: string): Promise<Photo[] | null> {
   let data = await requestStorefront("photos", metaobjectQuery, { handle });
-  if (data === null) return [];
+  if (data === null) return null;
 
   let result = s.parseSafe(metaobjectResponseSchema, data);
   if (!result.success) {
     logStorefrontError("photos response", result.issues);
-    return [];
+    return null;
   }
 
   let edges =
@@ -253,7 +254,7 @@ function isTrustedCheckoutUrl(value: string) {
   return URL.parse(value)?.origin === STOREFRONT_ORIGIN;
 }
 
-let productResponseSchema = s.object({
+const productResponseSchema = s.object({
   product: s.nullable(
     s.object({
       id: s.string(),
@@ -272,7 +273,7 @@ let productResponseSchema = s.object({
   ),
 });
 
-let metaobjectResponseSchema = s.object({
+const metaobjectResponseSchema = s.object({
   metaobject: s.nullable(
     s.object({
       fields: s.array(
@@ -304,9 +305,9 @@ let metaobjectResponseSchema = s.object({
   ),
 });
 
-let userErrorsSchema = s.array(s.object({ message: s.string() }));
+const userErrorsSchema = s.array(s.object({ message: s.string() }));
 
-let cartCreateResponseSchema = s.object({
+const cartCreateResponseSchema = s.object({
   cartCreate: s.object({
     cart: s.nullable(
       s.object({
@@ -321,14 +322,14 @@ let cartCreateResponseSchema = s.object({
   }),
 });
 
-let cartDiscountCodesUpdateResponseSchema = s.object({
+const cartDiscountCodesUpdateResponseSchema = s.object({
   cartDiscountCodesUpdate: s.object({
     cart: s.nullable(s.object({ id: s.string(), checkoutUrl: s.string() })),
     userErrors: userErrorsSchema,
   }),
 });
 
-let productQuery = `
+const productQuery = `
   query ProductQuery($handle: String) {
     product(handle: $handle) {
       id
@@ -347,7 +348,7 @@ let productQuery = `
   }
 `;
 
-let metaobjectQuery = `
+const metaobjectQuery = `
   query MetaobjectQuery($handle: String!) {
     metaobject(handle: { handle: $handle, type: "remix_jam_photos" }) {
       fields {
@@ -371,7 +372,7 @@ let metaobjectQuery = `
   }
 `;
 
-let createCartMutation = `
+const createCartMutation = `
   mutation CartCreate($cartInput: CartInput!) {
     cartCreate(input: $cartInput) {
       cart {
@@ -390,7 +391,7 @@ let createCartMutation = `
   }
 `;
 
-let removeDiscountCodesMutation = `
+const removeDiscountCodesMutation = `
   mutation CartDiscountCodesUpdate($cartId: ID!, $discountCodes: [String!]!) {
     cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) {
       cart {

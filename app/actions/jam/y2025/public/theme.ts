@@ -1,5 +1,5 @@
 /** Jam 2025 is dark-only: white ink on a black page with a blue link accent. */
-export let jamColors = {
+export const jamColors = {
   white: "#ffffff",
   black: "#000000",
   /** Hover surface for rows and cards on the black page. */

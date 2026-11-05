@@ -17,7 +17,7 @@ const COPY_STATUS_MESSAGES: Record<CopyStatus, string | null> = {
   error: "Unable to copy the create command",
 };
 
-export let CreateRemixCommand = clientEntry(
+export const CreateRemixCommand = clientEntry(
   import.meta.url,
   function CreateRemixCommand(handle: Handle) {
     let runner: PackageRunner = PACKAGE_RUNNERS[0];

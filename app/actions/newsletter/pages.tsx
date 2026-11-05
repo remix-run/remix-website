@@ -61,7 +61,7 @@ export function NewsletterIndexPage(handle: Handle<NewsletterIndexPageProps>) {
             }),
           ]}
         >
-          <NewsletterSignupSection
+          <NewsletterSubscribeSection
             subscriptionStatus={handle.props.subscriptionStatus}
           />
           <NewsletterArchive
@@ -126,7 +126,7 @@ export function NewsletterIssuePage(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-function NewsletterSignupSection(
+function NewsletterSubscribeSection(
   handle: Handle<{
     subscriptionStatus: NewsletterSubscriptionStatus | null;
   }>,
@@ -265,20 +265,20 @@ function formatNewsletterDate(date: Date): string {
   }).format(date);
 }
 
-let newsletterMainStyle = css({
+const newsletterMainStyle = css({
   display: "flex",
   flex: 1,
   flexDirection: "column",
 });
 
-let newsletterContainerStyle = {
+const newsletterContainerStyle = {
   boxSizing: "border-box",
   width: "100%",
   marginInline: "auto",
   paddingInline: theme.space.edge,
 } as const;
 
-let newsletterArchiveLinkStyle = css({
+const newsletterArchiveLinkStyle = css({
   color: theme.colors.action.primary,
   textDecoration: "underline",
   textUnderlineOffset: "3px",
@@ -288,7 +288,7 @@ let newsletterArchiveLinkStyle = css({
   },
 });
 
-let newsletterCardStyle = css({
+const newsletterCardStyle = css({
   display: "grid",
   gap: "20px",
   margin: "-24px",

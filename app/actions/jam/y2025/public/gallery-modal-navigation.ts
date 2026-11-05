@@ -13,7 +13,7 @@ type KeyLike = {
   altKey: boolean;
 };
 
-let GALLERY_KEY_ACTIONS = new Map<
+const GALLERY_KEY_ACTIONS = new Map<
   string,
   { action: GalleryKeyAction; ignoreWhenModified: boolean }
 >([

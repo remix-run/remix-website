@@ -137,13 +137,13 @@ export function Footer(handle: Handle<FooterProps>) {
   );
 }
 
-let footerSocialLinkStyle = css({
+const footerSocialLinkStyle = css({
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
 });
 
-let footerSocialIconStyle = css({
+const footerSocialIconStyle = css({
   width: "20px",
   height: "20px",
 });

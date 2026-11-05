@@ -6,8 +6,8 @@ import { routes } from "../../../routes.ts";
 import { createRouteTestRouter } from "../../../../test/setup.ts";
 import jam2026Controller from "./controller.tsx";
 import jam2026TicketController from "./ticket/controller.tsx";
-import { remixJam2026Ticket } from "./public/ticket-data.ts";
-import { ticketModalConfig } from "./public/tickets-modal-contract.ts";
+import { remixJam2026Ticket } from "./public/tickets/ticket-data.ts";
+import { ticketModalConfig } from "./public/tickets/tickets-modal-contract.ts";
 import {
   getJam2026ThemePreference,
   serializeJam2026ThemePreference,
@@ -28,9 +28,7 @@ describe("Remix Jam 2026 routes", () => {
     expect(response.headers.get("Vary")).toContain("x-remix-ssr-frame");
     let html = await response.text();
     expect(html).toContain("<title>Remix Jam 2026</title>");
-    expect(html).toContain(
-      'data-remix-managed-head="true" rel="canonical" href="http://localhost:3000/jam/2026"',
-    );
+    expect(getCanonicalLinks(html)).toEqual(["http://localhost:3000/jam/2026"]);
     expect(html).toContain('aria-label="Page navigation"');
     expect(html).toContain(
       'src="https://www.youtube.com/embed/TaKBQnYm9tM?si=jdVAJ6fS6hWvoLTG"',
@@ -48,7 +46,7 @@ describe("Remix Jam 2026 routes", () => {
 
   it("renders the newsletter signup fragment", async () => {
     let response = await createJam2026TestRouter().fetch(
-      appUrl(routes.jam.y2026.newsletterSignup, "?subscription=success"),
+      appUrl(routes.jam.y2026.newsletterSubscribeForm, "?subscription=success"),
     );
     expect(response.status).toBe(200);
     expect(response.headers.get("Cache-Control")).toBe("private, no-store");
@@ -64,9 +62,7 @@ describe("Remix Jam 2026 routes", () => {
     );
     expect(response.status).toBe(200);
     let html = await response.text();
-    expect(html).toContain(
-      'data-remix-managed-head="true" rel="canonical" href="https://remix.run/jam/2026"',
-    );
+    expect(getCanonicalLinks(html)).toEqual(["https://remix.run/jam/2026"]);
     expect(html).not.toContain("example.com");
   });
 
@@ -250,6 +246,13 @@ function isTicketSubmitDisabled(html: string) {
     ?.find((tag) => /\stype="submit"/.test(tag));
   expect(submitButton).toBeDefined();
   return /\sdisabled(?=[\s=>])/.test(submitButton!);
+}
+
+function getCanonicalLinks(html: string) {
+  return Array.from(
+    html.matchAll(/<link\b[^>]*\brel="canonical"[^>]*>/g),
+    (match) => match[0].match(/\bhref="([^"]+)"/)?.[1],
+  );
 }
 
 function appUrl(route: { href(): string }, search = "") {

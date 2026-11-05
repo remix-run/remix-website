@@ -1,9 +1,5 @@
-import { clientEntry, css, type Handle } from "remix/component";
-import {
-  createNewsletterFrameForm,
-  NewsletterSubscribeFrameHost,
-  type NewsletterSubscriptionStatus,
-} from "../../../../ui/public/newsletter-frame-form.tsx";
+import { css, type Handle } from "remix/component";
+import { NewsletterSubscribeFrameHost } from "../../../../ui/public/newsletter-frame-form.tsx";
 import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
 import { routes } from "../../../../routes.ts";
 import { textBoxTrim } from "../../../../ui/public/styles/css-mixins.ts";
@@ -11,11 +7,19 @@ import { colors, glowWhite, pageMaxWidth } from "../tokens.ts";
 
 type FeaturePoint = { title: string; body: string };
 
+/**
+ * How a feature section arranges its panels:
+ * - `centered-grid`: one centered panel whose points form a two-column grid.
+ * - `centered-list`: one centered panel whose points form a divided list.
+ * - `split`: primary and secondary panels side by side on large screens.
+ */
+export type FeatureSectionLayout = "centered-grid" | "centered-list" | "split";
+
 type FeatureSectionProps = {
   id: string;
   title: string;
   body: string;
-  align: "left" | "right";
+  layout: FeatureSectionLayout;
   ctaLabel?: string;
   ctaHref?: string;
   points?: ReadonlyArray<FeaturePoint>;
@@ -26,182 +30,35 @@ type FeatureSectionProps = {
   };
 };
 
-export let LandingNewsletterSubscribeForm = clientEntry(
-  import.meta.url,
-  function LandingNewsletterSubscribeForm(
-    handle: Handle<{ status?: NewsletterSubscriptionStatus | null }>,
-  ) {
-    let form = createNewsletterFrameForm(handle, "home");
-
-    return () => {
-      let status = form.state.status;
-
-      return (
-        <>
-          <form
-            action={routes.newsletter.subscribe.href()}
-            method="post"
-            {...form.navigation}
-            mix={[
-              css({
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "10px",
-                marginTop: "32px",
-              }),
-              ...form.submit,
-            ]}
-          >
-            <label
-              for="landing-newsletter-email"
-              mix={[
-                css({
-                  position: "absolute",
-                  width: "1px",
-                  height: "1px",
-                  padding: "0",
-                  margin: "-1px",
-                  overflow: "hidden",
-                  clip: "rect(0, 0, 0, 0)",
-                  whiteSpace: "nowrap",
-                  border: "0",
-                }),
-              ]}
-            >
-              Email address
-            </label>
-            <input
-              id="landing-newsletter-email"
-              type="email"
-              name="email"
-              required
-              autocomplete="email"
-              placeholder="name@example.com"
-              aria-invalid={status === "invalid-email" ? true : undefined}
-              aria-describedby={
-                status === "idle" ? undefined : "landing-newsletter-message"
-              }
-              mix={[
-                css({
-                  flex: "1 1 220px",
-                  minWidth: "0",
-                  boxSizing: "border-box",
-                  appearance: "none",
-                  borderRadius: "999px",
-                  border: "1px solid rgba(255, 255, 255, 0.18)",
-                  background: "transparent",
-                  color: colors.fgStrong,
-                  height: "44px",
-                  padding: "0 18px",
-                  fontFamily: theme.fontFamily.sans,
-                  fontSize: "16px",
-                  lineHeight: "1.4",
-                  letterSpacing: "-0.008px",
-                  "&::placeholder": {
-                    color: "rgba(255, 255, 255, 0.3)",
-                  },
-                }),
-              ]}
-            />
-            <button
-              type="submit"
-              disabled={status === "submitting"}
-              mix={[
-                css({
-                  flexShrink: "0",
-                  borderRadius: "999px",
-                  border: "none",
-                  boxShadow: "none",
-                  background: "rgba(255, 255, 255, 0.08)",
-                  color: colors.fgStrong,
-                  height: "44px",
-                  padding: "0 18px",
-                  fontFamily: theme.fontFamily.sans,
-                  fontWeight: theme.fontWeight.normal,
-                  fontSize: "16px",
-                  lineHeight: "1.4",
-                  letterSpacing: "-0.008px",
-                  cursor: "pointer",
-                  width: "100%",
-                  transition: "background 150ms ease, color 150ms ease",
-                  [breakpointMedia.sm]: {
-                    width: "auto",
-                  },
-                  "&:hover": {
-                    background: `color-mix(in srgb, var(--brand-cycle, ${colors.accent}) 18%, rgba(255, 255, 255, 0.08))`,
-                  },
-                  "&:disabled": {
-                    cursor: "not-allowed",
-                    opacity: "0.55",
-                  },
-                }),
-              ]}
-            >
-              {status === "submitting" ? "Subscribing..." : "Subscribe"}
-            </button>
-          </form>
-          <div
-            id="landing-newsletter-message"
-            aria-live="polite"
-            mix={[
-              css({
-                marginTop: "12px",
-                fontFamily: theme.fontFamily.sans,
-                fontSize: "14px",
-                lineHeight: "1.45",
-                letterSpacing: "-0.008px",
-                color: "rgba(255, 255, 255, 0.76)",
-              }),
-              status === "success"
-                ? css({
-                    display: "block",
-                    color: "#7ce95a",
-                  })
-                : status !== "idle" && status !== "submitting"
-                  ? css({
-                      display: "block",
-                      color: "#ff6b6b",
-                    })
-                  : css({
-                      display: "none",
-                    }),
-            ]}
-          >
-            {status === "success"
-              ? "Got it! Please check your email to confirm your subscription."
-              : status === "invalid-email"
-                ? "Please enter a valid email address."
-                : status === "invalid-tag"
-                  ? "The selected newsletter is not available."
-                  : status === "error"
-                    ? "Something went wrong. Please try again."
-                    : null}
-          </div>
-        </>
-      );
-    };
-  },
-);
-
 export function FeatureSection(handle: Handle<FeatureSectionProps>) {
   return () => {
-    let { id, title, body, align, ctaLabel, ctaHref, points, secondary } =
+    let { id, title, body, layout, ctaLabel, ctaHref, points, secondary } =
       handle.props;
+    let layoutStyles = LAYOUT_STYLES[layout];
 
     return (
       <section id={id} mix={[sectionStyles]}>
         <div mix={[rowStyles]}>
-          <div
-            data-home-card=""
-            mix={[
-              panelStyles,
-              PRIMARY_PANEL_STYLES_BY_ID[id] ??
-                (align === "right" ? rightPanelStyles : leftPanelStyles),
-            ]}
-          >
+          <div data-home-card="" mix={[panelStyles, layoutStyles.primary]}>
             <h2 mix={[titleStyles]}>{title}</h2>
             <p mix={[bodyStyles]}>{body}</p>
-            {points ? <FeaturePoints sectionId={id} points={points} /> : null}
+            {points ? (
+              <ul
+                data-card-grid=""
+                mix={[pointListStyles, layoutStyles.points?.list]}
+              >
+                {points.map((point) => (
+                  <li
+                    key={point.title}
+                    data-card-item=""
+                    mix={[pointStyles, layoutStyles.points?.item]}
+                  >
+                    <span mix={[pointTitleStyles]}>{point.title}</span>
+                    <span mix={[pointBodyStyles]}>{point.body}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
             {ctaLabel && ctaHref ? (
               <a
                 href={ctaHref}
@@ -214,47 +71,18 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
             ) : null}
           </div>
           {secondary ? (
-            <div
-              data-home-card=""
-              mix={[
-                panelStyles,
-                SECONDARY_PANEL_STYLES_BY_ID[id] ?? rightPanelStyles,
-              ]}
-            >
+            <div data-home-card="" mix={[panelStyles, layoutStyles.secondary]}>
               <h2 mix={[titleStyles]}>{secondary.title}</h2>
               <p mix={[bodyStyles]}>{secondary.body}</p>
               {secondary.newsletter ? (
                 <NewsletterSubscribeFrameHost
-                  src={routes.homeNewsletterSignup.href()}
+                  src={routes.homeNewsletterSubscribeForm.href()}
                 />
               ) : null}
             </div>
           ) : null}
         </div>
       </section>
-    );
-  };
-}
-
-function FeaturePoints(
-  handle: Handle<{ sectionId: string; points: ReadonlyArray<FeaturePoint> }>,
-) {
-  return () => {
-    let variant = POINT_VARIANT_STYLES_BY_ID[handle.props.sectionId];
-
-    return (
-      <ul data-card-grid="" mix={[pointListStyles, variant?.list]}>
-        {handle.props.points.map((point) => (
-          <li
-            key={point.title}
-            data-card-item=""
-            mix={[pointStyles, variant?.item]}
-          >
-            <span mix={[pointTitleStyles]}>{point.title}</span>
-            <span mix={[pointBodyStyles]}>{point.body}</span>
-          </li>
-        ))}
-      </ul>
     );
   };
 }
@@ -288,14 +116,10 @@ const rowStyles = css({
   },
 });
 
-// Option A perf pass: reduce blur radius from 18px → 10px (blur cost is
-// ~quadratic in radius, so this cuts this section's backdrop-filter work
-// to ~31% of its previous per-frame cost) and compensate the slight loss
-// of diffusion with a more opaque local tint so the frosted-glass
-// read holds up. The shared `colors.sectionNavBg` token is intentionally
-// left alone — `SectionNav` and `PresetIndicator` don't need the same bump.
-// `contain: paint` gives the compositor a bounded invalidation region so
-// scrolling past the panel doesn't force a broader paint walk.
+// Blur stays at 12px because backdrop-filter cost grows ~quadratically with
+// radius; the opaque card tint carries the frosted-glass look. `contain: paint`
+// bounds the invalidation region so scrolling past the panel doesn't force a
+// broader paint walk.
 const panelStyles = css({
   width: "100%",
   maxWidth: "640px",
@@ -312,60 +136,6 @@ const panelStyles = css({
     padding: "48px",
   },
 });
-
-const leftPanelStyles = css({
-  gridColumn: "1 / -1",
-  [breakpointMedia.lg]: {
-    gridColumn: "2 / span 5",
-  },
-});
-
-const rightPanelStyles = css({
-  gridColumn: "1 / -1",
-  justifySelf: "stretch",
-  [breakpointMedia.lg]: {
-    gridColumn: "8 / -2",
-    justifySelf: "end",
-  },
-});
-
-const PRIMARY_PANEL_STYLES_BY_ID: Record<
-  string,
-  ReturnType<typeof css> | undefined
-> = {
-  "smaller-mental-model": css({
-    gridColumn: "1 / -1",
-    justifySelf: "center",
-    maxWidth: "640px",
-  }),
-  "test-drive": css({
-    gridColumn: "1 / -1",
-    justifySelf: "center",
-    [breakpointMedia.lg]: {
-      gridColumn: "1 / span 6",
-      justifySelf: "end",
-    },
-  }),
-  "humans-and-agents": css({
-    gridColumn: "1 / -1",
-    justifySelf: "center",
-    maxWidth: "640px",
-  }),
-};
-
-const SECONDARY_PANEL_STYLES_BY_ID: Record<
-  string,
-  ReturnType<typeof css> | undefined
-> = {
-  "test-drive": css({
-    gridColumn: "1 / -1",
-    justifySelf: "center",
-    [breakpointMedia.lg]: {
-      gridColumn: "7 / -1",
-      justifySelf: "start",
-    },
-  }),
-};
 
 const titleStyles = css({
   margin: "0",
@@ -453,75 +223,118 @@ const pointBodyStyles = css({
   ...textBoxTrim,
 });
 
-// Sections whose points render as a divided grid that bleeds to the panel edges.
-const POINT_VARIANT_STYLES_BY_ID: Record<
-  string,
-  { list: ReturnType<typeof css>; item: ReturnType<typeof css> } | undefined
-> = {
-  "smaller-mental-model": {
-    list: css({
-      gridTemplateColumns: "1fr",
-      gap: "0",
-      margin: "24px -24px -32px",
+const centeredPanelStyles = css({
+  gridColumn: "1 / -1",
+  justifySelf: "center",
+  maxWidth: "640px",
+});
+
+// Points that render as a divided grid/list bleeding to the panel edges.
+const gridPointStyles = {
+  list: css({
+    gridTemplateColumns: "1fr",
+    gap: "0",
+    margin: "24px -24px -32px",
+    borderTop: "1px solid rgba(255, 255, 255, 0.14)",
+    [breakpointMedia.sm]: {
+      gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+    },
+    [breakpointMedia.lg]: {
+      margin: "32px -48px -48px",
+    },
+  }),
+  item: css({
+    padding: "24px",
+    borderTop: "0",
+    borderRight: "0",
+    "&:not(:first-child)": {
       borderTop: "1px solid rgba(255, 255, 255, 0.14)",
-      [breakpointMedia.sm]: {
-        gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+    },
+    "&:nth-last-child(-n + 2)": {
+      paddingBottom: "32px",
+    },
+    [breakpointMedia.sm]: {
+      padding: "32px 48px",
+      "&:nth-child(odd)": {
+        borderRight: "1px solid rgba(255, 255, 255, 0.14)",
       },
-      [breakpointMedia.lg]: {
-        margin: "32px -48px -48px",
-      },
-    }),
-    item: css({
-      padding: "24px",
-      borderTop: "0",
-      borderRight: "0",
       "&:not(:first-child)": {
+        borderTop: "0",
+      },
+      "&:nth-child(n + 3)": {
         borderTop: "1px solid rgba(255, 255, 255, 0.14)",
       },
       "&:nth-last-child(-n + 2)": {
-        paddingBottom: "32px",
+        paddingBottom: "48px",
       },
-      [breakpointMedia.sm]: {
-        padding: "32px 48px",
-        "&:nth-child(odd)": {
-          borderRight: "1px solid rgba(255, 255, 255, 0.14)",
-        },
-        "&:not(:first-child)": {
-          borderTop: "0",
-        },
-        "&:nth-child(n + 3)": {
-          borderTop: "1px solid rgba(255, 255, 255, 0.14)",
-        },
-        "&:nth-last-child(-n + 2)": {
-          paddingBottom: "48px",
-        },
-      },
-    }),
-  },
-  "humans-and-agents": {
-    list: css({
-      gap: "0",
-      margin: "24px -24px -32px",
-      borderTop: "1px solid rgba(255, 255, 255, 0.14)",
-      [breakpointMedia.lg]: {
-        margin: "32px -48px -48px",
-      },
-    }),
-    item: css({
-      padding: "24px",
-      borderTop: "0",
-      "&:not(:first-child)": {
-        borderTop: "1px solid rgba(255, 255, 255, 0.14)",
-      },
-      "&:last-child": {
-        paddingBottom: "32px",
-      },
-      [breakpointMedia.lg]: {
-        padding: "32px 48px",
-        "&:last-child": {
-          paddingBottom: "48px",
-        },
-      },
-    }),
-  },
+    },
+  }),
 };
+
+const listPointStyles = {
+  list: css({
+    gap: "0",
+    margin: "24px -24px -32px",
+    borderTop: "1px solid rgba(255, 255, 255, 0.14)",
+    [breakpointMedia.lg]: {
+      margin: "32px -48px -48px",
+    },
+  }),
+  item: css({
+    padding: "24px",
+    borderTop: "0",
+    "&:not(:first-child)": {
+      borderTop: "1px solid rgba(255, 255, 255, 0.14)",
+    },
+    "&:last-child": {
+      paddingBottom: "32px",
+    },
+    [breakpointMedia.lg]: {
+      padding: "32px 48px",
+      "&:last-child": {
+        paddingBottom: "48px",
+      },
+    },
+  }),
+};
+
+type CssMix = ReturnType<typeof css>;
+
+const LAYOUT_STYLES = {
+  "centered-grid": {
+    primary: centeredPanelStyles,
+    secondary: centeredPanelStyles,
+    points: gridPointStyles,
+  },
+  "centered-list": {
+    primary: centeredPanelStyles,
+    secondary: centeredPanelStyles,
+    points: listPointStyles,
+  },
+  split: {
+    primary: css({
+      gridColumn: "1 / -1",
+      justifySelf: "center",
+      [breakpointMedia.lg]: {
+        gridColumn: "1 / span 6",
+        justifySelf: "end",
+      },
+    }),
+    secondary: css({
+      gridColumn: "1 / -1",
+      justifySelf: "center",
+      [breakpointMedia.lg]: {
+        gridColumn: "7 / -1",
+        justifySelf: "start",
+      },
+    }),
+    points: undefined,
+  },
+} satisfies Record<
+  FeatureSectionLayout,
+  {
+    primary: CssMix;
+    secondary: CssMix;
+    points: { list: CssMix; item: CssMix } | undefined;
+  }
+>;

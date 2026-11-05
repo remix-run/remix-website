@@ -1,11 +1,7 @@
-import type { NewsletterSubscriptionStatus } from "../ui/public/newsletter-frame-form.tsx";
-
-let subscriptionStatuses: readonly NewsletterSubscriptionStatus[] = [
-  "success",
-  "invalid-email",
-  "invalid-tag",
-  "error",
-];
+import {
+  newsletterSubscriptionStatuses,
+  type NewsletterSubscriptionStatus,
+} from "../ui/public/newsletter-frame-form.tsx";
 
 /**
  * Reads the `?subscription=` status that the newsletter subscribe action
@@ -15,5 +11,7 @@ export function getNewsletterSubscriptionStatus(
   request: Request,
 ): NewsletterSubscriptionStatus | null {
   let value = new URL(request.url).searchParams.get("subscription");
-  return subscriptionStatuses.find((status) => status === value) ?? null;
+  return (
+    newsletterSubscriptionStatuses.find((status) => status === value) ?? null
+  );
 }

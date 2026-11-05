@@ -1,12 +1,12 @@
 import { css, type Handle } from "remix/component";
 import { visuallyHiddenStyle } from "../../../ui/public/styles/css-mixins.ts";
-import type { ScheduleItem } from "./public/schedule-types.ts";
+import type { ScheduleItem } from "./public/schedule/schedule-types.ts";
 import {
   ScheduleDetails,
   ScheduleSpeakerSummary,
-} from "./public/schedule-content.tsx";
+} from "./public/schedule/schedule-content.tsx";
 import { breakpointMedia, theme } from "../../../ui/public/styles/theme.ts";
-import { Jam2026ScheduleAccordion } from "./public/schedule-accordion.tsx";
+import { Jam2026ScheduleAccordion } from "./public/schedule/schedule-accordion.tsx";
 import {
   jam2026WindowBodyStyle,
   jam2026WindowSurfaceStyle,
@@ -60,7 +60,7 @@ function Jam2026MobileSchedule(handle: Handle<{ items: ScheduleItem[] }>) {
   );
 }
 
-let scheduleStyle = css({
+const scheduleStyle = css({
   position: "relative",
   zIndex: 1,
   padding: "72px 16px 88px",
@@ -77,7 +77,7 @@ let scheduleStyle = css({
   },
 });
 
-let scheduleWindowStyle = css({
+const scheduleWindowStyle = css({
   display: "flex",
   width: "100%",
   maxWidth: "1200px",
@@ -86,24 +86,24 @@ let scheduleWindowStyle = css({
   gap: "0.5rem",
 });
 
-let mobileScheduleStyle = css({
+const mobileScheduleStyle = css({
   display: "block",
   [breakpointMedia.sm]: { display: "none" },
 });
 
-let desktopScheduleStyle = css({
+const desktopScheduleStyle = css({
   display: "none",
   [breakpointMedia.sm]: { display: "block" },
 });
 
-let mobileGridStyle = css({
+const mobileGridStyle = css({
   display: "grid",
   gridTemplateColumns: "72px minmax(0, 1fr) minmax(0, 0.9fr)",
   columnGap: "16px",
   rowGap: "6px",
 });
 
-let mobileHeaderStyle = css({
+const mobileHeaderStyle = css({
   padding: "16px 8px",
   color: jamTheme.textMuted,
   fontFamily: theme.fontFamily.sans,
@@ -114,17 +114,17 @@ let mobileHeaderStyle = css({
   textTransform: "uppercase",
 });
 
-let mobileItemStyle = css({
+const mobileItemStyle = css({
   overflow: "hidden",
   borderTop: `1px solid ${jamTheme.borderSubtle}`,
 });
 
-let mobileSummaryStyle = css({
+const mobileSummaryStyle = css({
   alignItems: "start",
   padding: "20px 8px",
 });
 
-let mobileTimeStyle = css({
+const mobileTimeStyle = css({
   gridColumn: 1,
   gridRow: "1 / span 2",
   display: "flex",
@@ -138,14 +138,14 @@ let mobileTimeStyle = css({
   lineHeight: 1.4,
 });
 
-let mobileTimezoneStyle = css({
+const mobileTimezoneStyle = css({
   color: jamTheme.textMuted,
   fontSize: "12px",
   fontWeight: theme.fontWeight.normal,
   letterSpacing: "0.06em",
 });
 
-let mobileTitleStyle = css({
+const mobileTitleStyle = css({
   gridColumn: 2,
   gridRow: 1,
   margin: 0,

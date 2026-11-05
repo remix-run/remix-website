@@ -5,18 +5,18 @@ import { routes } from "../../../../routes.ts";
 import { env } from "../../../../utils/env.ts";
 import { createRouteTestRouter } from "../../../../../test/setup.ts";
 import jam2025TicketController from "./controller.tsx";
-import { parseTicketPurchaseSubmission } from "./page.tsx";
 
 describe("Jam 2025 ticket submission", () => {
-  it("rejects partially numeric quantities", () => {
-    let formData = new FormData();
-    formData.set("productId", "ticket-id");
-    formData.set("quantity", "2abc");
-
-    expect(parseTicketPurchaseSubmission(formData)).toEqual({
-      success: false,
-      error: "Invalid ticket request",
+  it("rejects partially numeric quantities", async (t) => {
+    let cartRequests = mockStorefront(t);
+    let response = await submitTicket({
+      productId: "gid://shopify/ProductVariant/2025",
+      quantity: "2abc",
     });
+
+    expect(response.status).toBe(400);
+    expect(cartRequests).toHaveLength(0);
+    expect(await response.text()).toContain("Invalid ticket request");
   });
 
   it("rejects a mismatched product without contacting a real Storefront", async (t) => {

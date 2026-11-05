@@ -1,7 +1,7 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
-import { remixJam2026Ticket } from "./public/ticket-data.ts";
+import { remixJam2026Ticket } from "./public/tickets/ticket-data.ts";
 import {
   createClosedTicketCheckout,
   submitClosedTicketCheckout,

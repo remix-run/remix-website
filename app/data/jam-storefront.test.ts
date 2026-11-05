@@ -13,7 +13,7 @@ describe("Jam Storefront", () => {
     });
 
     await expect(getProduct("tickets")).resolves.toBe(null);
-    await expect(getPhotos("gallery")).resolves.toEqual([]);
+    await expect(getPhotos("gallery")).resolves.toBe(null);
     await expect(
       createCart({ productId: "variant", quantity: 1 }),
     ).resolves.toEqual({ error: "Ticket checkout is unavailable right now" });
@@ -55,10 +55,18 @@ describe("Jam Storefront", () => {
     await expect(getProduct("tickets")).resolves.toBe(null);
   });
 
-  it("degrades safely when gallery requests fail", async (t) => {
+  it("reports gallery request failures as unavailable, not empty", async (t) => {
     mockStorefront(t, async () => {
       throw new Error("Storefront unavailable");
     });
+
+    await expect(getPhotos("gallery")).resolves.toBe(null);
+  });
+
+  it("reports a metaobject without photos as an empty gallery", async (t) => {
+    mockStorefront(t, async () =>
+      Response.json({ data: { metaobject: null } }),
+    );
 
     await expect(getPhotos("gallery")).resolves.toEqual([]);
   });
@@ -90,7 +98,7 @@ describe("Jam Storefront", () => {
       }),
     );
 
-    let photos = await getPhotos("gallery");
+    let photos = (await getPhotos("gallery")) ?? [];
     expect(photos.map((photo) => photo.url)).toEqual([
       "https://cdn.shopify.com/a.jpg",
       "https://cdn.shopify.com/b.jpg",

@@ -52,7 +52,7 @@ type BrandAsset = {
   formats: readonly [BrandAssetFormat, ...BrandAssetFormat[]];
 };
 
-let previewThemes = {
+const previewThemes = {
   light: css({
     borderColor: "light-dark(#f7f7f7, transparent)",
     backgroundColor: "#ffffff",
@@ -71,7 +71,7 @@ let previewThemes = {
   }),
 } as const;
 
-let logoAssets = [
+const logoAssets = [
   {
     title: "Logo, light mode",
     fileBase: "remix-logo-light-mode",
@@ -98,7 +98,7 @@ let logoAssets = [
   },
 ] satisfies BrandAsset[];
 
-let wordmarkAssets = [
+const wordmarkAssets = [
   {
     title: "Wordmark, light mode",
     fileBase: "remix-wordmark-light-mode",
@@ -280,4 +280,4 @@ function BrandPageContent() {
   );
 }
 
-let brandHeadingStyle = css({ color: theme.colors.text.primary });
+const brandHeadingStyle = css({ color: theme.colors.text.primary });

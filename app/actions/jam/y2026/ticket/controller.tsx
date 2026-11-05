@@ -1,13 +1,20 @@
 import { createController } from "remix/router";
 
 import { routes } from "../../../../routes.ts";
-import { renderJam2026Page } from "../controller.tsx";
-import { submitClosedTicketCheckout } from "../ticket-checkout.ts";
+import { renderJam2026Page } from "../render-page.tsx";
+import {
+  createClosedTicketCheckout,
+  submitClosedTicketCheckout,
+} from "../ticket-checkout.ts";
 
 export default createController(routes.jam.y2026.ticket, {
   actions: {
     index({ render, request }) {
-      return renderJam2026Page({ render, request });
+      return renderJam2026Page({
+        render,
+        request,
+        ticketCheckout: createClosedTicketCheckout(),
+      });
     },
 
     action({ formData, render, request }) {

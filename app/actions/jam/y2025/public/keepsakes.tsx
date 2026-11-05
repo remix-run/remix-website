@@ -76,7 +76,7 @@ const KEEPSAKES = [
   },
 ] satisfies Keepsake[];
 
-export let JamKeepsakes = clientEntry(
+export const JamKeepsakes = clientEntry(
   import.meta.url,
   function JamKeepsakes(handle: Handle) {
     let order = {} as Record<KeepsakeId, number>;
@@ -227,16 +227,16 @@ export function moveToFront<Id extends string>(
   order[id] = ids.length;
 }
 
-let keepsakeStyle = css({
+const keepsakeStyle = css({
   position: "absolute",
   touchAction: "none",
   userSelect: "none",
 });
 
-let draggableStyle = css({ cursor: "grab" });
-let draggingStyle = css({ cursor: "grabbing" });
+const draggableStyle = css({ cursor: "grab" });
+const draggingStyle = css({ cursor: "grabbing" });
 
-let jiggleStyle = css({
+const jiggleStyle = css({
   animation:
     "jam-2025-keepsake-jiggle 3s cubic-bezier(0.99, 0.78, 0.72, 1.04) infinite forwards",
   "@keyframes jam-2025-keepsake-jiggle": {
@@ -249,7 +249,7 @@ let jiggleStyle = css({
   },
 });
 
-let rotateStyle = css({
+const rotateStyle = css({
   height: "100%",
   width: "100%",
   transform: "rotate(var(--rotate))",
@@ -265,21 +265,21 @@ let rotateStyle = css({
   },
 });
 
-let keepsakeFrameStyle = css({ width: "100%", height: "100%" });
+const keepsakeFrameStyle = css({ width: "100%", height: "100%" });
 
-let borderedFrameStyle = css({
+const borderedFrameStyle = css({
   border: `6px solid ${jamColors.white}`,
   borderRadius: "4px",
   [breakpointMedia.md]: { borderWidth: "16px" },
 });
 
-let imageStyle = css({
+const imageStyle = css({
   width: "100%",
   height: "100%",
   objectFit: "cover",
 });
 
-let keepsakePositionStyles: Record<KeepsakeId, ReturnType<typeof css>> = {
+const keepsakePositionStyles: Record<KeepsakeId, ReturnType<typeof css>> = {
   poster: css({
     "--rotate": "-2deg",
     "--hover-rotate": "4deg",

@@ -26,12 +26,12 @@ import {
   getBlogImageAsset,
 } from "../../utils/blog-image-assets.ts";
 import { CACHE } from "../../utils/cache-control.ts";
-import { getCanonicalUrl } from "../../utils/public/canonical-url.ts";
+import { createMarkdownResponse } from "../../utils/markdown-response.ts";
 import { getSocialHeadTagsForRequest } from "../../utils/social-head-tags-for-request.ts";
 import {
   NOT_FOUND_RESPONSE,
   StatusErrorDocument,
-} from "../../ui/not-found-page.tsx";
+} from "../../ui/status-error-document.tsx";
 import { BlogPostPage } from "./post-page.tsx";
 import { buildBlogRssResponse } from "./rss.ts";
 
@@ -60,16 +60,10 @@ export default createController(routes.blog, {
             statusText: "Not Found",
           });
         }
-        let htmlUrl = getCanonicalUrl(
-          new URL(request.url),
-          routes.blog.post.href({ slug }),
-        );
-        return new Response(markdown, {
-          headers: {
-            ...CACHE.RESOURCE,
-            "Content-Type": "text/markdown; charset=utf-8",
-            Link: `<${htmlUrl}>; rel="canonical"`,
-          },
+        return createMarkdownResponse(markdown, {
+          request,
+          htmlPathname: routes.blog.post.href({ slug }),
+          headers: CACHE.RESOURCE,
         });
       }
 
@@ -391,22 +385,22 @@ function getPostSocialImageUrl(
   return ogImageUrl.toString();
 }
 
-let blogHeroImageSizes =
+const blogHeroImageSizes =
   "(min-width: 1496px) 817px, (min-width: 768px) calc(58.333vw - 56px), calc(100vw - 96px)";
 
-let blogContainerStyle = {
+const blogContainerStyle = {
   boxSizing: "border-box",
   width: "100%",
   marginInline: "auto",
   paddingInline: theme.space.edge,
 } as const;
 
-let blogImageFrameStyle = css({
+const blogImageFrameStyle = css({
   aspectRatio: "16 / 9",
   marginBlockEnd: "24px",
 });
 
-let blogCardImageStyle = css({
+const blogCardImageStyle = css({
   width: "100%",
   height: "100%",
   objectFit: "cover",
@@ -415,7 +409,7 @@ let blogCardImageStyle = css({
   [breakpointMedia.md]: { borderRadius: "6px" },
 });
 
-let blogCardCopyStyle = css({
+const blogCardCopyStyle = css({
   display: "flex",
   flexDirection: "column",
   gap: "16px",

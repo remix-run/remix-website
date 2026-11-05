@@ -278,18 +278,18 @@ function AddressLink() {
   );
 }
 
-let strongStyle = css({
+const strongStyle = css({
   color: jamColors.white,
   fontWeight: theme.fontWeight.bold,
 });
 
-let faqListStyle = css({
+const faqListStyle = css({
   paddingLeft: "32px",
   listStyleType: "disc",
   "& > * + *": { marginTop: "4px" },
 });
 
-let textLinkStyle = css({
+const textLinkStyle = css({
   color: jamColors.link,
   "&:hover": { textDecoration: "underline" },
 });

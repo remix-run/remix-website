@@ -12,6 +12,16 @@ export async function jam2025GalleryDownloadHandler({
 }) {
   let requestUrl = new URL(request.url);
   let photos = await getGalleryPhotos();
+  if (photos === null) {
+    return new Response("Photos are unavailable right now", {
+      status: 503,
+      headers: {
+        ...CACHE.PRIVATE,
+        "Content-Type": "text/plain; charset=utf-8",
+      },
+    });
+  }
+
   let selectedPhotoIndex = getSelectedPhotoIndex(
     requestUrl.searchParams.get("photo"),
     photos.length,

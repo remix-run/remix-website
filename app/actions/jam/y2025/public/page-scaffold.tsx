@@ -1,5 +1,5 @@
 import { css, type Handle, type Props, type RemixNode } from "remix/component";
-import { Icon } from "../../../../ui/public/icon.tsx";
+import { Icon, type IconName } from "../../../../ui/public/icon.tsx";
 import { MobileMenu } from "../../../../ui/public/mobile-menu.tsx";
 import { routes } from "../../../../routes.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
@@ -138,32 +138,15 @@ function Navbar(handle: Handle<{ activePath: string }>) {
           [breakpointMedia.lg]: { display: "flex" },
         })}
       >
-        <NavLink
-          href={routes.jam.y2025.lineup.href()}
-          active={handle.props.activePath === routes.jam.y2025.lineup.href()}
-        >
-          Schedule & Lineup
-        </NavLink>
-        <NavLink
-          href={routes.jam.y2025.gallery.index.href()}
-          active={
-            handle.props.activePath === routes.jam.y2025.gallery.index.href()
-          }
-        >
-          Gallery
-        </NavLink>
-        <NavLink
-          href={routes.jam.y2025.coc.href()}
-          active={handle.props.activePath === routes.jam.y2025.coc.href()}
-        >
-          Code of Conduct
-        </NavLink>
-        <NavLink
-          href={routes.jam.y2025.faq.href()}
-          active={handle.props.activePath === routes.jam.y2025.faq.href()}
-        >
-          FAQ
-        </NavLink>
+        {navLinks.map((link) => (
+          <NavLink
+            key={link.href}
+            href={link.href}
+            active={handle.props.activePath === link.href}
+          >
+            {link.label}
+          </NavLink>
+        ))}
       </div>
       <a
         mix={[
@@ -245,40 +228,15 @@ function Navbar(handle: Handle<{ activePath: string }>) {
         })}
       >
         <MobileMenu unstyled>
-          <MobileNavLink
-            href={routes.jam.y2025.lineup.href()}
-            active={handle.props.activePath === routes.jam.y2025.lineup.href()}
-          >
-            Schedule & Lineup
-          </MobileNavLink>
-          <MobileNavLink
-            href={routes.jam.y2025.gallery.index.href()}
-            active={
-              handle.props.activePath === routes.jam.y2025.gallery.index.href()
-            }
-          >
-            Gallery
-          </MobileNavLink>
-          <MobileNavLink
-            href={routes.jam.y2025.coc.href()}
-            active={handle.props.activePath === routes.jam.y2025.coc.href()}
-          >
-            Code of Conduct
-          </MobileNavLink>
-          <MobileNavLink
-            href={routes.jam.y2025.faq.href()}
-            active={handle.props.activePath === routes.jam.y2025.faq.href()}
-          >
-            FAQ
-          </MobileNavLink>
-          <MobileNavLink
-            href={routes.jam.y2025.ticket.index.href()}
-            active={
-              handle.props.activePath === routes.jam.y2025.ticket.index.href()
-            }
-          >
-            Ticket
-          </MobileNavLink>
+          {[...navLinks, ticketNavLink].map((link) => (
+            <MobileNavLink
+              key={link.href}
+              href={link.href}
+              active={handle.props.activePath === link.href}
+            >
+              {link.label}
+            </MobileNavLink>
+          ))}
         </MobileMenu>
       </div>
     </nav>
@@ -457,62 +415,23 @@ function Footer(handle: Handle<{ showSeats: boolean }>) {
           >
             remix.run
           </a>
-          <a
-            href="https://github.com/remix-run"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="GitHub"
-            mix={footerSocialLinkStyle}
-          >
-            <Icon
-              name="github"
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            />
-          </a>
-          <a
-            href="https://x.com/remix_run"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="X"
-            mix={footerSocialLinkStyle}
-          >
-            <Icon
-              name="x"
-              aria-hidden="true"
-              viewBox="0 0 300 271"
-              fill="currentColor"
-            />
-          </a>
-          <a
-            href="https://youtube.com/remix_run"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="YouTube"
-            mix={footerSocialLinkStyle}
-          >
-            <Icon
-              name="youtube"
-              aria-hidden="true"
-              viewBox="0 0 40 40"
-              fill="currentColor"
-            />
-          </a>
-          <a
-            href="https://remix.run/discord"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Discord"
-            mix={footerSocialLinkStyle}
-          >
-            <Icon
-              name="discord"
-              aria-hidden="true"
-              viewBox="0 0 40 40"
-              fill="currentColor"
-            />
-          </a>
+          {socialLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={link.label}
+              mix={footerSocialLinkStyle}
+            >
+              <Icon
+                name={link.icon}
+                aria-hidden="true"
+                viewBox={link.viewBox}
+                fill="currentColor"
+              />
+            </a>
+          ))}
         </div>
         <div
           mix={css({
@@ -577,12 +496,57 @@ function TicketLogo(handle: Handle<{ mix?: Props<"svg">["mix"] }>) {
   );
 }
 
-let activeNavLinkStyle = css({
+const navLinks = [
+  { href: routes.jam.y2025.lineup.href(), label: "Schedule & Lineup" },
+  { href: routes.jam.y2025.gallery.index.href(), label: "Gallery" },
+  { href: routes.jam.y2025.coc.href(), label: "Code of Conduct" },
+  { href: routes.jam.y2025.faq.href(), label: "FAQ" },
+];
+
+// The desktop navbar renders Ticket as a separate button.
+const ticketNavLink = {
+  href: routes.jam.y2025.ticket.index.href(),
+  label: "Ticket",
+};
+
+const socialLinks: Array<{
+  href: string;
+  label: string;
+  icon: IconName;
+  viewBox: string;
+}> = [
+  {
+    href: "https://github.com/remix-run",
+    label: "GitHub",
+    icon: "github",
+    viewBox: "0 0 24 24",
+  },
+  {
+    href: "https://x.com/remix_run",
+    label: "X",
+    icon: "x",
+    viewBox: "0 0 300 271",
+  },
+  {
+    href: "https://youtube.com/remix_run",
+    label: "YouTube",
+    icon: "youtube",
+    viewBox: "0 0 40 40",
+  },
+  {
+    href: "https://remix.run/discord",
+    label: "Discord",
+    icon: "discord",
+    viewBox: "0 0 40 40",
+  },
+];
+
+const activeNavLinkStyle = css({
   borderColor: jamColors.white,
   color: jamColors.white,
 });
 
-let inactiveNavLinkStyle = css({
+const inactiveNavLinkStyle = css({
   borderColor: "transparent",
   color: whiteAlpha(0.7),
   "&:is(:hover, :focus-visible)": {
@@ -591,7 +555,7 @@ let inactiveNavLinkStyle = css({
   },
 });
 
-let footerSocialLinkStyle = css({
+const footerSocialLinkStyle = css({
   display: "inline-flex",
   width: "24px",
   height: "24px",
@@ -606,12 +570,12 @@ let footerSocialLinkStyle = css({
   "@media (prefers-reduced-motion: reduce)": { transition: "none" },
 });
 
-let seatsLegalLinkStyle = css({
+const seatsLegalLinkStyle = css({
   color: jamColors.white,
   "&:hover": { textDecoration: "underline" },
 });
 
-let plainLegalLinkStyle = css({
+const plainLegalLinkStyle = css({
   color: jamColors.white,
   "&:hover": { color: theme.colors.brand.blue },
 });

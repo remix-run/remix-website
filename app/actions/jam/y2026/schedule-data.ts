@@ -3,9 +3,9 @@ import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import * as s from "remix/data-schema";
 import yaml from "yaml";
-import { processMarkdown } from "../../../data/md.ts";
+import { renderMarkdown } from "../../../data/markdown.ts";
 import { memoizeAsync } from "../../../utils/memoize-async.ts";
-import type { ScheduleItem } from "./public/schedule-types.ts";
+import type { ScheduleItem } from "./public/schedule/schedule-types.ts";
 
 const SCHEDULE_IMAGES_DIRECTORY = path.join(
   process.cwd(),
@@ -68,7 +68,7 @@ async function loadScheduleItem(
   imageUrlByFilename: ImageUrlByFilename,
 ): Promise<ScheduleItem> {
   let [{ html: description }, speakers] = await Promise.all([
-    processMarkdown(item.description),
+    renderMarkdown(item.description),
     Promise.all(
       (item.speakers ?? []).map((speaker) =>
         loadSpeaker(speaker, imageUrlByFilename),
@@ -95,7 +95,7 @@ async function loadSpeaker(
     speaker.imgFilename,
     speaker.name,
   );
-  let bio = speaker.bio ? (await processMarkdown(speaker.bio)).html : undefined;
+  let bio = speaker.bio ? (await renderMarkdown(speaker.bio)).html : undefined;
 
   return { name: speaker.name, imgSrc, bio };
 }

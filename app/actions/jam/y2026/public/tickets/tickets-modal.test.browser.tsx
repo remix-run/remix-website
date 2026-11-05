@@ -6,7 +6,7 @@ import { render } from "remix/component/test";
 import { Jam2026TicketsModalFrame } from "./tickets-modal.tsx";
 import { remixJam2026Ticket } from "./ticket-data.ts";
 import { ticketModalConfig } from "./tickets-modal-contract.ts";
-import { routes } from "../../../../routes.ts";
+import { routes } from "../../../../../routes.ts";
 
 describe("Jam2026TicketsModal", () => {
   let originalHead: string;
@@ -256,12 +256,10 @@ describe("Jam2026TicketsModal", () => {
         matches: query === "(prefers-reduced-motion: reduce)",
         media: query,
         onchange: null,
-        addListener() {},
-        removeListener() {},
         addEventListener() {},
         removeEventListener() {},
         dispatchEvent: () => false,
-      }) as MediaQueryList;
+      }) as unknown as MediaQueryList;
     navigation.navigate = (() => {
       window.scrollTo(0, 0);
       return {

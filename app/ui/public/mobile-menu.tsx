@@ -17,7 +17,7 @@ type MobileMenuProps = {
 
 type MenuState = { status: "open" } | { status: "closed" };
 
-export let MobileMenu = clientEntry(
+export const MobileMenu = clientEntry(
   import.meta.url,
   function MobileMenu(handle: Handle<MobileMenuProps>) {
     let state: MenuState = { status: "closed" };

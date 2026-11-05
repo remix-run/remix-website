@@ -8,7 +8,7 @@ import {
   wrapPhotoIndex,
 } from "./gallery-modal-navigation.ts";
 
-let noModifiers = { metaKey: false, ctrlKey: false, altKey: false };
+const noModifiers = { metaKey: false, ctrlKey: false, altKey: false };
 
 describe("getGalleryKeyAction", () => {
   it("maps gallery keys to actions", () => {

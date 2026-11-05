@@ -10,7 +10,7 @@ type JamFadeInBadgeProps = {
   live?: boolean;
 };
 
-export let JamFadeInBadge = clientEntry(
+export const JamFadeInBadge = clientEntry(
   import.meta.url,
   function JamFadeInBadge(handle: Handle<JamFadeInBadgeProps>) {
     let isVisible = false;
@@ -55,7 +55,7 @@ function revealAfterDelay(
   lifetimeSignal.addEventListener("abort", cancel, { once: true });
 }
 
-let badgeStyle = css({
+const badgeStyle = css({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -73,12 +73,12 @@ let badgeStyle = css({
   "@media (prefers-reduced-motion: reduce)": { transition: "none" },
 });
 
-let liveBadgeStyle = css({
+const liveBadgeStyle = css({
   backgroundColor: theme.colors.brand.red,
   color: jamColors.white,
 });
 
-let outlinedBadgeStyle = css({
+const outlinedBadgeStyle = css({
   color: jamColors.white,
   boxShadow: `inset 0 0 0 4px ${jamColors.white}`,
   [breakpointMedia.md]: {
@@ -86,5 +86,5 @@ let outlinedBadgeStyle = css({
   },
 });
 
-let visibleStyle = css({ opacity: 1 });
-let hiddenStyle = css({ opacity: 0 });
+const visibleStyle = css({ opacity: 1 });
+const hiddenStyle = css({ opacity: 0 });

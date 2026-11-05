@@ -3,7 +3,7 @@ import { clientEntry, css, on, ref, type Handle } from "remix/component";
 import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
 import { jamColors } from "./theme.ts";
 
-export let JamTicketCard = clientEntry(
+export const JamTicketCard = clientEntry(
   import.meta.url,
   function JamTicketCard(
     handle: Handle<{
@@ -222,7 +222,7 @@ export let JamTicketCard = clientEntry(
   },
 );
 
-let largeOverlayStyle = css({
+const largeOverlayStyle = css({
   position: "absolute",
   inset: 0,
   top: "50%",

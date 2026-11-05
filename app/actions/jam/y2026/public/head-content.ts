@@ -1,6 +1,6 @@
-import type { ManagedHeadTag } from "../../../../ui/public/document-head.ts";
+import type { ManagedHeadTag } from "../../../../ui/public/document/document-head.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
-import { getCanonicalOrigin } from "../../../../utils/public/canonical-url.ts";
+import { getCanonicalPageUrls } from "../../../../utils/public/canonical-url.ts";
 import { createSocialHeadTags } from "../../../../utils/public/social-head-tags.ts";
 import { routes } from "../../../../routes.ts";
 
@@ -48,23 +48,20 @@ export function getJam2026ClientManagedHeadTags(head: {
   title: string;
   description: string;
 }) {
-  let pageUrl: string = routes.jam.y2026.index.href();
-  let imageUrl: string = assetPaths.jam2026.shareImage;
-
-  if (typeof window !== "undefined") {
-    let currentUrl = new URL(window.location.href);
-    let trustedOrigin = getCanonicalOrigin(currentUrl);
-    pageUrl = `${trustedOrigin}${currentUrl.pathname}`;
-    imageUrl = new URL(assetPaths.jam2026.shareImage, trustedOrigin).href;
-  }
+  let urls =
+    typeof window === "undefined"
+      ? {
+          pageUrl: routes.jam.y2026.index.href(),
+          imageUrl: assetPaths.jam2026.shareImage,
+        }
+      : getCanonicalPageUrls(
+          new URL(window.location.href),
+          assetPaths.jam2026.shareImage,
+        );
 
   return [
     { kind: "meta", name: "description", content: head.description },
-    ...buildJam2026HeadTags({
-      ...head,
-      pageUrl,
-      imageUrl,
-    }),
+    ...buildJam2026HeadTags({ ...head, ...urls }),
   ] satisfies ManagedHeadTag[];
 }
 
@@ -73,18 +70,17 @@ export function getJam2026ServerHeadTags(props: {
   description: string;
   requestUrl: string | URL;
 }) {
-  let requestUrl = new URL(props.requestUrl);
-  let trustedOrigin = getCanonicalOrigin(requestUrl);
-
   return buildJam2026HeadTags({
     title: props.title,
     description: props.description,
-    pageUrl: `${trustedOrigin}${requestUrl.pathname}`,
-    imageUrl: new URL(assetPaths.jam2026.shareImage, trustedOrigin).toString(),
+    ...getCanonicalPageUrls(
+      new URL(props.requestUrl),
+      assetPaths.jam2026.shareImage,
+    ),
   });
 }
 
-let jam2026IconHeadTags: ManagedHeadTag[] = [
+const jam2026IconHeadTags: ManagedHeadTag[] = [
   {
     kind: "link",
     rel: "apple-touch-icon",

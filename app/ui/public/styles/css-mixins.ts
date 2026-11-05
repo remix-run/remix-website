@@ -6,14 +6,14 @@ import { css } from "remix/component";
  *
  *   css({ ...someStyles, ...textBoxTrim })
  */
-export let textBoxTrim = {
+export const textBoxTrim = {
   "@supports (text-box-trim: trim-both)": {
     textBoxTrim: "trim-both",
     textBoxEdge: "cap alphabetic",
   },
 } as const;
 
-export let visuallyHiddenStyle = css({
+export const visuallyHiddenStyle = css({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
   height: "1px",

@@ -35,7 +35,7 @@ type JamScrambleTextProps = ScrambleSetup & {
   nowrap?: boolean;
 };
 
-let playedAnimations = new Set<string>();
+const playedAnimations = new Set<string>();
 let activePathname: string | null = null;
 
 function syncPlayedAnimationsPathname() {
@@ -52,7 +52,7 @@ function getAnimationKey(text: string) {
   return `${window.location.pathname}::${text}`;
 }
 
-export let JamScrambleText = clientEntry(
+export const JamScrambleText = clientEntry(
   import.meta.url,
   function JamScrambleText(handle: Handle<JamScrambleTextProps>) {
     let text = handle.props.text;
@@ -233,7 +233,7 @@ function getResolvedState(text: string): ScrambleState[] {
     .map(() => ({ visible: true, iteration: 0, resolved: true }));
 }
 
-let visuallyHiddenStyle = css({
+const visuallyHiddenStyle = css({
   position: "absolute",
   width: "1px",
   height: "1px",
@@ -243,12 +243,12 @@ let visuallyHiddenStyle = css({
   whiteSpace: "nowrap",
 });
 
-let nowrapStyle = css({ whiteSpace: "nowrap" });
-let visibleStyle = css({ opacity: 1 });
-let hiddenStyle = css({ opacity: 0 });
-let resolvedStyle = css({ color: jamColors.white });
+const nowrapStyle = css({ whiteSpace: "nowrap" });
+const visibleStyle = css({ opacity: 1 });
+const hiddenStyle = css({ opacity: 0 });
+const resolvedStyle = css({ color: jamColors.white });
 
-let colorStyles = {
+const colorStyles = {
   blue: css({ color: theme.colors.brand.blue }),
   green: css({ color: theme.colors.brand.green }),
   yellow: css({ color: theme.colors.brand.yellow }),

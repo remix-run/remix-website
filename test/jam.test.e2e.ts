@@ -2,7 +2,7 @@ import { expect, type Page } from "@playwright/test";
 import { createTestServer } from "remix/node-fetch-server/test";
 import { beforeEach, describe, it } from "remix/test";
 
-import { ticketModalConfig } from "../app/actions/jam/y2026/public/tickets-modal-contract.ts";
+import { ticketModalConfig } from "../app/actions/jam/y2026/public/tickets/tickets-modal-contract.ts";
 import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
 import { env } from "../app/utils/env.ts";
@@ -10,7 +10,8 @@ import { newsletterTagIds } from "../app/utils/public/newsletter-tags.ts";
 import {
   swallowAbortErrors,
   waitForClientEntryHydration,
-} from "../test/setup.ts";
+  waitForRuntime,
+} from "./setup.ts";
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -28,16 +29,6 @@ async function expectMarkerToStay(page: Page, marker: string) {
       ),
     )
     .toBe(marker);
-}
-
-async function waitForRuntime(page: Page) {
-  await page.waitForFunction(() => {
-    let walker = document.createTreeWalker(document, NodeFilter.SHOW_COMMENT);
-    while (walker.nextNode()) {
-      if ("$rmx" in walker.currentNode) return true;
-    }
-    return false;
-  });
 }
 
 describe("Jam", () => {

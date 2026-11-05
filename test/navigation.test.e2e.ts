@@ -6,9 +6,9 @@ import { DOCUMENT_REDIRECT_HEADER } from "../app/utils/public/frame-headers.ts";
 import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
 import type { NewsletterRepository } from "../app/actions/newsletter/archive.ts";
-import { swallowAbortErrors } from "../test/setup.ts";
+import { swallowAbortErrors } from "./setup.ts";
 
-let emptyNewsletterRepository: NewsletterRepository = {
+const emptyNewsletterRepository: NewsletterRepository = {
   async listSummaries() {
     return [];
   },
@@ -20,7 +20,7 @@ let emptyNewsletterRepository: NewsletterRepository = {
   },
 };
 
-let newsletterIssueRepository: NewsletterRepository = {
+const newsletterIssueRepository: NewsletterRepository = {
   async listSummaries() {
     return [];
   },

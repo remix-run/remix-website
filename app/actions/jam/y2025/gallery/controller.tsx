@@ -9,6 +9,7 @@ import {
 } from "./photos.ts";
 import type { AppRenderer } from "../../../../middleware/render.ts";
 import { routes } from "../../../../routes.ts";
+import { CACHE } from "../../../../utils/cache-control.ts";
 import { JamDocument } from "../document.tsx";
 import { JamScrambleText } from "../public/scramble-text.tsx";
 import { Title } from "../public/typography.tsx";
@@ -28,7 +29,7 @@ export default createController(routes.jam.y2025.gallery, {
       let photos = await getGalleryPhotos();
       let selectedPhotoIndex = getSelectedPhotoIndex(
         new URL(request.url).searchParams.get("photo"),
-        photos.length,
+        photos?.length ?? 0,
       );
 
       return renderGalleryPage({ photos, render, request, selectedPhotoIndex });
@@ -44,7 +45,8 @@ function renderGalleryPage({
   request,
   selectedPhotoIndex,
 }: {
-  photos: Photo[];
+  /** `null` when Storefront is unavailable. */
+  photos: Photo[] | null;
   render: AppRenderer;
   request: Request;
   selectedPhotoIndex: number | null;
@@ -78,15 +80,11 @@ function renderGalleryPage({
           <JamScrambleText text="Gallery" delay={300} color="green" />
         </Title>
 
-        {photos.length === 0 ? (
-          <p
-            mix={css({
-              color: whiteAlpha(0.7),
-              fontSize: "1.125rem",
-              lineHeight: 1.556,
-            })}
-          >
-            No photos available yet.
+        {photos === null || photos.length === 0 ? (
+          <p mix={emptyGalleryMessageStyle}>
+            {photos === null
+              ? "Photos are unavailable right now. Please try again later."
+              : "No photos available yet."}
           </p>
         ) : (
           <div mix={css({ width: "100%" })}>
@@ -144,8 +142,16 @@ function renderGalleryPage({
         )}
       </main>
     </JamDocument>,
+    // Never let the CDN cache a gallery rendered during a Storefront outage.
+    photos === null ? UNAVAILABLE_RESPONSE : undefined,
   );
 }
+
+const UNAVAILABLE_RESPONSE = {
+  status: 503,
+  statusText: "Service Unavailable",
+  headers: CACHE.PRIVATE,
+} as const;
 
 function GalleryModal(
   handle: Handle<{
@@ -377,10 +383,10 @@ function getJamGalleryModalNav(
   };
 }
 
-let GALLERY_MODAL_MAX_WIDTH = 1920;
-let GALLERY_MODAL_MAX_HEIGHT = 1080;
-let GALLERY_GRID_IMAGE_WIDTHS = [400, 600, 800, 1200];
-let GALLERY_GRID_DEFAULT_WIDTH = 800;
+const GALLERY_MODAL_MAX_WIDTH = 1920;
+const GALLERY_MODAL_MAX_HEIGHT = 1080;
+const GALLERY_GRID_IMAGE_WIDTHS = [400, 600, 800, 1200];
+const GALLERY_GRID_DEFAULT_WIDTH = 800;
 
 function getGalleryModalImageSrc(photo: Photo) {
   return transformShopifyImageUrl(photo.url, {
@@ -432,14 +438,20 @@ function PhotoImage(handle: Handle<Photo>) {
   };
 }
 
-let modalChevronStyle = css({
+const emptyGalleryMessageStyle = css({
+  color: whiteAlpha(0.7),
+  fontSize: "1.125rem",
+  lineHeight: 1.556,
+});
+
+const modalChevronStyle = css({
   position: "absolute",
   top: "50%",
   zIndex: 10,
   transform: "translateY(-50%)",
 });
 
-let iconLinkStyle = css({
+const iconLinkStyle = css({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -461,10 +473,10 @@ let iconLinkStyle = css({
   "@media (prefers-reduced-motion: reduce)": { transition: "none" },
 });
 
-let iconLinkIconStyle = css({
+const iconLinkIconStyle = css({
   width: "24px",
   height: "24px",
   pointerEvents: "none",
 });
 
-let flippedIconStyle = css({ transform: "rotate(180deg)" });
+const flippedIconStyle = css({ transform: "rotate(180deg)" });

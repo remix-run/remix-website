@@ -1,13 +1,17 @@
 import { getPhotos } from "../../../../data/jam-storefront.ts";
 
-export type Photo = Awaited<ReturnType<typeof getGalleryPhotos>>[number];
+export type Photo = NonNullable<
+  Awaited<ReturnType<typeof getGalleryPhotos>>
+>[number];
 
+/** All gallery photos in order, or `null` when Storefront is unavailable. */
 export async function getGalleryPhotos() {
   let pages = await Promise.all([
     getPhotos("remix-jam-2025-photos-1"),
     getPhotos("remix-jam-2025-photos-2"),
   ]);
-  return pages.flat();
+  if (pages.some((page) => page === null)) return null;
+  return pages.flatMap((page) => page ?? []);
 }
 
 /** Parses the `?photo=` index; `null` when it is missing or out of range. */

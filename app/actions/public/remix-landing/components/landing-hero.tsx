@@ -5,7 +5,7 @@ import {
   theme,
 } from "../../../../ui/public/styles/theme.ts";
 import { textBoxTrim } from "../../../../ui/public/styles/css-mixins.ts";
-import { RemixLandingSectionNav } from "../landing-enhancements.tsx";
+import { RemixLandingSectionNav } from "./section-nav.tsx";
 import { colors, glowWhite } from "../tokens.ts";
 import { landingContent } from "../landing-content.ts";
 import { CreateRemixCommand } from "./create-remix-command.tsx";

@@ -3,15 +3,12 @@ import * as s from "remix/data-schema";
 import * as c from "remix/data-schema/checks";
 import * as coerce from "remix/data-schema/coerce";
 
-import { remixJam2026Ticket } from "./public/ticket-data.ts";
+import { remixJam2026Ticket } from "./public/tickets/ticket-data.ts";
+import type { Jam2026TicketCheckout } from "./public/tickets/tickets-modal-contract.ts";
 
 // Conference-day ticket sales are closed regardless of Shopify inventory, so
 // the ticket flow never fetches products or creates carts. If sales reopen,
 // restore the Storefront checkout path from git history.
-
-export type Jam2026TicketCheckout = ReturnType<
-  typeof createClosedTicketCheckout
->;
 
 /**
  * Handles a ticket form submission while sales are closed. Malformed
@@ -43,7 +40,7 @@ export function createClosedTicketCheckout({
 }: {
   error?: string;
   initialQuantity?: number;
-} = {}) {
+} = {}): Jam2026TicketCheckout {
   let maxQuantity = remixJam2026Ticket.maxQuantity;
 
   return {
@@ -55,7 +52,7 @@ export function createClosedTicketCheckout({
   };
 }
 
-let submissionSchema = f.object({
+const submissionSchema = f.object({
   ticketType: f.field(s.enum_([remixJam2026Ticket.type])),
   productId: f.field(s.string()),
   quantity: f.field(

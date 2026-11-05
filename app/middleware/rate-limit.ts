@@ -34,7 +34,7 @@ export function rateLimit({
       return next();
     }
 
-    let ip = keyGenerator(context)?.trim() || "unknown";
+    let ip = keyGenerator(context).trim() || "unknown";
     let now = Date.now();
     requestsSinceCleanup++;
     if (requestsSinceCleanup >= 100) {

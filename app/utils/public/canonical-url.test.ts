@@ -1,7 +1,11 @@
 import { expect } from "remix/assert";
 import { describe, it } from "remix/test";
 
-import { getCanonicalOrigin, getCanonicalUrl } from "./canonical-url.ts";
+import {
+  getCanonicalOrigin,
+  getCanonicalPageUrls,
+  getCanonicalUrl,
+} from "./canonical-url.ts";
 
 describe("getCanonicalOrigin", () => {
   it("keeps the origin of local servers", () => {
@@ -30,5 +34,27 @@ describe("getCanonicalUrl", () => {
 
     expect(getCanonicalUrl(url)).toBe("https://remix.run/blog/post");
     expect(getCanonicalUrl(url, "/blog")).toBe("https://remix.run/blog");
+  });
+});
+
+describe("getCanonicalPageUrls", () => {
+  it("resolves the page and relative image against the canonical origin", () => {
+    let url = new URL("https://remix-website-staging.fly.dev/jam/2026?x=1");
+
+    expect(getCanonicalPageUrls(url, "/assets/share.png")).toEqual({
+      pageUrl: "https://remix.run/jam/2026",
+      imageUrl: "https://remix.run/assets/share.png",
+    });
+  });
+
+  it("keeps absolute image URLs", () => {
+    let url = new URL("http://localhost:3000/blog");
+
+    expect(getCanonicalPageUrls(url, "https://cdn.example.com/og.png")).toEqual(
+      {
+        pageUrl: "http://localhost:3000/blog",
+        imageUrl: "https://cdn.example.com/og.png",
+      },
+    );
   });
 });

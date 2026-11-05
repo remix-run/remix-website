@@ -4,7 +4,7 @@ import { visuallyHiddenStyle } from "./styles/css-mixins.ts";
 import { theme } from "./styles/theme.ts";
 import { Wordmark } from "./wordmark.tsx";
 
-export let WordmarkLink = clientEntry(
+export const WordmarkLink = clientEntry(
   import.meta.url,
   function WordmarkLink(
     handle: Handle<{

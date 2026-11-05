@@ -3,7 +3,7 @@ import { describe, it } from "remix/test";
 
 import { syncManagedHeadTags, type ManagedHeadTag } from "./document-head.ts";
 
-let preloadTag: ManagedHeadTag = {
+const preloadTag: ManagedHeadTag = {
   kind: "link",
   rel: "preload",
   href: "/hero.webp",
@@ -13,7 +13,7 @@ let preloadTag: ManagedHeadTag = {
   crossorigin: "anonymous",
   fetchpriority: "high",
 };
-let descriptionTag: ManagedHeadTag = {
+const descriptionTag: ManagedHeadTag = {
   kind: "meta",
   name: "description",
   content: "First",

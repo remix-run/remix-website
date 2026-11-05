@@ -3,21 +3,21 @@ import { prefersReducedMotion, spring } from "@remix-run/ui/animation";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { theme } from "../../../../ui/public/styles/theme.ts";
 
-import { syncDocumentTheme } from "../../../../ui/public/document-head-sync.ts";
-import { Jam2026Countdown } from "./countdown.tsx";
-import { jamTheme, type Jam2026ThemeMode } from "./theme.ts";
+import { syncDocumentTheme } from "../../../../ui/public/document/document-head-sync.ts";
+import { Jam2026Countdown } from "./countdown/countdown.tsx";
+import {
+  jamLogoFilterStyle,
+  jamTheme,
+  type Jam2026ThemeMode,
+} from "./theme.ts";
 import { routes } from "../../../../routes.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
-
-const LIGHT_LOGO_FILTER =
-  "brightness(0) saturate(100%) invert(14%) sepia(48%) saturate(1162%) hue-rotate(171deg) brightness(91%) contrast(97%)";
-const DARK_LOGO_FILTER = "brightness(0) invert(1)";
 
 type Jam2026HeaderProps = {
   initialTheme?: Jam2026ThemeMode;
 };
 
-export let Jam2026Header = clientEntry(
+export const Jam2026Header = clientEntry(
   import.meta.url,
   function Jam2026Header(handle: Handle<Jam2026HeaderProps>) {
     let theme: Jam2026ThemeMode = handle.props.initialTheme ?? "light";
@@ -133,14 +133,14 @@ function HeaderLogo(handle: Handle) {
             height={24}
             src={assetPaths.jam2026.shopifyGlyph}
             width={21}
-            mix={[jam2026LogoFilterStyle, jam2026ShopifyLogoStyle]}
+            mix={[jamLogoFilterStyle, jam2026ShopifyLogoStyle]}
           />
           <img
             alt=""
             height={54}
             src={assetPaths.jam2026.horizontalLockup}
             width={404}
-            mix={[jam2026LogoFilterStyle, jam2026EventLogoStyle]}
+            mix={[jamLogoFilterStyle, jam2026EventLogoStyle]}
           />
         </a>
       </div>
@@ -190,7 +190,13 @@ function ThemeToggle(
               if (!form) return;
 
               handle.props.onChange(nextTheme);
-              void submitThemePreference(form, signal).catch(() => {});
+              submitThemePreference(form, signal).catch((error) => {
+                if (signal.aborted) return;
+                console.error(
+                  "[jam-theme] Failed to save theme preference",
+                  error,
+                );
+              });
             }),
           ]}
           type="submit"
@@ -223,7 +229,7 @@ function ThemeToggle(
   };
 }
 
-let onHomeClick = on<HTMLAnchorElement>("click", (event) => {
+const onHomeClick = on<HTMLAnchorElement>("click", (event) => {
   if (!(event instanceof MouseEvent) || !isPlainLeftClick(event)) return;
   if (!isCurrentPage(new URL(event.currentTarget.href))) return;
 
@@ -231,7 +237,7 @@ let onHomeClick = on<HTMLAnchorElement>("click", (event) => {
   window.scrollTo({ top: 0, behavior: getReducedMotionScrollBehavior() });
 });
 
-let onFaqClick = on<HTMLAnchorElement>("click", (event) => {
+const onFaqClick = on<HTMLAnchorElement>("click", (event) => {
   if (!(event instanceof MouseEvent) || !isPlainLeftClick(event)) return;
 
   let targetUrl = new URL(event.currentTarget.href);
@@ -255,35 +261,27 @@ function getSystemTheme(): Jam2026ThemeMode {
 }
 
 function subscribeToSystemTheme(listener: () => void, signal: AbortSignal) {
-  let query = window.matchMedia("(prefers-color-scheme: dark)");
-  let onChange = () => listener();
-
-  if (typeof query.addEventListener === "function") {
-    query.addEventListener("change", onChange);
-    signal.addEventListener(
-      "abort",
-      () => query.removeEventListener("change", onChange),
-      { once: true },
-    );
-  } else if (typeof query.addListener === "function") {
-    // Safari < 14 only supports the deprecated MediaQueryList listener API.
-    query.addListener(onChange);
-    signal.addEventListener("abort", () => query.removeListener(onChange), {
-      once: true,
-    });
-  }
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", () => listener(), { signal });
 }
 
 async function submitThemePreference(
   form: HTMLFormElement,
   signal: AbortSignal,
 ) {
-  await fetch(form.getAttribute("action") ?? form.action, {
+  let response = await fetch(form.getAttribute("action") ?? form.action, {
     body: new FormData(form),
     method: "POST",
     redirect: "manual",
     signal,
   });
+
+  // The action answers with a 303 redirect, which `redirect: "manual"`
+  // surfaces as an opaque redirect response rather than following it.
+  if (!response.ok && response.type !== "opaqueredirect") {
+    throw new Error(`Theme preference request failed: ${response.status}`);
+  }
 }
 
 function isPlainLeftClick(event: MouseEvent) {
@@ -309,7 +307,7 @@ function getReducedMotionScrollBehavior(): ScrollBehavior {
   return prefersReducedMotion() ? "auto" : "smooth";
 }
 
-let jam2026HeaderStyle = css({
+const jam2026HeaderStyle = css({
   alignItems: "center",
   background: jamTheme.navBg,
   display: "grid",
@@ -325,7 +323,7 @@ let jam2026HeaderStyle = css({
   },
 });
 
-let jam2026NavLogoStyle = css({
+const jam2026NavLogoStyle = css({
   alignItems: "center",
   display: "grid",
   height: "100%",
@@ -357,7 +355,7 @@ let jam2026NavLogoStyle = css({
   },
 });
 
-let jam2026LogoLinkStyle = css({
+const jam2026LogoLinkStyle = css({
   alignItems: "center",
   display: "grid",
   height: "100%",
@@ -374,20 +372,7 @@ let jam2026LogoLinkStyle = css({
   },
 });
 
-let jam2026LogoFilterStyle = css({
-  filter: LIGHT_LOGO_FILTER,
-  ":root.dark &": {
-    filter: DARK_LOGO_FILTER,
-  },
-  ':root[data-theme="dark"] &': {
-    filter: DARK_LOGO_FILTER,
-  },
-  '[data-theme="dark"] &': {
-    filter: DARK_LOGO_FILTER,
-  },
-});
-
-let jam2026ShopifyLogoStyle = css({
+const jam2026ShopifyLogoStyle = css({
   height: "24px",
   opacity: 1,
   transform: "translateY(0) scale(1)",
@@ -398,7 +383,7 @@ let jam2026ShopifyLogoStyle = css({
   },
 });
 
-let jam2026EventLogoStyle = css({
+const jam2026EventLogoStyle = css({
   height: "auto",
   opacity: 0,
   transform: "translateY(14px) scale(0.96)",
@@ -418,14 +403,14 @@ let jam2026EventLogoStyle = css({
   },
 });
 
-let jam2026NavActionsStyle = css({
+const jam2026NavActionsStyle = css({
   alignItems: "center",
   display: "flex",
   height: "100%",
   justifyContent: "flex-end",
 });
 
-let jam2026NavLinkStyle = css({
+const jam2026NavLinkStyle = css({
   alignItems: "center",
   boxShadow: `inset 1px 0 0 ${jamTheme.ruleColor}`,
   color: jamTheme.ink,
@@ -455,7 +440,7 @@ let jam2026NavLinkStyle = css({
   },
 });
 
-let jam2026ThemeToggleStyle = css({
+const jam2026ThemeToggleStyle = css({
   alignItems: "center",
   display: "inline-flex",
   gap: "10px",
@@ -471,7 +456,7 @@ let jam2026ThemeToggleStyle = css({
   },
 });
 
-let jam2026ThemeOptionStyle = css({
+const jam2026ThemeOptionStyle = css({
   color: jamTheme.ink,
   display: "block",
   fontFamily: '"JetBrains Mono", ui-monospace, monospace',
@@ -504,7 +489,7 @@ let jam2026ThemeOptionStyle = css({
   },
 });
 
-let jam2026ThemeSwitchStyle = css({
+const jam2026ThemeSwitchStyle = css({
   alignItems: "center",
   appearance: "none",
   background: "transparent",
@@ -535,7 +520,7 @@ let jam2026ThemeSwitchStyle = css({
   },
 });
 
-let jam2026ThemeIndicatorStyle = css({
+const jam2026ThemeIndicatorStyle = css({
   display: "grid",
   height: "16px",
   marginLeft: "4px",
@@ -571,7 +556,7 @@ let jam2026ThemeIndicatorStyle = css({
   },
 });
 
-let jam2026ThemeIconStyle = css({
+const jam2026ThemeIconStyle = css({
   color: jamTheme.ink,
   display: "block",
   gridArea: "1 / 1",
@@ -585,7 +570,7 @@ let jam2026ThemeIconStyle = css({
   },
 });
 
-let jam2026SunIconStyle = css({
+const jam2026SunIconStyle = css({
   opacity: 1,
   ":root.dark &": {
     opacity: 0,
@@ -598,7 +583,7 @@ let jam2026SunIconStyle = css({
   },
 });
 
-let jam2026MoonIconStyle = css({
+const jam2026MoonIconStyle = css({
   opacity: 0,
   ":root.dark &": {
     opacity: 1,

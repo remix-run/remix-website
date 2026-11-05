@@ -14,11 +14,15 @@ import { breakpointMedia, theme } from "./styles/theme.ts";
 
 export const NEWSLETTER_SUBSCRIBE_FRAME_NAME = "newsletter-subscribe";
 
+export const newsletterSubscriptionStatuses = [
+  "success",
+  "invalid-email",
+  "invalid-tag",
+  "error",
+] as const;
+
 export type NewsletterSubscriptionStatus =
-  | "success"
-  | "invalid-email"
-  | "invalid-tag"
-  | "error";
+  (typeof newsletterSubscriptionStatuses)[number];
 
 export type NewsletterSubscribeFrameContext =
   | "newsletter"
@@ -93,7 +97,7 @@ export function createNewsletterFrameForm(
   };
 }
 
-export let NewsletterSubscribeForm = clientEntry(
+export const NewsletterSubscribeForm = clientEntry(
   import.meta.url,
   function NewsletterSubscribeForm(
     handle: Handle<{ status?: NewsletterSubscriptionStatus | null }>,
@@ -184,4 +188,4 @@ export let NewsletterSubscribeForm = clientEntry(
   },
 );
 
-let newsletterFrameHostStyle = css({ containerType: "inline-size" });
+const newsletterFrameHostStyle = css({ containerType: "inline-size" });

@@ -1,7 +1,9 @@
 import { createController, type Middleware } from "remix/router";
 
-import { processMarkdown } from "../../data/md.ts";
+import { parseFrontmatter } from "../../data/frontmatter.ts";
+import { renderMarkdown } from "../../data/markdown.ts";
 import {
+  findTitleHeading,
   isSafeImageFilename,
   NewsletterUpstreamUnavailableError,
   type NewsletterIssue,
@@ -14,11 +16,13 @@ import { NewsletterSubscribeFrame } from "./subscribe-frame.tsx";
 import {
   NOT_FOUND_RESPONSE,
   StatusErrorDocument,
-} from "../../ui/not-found-page.tsx";
+} from "../../ui/status-error-document.tsx";
 import { CACHE } from "../../utils/cache-control.ts";
 import { NewsletterIndexPage, NewsletterIssuePage } from "./pages.tsx";
 import { getNewsletterSubscriptionStatus } from "../../utils/newsletter-subscription.ts";
 import { submitNewsletter } from "./subscribe.tsx";
+import { rateLimit } from "../../middleware/rate-limit.ts";
+import { isProduction } from "../../utils/node-env.ts";
 
 /**
  * Build a newsletter controller bound to a specific repository. Tests pass a
@@ -58,7 +62,7 @@ export function createNewsletterController(repository: NewsletterRepository) {
         );
       },
 
-      signup({ render, request }) {
+      subscribeForm({ render, request }) {
         return render(
           <NewsletterSubscribeFrame
             status={getNewsletterSubscriptionStatus(request)}
@@ -67,8 +71,19 @@ export function createNewsletterController(repository: NewsletterRepository) {
         );
       },
 
-      async subscribe({ formData, render, request }) {
-        return submitNewsletter(request, formData, render);
+      subscribe: {
+        // Every valid submission calls ConvertKit, so cap it well below the
+        // site-wide page limit.
+        middleware: [
+          rateLimit({
+            windowMs: 10 * 60 * 1000,
+            max: 30,
+            skipLocalhost: !isProduction,
+          }),
+        ],
+        handler({ formData, render, request }) {
+          return submitNewsletter({ formData, render, request });
+        },
       },
 
       async issue({ params, render, request }) {
@@ -103,7 +118,7 @@ export function createNewsletterController(repository: NewsletterRepository) {
           );
         }
 
-        let { html } = await processMarkdown(
+        let { html } = await renderMarkdown(
           withoutNewsletterTitle(issue.markdown),
           {
             allowHtml: false,
@@ -183,11 +198,12 @@ const UNAVAILABLE_RESPONSE = {
   headers: CACHE.PRIVATE,
 } as const;
 
+/** The page header shows the issue title, so drop the heading it came from. */
 function withoutNewsletterTitle(markdown: string): string {
-  let frontmatter = markdown.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n/);
-  let prefix = frontmatter?.[0] ?? "";
-  let body = markdown.slice(prefix.length);
-  return `${prefix}${body.replace(/^\s*#\s+[^\r\n]+\r?\n+/, "")}`;
+  let { body } = parseFrontmatter(markdown);
+  let heading = findTitleHeading(body);
+  if (!heading) return body;
+  return body.slice(0, heading.start) + body.slice(heading.end);
 }
 
 function parseIssueNumber(value: string | undefined): number | null {

@@ -1,4 +1,4 @@
-import { css, unsafeHTML, type Handle } from "remix/component";
+import { css, type Handle } from "remix/component";
 import { getJam2025Schedule } from "./schedule-data.ts";
 import { routes } from "../../../routes.ts";
 import { JamDocument } from "./document.tsx";
@@ -7,6 +7,7 @@ import { Title } from "./public/typography.tsx";
 import { assetPaths } from "../../../utils/public/asset-paths.ts";
 import {
   JamLineupAccordionItem,
+  ScheduleItemDetails,
   scheduleGridStyle,
 } from "./public/lineup-accordion-item.tsx";
 import { breakpointMedia, theme } from "../../../ui/public/styles/theme.ts";
@@ -160,56 +161,7 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
                   <span>{item.speaker}</span>
                 </div>
                 <div mix={css({ paddingBottom: "24px" })}>
-                  <div
-                    mix={[scheduleGridStyle, css({ paddingInline: "24px" })]}
-                  >
-                    <div
-                      mix={css({
-                        gridColumn: "1 / -1",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "16px",
-                        color: jamColors.white,
-                        fontSize: "0.875rem",
-                        lineHeight: 1.425,
-                        "& a": { color: jamColors.link },
-                        "& a:hover": { textDecoration: "underline" },
-                      })}
-                      innerHTML={unsafeHTML(item.description)}
-                    />
-                    {item.imgSrc ? (
-                      <img
-                        src={item.imgSrc}
-                        alt={item.speaker}
-                        mix={css({
-                          gridColumn: "1 / -1",
-                          width: "100%",
-                          borderRadius: "16px",
-                          objectFit: "cover",
-                          aspectRatio: "1",
-                        })}
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    ) : null}
-                    {item.bio ? (
-                      <div
-                        mix={css({
-                          gridColumn: "1 / -1",
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "16px",
-                          color: jamColors.white,
-                          fontFamily: theme.fontFamily.mono,
-                          fontSize: "0.75rem",
-                          lineHeight: "20px",
-                          "& a": { color: jamColors.link },
-                          "& a:hover": { textDecoration: "underline" },
-                        })}
-                        innerHTML={unsafeHTML(item.bio)}
-                      />
-                    ) : null}
-                  </div>
+                  <ScheduleItemDetails item={item} />
                 </div>
               </div>
             );
@@ -259,14 +211,10 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
           </div>
           {handle.props.items.map((item) => {
             let key = `${item.time}-${item.title}`;
-            return <DesktopScheduleItem key={key} item={item} />;
+            return <JamLineupAccordionItem key={key} item={item} />;
           })}
         </div>
       </section>
     </>
   );
-}
-
-function DesktopScheduleItem(handle: Handle<{ item: Schedule[number] }>) {
-  return () => <JamLineupAccordionItem item={handle.props.item} />;
 }

@@ -13,7 +13,7 @@ type JamTicketPurchaseProps = {
   error?: string;
 };
 
-export let JamTicketPurchase = clientEntry(
+export const JamTicketPurchase = clientEntry(
   import.meta.url,
   function JamTicketPurchase(handle: Handle<JamTicketPurchaseProps>) {
     let submitting = false;
@@ -147,7 +147,7 @@ function normalizeQuantity(quantity: number, maxQuantity: number) {
   return Math.floor(quantity);
 }
 
-let containerStyle = css({
+const containerStyle = css({
   zIndex: 10,
   display: "flex",
   width: "90%",
@@ -156,7 +156,7 @@ let containerStyle = css({
   gap: "12px",
 });
 
-let formStyle = css({
+const formStyle = css({
   display: "flex",
   width: "100%",
   flexDirection: "column",
@@ -171,12 +171,12 @@ let formStyle = css({
   },
 });
 
-let checkoutButtonStyle = css({
+const checkoutButtonStyle = css({
   width: "100%",
   [breakpointMedia.md]: { width: "auto" },
 });
 
-let errorStyle = css({
+const errorStyle = css({
   marginTop: "4px",
   color: theme.colors.brand.red,
   fontSize: "0.875rem",
@@ -185,7 +185,7 @@ let errorStyle = css({
   [breakpointMedia.md]: { fontSize: "1rem", lineHeight: 1.5 },
 });
 
-let pillStyle = css({
+const pillStyle = css({
   display: "flex",
   width: "100%",
   flexGrow: 1,
@@ -200,19 +200,19 @@ let pillStyle = css({
   },
 });
 
-let priceStyle = css({
+const priceStyle = css({
   color: jamColors.white,
   fontFamily: theme.fontFamily.mono,
   fontWeight: theme.fontWeight.normal,
 });
 
-let stepperStyle = css({
+const stepperStyle = css({
   display: "flex",
   alignItems: "center",
   gap: "16px",
 });
 
-let quantityInputStyle = css({
+const quantityInputStyle = css({
   appearance: "textfield",
   backgroundColor: "transparent",
   color: jamColors.white,
@@ -223,10 +223,10 @@ let quantityInputStyle = css({
   },
 });
 
-let wideQuantityInputStyle = css({ width: "32px" });
-let narrowQuantityInputStyle = css({ width: "16px" });
+const wideQuantityInputStyle = css({ width: "32px" });
+const narrowQuantityInputStyle = css({ width: "16px" });
 
-let quantityButtonStyle = css({
+const quantityButtonStyle = css({
   width: "24px",
   height: "24px",
   color: whiteAlpha(0.3),

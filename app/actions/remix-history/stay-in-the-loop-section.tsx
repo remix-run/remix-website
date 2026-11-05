@@ -118,7 +118,7 @@ function DiscordCard() {
   );
 }
 
-let cardStyle = css({
+const cardStyle = css({
   display: "flex",
   flexDirection: "column",
   borderRadius: "16px",
@@ -127,7 +127,7 @@ let cardStyle = css({
   boxShadow: theme.shadow.mid,
 });
 
-let cardContentStyle = css({
+const cardContentStyle = css({
   display: "flex",
   flex: 1,
   flexDirection: "column",
@@ -135,5 +135,5 @@ let cardContentStyle = css({
   paddingBottom: "32px",
 });
 
-let cardHeadingStyle = css({ color: "var(--rmx-text-secondary)" });
-let cardBodyStyle = css({ color: "var(--rmx-text-primary)" });
+const cardHeadingStyle = css({ color: "var(--rmx-text-secondary)" });
+const cardBodyStyle = css({ color: "var(--rmx-text-primary)" });

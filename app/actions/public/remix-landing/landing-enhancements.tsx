@@ -6,7 +6,6 @@ import {
   LoadingScreen,
 } from "./components/loading-screen.tsx";
 import { ScrollLogo } from "./components/scroll-logo.tsx";
-import { SectionNav } from "./components/section-nav.tsx";
 import { PackageLogos } from "./components/package-logos.tsx";
 import { listenForKonamiCode } from "./konami-code.ts";
 import { breakpointMedia } from "../../../ui/public/styles/theme.ts";
@@ -40,7 +39,7 @@ const BRAND_CYCLE_TICK_MS = 100;
 type ParticleCanvasComponent =
   typeof import("./components/particle-canvas.tsx").ParticleCanvas;
 
-export let RemixLandingEnhancements = clientEntry(
+export const RemixLandingEnhancements = clientEntry(
   import.meta.url,
   function RemixLandingEnhancements(handle: Handle) {
     let isHydrated = false;
@@ -179,26 +178,3 @@ function startBrandCycle(signal: AbortSignal) {
     document.documentElement.style.animationDelay = "";
   });
 }
-
-// Rendered inside the hero (rather than with the other enhancements) so the
-// section links follow the hero's controls in tab order.
-export let RemixLandingSectionNav = clientEntry(
-  import.meta.url,
-  function RemixLandingSectionNav(handle: Handle) {
-    let isHydrated = false;
-
-    handle.queueTask(() => {
-      isHydrated = true;
-      landingScroll.subscribe(() => handle.update(), handle.signal);
-    });
-
-    return () =>
-      isHydrated ? (
-        <SectionNav
-          activeIndex={landingScroll.state.activeIndex}
-          morphValue={landingScroll.state.morphValue}
-          onJump={landingScroll.jumpToPreset}
-        />
-      ) : null;
-  },
-);

@@ -2,7 +2,7 @@ import { afterEach, describe, it } from "remix/test";
 import { expect } from "remix/assert";
 import { initFathomAnalytics } from "./fathom.ts";
 
-let originalWindow = globalThis.window;
+const originalWindow = globalThis.window;
 type FathomLoad = NonNullable<
   NonNullable<Parameters<typeof initFathomAnalytics>[0]>["loadImpl"]
 >;

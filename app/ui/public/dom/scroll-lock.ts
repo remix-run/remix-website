@@ -6,7 +6,7 @@ type ScrollLockState = {
   scrollY: number;
 };
 
-let scrollLocks = new WeakMap<Document, ScrollLockState>();
+const scrollLocks = new WeakMap<Document, ScrollLockState>();
 
 export function lockScroll(
   targetDocument: Document | undefined = globalThis.document,

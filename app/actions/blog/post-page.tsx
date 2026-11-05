@@ -293,14 +293,14 @@ function BlogPostContent(
   );
 }
 
-let blogPostContainerStyle = {
+const blogPostContainerStyle = {
   boxSizing: "border-box",
   width: "100%",
   marginInline: "auto",
   paddingInline: theme.space.edge,
 } as const;
 
-let blogPostHeroImageStyle = css({
+const blogPostHeroImageStyle = css({
   width: "100%",
   height: "100%",
   objectFit: "cover",
@@ -308,4 +308,4 @@ let blogPostHeroImageStyle = css({
   [breakpointMedia.md]: { borderRadius: "12px" },
 });
 
-let blogPostOnImageStyle = css({ color: theme.colors.text.onDark });
+const blogPostOnImageStyle = css({ color: theme.colors.text.onDark });

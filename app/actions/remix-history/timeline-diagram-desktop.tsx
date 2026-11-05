@@ -196,273 +196,31 @@ export function TimelineDiagramDesktop(
       />
 
       <defs>
-        <filter
+        <GlowFilter
           id="glow-react-router"
-          x="345"
-          y="44.494"
-          width="1147.2"
-          height="76"
-          filterUnits="userSpaceOnUse"
-          colorInterpolationFilters="sRGB"
-        >
-          <feFlood floodOpacity="0" result="BackgroundImageFix" />
-          <feColorMatrix
-            in="SourceAlpha"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset />
-          <feGaussianBlur stdDeviation="1" />
-          <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.85098 0 0 0 0 0.172549 0 0 0 0 0.286275 0 0 0 0.65 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="BackgroundImageFix"
-            result="effect1_dropShadow_93_585"
-          />
-          <feColorMatrix
-            in="SourceAlpha"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset />
-          <feGaussianBlur stdDeviation="4" />
-          <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.85098 0 0 0 0 0.172549 0 0 0 0 0.286275 0 0 0 0.35 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="effect1_dropShadow_93_585"
-            result="effect2_dropShadow_93_585"
-          />
-          <feColorMatrix
-            in="SourceAlpha"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset />
-          <feGaussianBlur stdDeviation="8" />
-          <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.85098 0 0 0 0 0.172549 0 0 0 0 0.286275 0 0 0 0.35 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="effect2_dropShadow_93_585"
-            result="effect3_dropShadow_93_585"
-          />
-          <feColorMatrix
-            in="SourceAlpha"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset />
-          <feGaussianBlur stdDeviation="10" />
-          <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.85098 0 0 0 0 0.172549 0 0 0 0 0.286275 0 0 0 0.35 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="effect3_dropShadow_93_585"
-            result="effect4_dropShadow_93_585"
-          />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="effect4_dropShadow_93_585"
-            result="shape"
-          />
-        </filter>
-        <filter
+          x={345}
+          y={44.494}
+          width={1147.2}
+          height={76}
+          rgb={[0.85098, 0.172549, 0.286275]}
+        />
+        <GlowFilter
           id="glow-remix-3"
-          x="1302"
-          y="132.494"
-          width="188"
-          height="76"
-          filterUnits="userSpaceOnUse"
-          colorInterpolationFilters="sRGB"
-        >
-          <feFlood floodOpacity="0" result="BackgroundImageFix" />
-          <feColorMatrix
-            in="SourceAlpha"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset />
-          <feGaussianBlur stdDeviation="1" />
-          <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.0235294 0 0 0 0 0.917647 0 0 0 0 0.541176 0 0 0 0.65 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="BackgroundImageFix"
-            result="effect1_dropShadow_93_585"
-          />
-          <feColorMatrix
-            in="SourceAlpha"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset />
-          <feGaussianBlur stdDeviation="4" />
-          <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.0235294 0 0 0 0 0.917647 0 0 0 0 0.541176 0 0 0 0.35 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="effect1_dropShadow_93_585"
-            result="effect2_dropShadow_93_585"
-          />
-          <feColorMatrix
-            in="SourceAlpha"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset />
-          <feGaussianBlur stdDeviation="8" />
-          <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.0235294 0 0 0 0 0.917647 0 0 0 0 0.541176 0 0 0 0.35 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="effect2_dropShadow_93_585"
-            result="effect3_dropShadow_93_585"
-          />
-          <feColorMatrix
-            in="SourceAlpha"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset />
-          <feGaussianBlur stdDeviation="10" />
-          <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.0235294 0 0 0 0 0.917647 0 0 0 0 0.541176 0 0 0 0.35 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="effect3_dropShadow_93_585"
-            result="effect4_dropShadow_93_585"
-          />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="effect4_dropShadow_93_585"
-            result="shape"
-          />
-        </filter>
-        <filter
+          x={1302}
+          y={132.494}
+          width={188}
+          height={76}
+          rgb={[0.0235294, 0.917647, 0.541176]}
+        />
+        <GlowFilter
           id="glow-blue"
           x="-50%"
           y="-50%"
           width="200%"
           height="200%"
           filterUnits="objectBoundingBox"
-          colorInterpolationFilters="sRGB"
-        >
-          <feFlood floodOpacity="0" result="BackgroundImageFix" />
-          <feColorMatrix
-            in="SourceAlpha"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset />
-          <feGaussianBlur stdDeviation="1" />
-          <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.145098 0 0 0 0 0.619608 0 0 0 0 0.937255 0 0 0 0.65 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="BackgroundImageFix"
-            result="effect1_dropShadow"
-          />
-          <feColorMatrix
-            in="SourceAlpha"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset />
-          <feGaussianBlur stdDeviation="4" />
-          <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.145098 0 0 0 0 0.619608 0 0 0 0 0.937255 0 0 0 0.35 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="effect1_dropShadow"
-            result="effect2_dropShadow"
-          />
-          <feColorMatrix
-            in="SourceAlpha"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset />
-          <feGaussianBlur stdDeviation="8" />
-          <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.145098 0 0 0 0 0.619608 0 0 0 0 0.937255 0 0 0 0.35 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="effect2_dropShadow"
-            result="effect3_dropShadow"
-          />
-          <feColorMatrix
-            in="SourceAlpha"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset />
-          <feGaussianBlur stdDeviation="10" />
-          <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.145098 0 0 0 0 0.619608 0 0 0 0 0.937255 0 0 0 0.35 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="effect3_dropShadow"
-            result="effect4_dropShadow"
-          />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="effect4_dropShadow"
-            result="shape"
-          />
-        </filter>
+          rgb={[0.145098, 0.619608, 0.937255]}
+        />
         <linearGradient
           id="gradient-remix-to-router"
           x1="1269.81"
@@ -477,6 +235,72 @@ export function TimelineDiagramDesktop(
       </defs>
     </svg>
   );
+}
+
+/** Blur radius and opacity of each stacked drop-shadow pass, innermost first. */
+const GLOW_PASSES = [
+  { stdDeviation: 1, opacity: 0.65 },
+  { stdDeviation: 4, opacity: 0.35 },
+  { stdDeviation: 8, opacity: 0.35 },
+  { stdDeviation: 10, opacity: 0.35 },
+] as const;
+
+/** Layered outer glow behind a track segment, tinted with `rgb` (0–1 channels). */
+function GlowFilter(
+  handle: Handle<{
+    id: string;
+    x: number | string;
+    y: number | string;
+    width: number | string;
+    height: number | string;
+    filterUnits?: "userSpaceOnUse" | "objectBoundingBox";
+    rgb: readonly [number, number, number];
+  }>,
+) {
+  return () => {
+    let [r, g, b] = handle.props.rgb;
+    return (
+      <filter
+        id={handle.props.id}
+        x={handle.props.x}
+        y={handle.props.y}
+        width={handle.props.width}
+        height={handle.props.height}
+        filterUnits={handle.props.filterUnits ?? "userSpaceOnUse"}
+        colorInterpolationFilters="sRGB"
+      >
+        <feFlood floodOpacity="0" result="glow0" />
+        {GLOW_PASSES.map((pass, index) => (
+          <>
+            <feColorMatrix
+              in="SourceAlpha"
+              type="matrix"
+              values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+              result="hardAlpha"
+            />
+            <feOffset />
+            <feGaussianBlur stdDeviation={pass.stdDeviation} />
+            <feComposite in2="hardAlpha" operator="out" />
+            <feColorMatrix
+              type="matrix"
+              values={`0 0 0 0 ${r} 0 0 0 0 ${g} 0 0 0 0 ${b} 0 0 0 ${pass.opacity} 0`}
+            />
+            <feBlend
+              mode="normal"
+              in2={`glow${index}`}
+              result={`glow${index + 1}`}
+            />
+          </>
+        ))}
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2={`glow${GLOW_PASSES.length}`}
+          result="shape"
+        />
+      </filter>
+    );
+  };
 }
 
 /** Track name label (e.g., "REACT ROUTER", "REMIX", "REMIX 3") */
@@ -618,7 +442,7 @@ function Milestone(handle: Handle<MilestoneProps>) {
   };
 }
 
-let milestoneStyle = css({
+const milestoneStyle = css({
   "& [data-milestone-year]": {
     fill: "var(--rmx-text-tertiary)",
     transition: "all 150ms ease",

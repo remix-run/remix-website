@@ -1,6 +1,6 @@
 import { prefersReducedMotion } from "@remix-run/ui/animation";
 import { css, type Handle } from "remix/component";
-import { theme } from "../../../../ui/public/styles/theme.ts";
+import { theme } from "../../../../../ui/public/styles/theme.ts";
 
 import {
   advanceIntroCountdown,
@@ -11,7 +11,7 @@ import {
   introTickCount,
   type CountdownState,
 } from "./countdown-state.ts";
-import { jamTheme } from "./theme.ts";
+import { jamTheme } from "../theme.ts";
 
 export function Jam2026Countdown(handle: Handle) {
   let countdown = initialCountdownState;
@@ -114,7 +114,7 @@ function startCountdownTimers({
   );
 }
 
-let jam2026CountdownStyle = css({
+const jam2026CountdownStyle = css({
   alignItems: "center",
   display: "none",
   height: "100%",
@@ -126,13 +126,13 @@ let jam2026CountdownStyle = css({
   },
 });
 
-let jam2026CountdownDisplayStyle = css({
+const jam2026CountdownDisplayStyle = css({
   alignItems: "center",
   display: "flex",
   height: "100%",
 });
 
-let jam2026CountdownPairStyle = css({
+const jam2026CountdownPairStyle = css({
   alignItems: "center",
   display: "inline-flex",
   gap: "16px",
@@ -159,13 +159,13 @@ let jam2026CountdownPairStyle = css({
   "&:first-child strong > span": { minWidth: "3ch" },
 });
 
-let jam2026CountdownNumberStyle = css({
+const jam2026CountdownNumberStyle = css({
   display: "inline-flex",
   justifyContent: "flex-end",
   minWidth: "2ch",
 });
 
-let jam2026CountdownDigitStyle = css({
+const jam2026CountdownDigitStyle = css({
   animation:
     "jam-2026-countdown-flip 760ms cubic-bezier(0.22, 1, 0.36, 1), jam-2026-countdown-flip-opacity 280ms ease-out",
   backfaceVisibility: "hidden",
@@ -203,7 +203,7 @@ let jam2026CountdownDigitStyle = css({
   },
 });
 
-let jam2026CountdownLabelStyle = css({
+const jam2026CountdownLabelStyle = css({
   color: jamTheme.textMuted,
   fontFamily: theme.fontFamily.mono,
   fontSize: "11px",

@@ -1,7 +1,8 @@
-import { css, on, type Handle } from "remix/component";
+import { clientEntry, css, on, type Handle } from "remix/component";
 import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
 import { colors } from "../tokens.ts";
 import { clamp } from "../math.ts";
+import { landingScroll } from "../landing-scroll.ts";
 
 const TRACK_WIDTH = 11;
 const ITEM_HEIGHT = 16;
@@ -133,13 +134,6 @@ const SECTIONS = [
 // The first item points to the Hero section, while the remaining items map to
 // the landing-page sections in DOM order.
 
-type NavigateEventWithManualScroll = NavigateEvent & {
-  intercept(options: {
-    handler: () => Promise<void>;
-    scroll?: "manual" | "after-transition";
-  }): void;
-};
-
 async function replaceHash(anchor: string) {
   let navigation = window.navigation;
   let url = new URL(window.location.href);
@@ -154,7 +148,7 @@ async function replaceHash(anchor: string) {
 
   let preventNativeHashScroll = (event: NavigateEvent) => {
     if (!event.canIntercept || event.destination.url !== url.href) return;
-    (event as NavigateEventWithManualScroll).intercept({
+    event.intercept({
       scroll: "manual",
       async handler() {},
     });
@@ -179,7 +173,30 @@ async function replaceHash(anchor: string) {
   }
 }
 
-export function SectionNav(
+// Rendered inside the hero (rather than with the other landing enhancements)
+// so the section links follow the hero's controls in tab order.
+export const RemixLandingSectionNav = clientEntry(
+  import.meta.url,
+  function RemixLandingSectionNav(handle: Handle) {
+    let isHydrated = false;
+
+    handle.queueTask(() => {
+      isHydrated = true;
+      landingScroll.subscribe(() => handle.update(), handle.signal);
+    });
+
+    return () =>
+      isHydrated ? (
+        <SectionNav
+          activeIndex={landingScroll.state.activeIndex}
+          morphValue={landingScroll.state.morphValue}
+          onJump={landingScroll.jumpToPreset}
+        />
+      ) : null;
+  },
+);
+
+function SectionNav(
   handle: Handle<{
     activeIndex: number;
     morphValue: number;

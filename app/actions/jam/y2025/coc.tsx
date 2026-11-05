@@ -134,9 +134,9 @@ export function Jam2025CocPage(handle: Handle<{ requestUrl: string }>) {
   );
 }
 
-let cocSectionStyle = css({ "& > * + *": { marginTop: "16px" } });
+const cocSectionStyle = css({ "& > * + *": { marginTop: "16px" } });
 
-let textLinkStyle = css({
+const textLinkStyle = css({
   color: jamColors.link,
   "&:hover": { textDecoration: "underline" },
 });

@@ -43,7 +43,7 @@ export function JamButton(
 }
 
 // Also styles the navbar ticket link so it matches the button.
-export let jamButtonStyle = css({
+export const jamButtonStyle = css({
   display: "flex",
   minWidth: "fit-content",
   alignItems: "center",
@@ -67,7 +67,7 @@ export let jamButtonStyle = css({
   "@media (prefers-reduced-motion: reduce)": { transition: "none" },
 });
 
-let jamButtonDisabledStyle = css({
+const jamButtonDisabledStyle = css({
   "&:disabled": { cursor: "not-allowed", opacity: 0.5 },
   "&:disabled:hover": {
     backgroundColor: jamColors.white,

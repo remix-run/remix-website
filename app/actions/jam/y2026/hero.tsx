@@ -141,7 +141,7 @@ function heroLineEntranceDelayStyle(delay: number) {
   return css({ animationDelay: `${delay}ms` });
 }
 
-let heroLineEntranceStyle = css({
+const heroLineEntranceStyle = css({
   animation:
     "jam-2026-hero-line-fade-up 980ms cubic-bezier(0.16, 1, 0.3, 1) both",
   position: "relative",
@@ -163,13 +163,13 @@ let heroLineEntranceStyle = css({
   },
 });
 
-let heroStyle = css({
+const heroStyle = css({
   position: "relative",
   overflow: "clip",
   color: jamTheme.ink,
 });
 
-let heroVisualStyle = css({
+const heroVisualStyle = css({
   display: "flex",
   alignItems: "flex-start",
   justifyContent: "center",
@@ -190,7 +190,7 @@ let heroVisualStyle = css({
   },
 });
 
-let heroStackStyle = css({
+const heroStackStyle = css({
   width: "100%",
   maxWidth: "1920px",
   display: "flex",
@@ -199,7 +199,7 @@ let heroStackStyle = css({
   gap: "48px",
 });
 
-let brandStackStyle = css({
+const brandStackStyle = css({
   width: "100%",
   display: "flex",
   flexDirection: "column",
@@ -207,7 +207,7 @@ let brandStackStyle = css({
   gap: "48px",
 });
 
-let remixWordmarkStyle = css({
+const remixWordmarkStyle = css({
   position: "relative",
   zIndex: 1,
   width: "clamp(10.75rem, 15.25vw, 15.25rem)",
@@ -218,7 +218,7 @@ let remixWordmarkStyle = css({
   },
 });
 
-let jamMarkStyle = css({
+const jamMarkStyle = css({
   position: "relative",
   zIndex: -1,
   display: "block",
@@ -231,11 +231,11 @@ let jamMarkStyle = css({
   },
 });
 
-let jamPathStyle = css({
+const jamPathStyle = css({
   fill: jamTheme.ink,
 });
 
-let eventDetailsStyle = css({
+const eventDetailsStyle = css({
   position: "relative",
   display: "grid",
   gridTemplateColumns: "1fr",
@@ -254,7 +254,7 @@ let eventDetailsStyle = css({
   },
 });
 
-let eventDetailStyle = css({
+const eventDetailStyle = css({
   display: "flex",
   flexDirection: "column",
   justifySelf: "center",
@@ -273,7 +273,7 @@ let eventDetailStyle = css({
   },
 });
 
-let eventDetailLeftStyle = css({
+const eventDetailLeftStyle = css({
   [breakpointMedia.lg]: {
     alignItems: "flex-end",
     justifySelf: "end",
@@ -281,7 +281,7 @@ let eventDetailLeftStyle = css({
   },
 });
 
-let eventDetailRightStyle = css({
+const eventDetailRightStyle = css({
   [breakpointMedia.lg]: {
     alignItems: "flex-start",
     justifySelf: "start",
@@ -289,14 +289,14 @@ let eventDetailRightStyle = css({
   },
 });
 
-let eventDetailPlainLineStyle = css({
+const eventDetailPlainLineStyle = css({
   display: "block",
   [breakpointMedia.lg]: {
     textAlign: "inherit",
   },
 });
 
-let yearBadgeStyle = css({
+const yearBadgeStyle = css({
   display: "inline-flex",
   boxSizing: "content-box",
   border: `6px solid ${jamTheme.ink}`,
@@ -312,11 +312,11 @@ let yearBadgeStyle = css({
   },
 });
 
-let yearBadgePathStyle = css({
+const yearBadgePathStyle = css({
   fill: "currentColor",
 });
 
-let livestreamStyle = css({
+const livestreamStyle = css({
   position: "relative",
   zIndex: 1,
   width: "calc(100% - 32px)",

@@ -13,9 +13,9 @@ import {
   getFailedImageSources,
 } from "./app/utils/blog-image-assets.ts";
 
-let start = performance.now();
-let slugs = process.argv.slice(2);
-let listings = getBlogPostListings().filter(
+const start = performance.now();
+const slugs = process.argv.slice(2);
+const listings = getBlogPostListings().filter(
   ({ slug }) => slugs.length === 0 || slugs.includes(slug),
 );
 if (listings.length === 0) {
@@ -38,7 +38,7 @@ await assets.close();
 
 // Failed images fall back to the original source at runtime, which would ship
 // a partial cache. Fail the build instead.
-let failedSources = getFailedImageSources();
+const failedSources = getFailedImageSources();
 if (failedSources.length > 0) {
   throw new Error(
     `Failed to warm ${failedSources.length} blog image(s): ${failedSources.join(", ")}`,

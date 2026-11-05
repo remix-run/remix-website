@@ -155,7 +155,7 @@ describe("Newsletter subscribe route", () => {
     expect(response.headers.get("Cache-Control")).toBe("private, no-store");
     expect(response.headers.get("Vary")?.toLowerCase()).toBe("x-remix-target");
     expect(response.headers.get("Location")).toBe(
-      `${routes.jam.y2025.newsletterSignup.href()}?subscription=success`,
+      `${routes.jam.y2025.newsletterSubscribeForm.href()}?subscription=success`,
     );
 
     let invalid = await submitNewsletter(
@@ -169,7 +169,7 @@ describe("Newsletter subscribe route", () => {
 
     expect(invalid.status).toBe(303);
     expect(invalid.headers.get("Location")).toBe(
-      `${routes.jam.y2025.newsletterSignup.href()}?subscription=invalid-email`,
+      `${routes.jam.y2025.newsletterSubscribeForm.href()}?subscription=invalid-email`,
     );
   });
 

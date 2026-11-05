@@ -38,7 +38,7 @@ export default createController(routes.jam.y2025, {
       );
     },
 
-    newsletterSignup({ render, request }) {
+    newsletterSubscribeForm({ render, request }) {
       return render(
         <JamNewsletterForm status={getNewsletterSubscriptionStatus(request)} />,
         { headers: CACHE.PRIVATE },
@@ -198,7 +198,7 @@ function Jam2025Page(handle: Handle<{ eventStatus: EventStatus }>) {
           Sign up for our Newsletter for the latest Remix Jam news and updates
         </h2>
         <NewsletterSubscribeFrameHost
-          src={routes.jam.y2025.newsletterSignup.href()}
+          src={routes.jam.y2025.newsletterSubscribeForm.href()}
           mix={css({ marginTop: "48px" })}
         />
       </aside>

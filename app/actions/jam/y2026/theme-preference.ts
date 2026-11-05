@@ -5,7 +5,7 @@ import { isProduction } from "../../../utils/node-env.ts";
 
 export const JAM_2026_THEME_COOKIE = "remix_jam_2026_theme";
 
-let jam2026ThemeCookie = createCookie(JAM_2026_THEME_COOKIE, {
+const jam2026ThemeCookie = createCookie(JAM_2026_THEME_COOKIE, {
   httpOnly: true,
   maxAge: 60 * 60 * 24 * 365,
   path: "/jam/2026",

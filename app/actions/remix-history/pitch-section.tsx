@@ -99,4 +99,4 @@ export function PitchSection() {
   );
 }
 
-let pitchParagraphStyle = css({ width: "100%" });
+const pitchParagraphStyle = css({ width: "100%" });

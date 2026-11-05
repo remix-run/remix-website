@@ -4,7 +4,7 @@ import { LRUCache } from "lru-cache";
 import * as s from "remix/data-schema";
 import yaml from "yaml";
 import { parseFrontmatter } from "./frontmatter.ts";
-import { processMarkdown } from "./md.ts";
+import { renderMarkdown } from "./markdown.ts";
 import { isProduction } from "../utils/node-env.ts";
 
 const DATA_DIRECTORY = path.join(process.cwd(), "data");
@@ -77,7 +77,7 @@ export async function getBlogPost(slug: string): Promise<BlogPost | null> {
   let contents = getRawBlogPostMarkdown(slug);
   if (contents === null) return null;
 
-  let { attributes, html } = await processMarkdown(contents);
+  let { attributes, html } = await renderMarkdown(contents);
   let frontmatter = parsePostFrontmatter(slug, attributes);
   let authors = frontmatter.authors.flatMap((name) => {
     let author = AUTHORS.find((a) => a.name === name);

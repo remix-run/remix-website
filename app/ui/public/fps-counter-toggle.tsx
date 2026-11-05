@@ -1,11 +1,11 @@
 import { clientEntry, css, type Handle } from "remix/component";
 
 import type { FpsCounter } from "./fps-counter.tsx";
-import { isEditableKeyTarget } from "./keyboard.ts";
+import { isEditableKeyTarget } from "./dom/keyboard.ts";
 
 type FpsCounterComponent = typeof FpsCounter;
 
-export let FpsCounterToggle = clientEntry(
+export const FpsCounterToggle = clientEntry(
   import.meta.url,
   function FpsCounterToggle(handle: Handle) {
     let fpsCounter: {
@@ -60,6 +60,6 @@ export let FpsCounterToggle = clientEntry(
   },
 );
 
-let fpsCounterToggleStyle = css({
+const fpsCounterToggleStyle = css({
   display: "contents",
 });

@@ -4,10 +4,10 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "./accordion.tsx";
-import { Icon } from "../../../../ui/public/icon.tsx";
-import { theme } from "../../../../ui/public/styles/theme.ts";
-import { jamTheme } from "./theme.ts";
+} from "../accordion.tsx";
+import { Icon } from "../../../../../ui/public/icon.tsx";
+import { theme } from "../../../../../ui/public/styles/theme.ts";
+import { jamTheme } from "../theme.ts";
 
 import type { ScheduleItem } from "./schedule-types.ts";
 import {
@@ -16,7 +16,7 @@ import {
   scheduleGridStyle,
 } from "./schedule-content.tsx";
 
-export let Jam2026ScheduleAccordion = clientEntry(
+export const Jam2026ScheduleAccordion = clientEntry(
   import.meta.url,
   function Jam2026ScheduleAccordion(handle: Handle<{ items: ScheduleItem[] }>) {
     let openItemIds: string[] = [];
@@ -85,12 +85,12 @@ function ScheduleAccordionItem(
   };
 }
 
-let scheduleTableStyle = css({
+const scheduleTableStyle = css({
   marginBlockStart: 0,
   width: "100%",
 });
 
-let tableHeaderStyle = css({
+const tableHeaderStyle = css({
   alignItems: "center",
   minHeight: "57px",
   color: jamTheme.textMuted,
@@ -103,26 +103,26 @@ let tableHeaderStyle = css({
   whiteSpace: "nowrap",
 });
 
-let desktopOnlyHeaderStyle = css({
+const desktopOnlyHeaderStyle = css({
   display: "none",
   "@media (min-width: 900px)": { display: "inline" },
 });
 
-let topicHeaderStyle = css({
+const topicHeaderStyle = css({
   gridColumn: 3,
 });
 
-let speakerHeaderStyle = css({
+const speakerHeaderStyle = css({
   gridColumn: 5,
 });
 
-let timeHeaderStyle = css({
+const timeHeaderStyle = css({
   gridColumn: 1,
   justifySelf: "start",
   textAlign: "left",
 });
 
-let scheduleItemStyle = css({
+const scheduleItemStyle = css({
   borderRadius: "0.5rem",
   color: jamTheme.ink,
   transition: "background 180ms ease",
@@ -138,7 +138,7 @@ let scheduleItemStyle = css({
   },
 });
 
-let scheduleTriggerStyle = css({
+const scheduleTriggerStyle = css({
   display: "block",
   width: "100%",
   padding: 0,
@@ -162,7 +162,7 @@ let scheduleTriggerStyle = css({
   },
 });
 
-let scheduleSummaryStyle = css({
+const scheduleSummaryStyle = css({
   alignItems: "baseline",
   rowGap: "4px",
   boxSizing: "border-box",
@@ -176,7 +176,7 @@ let scheduleSummaryStyle = css({
   },
 });
 
-let timeStyle = css({
+const timeStyle = css({
   gridColumn: 1,
   gridRow: 1,
   justifySelf: "start",
@@ -195,7 +195,7 @@ let timeStyle = css({
   },
 });
 
-let mobileTimezoneStyle = css({
+const mobileTimezoneStyle = css({
   gridColumn: 1,
   gridRow: 2,
   color: jamTheme.textMuted,
@@ -207,7 +207,7 @@ let mobileTimezoneStyle = css({
   "@media (min-width: 900px)": { display: "none" },
 });
 
-let titleStyle = css({
+const titleStyle = css({
   gridColumn: 3,
   gridRow: 1,
   color: jamTheme.ink,
@@ -221,7 +221,7 @@ let titleStyle = css({
   },
 });
 
-let summaryIconStyle = css({
+const summaryIconStyle = css({
   gridColumn: 5,
   gridRow: "1 / span 2",
   alignSelf: "center",
@@ -241,7 +241,7 @@ let summaryIconStyle = css({
   },
 });
 
-let schedulePanelStyle = css({
+const schedulePanelStyle = css({
   "& > div > div": {
     paddingBottom: 0,
     color: "inherit",

@@ -93,20 +93,21 @@ type Processor = Awaited<ReturnType<typeof getProcessor>>;
 
 // Cache processors by `allowHtml` so blog/Jam (allowHtml: true) and remote
 // newsletter markdown (allowHtml: false) each reuse their own processor.
-let processors = new Map<boolean, Promise<Processor>>();
+const processors = new Map<boolean, Promise<Processor>>();
 
-export async function processMarkdown(
+/** Split off frontmatter, then render the Markdown body to HTML. */
+export async function renderMarkdown(
   content: string,
   options?: ProcessorOptions,
 ) {
   let processor = await getProcessorFor(options);
-  let { attributes, body: raw } = parseFrontmatter(content);
+  let { attributes, body } = parseFrontmatter(content);
   let vfile = await processor.process({
-    value: raw,
+    value: body,
     data: { processorOptions: options ?? {} },
   });
   let html = vfile.value.toString();
-  return { attributes, raw, html };
+  return { attributes, html };
 }
 
 function getProcessorFor(options?: ProcessorOptions): Promise<Processor> {
@@ -177,7 +178,7 @@ const rewriteImages: MarkdownPlugin = () => (tree, file) => {
   });
 };
 
-// Raw HTML `<img>` tags are handled by `blogImages` (trusted documents
+// Raw HTML `<img>` tags are deferred by `blogImages` (trusted documents
 // only); untrusted documents drop raw HTML entirely.
 const lazyImages: MarkdownPlugin = () => (tree) => {
   visit(tree, ["image", "imageReference"], (node) => {

@@ -183,8 +183,11 @@ export function capRacetrackParallax(
   return lerp(parallaxX, parallaxRacetrack, racetrackRoadLock);
 }
 
-/** Initial controls and shader for baking a preset before the first frame. */
-export function initialPresetBake(morphValue: number, controls: number[]) {
+/**
+ * Copies the starting preset's controls into `controls` and returns its shader,
+ * for baking before the first frame.
+ */
+export function copyInitialPresetInto(morphValue: number, controls: number[]) {
   let index = Math.min(Math.max(0, Math.floor(morphValue)), presets.length - 1);
   copyControlsInto(PRESET_CONTROLS[index], controls);
   return PRESET_SHADER_INTS[index];

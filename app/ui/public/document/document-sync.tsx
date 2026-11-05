@@ -5,7 +5,7 @@ import {
   syncDocumentTheme,
 } from "./document-head-sync.ts";
 
-export let DocumentSync = clientEntry(
+export const DocumentSync = clientEntry(
   import.meta.url,
   function DocumentSync(
     handle: Handle<{

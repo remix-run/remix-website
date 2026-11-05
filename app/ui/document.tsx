@@ -17,23 +17,23 @@ import {
 } from "../middleware/asset-entry.ts";
 import { routes } from "../routes.ts";
 import { getCanonicalUrl } from "../utils/public/canonical-url.ts";
-import { DocumentSync } from "./public/document-sync.tsx";
+import { DocumentSync } from "./public/document/document-sync.tsx";
 import {
   getCompactHeadKey,
   getManagedHeadTagKey,
   type ManagedHeadTag,
   type ManagedLinkTag,
-} from "./public/document-head.ts";
+} from "./public/document/document-head.ts";
 import { theme } from "./public/styles/theme.ts";
 
 // Inlined once per document so `<use href="#name">` icon references resolve
 // immediately, with no separate sprite request or per-deploy URL plumbing.
-let iconsSpriteHtml = fs.readFileSync(
+const iconsSpriteHtml = fs.readFileSync(
   path.resolve(import.meta.dirname, "icons.svg"),
   "utf8",
 );
 
-let colorSchemeScript = `
+const colorSchemeScript = `
   let media = window.matchMedia("(prefers-color-scheme: dark)");
   let sync = () => {
     let theme = document.documentElement.dataset.theme;
@@ -41,11 +41,7 @@ let colorSchemeScript = `
     document.documentElement.classList.toggle("dark", isDark);
   };
   sync();
-  if (typeof media.addEventListener === "function") {
-    media.addEventListener("change", sync);
-  } else if (typeof media.addListener === "function") {
-    media.addListener(sync);
-  }
+  media.addEventListener("change", sync);
 `;
 
 interface DocumentProps {

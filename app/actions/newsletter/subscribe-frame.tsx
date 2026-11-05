@@ -50,5 +50,5 @@ function NewsletterSubscriptionNotice(
   };
 }
 
-let subscriptionNoticeStyle = css({ paddingBlock: "8px" });
-let subscriptionErrorStyle = css({ color: theme.colors.brand.red });
+const subscriptionNoticeStyle = css({ paddingBlock: "8px" });
+const subscriptionErrorStyle = css({ color: theme.colors.brand.red });

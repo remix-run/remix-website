@@ -2,8 +2,8 @@ import { css } from "remix/component";
 
 import { headingExtraLargeStyle } from "../../ui/public/styles/marketing-styles.ts";
 import { breakpointMedia, theme } from "../../ui/public/styles/theme.ts";
-import { TimelineDiagramDesktop } from "./timeline-section-desktop.tsx";
-import { TimelineDiagramMobile } from "./timeline-section-mobile.tsx";
+import { TimelineDiagramDesktop } from "./timeline-diagram-desktop.tsx";
+import { TimelineDiagramMobile } from "./timeline-diagram-mobile.tsx";
 
 export function TimelineSection() {
   return () => (
@@ -89,7 +89,7 @@ function TimelineMilestones() {
   );
 }
 
-let MILESTONES = [
+const MILESTONES = [
   "2017: React Router v4 released",
   "2019: React Router v5 released",
   "2020: React Router v6 released",
@@ -99,7 +99,7 @@ let MILESTONES = [
   "2025: Remix 3 released",
 ];
 
-let sectionStyle = css({
+const sectionStyle = css({
   overflowX: "clip",
   background:
     "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-neutral-950) 70%, var(--rmx-neutral-750) 100%)",
@@ -110,7 +110,7 @@ let sectionStyle = css({
   },
 });
 
-let contentStyle = css({
+const contentStyle = css({
   display: "flex",
   width: "100%",
   maxWidth: "1400px",
@@ -121,22 +121,22 @@ let contentStyle = css({
   [breakpointMedia.md]: { gap: "64px", paddingTop: "96px" },
 });
 
-let headingStyle = css({
+const headingStyle = css({
   color: "var(--rmx-neutral-100)",
   textAlign: "center",
 });
 
-let mobileDiagramStyle = css({
+const mobileDiagramStyle = css({
   [breakpointMedia.xl]: { display: "none" },
 });
 
-let desktopDiagramStyle = css({
+const desktopDiagramStyle = css({
   display: "none",
   overflow: "visible",
   [breakpointMedia.xl]: { display: "flex", justifyContent: "center" },
 });
 
-let storyStyle = css({
+const storyStyle = css({
   width: "100%",
   maxWidth: "1024px",
   marginInline: "auto",
@@ -156,7 +156,7 @@ let storyStyle = css({
   },
 });
 
-let visuallyHiddenStyle = css({
+const visuallyHiddenStyle = css({
   position: "absolute",
   width: "1px",
   height: "1px",
@@ -166,7 +166,7 @@ let visuallyHiddenStyle = css({
   whiteSpace: "nowrap",
 });
 
-let timelineLinkStyle = css({
+const timelineLinkStyle = css({
   fontWeight: theme.fontWeight.bold,
   "&:hover": { textDecoration: "underline" },
 });

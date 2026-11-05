@@ -15,7 +15,7 @@ import {
   capRacetrackParallax,
   computePresetFrame,
   createPresetFrame,
-  initialPresetBake,
+  copyInitialPresetInto,
   type PresetFrame,
 } from "./preset-frame.ts";
 import { presets } from "./presets.ts";
@@ -393,7 +393,7 @@ function createParticleScene(options: {
     // RawShaderMaterial to compile here, hiding the link/upload cost from
     // the first frame().
     let controls = [0, 0, 0, 0, 0, 0, 0, 0];
-    let shader = initialPresetBake(morphValue, controls);
+    let shader = copyInitialPresetInto(morphValue, controls);
     restBaker.bake(0, shader, controls, 0, 0);
     // Compile the particle RawShaderMaterial up front so the first
     // `composer.render()` doesn't pay for the GLSL3 link/upload during

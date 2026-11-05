@@ -13,7 +13,7 @@ import { initFathomAnalytics } from "./fathom.ts";
 
 initFathomAnalytics();
 
-let app = run({
+const app = run({
   async loadModule(src, exportName) {
     let mod = await importModule(src);
 

@@ -30,7 +30,7 @@ function getFocusTrapTarget<T>({
   return null;
 }
 
-export let focusTrap = createMixin<HTMLElement, [enabled?: boolean]>(
+export const focusTrap = createMixin<HTMLElement, [enabled?: boolean]>(
   (handle) => {
     let host: HTMLElement | null = null;
     let enabled = true;

@@ -323,6 +323,6 @@ function LaneCell(
   };
 }
 
-let laneBackgroundStyle = css({ gridRow: "1 / -1" });
+const laneBackgroundStyle = css({ gridRow: "1 / -1" });
 
-let verticalTrackStyle = css({ width: "48px", marginInline: "auto" });
+const verticalTrackStyle = css({ width: "48px", marginInline: "auto" });

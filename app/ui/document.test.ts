@@ -2,9 +2,9 @@ import { expect } from "remix/assert";
 import { describe, it } from "remix/test";
 
 import { getDocumentHeadTags } from "./document.tsx";
-import type { ManagedHeadTag } from "./public/document-head.ts";
+import type { ManagedHeadTag } from "./public/document/document-head.ts";
 
-let url = new URL("https://remix-website-staging.fly.dev/blog?page=2");
+const url = new URL("https://remix-website-staging.fly.dev/blog?page=2");
 
 describe("getDocumentHeadTags", () => {
   it("adds the description and a canonical link for indexable pages", () => {

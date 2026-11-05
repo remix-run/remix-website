@@ -1,6 +1,6 @@
-import type { ManagedHeadTag } from "../ui/public/document-head.ts";
+import type { ManagedHeadTag } from "../ui/public/document/document-head.ts";
 import { assetPaths } from "./public/asset-paths.ts";
-import { getCanonicalOrigin } from "./public/canonical-url.ts";
+import { getCanonicalPageUrls } from "./public/canonical-url.ts";
 import { createSocialHeadTags } from "./public/social-head-tags.ts";
 
 type SocialHeadTagsForRequestProps = {
@@ -22,27 +22,18 @@ type SocialHeadTagsForRequestProps = {
 export function getSocialHeadTagsForRequest(
   props: SocialHeadTagsForRequestProps,
 ) {
-  let requestUrl = new URL(props.requestUrl);
-  let origin = getCanonicalOrigin(requestUrl);
-  let pageUrl = props.url ?? `${origin}${requestUrl.pathname}`;
-  let imageUrl = resolveUrl(
+  let canonical = getCanonicalPageUrls(
+    new URL(props.requestUrl),
     props.image ?? assetPaths.marketing.defaultOgImage,
-    origin,
   );
 
   return createSocialHeadTags({
     title: props.title,
     description: props.description,
-    url: pageUrl,
-    imageUrl,
+    url: props.url ?? canonical.pageUrl,
+    imageUrl: canonical.imageUrl,
     imageAlt: props.imageAlt,
     twitterCreator: props.twitterCreator,
     twitterSite: props.twitterSite,
   }) satisfies ManagedHeadTag[];
-}
-
-function resolveUrl(value: string, origin: string) {
-  if (/^https?:\/\//.test(value)) return value;
-
-  return new URL(value, origin).toString();
 }

@@ -29,7 +29,7 @@ type AccordionState =
 
 const accordionMotion = spring("smooth", { duration: 150 });
 
-export let JamLineupAccordionItem = clientEntry(
+export const JamLineupAccordionItem = clientEntry(
   import.meta.url,
   function JamLineupAccordionItem(handle: Handle<{ item: LineupItem }>) {
     let state: AccordionState = { status: "closed" };
@@ -250,98 +250,7 @@ export let JamLineupAccordionItem = clientEntry(
                   },
                 })}
               >
-                <div
-                  mix={[
-                    scheduleGridStyle,
-                    css({
-                      padding: "16px",
-                      [breakpointMedia.sm]: { padding: "24px" },
-                      [breakpointMedia.md]: { padding: "32px" },
-                      [breakpointMedia.lg]: { padding: "36px" },
-                    }),
-                  ]}
-                >
-                  <div
-                    mix={css({
-                      gridColumn: "1 / -1",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "16px",
-                      color: jamColors.white,
-                      fontSize: "0.875rem",
-                      lineHeight: 1.425,
-                      "& a": { color: jamColors.link },
-                      "& a:hover": { textDecoration: "underline" },
-                      [breakpointMedia.sm]: {
-                        gridColumn: "2 / span 1",
-                        gap: "24px",
-                        fontSize: "1rem",
-                        lineHeight: 1.5,
-                      },
-                      [breakpointMedia.md]: {
-                        fontSize: "1.125rem",
-                        lineHeight: 1.556,
-                      },
-                      [breakpointMedia.lg]: {
-                        fontSize: "1.25rem",
-                        lineHeight: 1.556,
-                      },
-                    })}
-                    innerHTML={unsafeHTML(handle.props.item.description)}
-                  />
-                  {handle.props.item.imgSrc ? (
-                    <div
-                      mix={css({
-                        gridColumn: "1 / -1",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "16px",
-                        [breakpointMedia.sm]: { gridColumn: "3 / span 1" },
-                      })}
-                    >
-                      <img
-                        src={handle.props.item.imgSrc}
-                        alt={handle.props.item.speaker}
-                        mix={css({
-                          width: "100%",
-                          maxWidth: "none",
-                          borderRadius: "16px",
-                          objectFit: "cover",
-                          aspectRatio: "1",
-                        })}
-                        loading="lazy"
-                        decoding="async"
-                      />
-                      {handle.props.item.bio ? (
-                        <div
-                          mix={css({
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "16px",
-                            color: jamColors.white,
-                            fontSize: "0.75rem",
-                            lineHeight: 1.333,
-                            "& a": { color: jamColors.link },
-                            "& a:hover": { textDecoration: "underline" },
-                            [breakpointMedia.sm]: {
-                              gap: "24px",
-                              fontSize: "0.875rem",
-                              lineHeight: 1.425,
-                            },
-                            [breakpointMedia.md]: {
-                              fontSize: "1rem",
-                              lineHeight: 1.5,
-                            },
-                            [breakpointMedia.lg]: {
-                              fontFamily: theme.fontFamily.mono,
-                            },
-                          })}
-                          innerHTML={unsafeHTML(handle.props.item.bio)}
-                        />
-                      ) : null}
-                    </div>
-                  ) : null}
-                </div>
+                <ScheduleItemDetails item={handle.props.item} />
               </div>
             </div>
           </div>
@@ -351,7 +260,97 @@ export let JamLineupAccordionItem = clientEntry(
   },
 );
 
-export let scheduleGridStyle = css({
+// Shared by the mobile schedule list (shown below `sm`) and the accordion
+// (shown from `sm` up), so base styles serve the list and `sm`+ the accordion.
+export function ScheduleItemDetails(handle: Handle<{ item: LineupItem }>) {
+  return () => (
+    <div
+      mix={[
+        scheduleGridStyle,
+        css({
+          paddingInline: "24px",
+          [breakpointMedia.sm]: { padding: "24px" },
+          [breakpointMedia.md]: { padding: "32px" },
+          [breakpointMedia.lg]: { padding: "36px" },
+        }),
+      ]}
+    >
+      <div
+        mix={css({
+          gridColumn: "1 / -1",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+          color: jamColors.white,
+          fontSize: "0.875rem",
+          lineHeight: 1.425,
+          "& a": { color: jamColors.link },
+          "& a:hover": { textDecoration: "underline" },
+          [breakpointMedia.sm]: {
+            gridColumn: "2 / span 1",
+            gap: "24px",
+            fontSize: "1rem",
+            lineHeight: 1.5,
+          },
+          [breakpointMedia.md]: { fontSize: "1.125rem", lineHeight: 1.556 },
+          [breakpointMedia.lg]: { fontSize: "1.25rem", lineHeight: 1.556 },
+        })}
+        innerHTML={unsafeHTML(handle.props.item.description)}
+      />
+      {handle.props.item.imgSrc ? (
+        <div
+          mix={css({
+            gridColumn: "1 / -1",
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+            [breakpointMedia.sm]: { gridColumn: "3 / span 1" },
+          })}
+        >
+          <img
+            src={handle.props.item.imgSrc}
+            alt={handle.props.item.speaker}
+            mix={css({
+              width: "100%",
+              maxWidth: "none",
+              borderRadius: "16px",
+              objectFit: "cover",
+              aspectRatio: "1",
+            })}
+            loading="lazy"
+            decoding="async"
+          />
+          {handle.props.item.bio ? (
+            <div
+              mix={css({
+                display: "flex",
+                flexDirection: "column",
+                gap: "16px",
+                color: jamColors.white,
+                fontFamily: theme.fontFamily.mono,
+                fontSize: "0.75rem",
+                lineHeight: "20px",
+                "& a": { color: jamColors.link },
+                "& a:hover": { textDecoration: "underline" },
+                [breakpointMedia.sm]: {
+                  gap: "24px",
+                  fontFamily: "inherit",
+                  fontSize: "0.875rem",
+                  lineHeight: 1.425,
+                },
+                [breakpointMedia.md]: { fontSize: "1rem", lineHeight: 1.5 },
+                [breakpointMedia.lg]: { fontFamily: theme.fontFamily.mono },
+              })}
+              innerHTML={unsafeHTML(handle.props.item.bio)}
+            />
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+export const scheduleGridStyle = css({
   display: "grid",
   gridTemplateColumns: "75px 1fr auto",
   gap: "16px",

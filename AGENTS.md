@@ -12,11 +12,11 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 ## Server runtime
 
 - **Root `server.ts`** — Node HTTP process entry. Uses `createRequestListener` from `remix/node-fetch-server`, imports the live app router, and closes the asset server during shutdown.
-- **`app/router.ts`** — `createRouter`, root middleware stack, `router.map(...)` wiring, and the `GET /assets/*` route that delegates to `app/utils/assets.ts`.
+- **`app/router.ts`** — `createRouter`, root middleware stack, and `router.map(...)` wiring. The `GET /assets/*` route is the `assets` action in the root controller (`app/actions/controller.tsx`), which delegates to `app/utils/assets.ts`.
 - **Production / `pnpm run preview`** — runs the same TypeScript server entry as development (`server.ts`) through `remix/node-tsx`; there is no separate Vite SSR bundle.
 - **HMR / `pnpm run hmr`** - runs the server in development mode with HMR enabled, for use during heavy UI iteration.
 - HTML compression must flush streamed chunks for both gzip/deflate and Brotli; otherwise pending server content can delay the initial document.
-- **Cold starts** — with fingerprinting on, rendering a transformed image URL runs the transform. `warm-image-cache.ts` fills the transform cache during `docker build` (`ASSET_FILE_CACHE_DIR`/`ASSET_FILE_CACHE_KEY` point production at it); keep it free of `app/router.ts` imports, since the build has no production secrets. In production, `server.ts` calls `warmServer()` from `app/utils/warm-up.ts` to render the busiest pages before listening, so Fly doesn't route traffic until in-memory caches are warm. Any new route that renders `getWebpHref` images for many files should be covered by the warm-image script.
+- **Cold starts** — with fingerprinting on, rendering a transformed image URL runs the transform. `warm-image-cache.ts` fills the transform cache during `docker build` (`ASSET_FILE_CACHE_DIR`/`ASSET_FILE_CACHE_KEY` point production at it); the build has no production secrets, so importing `app/utils/env.ts` never throws; `server.ts` checks required secrets with `assertProductionEnv()` before listening. In production, `server.ts` calls `warmServer()` from `app/utils/warm-up.ts` to render the busiest pages before listening, so Fly doesn't route traffic until in-memory caches are warm. Any new route that renders `getWebpHref` images for many files should be covered by the warm-image script.
 - **Deploy purge** — the production workflow hard-purges the `documents` and `static-assets` surrogate keys. Don't switch to soft purges: with Fastly shielding, an edge can re-cache a soft-purged shield copy as fresh, serving old HTML that references asset fingerprints the new machines can't serve. Fingerprinted `/assets/*` responses carry no surrogate key and are never purged, and asset 404s must stay uncacheable.
 
 ## Keep These Non-Obvious Invariants
@@ -28,6 +28,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 - For route-local, single-use UI, keep it in the route file; extract to `app/ui/**` only when shared.
 - Browser-reachable source lives in `public/` directories inside `app/`, colocated with the narrowest owner (e.g. `app/actions/jam/y2026/public/`, `app/ui/public/`). The root browser runtime entry is `app/actions/public/entry.ts`. Keep every local dependency of a browser module in a `public/` directory; the shared `app/routes.ts` contract and `allowPackages` entries in `remix.json` are the only exceptions. For route-local hydrated UI in a `public/` directory, keep component/rendering code first and put styles below the components.
 - Let components own their own state and implementation details. If a parent imports a long list of child constants/helpers, that is a boundary smell; extract a child component/module instead.
+- Module-level bindings use `const` (including `export const X = clientEntry(...)`); function-local bindings use `let`.
 - Prefer direct code over tiny wrappers/constants that do not add meaning. Inline one-off helpers, values, and derived constants at their use site when that reads clearly.
 - Use shared theme tokens such as `theme.fontFamily.*`, `theme.fontWeight.*`, and route theme objects instead of hardcoded repeated values. Never hardcode custom `fontWeight` numbers or strings.
 - In actions/mutations, validate request-derived input with `remix/data-schema` + `parseSafe` and return explicit `400` on invalid input.
@@ -70,11 +71,10 @@ Remaining differences vs the previous production site (small, shippable items):
 
 ## E2E Gotchas (Playwright)
 
-- In sandboxed runs, Playwright may not reach `localhost:5173` and may fail to download browsers.
-- For reliable local runs, use the installed stable Chrome selected by `playwright.config.ts`:
-  - `pnpm exec playwright test e2e/jam.spec.ts --grep newsletter`
-  - Do not run `playwright install chromium`; it downloads Playwright's pinned Chromium instead of your patched system Chrome.
-- If a dev server is already running, prefer reusing it; otherwise Playwright may try to start another `pnpm run dev` and hit `EMFILE` (too many file watchers).
+- E2E tests live in `test/*.test.e2e.ts` and run through `remix test` (configured by `remix.json` `test.playwright`). Each suite starts its own in-process server with `createTestServer`, so no dev server is needed.
+  - Run one suite: `NODE_ENV=test pnpm exec remix test test/jam.test.e2e.ts`; filter by test name with `--only newsletter`.
+- `playwright.config.ts` selects the installed stable Chrome (`channel: "chrome"`). Do not run `playwright install chromium`; it downloads Playwright's pinned Chromium instead of your patched system Chrome.
+- In sandboxed runs, Playwright may fail to launch Chrome or bind local ports.
 
 ## Deploying to staging
 

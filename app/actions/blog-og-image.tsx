@@ -21,7 +21,7 @@ type OgNode = {
   };
 };
 
-export let blogOgImageAction = createAction(
+export const blogOgImageAction = createAction(
   routes.blogOgImage,
   async ({ request }) => {
     let parsedQuery = parseOgImageQuery(request);
@@ -275,7 +275,7 @@ function renderSvgToPng(svg: string): Promise<Uint8Array> {
     .toBuffer();
 }
 
-let getOgImageAssets = memoizeAsync(loadOgImageAssets);
+const getOgImageAssets = memoizeAsync(loadOgImageAssets);
 
 async function loadOgImageAssets(): Promise<OgImageAssets> {
   let [interBoldBuffer, interRegularBuffer, socialBackgroundBuffer] =
@@ -317,29 +317,29 @@ function getAuthorImgSrc(siteUrl: string, name: string) {
   return `${siteUrl}/authors/profile-${authorNameSlug}.png`;
 }
 
-let PRIMARY_TEXT_COLOR = "#ffffff";
-let PRIMARY_FONT = "Inter";
+const PRIMARY_TEXT_COLOR = "#ffffff";
+const PRIMARY_FONT = "Inter";
 
-let PAGE_TITLE_TYPOGRAPHY = {
+const PAGE_TITLE_TYPOGRAPHY = {
   fontWeight: 700,
   lineHeight: 1,
   letterSpacing: "-0.02em",
   color: PRIMARY_TEXT_COLOR,
 };
-let PAGE_BODY_TYPOGRAPHY = {
+const PAGE_BODY_TYPOGRAPHY = {
   fontWeight: 400,
   lineHeight: 1.4,
   letterSpacing: "-0.008px",
   color: PRIMARY_TEXT_COLOR,
 };
 
-let ogImageAuthorSchema = s.object({
+const ogImageAuthorSchema = s.object({
   name: s.string(),
   title: s.string(),
   imgSrc: s.string(),
 });
 
-let ogImageQuerySchema = s.object({
+const ogImageQuerySchema = s.object({
   title: s.string(),
   displayDate: s.string(),
   ogImage: s.optional(s.string()),

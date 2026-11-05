@@ -2,8 +2,8 @@ import { expect } from "remix/assert";
 import { describe, it } from "remix/test";
 import { layoutPackageLogos } from "./package-logos-layout.ts";
 
-let panel = { top: 2000, left: 100, width: 500, height: 1000 };
-let viewport = { viewportWidth: 1280, viewportHeight: 800 };
+const panel = { top: 2000, left: 100, width: 500, height: 1000 };
+const viewport = { viewportWidth: 1280, viewportHeight: 800 };
 
 describe("layoutPackageLogos", () => {
   it("stacks the logos down 94% of the panel, centered in both axes", () => {

@@ -71,8 +71,10 @@ Surrogate keys are public cache tags, not credentials; Fastly normally removes t
 ### Newsletter Archive
 
 - The `/newsletter` archive renders issues from the private
-  `remix-run/newsletter` GitHub repository at runtime via a single tarball
-  fetch.
+  `remix-run/newsletter` GitHub repository at runtime. It lists the repo with
+  one recursive git tree request (pinned to blob SHAs), loads every issue's
+  Markdown in one batched GraphQL request, and fetches images on demand into a
+  bounded filesystem cache.
 - Because the repo is currently private, set `NEWSLETTER_GITHUB_TOKEN` (see
   `.env.example`) locally and in production to enable archive rendering.
   Without it, `/newsletter` returns a 503 when no cached snapshot exists.

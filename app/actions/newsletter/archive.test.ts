@@ -117,6 +117,24 @@ describe("parseNewsletterSnapshot", () => {
     ]);
   });
 
+  it("takes the title from the first body H1, never from frontmatter comments", () => {
+    let snapshot = parseNewsletterSnapshot([
+      {
+        name: "newsletter-1/2024-01-01-remix-newsletter-1.md",
+        markdown:
+          "\ufeff---\n# YAML comment\ntitle: ignored\n...\n\nIntro paragraph.\n\n# Body Title\n\n# Second H1\n",
+      },
+      {
+        name: "newsletter-2/2024-02-01-remix-newsletter-2.md",
+        markdown: "---\n# YAML comment\n---\n\nNo heading here.\n",
+      },
+    ]);
+    expect(snapshot.issues.map((issue) => issue.title)).toEqual([
+      "Remix Newsletter #2",
+      "Body Title",
+    ]);
+  });
+
   it("does not derive preview text from the body when metadata is missing or malformed", () => {
     let snapshot = parseNewsletterSnapshot([
       {

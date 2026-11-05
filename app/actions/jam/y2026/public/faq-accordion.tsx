@@ -37,7 +37,7 @@ type FaqInline =
       href: string;
     };
 
-export let Jam2026FaqAccordion = clientEntry(
+export const Jam2026FaqAccordion = clientEntry(
   import.meta.url,
   function Jam2026FaqAccordion(handle: Handle<Jam2026FaqAccordionProps>) {
     let openFaqId: string | null = null;
@@ -120,13 +120,13 @@ function renderInline(content: FaqInline[]) {
   });
 }
 
-let faqListStyle = css({
+const faqListStyle = css({
   marginBlockStart: "27px",
   display: "grid",
   width: "100%",
 });
 
-let faqItemStyle = css({
+const faqItemStyle = css({
   color: jamTheme.ink,
   fontFamily: theme.fontFamily.mono,
   width: "100%",
@@ -140,7 +140,7 @@ let faqItemStyle = css({
   },
 });
 
-let faqTriggerStyle = css({
+const faqTriggerStyle = css({
   alignItems: "center",
   backgroundColor: "transparent",
   boxSizing: "border-box",
@@ -183,7 +183,7 @@ let faqTriggerStyle = css({
   },
 });
 
-let faqIconStyle = css({
+const faqIconStyle = css({
   alignItems: "center",
   backgroundColor: jamTheme.ink,
   backgroundImage: `linear-gradient(${jamTheme.skyGround}, ${jamTheme.skyGround}), linear-gradient(${jamTheme.skyGround}, ${jamTheme.skyGround})`,
@@ -203,11 +203,11 @@ let faqIconStyle = css({
   },
 });
 
-let faqIconOpenStyle = css({
+const faqIconOpenStyle = css({
   transform: "rotate(45deg)",
 });
 
-let faqPanelStyle = css({
+const faqPanelStyle = css({
   "& > div > div": {
     color: "inherit",
     fontSize: "inherit",
@@ -216,7 +216,7 @@ let faqPanelStyle = css({
   },
 });
 
-let faqAnswerStyle = css({
+const faqAnswerStyle = css({
   color: "light-dark(rgb(8 40 69 / 0.76), rgb(255 255 255 / 0.76))",
   fontFamily: theme.fontFamily.sans,
   fontSize: "16px",
@@ -244,16 +244,16 @@ let faqAnswerStyle = css({
   },
 });
 
-let faqAnswerTextStyle = css({
+const faqAnswerTextStyle = css({
   margin: "0 0 12px",
 });
 
-let faqAnswerListStyle = css({
+const faqAnswerListStyle = css({
   margin: "0 0 12px",
   paddingInlineStart: "1.25em",
 });
 
-let faqAnswerLinkStyle = css({
+const faqAnswerLinkStyle = css({
   color: jamTheme.accent,
   textDecoration: "underline",
   textUnderlineOffset: "0.16em",

@@ -19,12 +19,12 @@ interface ResolvedAsset {
   href: string;
 }
 
-let assetEntryKey = createContextKey<AssetEntry>();
-let defaultEntry = path.resolve(
+const assetEntryKey = createContextKey<AssetEntry>();
+const defaultEntry = path.resolve(
   import.meta.dirname,
   "../actions/public/entry.ts",
 );
-let fontEntries = {
+const fontEntries = {
   interItalic: path.resolve(
     import.meta.dirname,
     "../styles/public/font/inter-italic-latin-var.woff2",
@@ -38,7 +38,7 @@ let fontEntries = {
     "../styles/public/font/jet-brains-mono.woff2",
   ),
 } as const;
-let stylesheetEntries = {
+const stylesheetEntries = {
   global: path.resolve(import.meta.dirname, "../styles/public/global.css"),
   home: path.resolve(import.meta.dirname, "../styles/public/home.css"),
   md: path.resolve(import.meta.dirname, "../styles/public/md.css"),

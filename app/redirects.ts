@@ -5,7 +5,7 @@ import { RoutePattern } from "remix/route-pattern";
 import { createHref } from "remix/route-pattern/href";
 import { redirect } from "remix/response/redirect";
 
-let defaultRedirectsPath = path.join(process.cwd(), "_redirects");
+const defaultRedirectsPath = path.join(process.cwd(), "_redirects");
 
 function getValidRedirectCode(code: string | number | undefined): number {
   let defaultCode = 302;
@@ -21,14 +21,14 @@ function getValidRedirectCode(code: string | number | undefined): number {
   return code;
 }
 
-/**
- * Converts Netlify-style _redirects pattern to route-pattern format.
- * - /conf/2023/* with :splat in destination -> /conf/2023/*splat
- */
 function hasNetlifySplat(from: string): boolean {
   return from.endsWith("/*");
 }
 
+/**
+ * Converts Netlify-style _redirects pattern to route-pattern format.
+ * - /conf/2023/* with :splat in destination -> /conf/2023/*splat
+ */
 function toFetchRouterPattern(from: string): string {
   if (hasNetlifySplat(from)) {
     return from.slice(0, -1) + "*splat";

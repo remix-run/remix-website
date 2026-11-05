@@ -51,7 +51,7 @@ export const landingContent = {
       id: "smaller-mental-model",
       title: "A bigger toolkit with a smaller mental model",
       body: "Building a complete web app shouldn't mean learning a different system at every layer. Remix gives you more of the stack with fewer concepts.",
-      align: "left",
+      layout: "centered-grid",
       points: [
         {
           title: "Web APIs throughout",
@@ -75,7 +75,7 @@ export const landingContent = {
       id: "humans-and-agents",
       title: "Better for humans. Better for agents.",
       body: "Remix keeps the important parts of your app visible: standard Web APIs, explicit updates, runtime boundaries, and recognizable source modules. Humans and coding agents can trace how the system works and take control when the defaults aren't enough.",
-      align: "right",
+      layout: "centered-list",
       points: [
         {
           title: "Built to be understood",
@@ -95,7 +95,7 @@ export const landingContent = {
       id: "test-drive",
       title: "Take Remix for a test drive",
       body: "Build your first app with the step-by-step guide, then explore the API when you want to go deeper.",
-      align: "left",
+      layout: "split",
       ctaLabel: "Get started",
       ctaHref: "https://docs.remix.run/start-here/",
       ctaMarkdownHref: "https://docs.remix.run/start-here.md",

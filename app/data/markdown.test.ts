@@ -1,11 +1,11 @@
 import { expect } from "remix/assert";
 import { describe, it } from "remix/test";
 import { getBlogImageAsset } from "../utils/blog-image-assets.ts";
-import { processMarkdown } from "./md.ts";
+import { renderMarkdown } from "./markdown.ts";
 
 describe("Untrusted Markdown", () => {
   it("removes unsafe URL schemes while preserving safe links and images", async () => {
-    let { html } = await processMarkdown(
+    let { html } = await renderMarkdown(
       `
 [JavaScript](javascript:alert(1))
 [Data](data:text/html,<script>alert(1)</script>)
@@ -34,14 +34,14 @@ describe("Untrusted Markdown", () => {
   });
 
   it("prefixes generated heading IDs to prevent DOM clobbering", async () => {
-    let { html } = await processMarkdown("## Current", { allowHtml: false });
+    let { html } = await renderMarkdown("## Current", { allowHtml: false });
 
     expect(html).toContain('id="newsletter-content-current"');
     expect(html).toContain('href="#newsletter-content-current"');
   });
 
   it("preserves trusted syntax-highlighting output", async () => {
-    let { html } = await processMarkdown("```js\nlet answer = 42\n```", {
+    let { html } = await renderMarkdown("```js\nlet answer = 42\n```", {
       allowHtml: false,
     });
 
@@ -51,7 +51,7 @@ describe("Untrusted Markdown", () => {
   });
 
   it("drops raw HTML instead of parsing it", async () => {
-    let { html } = await processMarkdown(
+    let { html } = await renderMarkdown(
       '<img src="https://example.com/a.png" onerror="alert(1)"><script>alert(1)</script>\n\nText',
       { allowHtml: false },
     );
@@ -64,11 +64,11 @@ describe("Untrusted Markdown", () => {
 
 describe("Markdown images", () => {
   it("uses the current request's image resolver with a cached processor", async () => {
-    let first = await processMarkdown("![First](cover.png)", {
+    let first = await renderMarkdown("![First](cover.png)", {
       allowHtml: false,
       resolveImageUrl: () => "/newsletter/1/image/cover.png",
     });
-    let second = await processMarkdown("![Second](cover.png)", {
+    let second = await renderMarkdown("![Second](cover.png)", {
       allowHtml: false,
       resolveImageUrl: () => "/newsletter/2/image/cover.png",
     });
@@ -78,7 +78,7 @@ describe("Markdown images", () => {
   });
 
   it("optimizes and defers Markdown and trusted HTML images", async () => {
-    let { html } = await processMarkdown(`
+    let { html } = await renderMarkdown(`
 ![Markdown image](/blog-images/social-background.png)
 
 ![Reference image][reference]
@@ -110,7 +110,7 @@ describe("Markdown images", () => {
   });
 
   it("gives raw HTML images, including nested ones, the same attributes as Markdown images", async () => {
-    let { html } = await processMarkdown(`
+    let { html } = await renderMarkdown(`
 ![Alt](/blog-images/social-background.png)
 
 <figure>
