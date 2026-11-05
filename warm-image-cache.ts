@@ -10,16 +10,8 @@ import { assets } from "./app/utils/assets.ts";
 import {
   getAuthorImageAsset,
   getBlogImageAsset,
+  getFailedImageSources,
 } from "./app/utils/blog-image-assets.ts";
-
-// `createImageAsset` logs failures and falls back to the original image, which
-// would ship a partial cache. Count those logs so the build fails instead.
-let errorCount = 0;
-let logError = console.error;
-console.error = (...args: unknown[]) => {
-  errorCount++;
-  logError(...args);
-};
 
 let start = performance.now();
 let slugs = process.argv.slice(2);
@@ -44,9 +36,12 @@ for (let { slug } of listings) {
 
 await assets.close();
 
-if (errorCount > 0) {
+// Failed images fall back to the original source at runtime, which would ship
+// a partial cache. Fail the build instead.
+let failedSources = getFailedImageSources();
+if (failedSources.length > 0) {
   throw new Error(
-    `Failed to warm ${errorCount} blog image(s); see errors above`,
+    `Failed to warm ${failedSources.length} blog image(s): ${failedSources.join(", ")}`,
   );
 }
 

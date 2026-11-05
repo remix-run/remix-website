@@ -9,6 +9,7 @@ import {
   type StackExplorerCodeHighlights,
   type StackExplorerCodeToken,
 } from "./public/remix-landing/stack-explorer-content.tsx";
+import { memoizeAsync } from "../utils/memoize-async.ts";
 
 const DEFAULT_TOKEN_COLOR = "#FFFFFF";
 
@@ -49,11 +50,9 @@ const stackExplorerTheme: ThemeRegistration = {
   ],
 };
 
-let codeHighlightsPromise: Promise<StackExplorerCodeHighlights> | undefined;
-
-export function getStackExplorerCodeHighlights(): Promise<StackExplorerCodeHighlights> {
-  return (codeHighlightsPromise ??= createStackExplorerCodeHighlights());
-}
+export const getStackExplorerCodeHighlights = memoizeAsync(
+  createStackExplorerCodeHighlights,
+);
 
 async function createStackExplorerCodeHighlights() {
   let highlighter = await getSingletonHighlighter({

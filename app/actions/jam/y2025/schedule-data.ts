@@ -6,6 +6,7 @@ import yaml from "yaml";
 import * as s from "remix/data-schema";
 import { LRUCache } from "lru-cache";
 import { processMarkdown } from "../../../data/md.ts";
+import { memoizeAsync } from "../../../utils/memoize-async.ts";
 
 const SCHEDULE_IMAGES_DIRECTORY = path.join(
   process.cwd(),
@@ -53,19 +54,17 @@ let cache = new LRUCache<string, ScheduleItem[]>({
   },
 });
 
-let scheduleImageUrlByKeyPromise: Promise<Map<string, string>> | undefined;
-
 export async function getJam2025Schedule(): Promise<ScheduleItem[]> {
-  const cached = cache.get("jam:schedule");
+  let cached = cache.get("jam:schedule");
   if (cached) return cached;
 
-  const imageUrlByKey = await getScheduleImageUrlByKey();
-  const rawUnknown = yaml.parse(readFileSync(SCHEDULE_FILE_PATH, "utf8"));
-  const raw = parseScheduleItems(rawUnknown);
+  let imageUrlByKey = await getScheduleImageUrlByKey();
+  let rawUnknown = yaml.parse(readFileSync(SCHEDULE_FILE_PATH, "utf8"));
+  let raw = parseScheduleItems(rawUnknown);
 
-  const schedule: ScheduleItem[] = await Promise.all(
+  let schedule: ScheduleItem[] = await Promise.all(
     raw.map(async (item) => {
-      const [{ html: description }, { html: bio }] = await Promise.all([
+      let [{ html: description }, { html: bio }] = await Promise.all([
         processMarkdown(item.description),
         processMarkdown(item.bio ?? ""),
       ]);
@@ -94,12 +93,7 @@ export async function getJam2025Schedule(): Promise<ScheduleItem[]> {
   return schedule;
 }
 
-async function getScheduleImageUrlByKey(): Promise<Map<string, string>> {
-  if (!scheduleImageUrlByKeyPromise) {
-    scheduleImageUrlByKeyPromise = loadScheduleImageUrlByKey();
-  }
-  return scheduleImageUrlByKeyPromise;
-}
+const getScheduleImageUrlByKey = memoizeAsync(loadScheduleImageUrlByKey);
 
 async function loadScheduleImageUrlByKey(): Promise<Map<string, string>> {
   let entries = await readdir(SCHEDULE_IMAGES_DIRECTORY, {

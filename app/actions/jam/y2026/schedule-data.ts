@@ -4,6 +4,7 @@ import path from "node:path";
 import * as s from "remix/data-schema";
 import yaml from "yaml";
 import { processMarkdown } from "../../../data/md.ts";
+import { memoizeAsync } from "../../../utils/memoize-async.ts";
 import type { ScheduleItem } from "./public/schedule-types.ts";
 
 const SCHEDULE_IMAGES_DIRECTORY = path.join(
@@ -33,16 +34,7 @@ const scheduleSchema = s.array(
   }),
 );
 
-let schedulePromise: Promise<ScheduleItem[]> | undefined;
-
-export function getJam2026Schedule(): Promise<ScheduleItem[]> {
-  // Forget a failed load so a transient file error doesn't stick until restart.
-  schedulePromise ??= loadJam2026Schedule().catch((error: unknown) => {
-    schedulePromise = undefined;
-    throw error;
-  });
-  return schedulePromise;
-}
+export const getJam2026Schedule = memoizeAsync(loadJam2026Schedule);
 
 async function loadJam2026Schedule(): Promise<ScheduleItem[]> {
   let [source, imageEntries] = await Promise.all([

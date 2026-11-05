@@ -6,6 +6,7 @@ import satori from "satori";
 import sharp from "sharp";
 import { createAction } from "remix/router";
 import { routes } from "../routes.ts";
+import { memoizeAsync } from "../utils/memoize-async.ts";
 
 type ParsedOgImageQuery =
   | { success: true; value: OgImageQuery }
@@ -268,18 +269,13 @@ function toArrayBuffer(buffer: Buffer): ArrayBuffer {
 
 // satori draws text as paths and inlines images as data URIs, so sharp can
 // rasterize and compress the SVG in one pass.
-async function renderSvgToPng(svg: string): Promise<Uint8Array> {
+function renderSvgToPng(svg: string): Promise<Uint8Array> {
   return sharp(Buffer.from(svg))
     .png({ compressionLevel: 9, effort: 6 })
     .toBuffer();
 }
 
-async function getOgImageAssets(): Promise<OgImageAssets> {
-  if (!ogImageAssetsPromise) {
-    ogImageAssetsPromise = loadOgImageAssets();
-  }
-  return ogImageAssetsPromise;
-}
+let getOgImageAssets = memoizeAsync(loadOgImageAssets);
 
 async function loadOgImageAssets(): Promise<OgImageAssets> {
   let [interBoldBuffer, interRegularBuffer, socialBackgroundBuffer] =
@@ -336,7 +332,6 @@ let PAGE_BODY_TYPOGRAPHY = {
   letterSpacing: "-0.008px",
   color: PRIMARY_TEXT_COLOR,
 };
-let ogImageAssetsPromise: Promise<OgImageAssets> | undefined;
 
 let ogImageAuthorSchema = s.object({
   name: s.string(),
