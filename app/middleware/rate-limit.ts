@@ -58,7 +58,7 @@ export function rateLimit({
       return new Response("Too Many Requests", {
         status: 429,
         headers: {
-          "Cache-Control": CACHE.PRIVATE,
+          ...CACHE.PRIVATE,
           "Content-Type": "text/plain; charset=utf-8",
           "Retry-After": String(retryAfterSeconds),
           "X-Remix-Response": "yes",

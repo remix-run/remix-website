@@ -10,14 +10,14 @@ import {
   pageTitleStyle,
 } from "../ui/public/marketing-styles.ts";
 import { breakpointMedia, theme } from "../ui/public/theme.ts";
-import { getSocialHeadTags } from "../utils/social-head-tags.ts";
+import { getSocialHeadTagsForRequest } from "../utils/social-head-tags-for-request.ts";
 
 export function BrandPage(handle: Handle<{ requestUrl: string }>) {
   return () => (
     <Document
       title="Remix Assets and Branding Guidelines"
       description="Remix brand assets and guidelines for using the Remix name and logos."
-      headTags={getSocialHeadTags({
+      headTags={getSocialHeadTagsForRequest({
         requestUrl: handle.props.requestUrl,
         title: "Remix Assets and Branding Guidelines",
         description:

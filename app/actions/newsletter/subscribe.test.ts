@@ -131,7 +131,7 @@ describe("Newsletter subscribe route", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Cache-Control")).toBe("private, no-store");
-    expect(response.headers.get("Vary")).toBe("x-remix-target");
+    expect(response.headers.get("Vary")?.toLowerCase()).toBe("x-remix-target");
     let html = await response.text();
     expect(html).toContain('role="status"');
     expect(html).toContain("check your email");
@@ -153,7 +153,7 @@ describe("Newsletter subscribe route", () => {
 
     expect(response.status).toBe(303);
     expect(response.headers.get("Cache-Control")).toBe("private, no-store");
-    expect(response.headers.get("Vary")).toBe("x-remix-target");
+    expect(response.headers.get("Vary")?.toLowerCase()).toBe("x-remix-target");
     expect(response.headers.get("Location")).toBe(
       `${routes.jam.y2025.newsletterSignup.href()}?subscription=success`,
     );

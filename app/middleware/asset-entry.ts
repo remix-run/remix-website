@@ -96,7 +96,7 @@ export function loadAssetEntry(
 }
 
 export function getAssetEntry(
-  context: RequestContext<any, any> = getContext(),
+  context: Pick<RequestContext, "get"> = getContext(),
 ): AssetEntry {
   let entry = getOptionalAssetEntry(context);
   if (!entry) throw new Error("Asset entry is not loaded");
@@ -104,7 +104,7 @@ export function getAssetEntry(
 }
 
 export function getOptionalAssetEntry(
-  context: RequestContext<any, any> = getContext(),
+  context: Pick<RequestContext, "get"> = getContext(),
 ): AssetEntry | undefined {
-  return context.get(assetEntryKey) as AssetEntry | undefined;
+  return context.get(assetEntryKey);
 }

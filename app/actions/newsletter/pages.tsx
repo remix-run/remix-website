@@ -18,7 +18,7 @@ import {
 } from "../../ui/public/marketing-styles.ts";
 import { breakpointMedia, theme } from "../../ui/public/theme.ts";
 import type { NewsletterSubscriptionStatus } from "../../ui/public/newsletter-frame-form.tsx";
-import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
+import { getSocialHeadTagsForRequest } from "../../utils/social-head-tags-for-request.ts";
 
 interface NewsletterIndexPageProps {
   requestUrl: string;
@@ -35,7 +35,7 @@ export function NewsletterIndexPage(handle: Handle<NewsletterIndexPageProps>) {
     <Document
       title="Remix Newsletter"
       description="Stay up-to-date with news, announcements, and releases for our projects like Remix and React Router. Read past issues in the archive."
-      headTags={getSocialHeadTags({
+      headTags={getSocialHeadTagsForRequest({
         requestUrl: handle.props.requestUrl,
         title: "Remix Newsletter",
         description:
@@ -91,7 +91,7 @@ export function NewsletterIssuePage(
       title={`${issue.title} | Remix`}
       description={description}
       stylesheets={["md"]}
-      headTags={getSocialHeadTags({
+      headTags={getSocialHeadTagsForRequest({
         requestUrl: handle.props.requestUrl,
         title: issue.title,
         description,

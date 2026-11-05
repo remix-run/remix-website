@@ -45,7 +45,7 @@ export async function jam2025GalleryDownloadHandler({
 
   return new Response(upstreamResponse.body, {
     headers: {
-      "Cache-Control": CACHE.RESOURCE,
+      ...CACHE.RESOURCE,
       "Content-Type": contentType,
       "Content-Disposition": `attachment; filename="remix-jam-2025-photo-${selectedPhotoIndex + 1}.${extension}"`,
     },

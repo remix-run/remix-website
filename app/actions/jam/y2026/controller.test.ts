@@ -1,7 +1,7 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
-import { DOCUMENT_REDIRECT_HEADER } from "../../public/document-redirect.ts";
+import { DOCUMENT_REDIRECT_HEADER } from "../../../utils/public/frame-headers.ts";
 import { routes } from "../../../routes.ts";
 import { createRouteTestRouter } from "../../../../test/setup.ts";
 import jam2026Controller from "./controller.tsx";

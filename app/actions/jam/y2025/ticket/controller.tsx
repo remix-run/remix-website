@@ -3,7 +3,7 @@ import { createController } from "remix/router";
 import { createCart, getProduct } from "../../../../data/jam-storefront.ts";
 import { CACHE } from "../../../../utils/cache-control.ts";
 import { routes } from "../../../../routes.ts";
-import { documentRedirect } from "../../../document-redirect.ts";
+import { documentRedirect } from "../../../../utils/document-redirect.ts";
 import { Jam2025TicketPage, parseTicketPurchaseSubmission } from "./page.tsx";
 
 export default createController(routes.jam.y2025.ticket, {
@@ -62,7 +62,7 @@ export default createController(routes.jam.y2025.ticket, {
           // Only bad input is a client error; an unavailable product or a
           // failed checkout re-renders the page with the message.
           status: invalidInput ? 400 : 200,
-          headers: { "Cache-Control": CACHE.PRIVATE },
+          headers: CACHE.PRIVATE,
         },
       );
     },

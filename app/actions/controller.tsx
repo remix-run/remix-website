@@ -13,7 +13,6 @@ import { BrandPage } from "./brand.tsx";
 import { HomePage } from "./home.tsx";
 import { renderHomeMarkdown } from "./home-markdown.ts";
 import { getStackExplorerCodeHighlights } from "./stack-explorer-highlighting.ts";
-import { isDevelopment } from "../utils/node-env.ts";
 
 export default createController(routes, {
   actions: {
@@ -25,7 +24,7 @@ export default createController(routes, {
         response ??
         new Response("Not found", {
           status: 404,
-          headers: { "Cache-Control": CACHE.PRIVATE },
+          headers: CACHE.PRIVATE,
         })
       );
     },
@@ -42,7 +41,7 @@ export default createController(routes, {
         headers: {
           "Content-Type": "text/markdown; charset=utf-8",
           Link: `<${htmlUrl}>; rel="canonical"`,
-          ...(isDevelopment ? { "Cache-Control": "no-store" } : CACHE.DOCUMENT),
+          ...CACHE.DOCUMENT,
         },
       });
     },
@@ -67,9 +66,7 @@ export default createController(routes, {
           headers: {
             "Content-Type": "text/markdown; charset=utf-8",
             Vary: "Accept",
-            ...(isDevelopment
-              ? { "Cache-Control": "no-store" }
-              : CACHE.DOCUMENT),
+            ...CACHE.DOCUMENT,
           },
         });
       }
@@ -94,7 +91,7 @@ export default createController(routes, {
         <LandingNewsletterSubscribeForm
           status={getNewsletterSubscriptionStatus(request)}
         />,
-        { headers: { "Cache-Control": CACHE.PRIVATE } },
+        { headers: CACHE.PRIVATE },
       );
     },
 
@@ -103,7 +100,7 @@ export default createController(routes, {
     healthcheck() {
       return new Response("OK", {
         headers: {
-          "Cache-Control": CACHE.PRIVATE,
+          ...CACHE.PRIVATE,
           "Content-Type": "text/plain; charset=utf-8",
         },
       });

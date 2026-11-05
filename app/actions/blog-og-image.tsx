@@ -33,8 +33,8 @@ export let blogOgImageAction = createAction(
       let svg = await createOgImageSVG(request, parsedQuery.value);
       pngData = await renderSvgToPng(svg);
     } catch (error) {
-      let message = error instanceof Error ? error.message : String(error);
-      return new Response(message || "Failed to generate image", {
+      console.error("[blog-og-image] Failed to generate image", error);
+      return new Response("Failed to generate image", {
         status: 500,
         headers: { "Content-Type": "text/plain; charset=utf-8" },
       });

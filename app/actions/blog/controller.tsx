@@ -27,9 +27,12 @@ import {
 } from "../../utils/blog-image-assets.ts";
 import { CACHE } from "../../utils/cache-control.ts";
 import { getCanonicalUrl } from "../../utils/public/canonical-url.ts";
-import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
-import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
-import { BlogPostPage, NOT_FOUND_RESPONSE } from "./post-page.tsx";
+import { getSocialHeadTagsForRequest } from "../../utils/social-head-tags-for-request.ts";
+import {
+  NOT_FOUND_RESPONSE,
+  StatusErrorDocument,
+} from "../../ui/not-found-page.tsx";
+import { BlogPostPage } from "./post-page.tsx";
 import { buildBlogRssResponse } from "./rss.ts";
 
 export default createController(routes.blog, {
@@ -63,7 +66,7 @@ export default createController(routes.blog, {
         );
         return new Response(markdown, {
           headers: {
-            "Cache-Control": CACHE.RESOURCE,
+            ...CACHE.RESOURCE,
             "Content-Type": "text/markdown; charset=utf-8",
             Link: `<${htmlUrl}>; rel="canonical"`,
           },
@@ -105,7 +108,7 @@ function Page(
   }>,
 ) {
   return () => {
-    let headTags = getSocialHeadTags({
+    let headTags = getSocialHeadTagsForRequest({
       requestUrl: handle.props.requestUrl,
       title: "Remix Blog",
       description:

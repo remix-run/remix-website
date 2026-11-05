@@ -1,7 +1,6 @@
 import { createController } from "remix/router";
 
 import { routes } from "../../../../routes.ts";
-import { CACHE } from "../../../../utils/cache-control.ts";
 import { renderJam2026Page } from "../controller.tsx";
 import { submitClosedTicketCheckout } from "../ticket-checkout.ts";
 
@@ -16,7 +15,7 @@ export default createController(routes.jam.y2026.ticket, {
       let { status, ticketCheckout } = submitClosedTicketCheckout(formData);
 
       return renderJam2026Page({
-        cacheControl: CACHE.PRIVATE,
+        privateResponse: true,
         render,
         request,
         status,

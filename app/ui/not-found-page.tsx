@@ -1,6 +1,14 @@
 import { css, type Handle } from "remix/component";
 import { Document } from "./document.tsx";
 import { theme } from "./public/theme.ts";
+import { CACHE } from "../utils/cache-control.ts";
+
+/** Response init for rendering `StatusErrorDocument` as a 404. */
+export const NOT_FOUND_RESPONSE = {
+  status: 404,
+  statusText: "Not Found",
+  headers: CACHE.PRIVATE,
+};
 
 export function StatusErrorDocument(
   handle: Handle<{ status: number; statusText: string }>,

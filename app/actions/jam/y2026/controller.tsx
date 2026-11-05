@@ -6,6 +6,12 @@ import { createController } from "remix/router";
 
 import { getJam2026Schedule } from "./schedule-data.ts";
 import { CACHE } from "../../../utils/cache-control.ts";
+import {
+  FRAME_TARGET_HEADER,
+  SSR_FRAME_HEADER,
+  getFrameTarget,
+  isServerResolvedFrame,
+} from "../../../utils/public/frame-headers.ts";
 import type { AppRenderer } from "../../../middleware/render.ts";
 import { routes } from "../../../routes.ts";
 import { getNewsletterSubscriptionStatus } from "../../../utils/newsletter-subscription.ts";
@@ -34,7 +40,7 @@ export default createController(routes.jam.y2026, {
         <Jam2026NewsletterForm
           status={getNewsletterSubscriptionStatus(request)}
         />,
-        { headers: { "Cache-Control": CACHE.PRIVATE } },
+        { headers: CACHE.PRIVATE },
       );
     },
 
@@ -51,7 +57,7 @@ export default createController(routes.jam.y2026, {
       return redirect(routes.jam.y2026.index.href(), {
         status: 303,
         headers: new SuperHeaders({
-          cacheControl: CACHE.PRIVATE,
+          cacheControl: CACHE.PRIVATE["Cache-Control"],
           setCookie: await serializeJam2026ThemePreference(result.value.theme),
         }),
       });
@@ -65,13 +71,14 @@ export default createController(routes.jam.y2026, {
  * with the modal open.
  */
 export async function renderJam2026Page({
-  cacheControl,
+  privateResponse = false,
   render,
   request,
   status = 200,
   ticketCheckout,
 }: {
-  cacheControl?: string;
+  /** Opt out of shared caching, e.g. for responses to form submissions. */
+  privateResponse?: boolean;
   render: AppRenderer;
   request: Request;
   status?: number;
@@ -83,16 +90,17 @@ export async function renderJam2026Page({
   let ticketsModalOpen =
     requestUrl.pathname === routes.jam.y2026.ticket.index.href();
   let isTicketsFrameRequest =
-    request.headers.get("x-remix-target") === ticketModalConfig.frameName;
-  let isServerResolvedFrame =
-    request.headers.get("x-remix-ssr-frame") === "true";
+    getFrameTarget(request) === ticketModalConfig.frameName;
   let theme = await getJam2026ThemePreference(request.headers.get("cookie"));
   if (ticketsModalOpen) ticketCheckout ??= createClosedTicketCheckout();
 
   // Never let a shared cache store a response that hands out a Set-Cookie.
   let headers = new SuperHeaders({
-    cacheControl: discountCookie ? CACHE.PRIVATE : cacheControl,
-    vary: ["Cookie", "x-remix-target", "x-remix-ssr-frame"],
+    cacheControl:
+      discountCookie || privateResponse
+        ? CACHE.PRIVATE["Cache-Control"]
+        : undefined,
+    vary: ["Cookie", FRAME_TARGET_HEADER, SSR_FRAME_HEADER],
   });
   if (discountCookie) headers.append("Set-Cookie", discountCookie);
 
@@ -101,7 +109,7 @@ export async function renderJam2026Page({
   if (isTicketsFrameRequest) {
     return render(
       <Jam2026TicketsModalFrame
-        animateEntrance={!isServerResolvedFrame}
+        animateEntrance={!isServerResolvedFrame(request)}
         open={ticketsModalOpen}
         ticketCheckout={ticketCheckout}
       />,

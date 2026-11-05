@@ -11,7 +11,10 @@ import {
 } from "./archive.ts";
 import { routes } from "../../routes.ts";
 import { NewsletterSubscribeFrame } from "./subscribe-frame.tsx";
-import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
+import {
+  NOT_FOUND_RESPONSE,
+  StatusErrorDocument,
+} from "../../ui/not-found-page.tsx";
 import { CACHE } from "../../utils/cache-control.ts";
 import { NewsletterIndexPage, NewsletterIssuePage } from "./pages.tsx";
 import { getNewsletterSubscriptionStatus } from "../../utils/newsletter-subscription.ts";
@@ -49,7 +52,7 @@ export function createNewsletterController(repository: NewsletterRepository) {
           {
             headers:
               unavailable || subscriptionStatus
-                ? { "Cache-Control": CACHE.PRIVATE }
+                ? CACHE.PRIVATE
                 : CACHE.PREFETCHABLE_DOCUMENT,
           },
         );
@@ -60,7 +63,7 @@ export function createNewsletterController(repository: NewsletterRepository) {
           <NewsletterSubscribeFrame
             status={getNewsletterSubscriptionStatus(request)}
           />,
-          { headers: { "Cache-Control": CACHE.PRIVATE } },
+          { headers: CACHE.PRIVATE },
         );
       },
 
@@ -122,7 +125,7 @@ export function createNewsletterController(repository: NewsletterRepository) {
         let notFound = () =>
           new Response("Not Found", {
             status: 404,
-            headers: NOT_FOUND_RESPONSE.headers,
+            headers: CACHE.PRIVATE,
           });
         let number = parseIssueNumber(params.number);
         let filename = params.filename;
@@ -137,7 +140,7 @@ export function createNewsletterController(repository: NewsletterRepository) {
           if (error instanceof NewsletterUpstreamUnavailableError) {
             return new Response("Service Unavailable", {
               status: 503,
-              headers: UNAVAILABLE_RESPONSE.headers,
+              headers: CACHE.PRIVATE,
             });
           }
           throw error;
@@ -148,7 +151,7 @@ export function createNewsletterController(repository: NewsletterRepository) {
         return new Response(Uint8Array.from(image.bytes), {
           headers: {
             "Content-Type": image.contentType,
-            "Cache-Control": CACHE.RESOURCE,
+            ...CACHE.RESOURCE,
             "Content-Length": String(image.bytes.byteLength),
           },
         });
@@ -174,16 +177,10 @@ function newsletterErrorLogger(): Middleware {
   };
 }
 
-const NOT_FOUND_RESPONSE = {
-  status: 404,
-  statusText: "Not Found",
-  headers: { "Cache-Control": CACHE.PRIVATE },
-} as const;
-
 const UNAVAILABLE_RESPONSE = {
   status: 503,
   statusText: "Service Unavailable",
-  headers: { "Cache-Control": CACHE.PRIVATE },
+  headers: CACHE.PRIVATE,
 } as const;
 
 function withoutNewsletterTitle(markdown: string): string {

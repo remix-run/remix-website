@@ -35,7 +35,7 @@ export function buildBlogRssResponse(posts: BlogPostListing[]) {
   return new Response(feed.rss2(), {
     headers: {
       "Content-Type": "application/xml",
-      "Cache-Control": CACHE.RESOURCE,
+      ...CACHE.RESOURCE,
     },
   });
 }

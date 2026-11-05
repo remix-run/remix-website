@@ -13,8 +13,7 @@ import {
 import { breakpointMedia, theme } from "../../ui/public/theme.ts";
 import { NewsletterCta } from "../../ui/newsletter-cta.tsx";
 import type { BlogImageAsset } from "../../utils/blog-image-assets.ts";
-import { CACHE } from "../../utils/cache-control.ts";
-import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
+import { getSocialHeadTagsForRequest } from "../../utils/social-head-tags-for-request.ts";
 import { routes } from "../../routes.ts";
 import type { BlogPost } from "../../data/blog.ts";
 
@@ -22,14 +21,6 @@ interface BlogPostImageAssets {
   authors: Record<string, BlogImageAsset>;
   hero: BlogImageAsset;
 }
-
-export const NOT_FOUND_RESPONSE = {
-  status: 404,
-  statusText: "Not Found",
-  headers: {
-    "Cache-Control": CACHE.PRIVATE,
-  },
-};
 
 export function BlogPostPage(
   handle: Handle<{
@@ -52,7 +43,7 @@ export function BlogPostPage(
           href: routes.blog.post.href({ slug: handle.props.slug, ext: "md" }),
           type: "text/markdown",
         },
-        ...getSocialHeadTags({
+        ...getSocialHeadTagsForRequest({
           requestUrl: handle.props.requestUrl,
           title: handle.props.post.title,
           description: handle.props.post.summary,

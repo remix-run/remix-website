@@ -1,7 +1,7 @@
 import { staticFiles } from "remix/middleware/static";
 import type { Middleware } from "remix/router";
 
-import { CACHE } from "../utils/cache-control.ts";
+import { CACHE, STATIC_ASSET_SURROGATE_KEY } from "../utils/cache-control.ts";
 
 /**
  * Serves stable URLs from root `public/` and labels only those responses for
@@ -10,7 +10,7 @@ import { CACHE } from "../utils/cache-control.ts";
  */
 export function rootPublicFiles(): Middleware {
   const serveStaticFiles = staticFiles("public", {
-    cacheControl: CACHE.ROOT_PUBLIC_FILE,
+    cacheControl: CACHE.ROOT_PUBLIC_FILE["Cache-Control"],
     index: false,
   });
 
@@ -22,7 +22,7 @@ export function rootPublicFiles(): Middleware {
     });
 
     if (!fellThrough && response) {
-      response.headers.set("Surrogate-Key", CACHE.STATIC_ASSET_TAG);
+      response.headers.set("Surrogate-Key", STATIC_ASSET_SURROGATE_KEY);
     }
 
     return response;

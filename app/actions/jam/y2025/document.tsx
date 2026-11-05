@@ -1,7 +1,7 @@
 import { css, type Handle, type RemixNode } from "remix/component";
 import { breakpointMedia } from "../../../ui/public/theme.ts";
 import { Document } from "../../../ui/document.tsx";
-import { getSocialHeadTags } from "../../../utils/social-head-tags.ts";
+import { getSocialHeadTagsForRequest } from "../../../utils/social-head-tags-for-request.ts";
 import { JamPageScaffold } from "./public/page-scaffold.tsx";
 import { Title } from "./public/typography.tsx";
 
@@ -44,7 +44,7 @@ export function JamDocument(handle: Handle<JamPageProps>) {
             scrollBehavior: "auto",
           },
         })}
-        headTags={getSocialHeadTags({
+        headTags={getSocialHeadTagsForRequest({
           requestUrl,
           title,
           description,

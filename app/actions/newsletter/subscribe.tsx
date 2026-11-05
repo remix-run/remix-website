@@ -15,6 +15,10 @@ import { CACHE } from "../../utils/cache-control.ts";
 import { env } from "../../utils/env.ts";
 import { isAllowedNewsletterTagId } from "../../utils/public/newsletter-tags.ts";
 import { isDevelopment } from "../../utils/node-env.ts";
+import {
+  FRAME_TARGET_HEADER,
+  getFrameTarget,
+} from "../../utils/public/frame-headers.ts";
 
 /**
  * Subscribes the submitted email to ConvertKit and answers in the shape the
@@ -73,14 +77,12 @@ let newsletterSubmission = s.object({
 });
 
 const newsletterTargetResponseHeaders = {
-  "Cache-Control": CACHE.PRIVATE,
-  Vary: "x-remix-target",
-} as const;
+  ...CACHE.PRIVATE,
+  Vary: FRAME_TARGET_HEADER,
+};
 
 function isNewsletterSubscribeFrameRequest(request: Request) {
-  return (
-    request.headers.get("x-remix-target") === NEWSLETTER_SUBSCRIBE_FRAME_NAME
-  );
+  return getFrameTarget(request) === NEWSLETTER_SUBSCRIBE_FRAME_NAME;
 }
 
 function createSubscriptionResponse(
@@ -114,16 +116,17 @@ function createSubscriptionResponse(
       { ok: error === null, error },
       {
         status,
-        headers: { "Cache-Control": CACHE.PRIVATE },
+        headers: CACHE.PRIVATE,
       },
     );
   }
 
   let location = new URL(routes.newsletter.index.href(), request.url);
   location.searchParams.set("subscription", subscriptionStatus);
-  let response = redirect(`${location.pathname}${location.search}`, 303);
-  response.headers.set("Cache-Control", CACHE.PRIVATE);
-  return response;
+  return redirect(`${location.pathname}${location.search}`, {
+    status: 303,
+    headers: CACHE.PRIVATE,
+  });
 }
 
 let newsletterFrameRoutes: Record<NewsletterSubscribeFrameContext, string> = {

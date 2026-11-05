@@ -40,7 +40,7 @@ export default createController(routes.jam.y2025, {
     newsletterSignup({ render, request }) {
       return render(
         <JamNewsletterForm status={getNewsletterSubscriptionStatus(request)} />,
-        { headers: { "Cache-Control": CACHE.PRIVATE } },
+        { headers: CACHE.PRIVATE },
       );
     },
 

@@ -10,7 +10,7 @@ import { PitchSection } from "./pitch-section.tsx";
 import { StayInTheLoopSection } from "./stay-in-the-loop-section.tsx";
 import { TimelineSection } from "./timeline-section.tsx";
 import { theme } from "../../ui/public/theme.ts";
-import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
+import { getSocialHeadTagsForRequest } from "../../utils/social-head-tags-for-request.ts";
 import { routes } from "../../routes.ts";
 export default createController(routes.remixHistory, {
   actions: {
@@ -26,7 +26,7 @@ function RemixHistoryPage(handle: Handle<{ requestUrl: string }>) {
       title="The History of Remix"
       description="How Remix got here: a React Router feature branch that became a full stack framework, merged into React Router, and reimagined as Remix 3."
       forceTheme="light"
-      headTags={getSocialHeadTags({
+      headTags={getSocialHeadTagsForRequest({
         requestUrl: handle.props.requestUrl,
         title: "The History of Remix",
         description:

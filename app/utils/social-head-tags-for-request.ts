@@ -1,8 +1,9 @@
 import type { ManagedHeadTag } from "../ui/public/document-head.ts";
 import { assetPaths } from "./public/asset-paths.ts";
+import { getCanonicalOrigin } from "./public/canonical-url.ts";
 import { createSocialHeadTags } from "./public/social-head-tags.ts";
 
-type SocialHeadTagsProps = {
+type SocialHeadTagsForRequestProps = {
   requestUrl: string | URL;
   title?: string;
   description?: string;
@@ -13,12 +14,20 @@ type SocialHeadTagsProps = {
   twitterSite?: string;
 };
 
-export function getSocialHeadTags(props: SocialHeadTagsProps) {
+/**
+ * Social tags for a server-rendered page. The page URL defaults to the
+ * request path, and the page and image URLs use the canonical origin so they
+ * agree with the page's `<link rel="canonical">`.
+ */
+export function getSocialHeadTagsForRequest(
+  props: SocialHeadTagsForRequestProps,
+) {
   let requestUrl = new URL(props.requestUrl);
-  let pageUrl = props.url ?? `${requestUrl.origin}${requestUrl.pathname}`;
+  let origin = getCanonicalOrigin(requestUrl);
+  let pageUrl = props.url ?? `${origin}${requestUrl.pathname}`;
   let imageUrl = resolveUrl(
     props.image ?? assetPaths.marketing.defaultOgImage,
-    requestUrl,
+    origin,
   );
 
   return createSocialHeadTags({
@@ -32,8 +41,8 @@ export function getSocialHeadTags(props: SocialHeadTagsProps) {
   }) satisfies ManagedHeadTag[];
 }
 
-function resolveUrl(value: string, requestUrl: URL) {
+function resolveUrl(value: string, origin: string) {
   if (/^https?:\/\//.test(value)) return value;
 
-  return new URL(value, requestUrl).toString();
+  return new URL(value, origin).toString();
 }

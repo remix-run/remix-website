@@ -9,7 +9,13 @@ import {
 
 import { assets } from "../utils/assets.ts";
 import { CACHE } from "../utils/cache-control.ts";
-import { isDevelopment } from "../utils/node-env.ts";
+import {
+  FRAME_HEADER,
+  FRAME_TARGET_HEADER,
+  SSR_FRAME_HEADER,
+  TOP_FRAME_SRC_HEADER,
+  isFrameRequest,
+} from "../utils/public/frame-headers.ts";
 
 export interface AppRenderer {
   (node: RemixNode, init?: ResponseInit): Response;
@@ -37,11 +43,7 @@ export let renderMiddleware = renderWith(
       });
 
       let response = createHtmlResponse(stream, init);
-      if (isDevelopment) {
-        // Frame navigations fetch HTML programmatically, so production cache
-        // headers can hide server changes during development.
-        response.headers.set("Cache-Control", "no-store");
-      } else if (!response.headers.has("Cache-Control")) {
+      if (!response.headers.has("Cache-Control")) {
         for (let [name, value] of Object.entries(CACHE.DOCUMENT)) {
           response.headers.set(name, value);
         }
@@ -50,10 +52,6 @@ export let renderMiddleware = renderWith(
     },
 );
 
-const FRAME_HEADER = "X-Remix-Frame";
-const FRAME_TARGET_HEADER = "X-Remix-Target";
-const SSR_FRAME_HEADER = "X-Remix-Ssr-Frame";
-const TOP_FRAME_SRC_HEADER = "X-Remix-Top-Frame-Src";
 const MAX_FRAME_REDIRECTS = 20;
 const FRAME_REQUEST_HEADERS_TO_REMOVE = [
   "Connection",
@@ -86,12 +84,17 @@ const CROSS_ORIGIN_FRAME_HEADERS = [
 ] as const;
 
 function getTopFrameSrc(request: Request) {
-  if (request.headers.get(FRAME_HEADER) !== "true") return request.url;
+  if (!isFrameRequest(request)) return request.url;
   return request.headers.get(TOP_FRAME_SRC_HEADER) ?? request.url;
 }
 
+type FrameResolutionContext = Pick<
+  RequestContext,
+  "headers" | "request" | "router" | "url"
+>;
+
 async function resolveFrame(
-  context: RequestContext<any, any>,
+  context: FrameResolutionContext,
   src: string,
   target?: string,
   frameContext?: ResolveFrameContext,
@@ -143,7 +146,7 @@ function createFrameRequestHeaders(
 }
 
 async function followFrameRedirects(
-  context: RequestContext<any, any>,
+  context: FrameResolutionContext,
   initialUrl: URL,
   headers: Headers,
 ) {
