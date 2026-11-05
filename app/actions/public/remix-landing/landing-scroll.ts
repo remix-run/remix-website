@@ -50,72 +50,13 @@ function createLandingScroll() {
   let frame = 0;
   let tracking: AbortController | null = null;
 
-  function getScrollRange() {
-    return Math.max(
-      document.documentElement.scrollHeight - window.innerHeight,
-      1,
-    );
-  }
-
-  function clampScrollY(scrollY: number) {
-    return clamp(scrollY, 0, getScrollRange());
-  }
-
-  function getSectionScrollStop(index: number): number | undefined {
-    if (index === 0) return 0;
-    let id = LANDING_SECTION_IDS[index];
-    if (!id) return undefined;
-    let el = document.getElementById(id);
-    if (!el) return undefined;
-    if (el.offsetHeight > window.innerHeight) {
-      return clampScrollY(el.offsetTop);
-    }
-    let sectionCenter = el.offsetTop + el.offsetHeight / 2;
-    return clampScrollY(sectionCenter - window.innerHeight / 2);
-  }
-
-  function getSectionScrollStops(): number[] | undefined {
-    if (sectionStops) return sectionStops;
-
-    let stops: number[] = [];
-    for (let index = 0; index < presets.length; index++) {
-      let stop = getSectionScrollStop(index);
-      if (stop === undefined) return undefined;
-      stops.push(stop);
-    }
-    sectionStops = stops;
-    return stops;
-  }
-
-  function getMorphValue(scrollY: number) {
-    let maxValue = presets.length - 1;
-    let stops = getSectionScrollStops();
-    if (!stops) {
-      let linearMorph = (clampScrollY(scrollY) / getScrollRange()) * maxValue;
-      return morphPlateauAcrossIndices(linearMorph, maxValue);
-    }
-
-    let clampedScrollY = clampScrollY(scrollY);
-    if (clampedScrollY <= stops[0]) return 0;
-
-    for (let index = 0; index < maxValue; index++) {
-      let from = stops[index];
-      let to = stops[index + 1];
-      if (clampedScrollY > to) continue;
-      let span = to - from;
-      if (span <= 1) return index + 1;
-      let t = (clampedScrollY - from) / span;
-      return (
-        index +
-        morphPlateauWithinUnitSpan(t, scrollMorphPlateauForSegment(index))
-      );
-    }
-
-    return maxValue;
-  }
-
   function refresh() {
-    let rawMorphValue = getMorphValue(window.scrollY);
+    sectionStops ??= measureSectionScrollStops();
+    let rawMorphValue = getMorphValue(
+      window.scrollY,
+      getScrollRange(),
+      sectionStops,
+    );
     let activeIndex = Math.round(clamp(rawMorphValue, 0, presets.length - 1));
     state.morphValue = reducedMotion.current ? activeIndex : rawMorphValue;
     state.activeIndex = activeIndex;
@@ -127,12 +68,25 @@ function createLandingScroll() {
     for (let listener of listeners) listener();
   }
 
+  function onFrame() {
+    frame = 0;
+    measure();
+  }
+
   function scheduleMeasure() {
     if (frame) return;
-    frame = requestAnimationFrame(() => {
-      frame = 0;
-      measure();
-    });
+    frame = requestAnimationFrame(onFrame);
+  }
+
+  function onResize() {
+    sectionStops = null;
+    scheduleMeasure();
+  }
+
+  function stopTracking() {
+    cancelAnimationFrame(frame);
+    frame = 0;
+    sectionStops = null;
   }
 
   function startTracking() {
@@ -140,19 +94,16 @@ function createLandingScroll() {
     let { signal } = tracking;
     initReducedMotion(signal, measure);
     window.addEventListener("scroll", scheduleMeasure, { signal });
-    window.addEventListener(
-      "resize",
-      () => {
-        sectionStops = null;
-        scheduleMeasure();
-      },
-      { signal },
-    );
-    signal.addEventListener("abort", () => {
-      cancelAnimationFrame(frame);
-      frame = 0;
-      sectionStops = null;
-    });
+    window.addEventListener("resize", onResize, { signal });
+    signal.addEventListener("abort", stopTracking);
+  }
+
+  function unsubscribe(listener: () => void) {
+    listeners.delete(listener);
+    if (listeners.size === 0) {
+      tracking?.abort();
+      tracking = null;
+    }
   }
 
   return {
@@ -166,17 +117,9 @@ function createLandingScroll() {
       if (signal.aborted) return;
       if (!tracking) startTracking();
       listeners.add(listener);
-      signal.addEventListener(
-        "abort",
-        () => {
-          listeners.delete(listener);
-          if (listeners.size === 0) {
-            tracking?.abort();
-            tracking = null;
-          }
-        },
-        { once: true },
-      );
+      signal.addEventListener("abort", () => unsubscribe(listener), {
+        once: true,
+      });
       refresh();
       listener();
     },
@@ -187,6 +130,72 @@ function createLandingScroll() {
       window.scrollTo({ top, behavior: motionScrollBehavior() });
     },
   };
+}
+
+/**
+ * Maps a scroll position to a continuous preset position. Each section's
+ * scroll stop lands exactly on its preset, with a plateau around it; without
+ * measured stops the page height is split evenly.
+ */
+export function getMorphValue(
+  scrollY: number,
+  scrollRange: number,
+  stops: number[] | null,
+): number {
+  let maxValue = presets.length - 1;
+  let clampedScrollY = clamp(scrollY, 0, scrollRange);
+  if (!stops) {
+    let linearMorph = (clampedScrollY / scrollRange) * maxValue;
+    return morphPlateauAcrossIndices(linearMorph, maxValue);
+  }
+
+  if (clampedScrollY <= stops[0]) return 0;
+
+  for (let index = 0; index < maxValue; index++) {
+    let from = stops[index];
+    let to = stops[index + 1];
+    if (clampedScrollY > to) continue;
+    let span = to - from;
+    if (span <= 1) return index + 1;
+    let t = (clampedScrollY - from) / span;
+    return (
+      index + morphPlateauWithinUnitSpan(t, scrollMorphPlateauForSegment(index))
+    );
+  }
+
+  return maxValue;
+}
+
+function getScrollRange() {
+  return Math.max(
+    document.documentElement.scrollHeight - window.innerHeight,
+    1,
+  );
+}
+
+/** Scroll position that centers a section (or tops a tall one) in the viewport. */
+function getSectionScrollStop(index: number): number | undefined {
+  if (index === 0) return 0;
+  let id = LANDING_SECTION_IDS[index];
+  if (!id) return undefined;
+  let el = document.getElementById(id);
+  if (!el) return undefined;
+  let top =
+    el.offsetHeight > window.innerHeight
+      ? el.offsetTop
+      : el.offsetTop + el.offsetHeight / 2 - window.innerHeight / 2;
+  return clamp(top, 0, getScrollRange());
+}
+
+/** Null until every preset's section is in the document. */
+function measureSectionScrollStops(): number[] | null {
+  let stops: number[] = [];
+  for (let index = 0; index < presets.length; index++) {
+    let stop = getSectionScrollStop(index);
+    if (stop === undefined) return null;
+    stops.push(stop);
+  }
+  return stops;
 }
 
 function morphPlateauWithinUnitSpan(t: number, plateau: number): number {

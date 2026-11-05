@@ -122,12 +122,7 @@ export function createLoadingScreenController(
 ): LoadingScreenController {
   let dismissal: Promise<void> | null = null;
   let failsafeTimer: ReturnType<typeof setTimeout> | null = null;
-  let status: LoadingScreenStatus =
-    typeof document !== "undefined" &&
-    (performance.now() >= LOADING_SCREEN_FAILSAFE_MS ||
-      isHidden(document.querySelector(".loading-screen-overlay")))
-      ? "skipped"
-      : "visible";
+  let status = readInitialStatus();
 
   function clearFailsafe() {
     if (failsafeTimer !== null) {
@@ -142,6 +137,47 @@ export function createLoadingScreenController(
     return handle.update();
   }
 
+  function onFailsafe() {
+    failsafeTimer = null;
+    if (!handle.signal.aborted && status === "visible") void skip();
+  }
+
+  async function fadeOut() {
+    let overlay = document.querySelector(".loading-screen-overlay");
+    if (!overlay) return;
+
+    // Already hidden by the CSS fail-safe, or the runner hasn't appeared yet:
+    // drop the overlay without a fade.
+    if (isHidden(overlay)) {
+      await skip();
+      return;
+    }
+    let visibleMs = getRunnerVisibleMs(overlay);
+    if (visibleMs < 0) {
+      await skip();
+      return;
+    }
+
+    let remainingMs = LOADING_SCREEN_MIN_VISIBLE_MS - visibleMs;
+    if (remainingMs > 0) {
+      await new Promise((resolve) => setTimeout(resolve, remainingMs));
+    }
+    if (handle.signal.aborted) return;
+
+    // The CSS or JS fail-safe may have elapsed while this task was waiting.
+    if (status !== "visible" || isHidden(overlay)) {
+      await skip();
+      return;
+    }
+
+    status = "dismissed";
+    clearFailsafe();
+    let signal = await handle.update();
+    if (signal.aborted) return;
+
+    await overlay.getAnimations()[0]?.finished.catch(() => {});
+  }
+
   return {
     get status() {
       return status;
@@ -150,61 +186,38 @@ export function createLoadingScreenController(
     startFailsafe() {
       if (status !== "visible") return;
       failsafeTimer = setTimeout(
-        () => {
-          failsafeTimer = null;
-          if (!handle.signal.aborted && status === "visible") void skip();
-        },
+        onFailsafe,
         Math.max(0, LOADING_SCREEN_FAILSAFE_MS - performance.now()),
       );
       handle.signal.addEventListener("abort", clearFailsafe, { once: true });
     },
 
     dismiss() {
-      return (dismissal ??= (async () => {
-        let overlay = document.querySelector(".loading-screen-overlay");
-        if (!overlay) return;
-
-        if (isHidden(overlay)) {
-          await skip();
-          return;
-        }
-
-        let animation = overlay.querySelector("picture")?.getAnimations()[0];
-        let visibleMs = LOADING_SCREEN_MIN_VISIBLE_MS;
-        if (animation) {
-          let now = Number(document.timeline.currentTime ?? 0);
-          let start = Number(animation.startTime ?? now);
-          let delay = Number(animation.effect?.getTiming().delay ?? 0);
-          visibleMs = now - start - delay;
-        }
-
-        if (visibleMs < 0) {
-          status = "skipped";
-          await handle.update();
-          return;
-        }
-
-        let remainingMs = LOADING_SCREEN_MIN_VISIBLE_MS - visibleMs;
-        if (remainingMs > 0) {
-          await new Promise((resolve) => setTimeout(resolve, remainingMs));
-        }
-        if (handle.signal.aborted) return;
-
-        // The CSS or JS fail-safe may have elapsed while this task was waiting.
-        if (status !== "visible" || isHidden(overlay)) {
-          await skip();
-          return;
-        }
-
-        status = "dismissed";
-        clearFailsafe();
-        let signal = await handle.update();
-        if (signal.aborted) return;
-
-        await overlay.getAnimations()[0]?.finished.catch(() => {});
-      })());
+      return (dismissal ??= fadeOut());
     },
   };
+}
+
+/** The overlay is server-rendered; the CSS fail-safe may have hidden it before hydration. */
+function readInitialStatus(): LoadingScreenStatus {
+  return typeof document !== "undefined" &&
+    (performance.now() >= LOADING_SCREEN_FAILSAFE_MS ||
+      isHidden(document.querySelector(".loading-screen-overlay")))
+    ? "skipped"
+    : "visible";
+}
+
+/**
+ * How long the runner has been on screen, measured from the end of its
+ * delayed appear animation. Negative while it is still waiting to appear.
+ */
+function getRunnerVisibleMs(overlay: Element) {
+  let animation = overlay.querySelector("picture")?.getAnimations()[0];
+  if (!animation) return LOADING_SCREEN_MIN_VISIBLE_MS;
+  let now = Number(document.timeline.currentTime ?? 0);
+  let start = Number(animation.startTime ?? now);
+  let delay = Number(animation.effect?.getTiming().delay ?? 0);
+  return now - start - delay;
 }
 
 function isHidden(overlay: Element | null) {

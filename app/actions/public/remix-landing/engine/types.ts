@@ -9,7 +9,7 @@ export interface PresetControl {
  * on the landing page never requires editing shader code.
  *
  * Add a new value here, map it to an integer in `SHADER_ID_TO_INT`
- * (`ParticleCanvas`), and add a matching branch to `computePreset` in the
+ * (`engine/preset-frame.ts`), and add a matching branch to `computePreset` in the
  * particle shader.
  */
 export type ShaderId =

@@ -56,23 +56,18 @@ export let RemixLandingEnhancements = clientEntry(
 
     function syncToScroll() {
       let { activeIndex, morphValue, scrollY } = landingScroll.state;
-      let viewportCenterX = window.innerWidth / 2;
-      let viewportCenterY = window.innerHeight / 2;
-      interactionPausedRef.current = Array.from(
-        document.querySelectorAll<HTMLElement>("[data-home-card]"),
-      ).some((card) => {
-        let rect = card.getBoundingClientRect();
-        return (
-          rect.left <= viewportCenterX &&
-          rect.right >= viewportCenterX &&
-          rect.top <= viewportCenterY &&
-          rect.bottom >= viewportCenterY
-        );
-      });
+      interactionPausedRef.current = isHomeCardAtViewportCenter();
       morphValueRef.current = morphValue;
       scrollYRef.current = scrollY;
       activeIndexRef.current = activeIndex;
       models.requestNearbyModels(morphValue);
+    }
+
+    // The page content works without the particle scene, so any client
+    // failure just reveals it.
+    function revealWithoutParticles(error: unknown) {
+      console.error(error);
+      void loadingScreen.dismiss();
     }
 
     function loadParticleCanvas() {
@@ -80,30 +75,13 @@ export let RemixLandingEnhancements = clientEntry(
         .then((module) => {
           if (!handle.signal.aborted) ParticleCanvas = module.ParticleCanvas;
         })
-        .catch((error: unknown) => {
-          console.error(error);
-          void loadingScreen.dismiss();
-        });
+        .catch(revealWithoutParticles);
       return particleCanvasLoad;
     }
 
-    function markParticleCanvasFailed(error: unknown) {
-      console.error(error);
-      void loadingScreen.dismiss();
-    }
-
-    // Advance the paused CSS animation at 10Hz instead of display refresh.
-    function startBrandCycle() {
-      let start = performance.now();
-      let interval = setInterval(() => {
-        if (document.hidden || reducedMotion.current) return;
-        let elapsedS = (performance.now() - start) / 1000;
-        document.documentElement.style.animationDelay = `-${elapsedS.toFixed(2)}s`;
-      }, BRAND_CYCLE_TICK_MS);
-      handle.signal.addEventListener("abort", () => {
-        clearInterval(interval);
-        document.documentElement.style.animationDelay = "";
-      });
+    function toggleBrandMode() {
+      brandMode = !brandMode;
+      handle.update();
     }
 
     handle.queueTask((signal) => {
@@ -117,21 +95,17 @@ export let RemixLandingEnhancements = clientEntry(
         // re-render below runs.
         landingScroll.subscribe(syncToScroll, handle.signal);
         initReducedMotion(handle.signal, () => handle.update());
-        startBrandCycle();
+        startBrandCycle(handle.signal);
         void loadParticleCanvas().then(() => {
           if (!handle.signal.aborted) handle.update();
         });
 
-        listenForKonamiCode(() => {
-          brandMode = !brandMode;
-          handle.update();
-        }, handle.signal);
+        listenForKonamiCode(toggleBrandMode, handle.signal);
 
         handle.update();
       } catch (error) {
         isHydrated = false;
-        console.error(error);
-        void loadingScreen.dismiss();
+        revealWithoutParticles(error);
       }
     });
 
@@ -149,7 +123,7 @@ export let RemixLandingEnhancements = clientEntry(
                   interactionPausedRef={interactionPausedRef}
                   modelData={models.modelData}
                   onFirstFrame={loadingScreen.dismiss}
-                  onError={markParticleCanvasFailed}
+                  onError={revealWithoutParticles}
                 />
               ) : null}
               <PresetGlow
@@ -171,6 +145,40 @@ export let RemixLandingEnhancements = clientEntry(
     };
   },
 );
+
+/**
+ * Home cards own attention when they cover the viewport center; the particle
+ * model pauses interaction underneath them.
+ */
+function isHomeCardAtViewportCenter() {
+  let viewportCenterX = window.innerWidth / 2;
+  let viewportCenterY = window.innerHeight / 2;
+  return Array.from(
+    document.querySelectorAll<HTMLElement>("[data-home-card]"),
+  ).some((card) => {
+    let rect = card.getBoundingClientRect();
+    return (
+      rect.left <= viewportCenterX &&
+      rect.right >= viewportCenterX &&
+      rect.top <= viewportCenterY &&
+      rect.bottom >= viewportCenterY
+    );
+  });
+}
+
+// Advance the paused CSS animation at 10Hz instead of display refresh.
+function startBrandCycle(signal: AbortSignal) {
+  let start = performance.now();
+  let interval = setInterval(() => {
+    if (document.hidden || reducedMotion.current) return;
+    let elapsedS = (performance.now() - start) / 1000;
+    document.documentElement.style.animationDelay = `-${elapsedS.toFixed(2)}s`;
+  }, BRAND_CYCLE_TICK_MS);
+  signal.addEventListener("abort", () => {
+    clearInterval(interval);
+    document.documentElement.style.animationDelay = "";
+  });
+}
 
 // Rendered inside the hero (rather than with the other enhancements) so the
 // section links follow the hero's controls in tab order.
