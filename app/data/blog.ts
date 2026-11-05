@@ -5,6 +5,7 @@ import * as s from "remix/data-schema";
 import yaml from "yaml";
 import { parseFrontmatter } from "./frontmatter.ts";
 import { processMarkdown } from "./md.ts";
+import { isProduction } from "../utils/node-env.ts";
 
 const DATA_DIRECTORY = path.join(process.cwd(), "data");
 const POSTS_DIRECTORY = path.join(DATA_DIRECTORY, "posts");
@@ -49,7 +50,7 @@ export interface BlogPost extends Omit<BlogPostFrontmatter, "authors"> {
   html: string;
 }
 
-const shouldCacheBlogData = process.env.NODE_ENV === "production";
+const shouldCacheBlogData = isProduction;
 const cachedPostContentsBySlug = shouldCacheBlogData
   ? readPostContentsBySlug()
   : undefined;

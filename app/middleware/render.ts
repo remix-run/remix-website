@@ -9,8 +9,7 @@ import {
 
 import { assets } from "../utils/assets.ts";
 import { CACHE } from "../utils/cache-control.ts";
-
-const isDevelopment = process.env.NODE_ENV === "development";
+import { isDevelopment } from "../utils/node-env.ts";
 
 export interface AppRenderer {
   (node: RemixNode, init?: ResponseInit): Response;

@@ -1,8 +1,10 @@
 import * as http from "node:http";
 import { createRequestListener } from "remix/node-fetch-server";
-import { router } from "./app/router.ts";
+import { createAppRouter } from "./app/router.ts";
 import { assets } from "./app/utils/assets.ts";
 import { warmServer } from "./app/utils/warm-up.ts";
+
+const router = createAppRouter();
 
 const isHmr = Boolean(
   process.env.NODE_ENV === "development" && process.env.REMIX_NODE_HMR,

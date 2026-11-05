@@ -1,5 +1,4 @@
-let isDevelopment = process.env.NODE_ENV === "development";
-let isNonProduction = process.env.NODE_ENV !== "production";
+import { isDevelopment, isProduction } from "./node-env.ts";
 
 const DOCUMENT = {
   "Cache-Control": "public, max-age=0, must-revalidate",
@@ -21,7 +20,7 @@ export const CACHE = {
   RESOURCE: isDevelopment
     ? "no-store"
     : "max-age=300, stale-while-revalidate=604800",
-  ROOT_PUBLIC_FILE: isNonProduction
+  ROOT_PUBLIC_FILE: !isProduction
     ? "no-store, must-revalidate"
     : "public, max-age=3600",
   STATIC_ASSET_TAG: "static-assets",

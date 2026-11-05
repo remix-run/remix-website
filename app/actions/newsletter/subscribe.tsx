@@ -14,6 +14,7 @@ import {
 import { CACHE } from "../../utils/cache-control.ts";
 import { env } from "../../utils/env.ts";
 import { isAllowedNewsletterTagId } from "../../utils/public/newsletter-tags.ts";
+import { isDevelopment } from "../../utils/node-env.ts";
 
 /**
  * Subscribes the submitted email to ConvertKit and answers in the shape the
@@ -144,7 +145,7 @@ function getNewsletterSubscribeFrameContext(
 }
 
 async function subscribeToNewsletter(email: string, tags: number[]) {
-  if (process.env.NODE_ENV === "development") {
+  if (isDevelopment) {
     await new Promise((resolve) => setTimeout(resolve, 750));
     return;
   }

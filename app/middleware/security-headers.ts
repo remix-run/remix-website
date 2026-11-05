@@ -1,11 +1,12 @@
 import type { Middleware } from "remix/router";
+import { isProduction } from "../utils/node-env.ts";
 
 interface SecurityHeadersOptions {
   enableStrictTransportSecurity?: boolean;
 }
 
 export function securityHeaders({
-  enableStrictTransportSecurity = process.env.NODE_ENV === "production",
+  enableStrictTransportSecurity = isProduction,
 }: SecurityHeadersOptions = {}): Middleware {
   return async (_context, next) => {
     let response = await next();

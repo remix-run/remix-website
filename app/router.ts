@@ -35,10 +35,7 @@ import {
   type NewsletterRepository,
 } from "./actions/newsletter/archive.ts";
 import remixHistoryController from "./actions/remix-history/controller.tsx";
-
-let isDev = process.env.NODE_ENV !== "production";
-let isTest = process.env.NODE_ENV === "test";
-let shouldBypassLoopbackRateLimit = isDev;
+import { isProduction, isTest } from "./utils/node-env.ts";
 
 function shouldSkipRateLimit(pathname: string) {
   return (
@@ -50,7 +47,7 @@ function shouldSkipRateLimit(pathname: string) {
 
 let ignoreChromeDevToolsRequest: Middleware = (context, next) => {
   if (
-    isDev &&
+    !isProduction &&
     context.request.method === "GET" &&
     context.url.pathname === "/.well-known/appspecific/com.chrome.devtools.json"
   ) {
@@ -81,7 +78,7 @@ function createAppMiddleware() {
     rateLimit({
       windowMs: 2 * 60 * 1000,
       max: 1000,
-      skipLocalhost: shouldBypassLoopbackRateLimit,
+      skipLocalhost: !isProduction,
       skip: (context) => shouldSkipRateLimit(context.url.pathname),
     }),
     formData(),
@@ -134,5 +131,3 @@ export function createAppRouter(
 
   return appRouter;
 }
-
-export let router = createAppRouter();

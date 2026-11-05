@@ -1,10 +1,11 @@
 import { createCookie } from "remix/cookie";
+import { isProduction } from "../../../utils/node-env.ts";
 
 let jam2026DiscountCookie = createCookie("remix_jam_2026_discount", {
   httpOnly: true,
   path: "/jam/2026",
   sameSite: "Lax",
-  secure: process.env.NODE_ENV === "production",
+  secure: isProduction,
 });
 
 // Shopify discount codes are case-insensitive; store them uppercased so the

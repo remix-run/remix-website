@@ -13,6 +13,7 @@ import { BrandPage } from "./brand.tsx";
 import { HomePage } from "./home.tsx";
 import { renderHomeMarkdown } from "./home-markdown.ts";
 import { getStackExplorerCodeHighlights } from "./stack-explorer-highlighting.ts";
+import { isDevelopment } from "../utils/node-env.ts";
 
 export default createController(routes, {
   actions: {
@@ -41,9 +42,7 @@ export default createController(routes, {
         headers: {
           "Content-Type": "text/markdown; charset=utf-8",
           Link: `<${htmlUrl}>; rel="canonical"`,
-          ...(process.env.NODE_ENV === "development"
-            ? { "Cache-Control": "no-store" }
-            : CACHE.DOCUMENT),
+          ...(isDevelopment ? { "Cache-Control": "no-store" } : CACHE.DOCUMENT),
         },
       });
     },
@@ -68,7 +67,7 @@ export default createController(routes, {
           headers: {
             "Content-Type": "text/markdown; charset=utf-8",
             Vary: "Accept",
-            ...(process.env.NODE_ENV === "development"
+            ...(isDevelopment
               ? { "Cache-Control": "no-store" }
               : CACHE.DOCUMENT),
           },

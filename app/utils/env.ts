@@ -1,5 +1,7 @@
 import * as s from "remix/data-schema";
 
+import { nodeEnv as processNodeEnv } from "./node-env.ts";
+
 function createEnvSchema(nodeEnv: string | undefined) {
   return s
     .object({
@@ -21,7 +23,7 @@ function createEnvSchema(nodeEnv: string | undefined) {
 
 export function parseEnv(
   input: Record<string, string | undefined>,
-  nodeEnv = process.env.NODE_ENV,
+  nodeEnv = processNodeEnv,
 ) {
   return s.parse(createEnvSchema(nodeEnv), input);
 }
