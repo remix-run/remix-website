@@ -22,10 +22,12 @@ export default createController(routes.jam.y2025.ticket, {
       let product = await getProduct("remix-jam-2025");
       let submission = parseTicketPurchaseSubmission(formData);
       let formError: string | undefined;
+      let invalidInput = false;
       let initialQuantity = 1;
 
       if (!submission.success) {
         formError = submission.error;
+        invalidInput = true;
       } else {
         initialQuantity = submission.value.quantity;
 
@@ -33,12 +35,12 @@ export default createController(routes.jam.y2025.ticket, {
           formError = "Ticket checkout is unavailable right now";
         } else if (submission.value.productId !== product.productId) {
           formError = "Invalid ticket selection";
+          invalidInput = true;
         } else {
           let cart = await createCart({
             productId: submission.value.productId,
             quantity: submission.value.quantity,
-            discountCode:
-              new URL(request.url).searchParams.get("discount") ?? undefined,
+            discountCode: new URL(request.url).searchParams.get("discount"),
           });
 
           if (!("error" in cart)) {
@@ -56,7 +58,12 @@ export default createController(routes.jam.y2025.ticket, {
           product={product}
           requestUrl={request.url}
         />,
-        { status: 400, headers: { "Cache-Control": CACHE.PRIVATE } },
+        {
+          // Only bad input is a client error; an unavailable product or a
+          // failed checkout re-renders the page with the message.
+          status: invalidInput ? 400 : 200,
+          headers: { "Cache-Control": CACHE.PRIVATE },
+        },
       );
     },
   },

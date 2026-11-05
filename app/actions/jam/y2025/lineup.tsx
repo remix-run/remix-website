@@ -1,8 +1,9 @@
 import { css, unsafeHTML, type Handle } from "remix/component";
-import { getSchedule } from "../../../data/jam-schedule.ts";
+import { getJam2025Schedule } from "../../../data/jam-schedule-2025.ts";
 import { routes } from "../../../routes.ts";
 import { JamDocument } from "./document.tsx";
-import { ScrambleText, Title } from "./public/shared.tsx";
+import { JamScrambleText } from "./public/scramble-text.tsx";
+import { Title } from "./public/typography.tsx";
 import { assetPaths } from "../../../utils/public/asset-paths.ts";
 import {
   JamLineupAccordionItem,
@@ -10,7 +11,7 @@ import {
 } from "./public/lineup-accordion-item.tsx";
 import { breakpointMedia, theme } from "../../../ui/public/theme.ts";
 
-type Schedule = Awaited<ReturnType<typeof getSchedule>>;
+type Schedule = Awaited<ReturnType<typeof getJam2025Schedule>>;
 
 export function Jam2025LineupPage(
   handle: Handle<{ requestUrl: string; schedule: Schedule }>,
@@ -39,8 +40,8 @@ export function Jam2025LineupPage(
         })}
       >
         <Title mix={css({ textAlign: "center" })}>
-          <ScrambleText text="Schedule" delay={100} color="blue" />
-          <ScrambleText text="& Lineup" delay={300} color="green" />
+          <JamScrambleText text="Schedule" delay={100} color="blue" />
+          <JamScrambleText text="& Lineup" delay={300} color="green" />
         </Title>
 
         <div

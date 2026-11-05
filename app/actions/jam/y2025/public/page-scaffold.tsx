@@ -1,10 +1,10 @@
 import { css, type Handle, type Props, type RemixNode } from "remix/component";
-import { JamScrambleText } from "./scramble-text.tsx";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { MobileMenu } from "../../../../ui/public/mobile-menu.tsx";
 import { routes } from "../../../../routes.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
+import { jamButtonStyle } from "./jam-button.tsx";
 
 export function JamPageScaffold(
   handle: Handle<{
@@ -556,184 +556,6 @@ function Footer(handle: Handle<{ showSeats: boolean }>) {
   );
 }
 
-export function Title(
-  handle: Handle<{ children: RemixNode; mix?: Props<"h1">["mix"] }>,
-) {
-  return () => (
-    <h1 mix={handle.props.mix ? [titleStyle, handle.props.mix] : titleStyle}>
-      {handle.props.children}
-    </h1>
-  );
-}
-
-export let ScrambleText = JamScrambleText;
-
-export function SectionLabel(handle: Handle<{ children: RemixNode }>) {
-  return () => (
-    <p
-      mix={css({
-        color: "rgb(255 255 255 / 0.5)",
-        fontFamily: theme.fontFamily.mono,
-        fontSize: "0.75rem",
-        lineHeight: 1.333,
-        letterSpacing: "0.1em",
-        textTransform: "uppercase",
-        [breakpointMedia.md]: { fontSize: "1rem", lineHeight: 1.5 },
-      })}
-    >
-      {handle.props.children}
-    </p>
-  );
-}
-
-export function InfoText(
-  handle: Handle<{ children: RemixNode; mix?: Props<"div">["mix"] }>,
-) {
-  return () => (
-    <div
-      mix={handle.props.mix ? [infoTextStyle, handle.props.mix] : infoTextStyle}
-    >
-      <p
-        mix={css({
-          color: "#ffffff",
-          fontSize: "1.125rem",
-          fontWeight: theme.fontWeight.bold,
-          lineHeight: 1.4,
-          [breakpointMedia.md]: { fontSize: "1.875rem", lineHeight: 1.2 },
-        })}
-      >
-        {handle.props.children}
-      </p>
-    </div>
-  );
-}
-
-export function Subheader(
-  handle: Handle<{ children: RemixNode; mix?: Props<"h2">["mix"] }>,
-) {
-  return () => (
-    <h2
-      mix={
-        handle.props.mix ? [subheaderStyle, handle.props.mix] : subheaderStyle
-      }
-    >
-      {handle.props.children}
-    </h2>
-  );
-}
-
-export function Paragraph(
-  handle: Handle<{ children: RemixNode; mix?: Props<"p">["mix"] }>,
-) {
-  return () => (
-    <p
-      mix={
-        handle.props.mix ? [paragraphStyle, handle.props.mix] : paragraphStyle
-      }
-    >
-      {handle.props.children}
-    </p>
-  );
-}
-
-export function AddressMain() {
-  return () => (
-    <address
-      mix={css({
-        display: "inline-block",
-        color: "#ffffff",
-        fontSize: "1.125rem",
-        fontStyle: "normal",
-        fontWeight: theme.fontWeight.bold,
-        lineHeight: 1.625,
-        [breakpointMedia.md]: { fontSize: "1.875rem" },
-      })}
-    >
-      620 King St W
-      <br />
-      Toronto, ON M5V 1M7, Canada
-    </address>
-  );
-}
-
-export function AddressLink() {
-  return () => (
-    <a
-      href="https://maps.app.goo.gl/uxa4a9ANKAYAcWx7A"
-      target="_blank"
-      rel="noopener noreferrer"
-      mix={css({
-        color: "#59b0ff",
-        "&:hover": { textDecoration: "underline" },
-      })}
-    >
-      620 King St W Toronto, ON M5V 1M7, Canada
-    </a>
-  );
-}
-
-export function JamButton(
-  handle: Handle<{
-    children: RemixNode;
-    mix?: Props<"button">["mix"];
-    disabled?: boolean;
-    type?: "button" | "submit";
-    active?: boolean;
-  }>,
-) {
-  return () => {
-    let stateStyle = handle.props.active
-      ? css({
-          backgroundColor: theme.colors.brand.blue,
-          color: "#ffffff",
-        })
-      : css({
-          backgroundColor: "#ffffff",
-          color: "#000000",
-        });
-    return (
-      <button
-        type={handle.props.type ?? "button"}
-        disabled={handle.props.disabled}
-        mix={
-          handle.props.mix
-            ? [
-                jamButtonStyle,
-                jamButtonDisabledStyle,
-                stateStyle,
-                handle.props.mix,
-              ]
-            : [jamButtonStyle, jamButtonDisabledStyle, stateStyle]
-        }
-      >
-        {handle.props.children}
-      </button>
-    );
-  };
-}
-
-export function transformShopifyImageUrl(
-  url: string,
-  options: {
-    width?: number;
-    height?: number;
-    format?: "webp" | "jpg" | "png";
-    quality?: number;
-  } = {},
-) {
-  try {
-    let urlObj = new URL(url);
-    let params = new URLSearchParams(urlObj.search);
-    for (let [key, value] of Object.entries(options)) {
-      if (value !== undefined) params.set(key, value.toString());
-    }
-    urlObj.search = params.toString();
-    return urlObj.toString();
-  } catch {
-    return url;
-  }
-}
-
 function JamLogo(handle: Handle<{ mix?: Props<"svg">["mix"] }>) {
   return () => (
     <svg viewBox="0 0 53.33 17" mix={handle.props.mix}>
@@ -750,30 +572,6 @@ function TicketLogo(handle: Handle<{ mix?: Props<"svg">["mix"] }>) {
     </svg>
   );
 }
-
-let jamButtonStyle = css({
-  display: "flex",
-  minWidth: "fit-content",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: "8px",
-  borderRadius: theme.radius.full,
-  padding: "12px 16px",
-  fontSize: "0.875rem",
-  fontWeight: theme.fontWeight.semibold,
-  lineHeight: 1.425,
-  transition: "color 300ms, background-color 300ms",
-  "&:hover": {
-    backgroundColor: theme.colors.brand.blue,
-    color: "#ffffff",
-  },
-  [breakpointMedia.md]: {
-    padding: "16px 24px",
-    fontSize: "1.25rem",
-    lineHeight: 1.556,
-  },
-  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
-});
 
 let activeNavLinkStyle = css({
   borderColor: "#ffffff",
@@ -812,40 +610,4 @@ let seatsLegalLinkStyle = css({
 let plainLegalLinkStyle = css({
   color: "#ffffff",
   "&:hover": { color: theme.colors.brand.blue },
-});
-
-let titleStyle = css({
-  display: "flex",
-  flexDirection: "column",
-  gap: "8px",
-  color: "#ffffff",
-  fontSize: "1.875rem",
-  fontWeight: theme.fontWeight.extrabold,
-  lineHeight: 1,
-  letterSpacing: "-0.025em",
-  textTransform: "uppercase",
-  [breakpointMedia.sm]: { fontSize: "3rem" },
-  [breakpointMedia.md]: { fontSize: "4.5rem", lineHeight: 1 },
-});
-
-let infoTextStyle = css({ textAlign: "center" });
-
-let subheaderStyle = css({
-  color: "#ffffff",
-  fontSize: "1.5rem",
-  fontWeight: theme.fontWeight.bold,
-  lineHeight: 1.333,
-  letterSpacing: "-0.025em",
-  [breakpointMedia.md]: { fontSize: "1.875rem", lineHeight: 1.2 },
-});
-
-let paragraphStyle = css({
-  color: "rgb(255 255 255 / 0.8)",
-  "& a": { color: "#59b0ff" },
-  "& a:hover": { textDecoration: "underline" },
-});
-
-let jamButtonDisabledStyle = css({
-  "&:disabled": { cursor: "not-allowed", opacity: 0.5 },
-  "&:disabled:hover": { backgroundColor: "#ffffff", color: "#000000" },
 });

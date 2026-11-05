@@ -43,16 +43,46 @@ describe("Jam 2025 ticket submission", () => {
       "https://jam.remix.run/checkouts/2025",
     );
   });
+
+  it("drops a malformed discount code instead of sending it to Shopify", async (t) => {
+    let cartRequests = mockStorefront(t);
+    let response = await submitTicket(
+      { productId: "gid://shopify/ProductVariant/2025", quantity: "1" },
+      "?discount=" + encodeURIComponent("<bad code>"),
+    );
+
+    expect(response.status).toBe(303);
+    expect(cartRequests).toHaveLength(1);
+    expect(cartRequests[0].variables.cartInput.discountCodes).toBe(undefined);
+  });
+
+  it("re-renders a failed checkout without blaming the request", async (t) => {
+    mockStorefront(t, { cartCreateFails: true });
+    t.mock.method(console, "error", () => {});
+    let response = await submitTicket({
+      productId: "gid://shopify/ProductVariant/2025",
+      quantity: "1",
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
+  });
 });
 
-async function submitTicket(fields: { productId: string; quantity: string }) {
+async function submitTicket(
+  fields: { productId: string; quantity: string },
+  search = "",
+) {
   let router = createRouteTestRouter();
   router.map(routes.jam.y2025.ticket, jam2025TicketController);
   let body = new URLSearchParams(fields);
 
   return router.fetch(
     new Request(
-      new URL(routes.jam.y2025.ticket.action.href(), "http://localhost:3000"),
+      new URL(
+        routes.jam.y2025.ticket.action.href() + search,
+        "http://localhost:3000",
+      ),
       {
         method: "POST",
         headers: {
@@ -65,12 +95,20 @@ async function submitTicket(fields: { productId: string; quantity: string }) {
   );
 }
 
-function mockStorefront(t: TestContext) {
+function mockStorefront(
+  t: TestContext,
+  { cartCreateFails = false }: { cartCreateFails?: boolean } = {},
+) {
+  let cartRequests: Array<{
+    variables: { cartInput: Record<string, unknown> };
+  }> = [];
   let previousEnv = { ...env };
   Reflect.set(env, "PUBLIC_STOREFRONT_API_TOKEN", ["test", "token"].join("-"));
   let storefrontFetch: typeof fetch = async (_input, init) => {
     let body = JSON.parse(String(init?.body ?? "{}"));
     if (body.query.includes("cartCreate")) {
+      cartRequests.push(body);
+      if (cartCreateFails) return new Response(null, { status: 502 });
       return Response.json({
         data: {
           cartCreate: {
@@ -110,4 +148,6 @@ function mockStorefront(t: TestContext) {
   t.after(() => {
     Object.assign(env, previousEnv);
   });
+
+  return cartRequests;
 }

@@ -1,4 +1,5 @@
 import { createCookie } from "remix/cookie";
+import { normalizeDiscountCode } from "../../../data/jam-storefront.ts";
 import { isProduction } from "../../../utils/node-env.ts";
 
 let jam2026DiscountCookie = createCookie("remix_jam_2026_discount", {
@@ -8,20 +9,8 @@ let jam2026DiscountCookie = createCookie("remix_jam_2026_discount", {
   secure: isProduction,
 });
 
-// Shopify discount codes are case-insensitive; store them uppercased so the
-// value matches what the Storefront API reports back.
-let discountCodePattern = /^[A-Z0-9][A-Z0-9_-]{0,63}$/;
-
-function normalizeJam2026DiscountCode(value: unknown) {
-  if (typeof value !== "string") return undefined;
-  let code = value.trim().toUpperCase();
-  return discountCodePattern.test(code) ? code : undefined;
-}
-
 export async function getJam2026DiscountCode(cookieHeader: string | null) {
-  return normalizeJam2026DiscountCode(
-    await jam2026DiscountCookie.parse(cookieHeader),
-  );
+  return normalizeDiscountCode(await jam2026DiscountCookie.parse(cookieHeader));
 }
 
 export function serializeJam2026DiscountCode(code: string) {
@@ -37,7 +26,7 @@ export function serializeJam2026DiscountCode(code: string) {
 export async function getJam2026DiscountCookieUpdate(
   request: Request,
 ): Promise<string | undefined> {
-  let urlCode = normalizeJam2026DiscountCode(
+  let urlCode = normalizeDiscountCode(
     new URL(request.url).searchParams.get("discount"),
   );
   if (!urlCode) return undefined;

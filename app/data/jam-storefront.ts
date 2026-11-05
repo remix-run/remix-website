@@ -92,23 +92,35 @@ export async function getPhotos(handle: string): Promise<Photo[]> {
   return photos;
 }
 
+// Shopify discount codes are case-insensitive; normalize to uppercase so the
+// value matches what the Storefront API reports back.
+const discountCodePattern = /^[A-Z0-9][A-Z0-9_-]{0,63}$/;
+
+/** Returns the uppercased code, or `undefined` for anything that isn't a plausible discount code. */
+export function normalizeDiscountCode(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined;
+  let code = value.trim().toUpperCase();
+  return discountCodePattern.test(code) ? code : undefined;
+}
+
 /**
  * Creates a cart for one product line and returns its checkout URL.
  *
  * Shopify keeps a discount code on the cart even when it doesn't apply, and
  * then shows it as an error at checkout. An inapplicable code is therefore
  * removed; if removal fails, a second cart is created without the code.
+ * Malformed codes are ignored.
  */
 export async function createCart({
   discountCode,
   productId,
   quantity,
 }: {
-  discountCode?: string;
+  discountCode?: string | null;
   productId: string;
   quantity: number;
 }): Promise<Cart | { error: string }> {
-  let code = discountCode?.trim().toUpperCase() || undefined;
+  let code = normalizeDiscountCode(discountCode);
   let created = await requestCartCreate({ code, productId, quantity });
   if ("error" in created) return created;
 

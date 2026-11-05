@@ -1,11 +1,11 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
-import { getSchedule } from "./jam-schedule.ts";
+import { getJam2025Schedule } from "./jam-schedule-2025.ts";
 
-describe("getSchedule", () => {
+describe("getJam2025Schedule", () => {
   it("loads the checked-in schedule with rendered copy and resolved images", async () => {
-    let schedule = await getSchedule();
+    let schedule = await getJam2025Schedule();
 
     expect(schedule.length).toBeGreaterThan(1);
     for (let item of schedule) {

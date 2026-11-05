@@ -1,15 +1,17 @@
 import { createController } from "remix/router";
 
-import { getPhotos } from "../../../../data/jam-storefront.ts";
 import { jam2025GalleryDownloadHandler } from "./download.ts";
+import {
+  getGalleryPhotos,
+  getSelectedPhotoIndex,
+  transformShopifyImageUrl,
+  type Photo,
+} from "./photos.ts";
 import type { AppRenderer } from "../../../../middleware/render.ts";
 import { routes } from "../../../../routes.ts";
 import { JamDocument } from "../document.tsx";
-import {
-  ScrambleText,
-  Title,
-  transformShopifyImageUrl,
-} from "../public/shared.tsx";
+import { JamScrambleText } from "../public/scramble-text.tsx";
+import { Title } from "../public/typography.tsx";
 import {
   JamGalleryModalHost,
   type JamGalleryModalNav,
@@ -18,8 +20,6 @@ import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { css, type Handle, type Props, type RemixNode } from "remix/component";
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
-
-type Photo = Awaited<ReturnType<typeof getPhotos>>[number];
 
 export default createController(routes.jam.y2025.gallery, {
   actions: {
@@ -73,8 +73,8 @@ function renderGalleryPage({
         })}
       >
         <Title>
-          <ScrambleText text="Photo" delay={100} color="blue" />
-          <ScrambleText text="Gallery" delay={300} color="green" />
+          <JamScrambleText text="Photo" delay={100} color="blue" />
+          <JamScrambleText text="Gallery" delay={300} color="green" />
         </Title>
 
         {photos.length === 0 ? (
@@ -145,9 +145,6 @@ function renderGalleryPage({
     </JamDocument>,
   );
 }
-
-export { getSelectedPhotoIndex };
-export { getGalleryPhotos };
 
 function GalleryModal(
   handle: Handle<{
@@ -391,24 +388,6 @@ function getGalleryModalImageSrc(photo: Photo) {
     format: "webp",
     quality: 90,
   });
-}
-
-function getSelectedPhotoIndex(
-  photoParam: string | null,
-  photosCount: number,
-): number | null {
-  if (!photoParam) return null;
-  let parsed = Number.parseInt(photoParam, 10);
-  if (!Number.isFinite(parsed)) return null;
-  if (parsed < 0 || parsed >= photosCount) return null;
-  return parsed;
-}
-
-async function getGalleryPhotos() {
-  return Promise.all([
-    getPhotos("remix-jam-2025-photos-1"),
-    getPhotos("remix-jam-2025-photos-2"),
-  ]).then((p) => p.flat());
 }
 
 function PhotoImage(handle: Handle<Photo>) {

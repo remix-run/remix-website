@@ -12,7 +12,10 @@ const SCHEDULE_IMAGES_DIRECTORY = path.join(
   "public/jam/2025/images/schedule",
 );
 const SCHEDULE_IMAGE_PUBLIC_PREFIX = "/jam/2025/images/schedule";
-const SCHEDULE_FILE_PATH = path.join(process.cwd(), "data/jam-schedule.yaml");
+const SCHEDULE_FILE_PATH = path.join(
+  process.cwd(),
+  "data/jam-schedule-2025.yaml",
+);
 
 const scheduleItemSchema = s.object({
   time: s.string(),
@@ -52,7 +55,7 @@ let cache = new LRUCache<string, ScheduleItem[]>({
 
 let scheduleImageUrlByKeyPromise: Promise<Map<string, string>> | undefined;
 
-export async function getSchedule(): Promise<ScheduleItem[]> {
+export async function getJam2025Schedule(): Promise<ScheduleItem[]> {
   const cached = cache.get("jam:schedule");
   if (cached) return cached;
 

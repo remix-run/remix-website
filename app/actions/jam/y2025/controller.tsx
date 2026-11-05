@@ -1,7 +1,7 @@
 import { createController } from "remix/router";
 import { css, type Handle, type RemixNode } from "remix/component";
 
-import { getSchedule } from "../../../data/jam-schedule.ts";
+import { getJam2025Schedule } from "../../../data/jam-schedule-2025.ts";
 import { routes } from "../../../routes.ts";
 import { CACHE } from "../../../utils/cache-control.ts";
 import { NewsletterSubscribeFrameHost } from "../../../ui/public/newsletter-frame-form.tsx";
@@ -10,12 +10,8 @@ import { Jam2025CocPage } from "./coc.tsx";
 import { Jam2025FaqPage } from "./faq.tsx";
 import { Jam2025LineupPage } from "./lineup.tsx";
 import { JamDocument } from "./document.tsx";
-import {
-  AddressMain,
-  ScrambleText,
-  SectionLabel,
-  Title,
-} from "./public/shared.tsx";
+import { JamScrambleText } from "./public/scramble-text.tsx";
+import { SectionLabel, Title } from "./public/typography.tsx";
 import { JamKeepsakes } from "./public/keepsakes.tsx";
 import { JamFadeInBadge } from "./public/fade-in-badge.tsx";
 import { JamNewsletterForm } from "./public/newsletter-form.tsx";
@@ -60,7 +56,7 @@ export default createController(routes.jam.y2025, {
       return render(
         <Jam2025LineupPage
           requestUrl={request.url}
-          schedule={await getSchedule()}
+          schedule={await getJam2025Schedule()}
         />,
       );
     },
@@ -111,7 +107,7 @@ function Jam2025Page(handle: Handle<{ eventStatus: EventStatus }>) {
           {sectionLabelText[handle.props.eventStatus]}
         </SectionLabel>
         <Title>
-          <ScrambleText text="Remix Jam" delay={100} color="blue" />
+          <JamScrambleText text="Remix Jam" delay={100} color="blue" />
           <span
             mix={css({
               display: "flex",
@@ -121,7 +117,7 @@ function Jam2025Page(handle: Handle<{ eventStatus: EventStatus }>) {
               [breakpointMedia.md]: { gap: "20px" },
             })}
           >
-            <ScrambleText text="Toronto" delay={400} color="green" />
+            <JamScrambleText text="Toronto" delay={400} color="green" />
             <JamFadeInBadge
               delay={1200}
               live={handle.props.eventStatus === "live"}
@@ -227,5 +223,25 @@ function getBadgeText(eventStatus: EventStatus): RemixNode {
         aria-hidden="true"
       />
     </>
+  );
+}
+
+function AddressMain() {
+  return () => (
+    <address
+      mix={css({
+        display: "inline-block",
+        color: "#ffffff",
+        fontSize: "1.125rem",
+        fontStyle: "normal",
+        fontWeight: theme.fontWeight.bold,
+        lineHeight: 1.625,
+        [breakpointMedia.md]: { fontSize: "1.875rem" },
+      })}
+    >
+      620 King St W
+      <br />
+      Toronto, ON M5V 1M7, Canada
+    </address>
   );
 }

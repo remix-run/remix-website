@@ -6,12 +6,8 @@ import { css, type Handle } from "remix/component";
 
 import { MAX_QUANTITY, type Product } from "../../../../data/jam-storefront.ts";
 import { JamDocument } from "../document.tsx";
-import {
-  InfoText,
-  ScrambleText,
-  SectionLabel,
-  Title,
-} from "../public/shared.tsx";
+import { JamScrambleText } from "../public/scramble-text.tsx";
+import { InfoText, SectionLabel, Title } from "../public/typography.tsx";
 import { JamTicketCard } from "../public/ticket-card.tsx";
 import { JamTicketPurchase } from "../public/ticket-purchase.tsx";
 import { routes } from "../../../../routes.ts";
@@ -51,13 +47,13 @@ export function Jam2025TicketPage(
         })}
       >
         <Title>
-          <ScrambleText
+          <JamScrambleText
             text="General Admission"
             delay={100}
             color="blue"
             nowrap
           />
-          <ScrambleText text="ticket" delay={300} color="green" />
+          <JamScrambleText text="ticket" delay={300} color="green" />
         </Title>
 
         <SectionLabel>this ticket for illustration purposes only</SectionLabel>
