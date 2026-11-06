@@ -12,6 +12,12 @@ export type StackExample = {
   component?: ComponentKind;
 };
 
+type StackExplorerCodeSample = {
+  key: string;
+  code: string;
+  language: "css" | "sql" | "tsx";
+};
+
 export type StackExplorerCodeToken = [content: string, color?: string];
 
 export type StackExplorerCodeHighlights = Record<
@@ -1168,14 +1174,16 @@ function Percentage(handle: Handle) {
 ] as const satisfies readonly StackCategory[];
 
 export const stackExplorerCodeSamples = stackCategories.flatMap((category) =>
-  category.examples.map((example) => ({
-    key: `${category.id}/${example.id}`,
-    code: example.code,
-    language:
-      "filename" in example && example.filename.endsWith(".css")
-        ? "css"
-        : "filename" in example && example.filename.endsWith(".sql")
-          ? "sql"
-          : "tsx",
-  })),
+  category.examples.map(
+    (example): StackExplorerCodeSample => ({
+      key: `${category.id}/${example.id}`,
+      code: example.code,
+      language:
+        "filename" in example && example.filename.endsWith(".css")
+          ? "css"
+          : "filename" in example && example.filename.endsWith(".sql")
+            ? "sql"
+            : "tsx",
+    }),
+  ),
 );

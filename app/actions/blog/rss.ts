@@ -1,6 +1,6 @@
 import { readdir, readFile } from "node:fs/promises";
 import { Feed } from "feed";
-import parseFrontMatter from "front-matter";
+import { parseFrontmatter } from "../../data/frontmatter.ts";
 import { routes } from "../../routes.ts";
 import { CACHE } from "../../utils/cache-control.ts";
 
@@ -31,7 +31,9 @@ export async function getBlogRssPosts(): Promise<BlogRssPost[]> {
 
     let fileUrl = new URL(entry.name, POSTS_DIRECTORY);
     let source = await readFile(fileUrl, "utf8");
-    let { attributes } = parseFrontMatter<BlogRssFrontmatter>(source);
+    let { attributes } = parseFrontmatter(source) as {
+      attributes: BlogRssFrontmatter;
+    };
 
     if (attributes.draft || !attributes.title || !attributes.summary) {
       continue;

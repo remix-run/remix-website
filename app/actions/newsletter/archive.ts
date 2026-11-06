@@ -1,6 +1,5 @@
 import * as os from "node:os";
 import * as path from "node:path";
-import parseFrontMatter from "front-matter";
 import { createFsFileCache, type FileCache } from "remix/assets";
 import { detectMimeType } from "remix/mime";
 
@@ -10,6 +9,7 @@ import {
 } from "./file-contract.ts";
 import { createGitHubNewsletterSource } from "./github.ts";
 
+import { parseFrontmatter } from "../../data/frontmatter.ts";
 import { routes } from "../../routes.ts";
 import { env } from "../../utils/env.ts";
 
@@ -210,7 +210,7 @@ interface NewsletterFrontmatter {
 
 function readNewsletterFrontmatter(markdown: string): NewsletterFrontmatter {
   try {
-    let { attributes } = parseFrontMatter<Record<string, unknown>>(markdown);
+    let { attributes } = parseFrontmatter(markdown);
     if (
       !attributes ||
       typeof attributes !== "object" ||
@@ -220,6 +220,8 @@ function readNewsletterFrontmatter(markdown: string): NewsletterFrontmatter {
     }
     return attributes;
   } catch {
+    // Malformed remote frontmatter falls back to defaults instead of dropping
+    // the newsletter issue from the archive.
     return {};
   }
 }
