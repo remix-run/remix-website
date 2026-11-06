@@ -1,27 +1,24 @@
 import { createController } from "remix/router";
 import { css, type Handle, type RemixNode } from "remix/component";
 
-import { getSchedule } from "../../../data/jam-schedule.ts";
+import { getJam2025Schedule } from "./schedule-data.ts";
 import { routes } from "../../../routes.ts";
 import { CACHE } from "../../../utils/cache-control.ts";
-import { NewsletterSubscribeFrameHost } from "../../../ui/public/newsletter-subscribe.tsx";
-import { getNewsletterSubscriptionStatus } from "../../newsletter/subscription.tsx";
+import { NewsletterSubscribeFrameHost } from "../../../ui/public/newsletter-frame-form.tsx";
+import { getNewsletterSubscriptionStatus } from "../../../utils/newsletter-subscription.ts";
 import { Jam2025CocPage } from "./coc.tsx";
 import { Jam2025FaqPage } from "./faq.tsx";
 import { Jam2025LineupPage } from "./lineup.tsx";
 import { JamDocument } from "./document.tsx";
-import {
-  AddressMain,
-  ScrambleText,
-  SectionLabel,
-  Title,
-} from "./public/shared.tsx";
+import { JamScrambleText } from "./public/scramble-text.tsx";
+import { SectionLabel, Title } from "./public/typography.tsx";
 import { JamKeepsakes } from "./public/keepsakes.tsx";
 import { JamFadeInBadge } from "./public/fade-in-badge.tsx";
-import { JamNewsletterSubscribeForm } from "./public/newsletter-subscribe.tsx";
+import { JamNewsletterForm } from "./public/newsletter-form.tsx";
 import { assetPaths } from "../../../utils/public/asset-paths.ts";
 import { Icon } from "../../../ui/public/icon.tsx";
-import { breakpointMedia, theme } from "../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../ui/public/styles/theme.ts";
+import { jamColors } from "./public/theme.ts";
 
 type EventStatus = "before" | "live" | "after";
 
@@ -41,12 +38,10 @@ export default createController(routes.jam.y2025, {
       );
     },
 
-    newsletterSignup({ render, request }) {
+    newsletterSubscribeForm({ render, request }) {
       return render(
-        <JamNewsletterSubscribeForm
-          status={getNewsletterSubscriptionStatus(request)}
-        />,
-        { headers: { "Cache-Control": CACHE.PRIVATE } },
+        <JamNewsletterForm status={getNewsletterSubscriptionStatus(request)} />,
+        { headers: CACHE.PRIVATE },
       );
     },
 
@@ -62,7 +57,7 @@ export default createController(routes.jam.y2025, {
       return render(
         <Jam2025LineupPage
           requestUrl={request.url}
-          schedule={await getSchedule()}
+          schedule={await getJam2025Schedule()}
         />,
       );
     },
@@ -113,7 +108,7 @@ function Jam2025Page(handle: Handle<{ eventStatus: EventStatus }>) {
           {sectionLabelText[handle.props.eventStatus]}
         </SectionLabel>
         <Title>
-          <ScrambleText text="Remix Jam" delay={100} color="blue" />
+          <JamScrambleText text="Remix Jam" delay={100} color="blue" />
           <span
             mix={css({
               display: "flex",
@@ -123,7 +118,7 @@ function Jam2025Page(handle: Handle<{ eventStatus: EventStatus }>) {
               [breakpointMedia.md]: { gap: "20px" },
             })}
           >
-            <ScrambleText text="Toronto" delay={400} color="green" />
+            <JamScrambleText text="Toronto" delay={400} color="green" />
             <JamFadeInBadge
               delay={1200}
               live={handle.props.eventStatus === "live"}
@@ -192,7 +187,7 @@ function Jam2025Page(handle: Handle<{ eventStatus: EventStatus }>) {
       >
         <h2
           mix={css({
-            color: "#ffffff",
+            color: jamColors.white,
             fontSize: "1.5rem",
             fontWeight: theme.fontWeight.bold,
             lineHeight: 1.333,
@@ -203,7 +198,7 @@ function Jam2025Page(handle: Handle<{ eventStatus: EventStatus }>) {
           Sign up for our Newsletter for the latest Remix Jam news and updates
         </h2>
         <NewsletterSubscribeFrameHost
-          src={routes.jam.y2025.newsletterSignup.href()}
+          src={routes.jam.y2025.newsletterSubscribeForm.href()}
           mix={css({ marginTop: "48px" })}
         />
       </aside>
@@ -229,5 +224,25 @@ function getBadgeText(eventStatus: EventStatus): RemixNode {
         aria-hidden="true"
       />
     </>
+  );
+}
+
+function AddressMain() {
+  return () => (
+    <address
+      mix={css({
+        display: "inline-block",
+        color: jamColors.white,
+        fontSize: "1.125rem",
+        fontStyle: "normal",
+        fontWeight: theme.fontWeight.bold,
+        lineHeight: 1.625,
+        [breakpointMedia.md]: { fontSize: "1.875rem" },
+      })}
+    >
+      620 King St W
+      <br />
+      Toronto, ON M5V 1M7, Canada
+    </address>
   );
 }

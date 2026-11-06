@@ -4,7 +4,7 @@ import { css, type Handle } from "remix/component";
 import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
-import { NewsletterSubscribe } from "../../ui/newsletter-subscribe.tsx";
+import { NewsletterFrame } from "../../ui/newsletter-frame.tsx";
 import {
   pageBodyStyle,
   pageMetaStyle,
@@ -12,21 +12,28 @@ import {
   pageTitleExtraSmallStyle,
   pageTitleSmallStyle,
   pageTitleStyle,
-} from "../../ui/public/marketing-styles.ts";
-import { breakpointMedia, theme } from "../../ui/public/theme.ts";
+} from "../../ui/public/styles/marketing-styles.ts";
+import { breakpointMedia, theme } from "../../ui/public/styles/theme.ts";
 import { routes } from "../../routes.ts";
-import { getBlogPostListings } from "../../data/blog.ts";
+import {
+  getBlogPost,
+  getBlogPostListings,
+  getRawBlogPostMarkdown,
+  type BlogPost,
+} from "../../data/blog.ts";
 import {
   getAuthorImageAsset,
   getBlogImageAsset,
 } from "../../utils/blog-image-assets.ts";
 import { CACHE } from "../../utils/cache-control.ts";
-import { getCanonicalUrl } from "../../utils/public/canonical-url.ts";
-import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
-import { getBlogPost, getRawBlogPostMarkdown } from "../../data/blog.ts";
-import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
-import { BlogPostPage, NOT_FOUND_RESPONSE } from "./post-page.tsx";
-import { buildBlogRssResponse, getBlogRssPosts } from "./rss.ts";
+import { createMarkdownResponse } from "../../utils/markdown-response.ts";
+import { getSocialHeadTagsForRequest } from "../../utils/social-head-tags-for-request.ts";
+import {
+  NOT_FOUND_RESPONSE,
+  StatusErrorDocument,
+} from "../../ui/status-error-document.tsx";
+import { BlogPostPage } from "./post-page.tsx";
+import { buildBlogRssResponse } from "./rss.ts";
 
 export default createController(routes.blog, {
   actions: {
@@ -46,35 +53,26 @@ export default createController(routes.blog, {
       }
 
       if (params.ext === "md") {
-        try {
-          let htmlUrl = getCanonicalUrl(
-            new URL(request.url),
-            routes.blog.post.href({ slug }),
-          );
-          return new Response(getRawBlogPostMarkdown(slug), {
-            headers: {
-              "Cache-Control": CACHE.RESOURCE,
-              "Content-Type": "text/markdown; charset=utf-8",
-              Link: `<${htmlUrl}>; rel="canonical"`,
-            },
+        let markdown = getRawBlogPostMarkdown(slug);
+        if (markdown === null) {
+          return new Response("Not Found", {
+            status: 404,
+            statusText: "Not Found",
           });
-        } catch (error) {
-          if (error instanceof Response && error.status === 404) return error;
-          throw error;
         }
+        return createMarkdownResponse(markdown, {
+          request,
+          htmlPathname: routes.blog.post.href({ slug }),
+          headers: CACHE.RESOURCE,
+        });
       }
 
-      let post;
-      try {
-        post = await getBlogPost(slug);
-      } catch (error) {
-        if (error instanceof Response && error.status === 404) {
-          return render(
-            <StatusErrorDocument status={404} statusText="Not Found" />,
-            NOT_FOUND_RESPONSE,
-          );
-        }
-        throw error;
+      let post = await getBlogPost(slug);
+      if (!post) {
+        return render(
+          <StatusErrorDocument status={404} statusText="Not Found" />,
+          NOT_FOUND_RESPONSE,
+        );
       }
 
       let images = await loadBlogPostImages(post);
@@ -91,8 +89,8 @@ export default createController(routes.blog, {
       );
     },
 
-    async rss() {
-      return buildBlogRssResponse(await getBlogRssPosts());
+    rss({ url }) {
+      return buildBlogRssResponse(getBlogPostListings(), url);
     },
   },
 });
@@ -104,7 +102,7 @@ function Page(
   }>,
 ) {
   return () => {
-    let headTags = getSocialHeadTags({
+    let headTags = getSocialHeadTagsForRequest({
       requestUrl: handle.props.requestUrl,
       title: "Remix Blog",
       description:
@@ -329,7 +327,7 @@ function BlogPageContent(
                   Be the first to learn about new Remix features, community
                   events, and tutorials.
                 </div>
-                <NewsletterSubscribe />
+                <NewsletterFrame />
               </div>
             </div>
           </div>
@@ -348,9 +346,7 @@ async function loadBlogPostListings() {
   );
 }
 
-async function loadBlogPostImages(
-  post: Awaited<ReturnType<typeof getBlogPost>>,
-) {
+async function loadBlogPostImages(post: BlogPost) {
   let [hero, authorEntries] = await Promise.all([
     getBlogImageAsset(post.image),
     Promise.all(
@@ -368,7 +364,7 @@ async function loadBlogPostImages(
 }
 
 function getPostSocialImageUrl(
-  post: Awaited<ReturnType<typeof getBlogPost>>,
+  post: BlogPost,
   slug: string,
   requestUrl: string,
 ) {
@@ -389,22 +385,22 @@ function getPostSocialImageUrl(
   return ogImageUrl.toString();
 }
 
-let blogHeroImageSizes =
+const blogHeroImageSizes =
   "(min-width: 1496px) 817px, (min-width: 768px) calc(58.333vw - 56px), calc(100vw - 96px)";
 
-let blogContainerStyle = {
+const blogContainerStyle = {
   boxSizing: "border-box",
   width: "100%",
   marginInline: "auto",
   paddingInline: theme.space.edge,
 } as const;
 
-let blogImageFrameStyle = css({
+const blogImageFrameStyle = css({
   aspectRatio: "16 / 9",
   marginBlockEnd: "24px",
 });
 
-let blogCardImageStyle = css({
+const blogCardImageStyle = css({
   width: "100%",
   height: "100%",
   objectFit: "cover",
@@ -413,7 +409,7 @@ let blogCardImageStyle = css({
   [breakpointMedia.md]: { borderRadius: "6px" },
 });
 
-let blogCardCopyStyle = css({
+const blogCardCopyStyle = css({
   display: "flex",
   flexDirection: "column",
   gap: "16px",

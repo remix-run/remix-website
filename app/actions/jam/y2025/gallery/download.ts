@@ -1,11 +1,27 @@
-import type { AppContext } from "../../../../router.ts";
 import { CACHE } from "../../../../utils/cache-control.ts";
-import { transformShopifyImageUrl } from "../public/shared.tsx";
-import { getGalleryPhotos, getSelectedPhotoIndex } from "./controller.tsx";
+import {
+  getGalleryPhotos,
+  getSelectedPhotoIndex,
+  transformShopifyImageUrl,
+} from "./photos.ts";
 
-export async function jam2025GalleryDownloadHandler({ request }: AppContext) {
+export async function jam2025GalleryDownloadHandler({
+  request,
+}: {
+  request: Request;
+}) {
   let requestUrl = new URL(request.url);
   let photos = await getGalleryPhotos();
+  if (photos === null) {
+    return new Response("Photos are unavailable right now", {
+      status: 503,
+      headers: {
+        ...CACHE.PRIVATE,
+        "Content-Type": "text/plain; charset=utf-8",
+      },
+    });
+  }
+
   let selectedPhotoIndex = getSelectedPhotoIndex(
     requestUrl.searchParams.get("photo"),
     photos.length,
@@ -39,7 +55,7 @@ export async function jam2025GalleryDownloadHandler({ request }: AppContext) {
 
   return new Response(upstreamResponse.body, {
     headers: {
-      "Cache-Control": CACHE.RESOURCE,
+      ...CACHE.RESOURCE,
       "Content-Type": contentType,
       "Content-Disposition": `attachment; filename="remix-jam-2025-photo-${selectedPhotoIndex + 1}.${extension}"`,
     },

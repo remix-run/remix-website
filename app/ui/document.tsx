@@ -17,23 +17,23 @@ import {
 } from "../middleware/asset-entry.ts";
 import { routes } from "../routes.ts";
 import { getCanonicalUrl } from "../utils/public/canonical-url.ts";
-import { DocumentSync } from "./public/document-sync.tsx";
+import { DocumentSync } from "./public/document/document-sync.tsx";
 import {
   getCompactHeadKey,
   getManagedHeadTagKey,
   type ManagedHeadTag,
   type ManagedLinkTag,
-} from "./public/document-head.ts";
-import { theme } from "./public/theme.ts";
+} from "./public/document/document-head.ts";
+import { theme } from "./public/styles/theme.ts";
 
 // Inlined once per document so `<use href="#name">` icon references resolve
 // immediately, with no separate sprite request or per-deploy URL plumbing.
-let iconsSpriteHtml = fs.readFileSync(
+const iconsSpriteHtml = fs.readFileSync(
   path.resolve(import.meta.dirname, "icons.svg"),
   "utf8",
 );
 
-let colorSchemeScript = `
+const colorSchemeScript = `
   let media = window.matchMedia("(prefers-color-scheme: dark)");
   let sync = () => {
     let theme = document.documentElement.dataset.theme;
@@ -41,11 +41,7 @@ let colorSchemeScript = `
     document.documentElement.classList.toggle("dark", isDark);
   };
   sync();
-  if (typeof media.addEventListener === "function") {
-    media.addEventListener("change", sync);
-  } else if (typeof media.addListener === "function") {
-    media.addListener(sync);
-  }
+  media.addEventListener("change", sync);
 `;
 
 interface DocumentProps {
@@ -81,39 +77,12 @@ export function Document(handle: Handle<DocumentProps>) {
     let stylesheetNames = new Set<StylesheetName>(["global"]);
     for (let name of requestedStylesheets) stylesheetNames.add(name);
 
-    let managedHeadTags: ManagedHeadTag[] = [];
-    if (noIndex) {
-      managedHeadTags.push({
-        kind: "meta",
-        name: "robots",
-        content: "noindex",
-      });
-    }
-    if (description) {
-      managedHeadTags.push({
-        kind: "meta",
-        name: "description",
-        content: description,
-      });
-    }
-    let hasCanonical = headTags.some(
-      (tag) => tag.kind === "link" && tag.rel === "canonical",
-    );
-    if (!noIndex && !hasCanonical) {
-      managedHeadTags.push({
-        kind: "link",
-        rel: "canonical",
-        href: getCanonicalUrl(getContext().url),
-      });
-    }
-    managedHeadTags.push(...headTags);
-    let priorityHeadTags = managedHeadTags.filter(
-      (tag): tag is ManagedLinkTag =>
-        tag.kind === "link" && tag.rel === "preload",
-    );
-    let otherHeadTags = managedHeadTags.filter(
-      (tag) => tag.kind !== "link" || tag.rel !== "preload",
-    );
+    let { priorityHeadTags, otherHeadTags } = getDocumentHeadTags({
+      description,
+      headTags,
+      noIndex,
+      url: getContext().url,
+    });
 
     return (
       <html
@@ -327,5 +296,52 @@ export function Document(handle: Handle<DocumentProps>) {
   };
 }
 
-// Shared document chrome belongs to the component rather than a global
-// application stylesheet.
+/**
+ * Orders a document's managed head tags. Indexable pages get a canonical link
+ * for the request URL unless they provide their own, and route preloads are
+ * split out so they render ahead of fonts and stylesheets.
+ */
+export function getDocumentHeadTags({
+  description,
+  headTags,
+  noIndex,
+  url,
+}: {
+  description?: string;
+  headTags: ManagedHeadTag[];
+  noIndex: boolean;
+  url: URL;
+}) {
+  let managedHeadTags: ManagedHeadTag[] = [];
+  if (noIndex) {
+    managedHeadTags.push({ kind: "meta", name: "robots", content: "noindex" });
+  }
+  if (description) {
+    managedHeadTags.push({
+      kind: "meta",
+      name: "description",
+      content: description,
+    });
+  }
+  let hasCanonical = headTags.some(
+    (tag) => tag.kind === "link" && tag.rel === "canonical",
+  );
+  if (!noIndex && !hasCanonical) {
+    managedHeadTags.push({
+      kind: "link",
+      rel: "canonical",
+      href: getCanonicalUrl(url),
+    });
+  }
+  managedHeadTags.push(...headTags);
+
+  return {
+    priorityHeadTags: managedHeadTags.filter(
+      (tag): tag is ManagedLinkTag =>
+        tag.kind === "link" && tag.rel === "preload",
+    ),
+    otherHeadTags: managedHeadTags.filter(
+      (tag) => tag.kind !== "link" || tag.rel !== "preload",
+    ),
+  };
+}

@@ -1,6 +1,7 @@
 import { clientEntry, css, on, ref, type Handle } from "remix/component";
-import { focusTrap } from "./focus-trap.ts";
-import { lockScroll } from "./scroll-lock.ts";
+import { focusTrap } from "./dom/focus-trap.ts";
+import { lockScroll } from "./dom/scroll-lock.ts";
+import { theme } from "./styles/theme.ts";
 
 const PROSE_SELECTOR = ".md-prose";
 
@@ -12,7 +13,7 @@ type LightboxState = { open: false } | { open: true; src: string; alt: string };
  * `innerHTML` outside of this component to avoid hydration conflicts;
  * this component delegates clicks at the document level.
  */
-export let ImageLightbox = clientEntry(
+export const ImageLightbox = clientEntry(
   import.meta.url,
   function ImageLightbox(handle: Handle<{}>) {
     let lightbox: LightboxState = { open: false };
@@ -201,7 +202,7 @@ export let ImageLightbox = clientEntry(
                 placeItems: "center",
                 borderRadius: "9999px",
                 backgroundColor: "rgb(0 0 0 / 0.6)",
-                color: "#ffffff",
+                color: theme.colors.text.onDark,
                 transition: "background-color 150ms ease",
                 "&:hover": { backgroundColor: "rgb(0 0 0 / 0.8)" },
                 "&:focus": {

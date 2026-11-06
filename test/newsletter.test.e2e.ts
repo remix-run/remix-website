@@ -8,7 +8,7 @@ import {
   NewsletterUpstreamUnavailableError,
   type NewsletterRepository,
 } from "../app/actions/newsletter/archive.ts";
-import { swallowAbortErrors } from "../test/setup.ts";
+import { swallowAbortErrors } from "./setup.ts";
 
 const newsletterRepository: NewsletterRepository = {
   async listSummaries() {

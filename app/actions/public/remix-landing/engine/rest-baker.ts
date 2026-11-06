@@ -15,6 +15,7 @@ import {
   type WebGLRenderer,
 } from "three";
 import { PRESET_GLSL, PRESET_UNIFORMS_GLSL } from "./preset-glsl.ts";
+import type { ModelSlot } from "./types.ts";
 
 // MRT bake of "rest" particle state (position + color) into RGBA32F textures.
 // One slot per morph endpoint (A, B). Each slot owns a render target with
@@ -40,7 +41,7 @@ export const BAKE_TEX_W = 512;
  * them from the draw VS) so the layout always matches.
  */
 export function computeBakeTexHeight(count: number): number {
-  const rows = Math.ceil(Math.max(count, 1) / BAKE_TEX_W);
+  let rows = Math.ceil(Math.max(count, 1) / BAKE_TEX_W);
   return Math.max(16, Math.ceil(rows / 16) * 16);
 }
 
@@ -90,7 +91,8 @@ void main() {
 }
 `;
 
-export type Slot = 0 | 1;
+/** One of the two rest-texture bake targets (current and next preset). */
+export type BakeSlot = 0 | 1;
 
 type SlotCache = {
   presetId: number;
@@ -128,7 +130,7 @@ export class RestBaker {
     this.renderer = renderer;
     this.bakeTexHeight = computeBakeTexHeight(count);
 
-    const targetOptions = {
+    let targetOptions = {
       count: 2,
       type: FloatType,
       format: RGBAFormat,
@@ -189,26 +191,15 @@ export class RestBaker {
     this.invalidate();
   }
 
-  setModelTexture(slot: number, texture: DataTexture, pointCount: number) {
-    const u = this.material.uniforms;
-    if (slot === 0) {
-      u.uModelTex0.value = texture;
-      u.uModelCount0.value = pointCount;
-    } else if (slot === 1) {
-      u.uModelTex1.value = texture;
-      u.uModelCount1.value = pointCount;
-    } else if (slot === 2) {
-      u.uModelTex2.value = texture;
-      u.uModelCount2.value = pointCount;
-    } else {
-      u.uModelTex3.value = texture;
-      u.uModelCount3.value = pointCount;
-    }
+  setModelTexture(slot: ModelSlot, texture: DataTexture, pointCount: number) {
+    let u = this.material.uniforms;
+    u[`uModelTex${slot}`].value = texture;
+    u[`uModelCount${slot}`].value = pointCount;
     this.invalidate();
   }
 
   setCarUniforms(laneOffset: number, laneActivity: number, posY: number) {
-    const u = this.material.uniforms;
+    let u = this.material.uniforms;
     u.uCarLaneOffset.value = laneOffset;
     u.uCarLaneActivity.value = laneActivity;
     u.uCarPosY.value = posY;
@@ -221,17 +212,17 @@ export class RestBaker {
    * skip calling for the inactive endpoint when `blend < eps` to save a pass.
    */
   bake(
-    slot: Slot,
+    slot: BakeSlot,
     presetId: number,
     ctrl: number[],
     time: number,
     rotationTime: number,
   ): boolean {
-    const u = this.material.uniforms;
-    const cache = slot === 0 ? this.cacheA : this.cacheB;
-    const carLO = u.uCarLaneOffset.value as number;
-    const carLA = u.uCarLaneActivity.value as number;
-    const carPY = u.uCarPosY.value as number;
+    let u = this.material.uniforms;
+    let cache = slot === 0 ? this.cacheA : this.cacheB;
+    let carLO = u.uCarLaneOffset.value as number;
+    let carLA = u.uCarLaneActivity.value as number;
+    let carPY = u.uCarPosY.value as number;
 
     if (
       cache.presetId === presetId &&
@@ -248,11 +239,11 @@ export class RestBaker {
     u.uPresetId.value = presetId;
     u.uTime.value = time;
     u.uRotationTime.value = rotationTime;
-    const arr = u.uCtrl.value as number[];
+    let arr = u.uCtrl.value as number[];
     for (let i = 0; i < 8; i++) arr[i] = ctrl[i] ?? 0;
 
-    const target = slot === 0 ? this.slotA : this.slotB;
-    const prevTarget = this.renderer.getRenderTarget();
+    let target = slot === 0 ? this.slotA : this.slotB;
+    let prevTarget = this.renderer.getRenderTarget();
     this.renderer.setRenderTarget(target);
     this.renderer.render(this.scene, this.camera);
     this.renderer.setRenderTarget(prevTarget);
@@ -273,11 +264,11 @@ export class RestBaker {
     this.cacheB = initCache();
   }
 
-  getPosTexture(slot: Slot): Texture {
+  getPosTexture(slot: BakeSlot): Texture {
     return slot === 0 ? this.slotA.textures[0] : this.slotB.textures[0];
   }
 
-  getColTexture(slot: Slot): Texture {
+  getColTexture(slot: BakeSlot): Texture {
     return slot === 0 ? this.slotA.textures[1] : this.slotB.textures[1];
   }
 

@@ -2,7 +2,7 @@ import { afterEach, describe, it } from "remix/test";
 import { expect } from "remix/assert";
 import { initFathomAnalytics } from "./fathom.ts";
 
-let originalWindow = globalThis.window;
+const originalWindow = globalThis.window;
 type FathomLoad = NonNullable<
   NonNullable<Parameters<typeof initFathomAnalytics>[0]>["loadImpl"]
 >;
@@ -30,11 +30,10 @@ describe("initFathomAnalytics", () => {
     expect(loadImpl).not.toHaveBeenCalled();
   });
 
-  it("loads Fathom once outside development", (t) => {
+  it("loads Fathom outside development", (t) => {
     let loadImpl = t.mock.fn<FathomLoad>();
     globalThis.window = {} as Window & typeof globalThis;
 
-    initFathomAnalytics({ isDevelopment: false, loadImpl });
     initFathomAnalytics({ isDevelopment: false, loadImpl });
 
     expect(loadImpl).toHaveBeenCalledTimes(1);

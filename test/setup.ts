@@ -2,15 +2,11 @@ import type { Page } from "@playwright/test";
 import { existsSync } from "node:fs";
 import { loadEnvFile } from "node:process";
 
-import { asyncContext } from "remix/middleware/async-context";
-import { formData } from "remix/middleware/form-data";
-import { logger } from "remix/middleware/logger";
 import type { Router } from "remix/router";
 import { createRouter } from "remix/router";
 import { expect } from "remix/assert";
 
-import { loadAssetEntry } from "../app/middleware/asset-entry.ts";
-import { renderMiddleware } from "../app/middleware/render.ts";
+import { requestContextMiddleware } from "../app/middleware/request-context.ts";
 import { CACHE } from "../app/utils/cache-control.ts";
 
 export function expectPrefetchableDocument(response: Response) {
@@ -24,20 +20,19 @@ export function globalSetup() {
   loadEnvFileIfExists(".env.test");
 }
 
+/**
+ * A router with the app's request-context middleware but without its edge
+ * middleware (compression, rate limiting, security headers), for testing
+ * controllers in isolation.
+ */
 export function createRouteTestRouter() {
-  let router = createRouter({
-    middleware: [
-      formData(),
-      asyncContext(),
-      loadAssetEntry(),
-      renderMiddleware,
-      logger({ log() {} }),
-    ],
-  });
-
-  return router;
+  return createRouter({ middleware: requestContextMiddleware() });
 }
 
+// Both helpers rely on the Remix runtime tagging each hydrated client entry's
+// boundary comment with a private `$rmx` property. Keep that detail here.
+
+/** Waits until the client entry rendered at `selector` has hydrated. */
 export async function waitForClientEntryHydration(
   page: Page,
   selector: string,
@@ -47,6 +42,17 @@ export async function waitForClientEntryHydration(
     let marker = target?.previousSibling;
     return marker instanceof Comment && "$rmx" in marker;
   }, selector);
+}
+
+/** Waits until the Remix runtime has hydrated any client entry on the page. */
+export async function waitForRuntime(page: Page) {
+  await page.waitForFunction(() => {
+    let walker = document.createTreeWalker(document, NodeFilter.SHOW_COMMENT);
+    while (walker.nextNode()) {
+      if ("$rmx" in walker.currentNode) return true;
+    }
+    return false;
+  });
 }
 
 export function swallowAbortErrors(r: Router) {

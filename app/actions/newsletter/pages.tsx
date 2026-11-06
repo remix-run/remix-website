@@ -6,8 +6,8 @@ import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
 import { ImageLightbox } from "../../ui/public/image-lightbox.tsx";
-import { NewsletterSignupCta } from "../../ui/newsletter-signup.tsx";
-import { NewsletterSubscribe } from "../../ui/newsletter-subscribe.tsx";
+import { NewsletterCta } from "../../ui/newsletter-cta.tsx";
+import { NewsletterFrame } from "../../ui/newsletter-frame.tsx";
 import {
   marketingPageStyle,
   pageBodyStyle,
@@ -15,10 +15,10 @@ import {
   pageSecondaryTextStyle,
   pageTitleExtraSmallStyle,
   pageTitleStyle,
-} from "../../ui/public/marketing-styles.ts";
-import { breakpointMedia, theme } from "../../ui/public/theme.ts";
-import type { NewsletterSubscriptionStatus } from "../../ui/public/newsletter-subscribe.tsx";
-import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
+} from "../../ui/public/styles/marketing-styles.ts";
+import { breakpointMedia, theme } from "../../ui/public/styles/theme.ts";
+import type { NewsletterSubscriptionStatus } from "../../ui/public/newsletter-frame-form.tsx";
+import { getSocialHeadTagsForRequest } from "../../utils/social-head-tags-for-request.ts";
 
 interface NewsletterIndexPageProps {
   requestUrl: string;
@@ -35,7 +35,7 @@ export function NewsletterIndexPage(handle: Handle<NewsletterIndexPageProps>) {
     <Document
       title="Remix Newsletter"
       description="Stay up-to-date with news, announcements, and releases for our projects like Remix and React Router. Read past issues in the archive."
-      headTags={getSocialHeadTags({
+      headTags={getSocialHeadTagsForRequest({
         requestUrl: handle.props.requestUrl,
         title: "Remix Newsletter",
         description:
@@ -61,7 +61,7 @@ export function NewsletterIndexPage(handle: Handle<NewsletterIndexPageProps>) {
             }),
           ]}
         >
-          <NewsletterSignupSection
+          <NewsletterSubscribeSection
             subscriptionStatus={handle.props.subscriptionStatus}
           />
           <NewsletterArchive
@@ -91,7 +91,7 @@ export function NewsletterIssuePage(
       title={`${issue.title} | Remix`}
       description={description}
       stylesheets={["md"]}
-      headTags={getSocialHeadTags({
+      headTags={getSocialHeadTagsForRequest({
         requestUrl: handle.props.requestUrl,
         title: issue.title,
         description,
@@ -114,7 +114,7 @@ export function NewsletterIssuePage(
           </h1>
           <div class="md-prose" innerHTML={unsafeHTML(handle.props.html)} />
           <div mix={css({ marginBlockStart: "112px" })}>
-            <NewsletterSignupCta />
+            <NewsletterCta />
           </div>
         </div>
       </main>
@@ -126,7 +126,7 @@ export function NewsletterIssuePage(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-function NewsletterSignupSection(
+function NewsletterSubscribeSection(
   handle: Handle<{
     subscriptionStatus: NewsletterSubscriptionStatus | null;
   }>,
@@ -151,7 +151,7 @@ function NewsletterSignupSection(
         time.
       </p>
       <div mix={css({ marginBlockStart: "36px" })}>
-        <NewsletterSubscribe status={handle.props.subscriptionStatus} />
+        <NewsletterFrame status={handle.props.subscriptionStatus} />
       </div>
     </section>
   );
@@ -265,20 +265,20 @@ function formatNewsletterDate(date: Date): string {
   }).format(date);
 }
 
-let newsletterMainStyle = css({
+const newsletterMainStyle = css({
   display: "flex",
   flex: 1,
   flexDirection: "column",
 });
 
-let newsletterContainerStyle = {
+const newsletterContainerStyle = {
   boxSizing: "border-box",
   width: "100%",
   marginInline: "auto",
   paddingInline: theme.space.edge,
 } as const;
 
-let newsletterArchiveLinkStyle = css({
+const newsletterArchiveLinkStyle = css({
   color: theme.colors.action.primary,
   textDecoration: "underline",
   textUnderlineOffset: "3px",
@@ -288,7 +288,7 @@ let newsletterArchiveLinkStyle = css({
   },
 });
 
-let newsletterCardStyle = css({
+const newsletterCardStyle = css({
   display: "grid",
   gap: "20px",
   margin: "-24px",

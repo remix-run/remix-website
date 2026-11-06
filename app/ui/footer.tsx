@@ -1,5 +1,5 @@
 import { css, type Handle, type MixInput } from "remix/component";
-import { theme } from "./public/theme.ts";
+import { theme } from "./public/styles/theme.ts";
 import { routes } from "../routes.ts";
 import { Icon } from "./public/icon.tsx";
 import { Wordmark } from "./public/wordmark.tsx";
@@ -137,13 +137,13 @@ export function Footer(handle: Handle<FooterProps>) {
   );
 }
 
-let footerSocialLinkStyle = css({
+const footerSocialLinkStyle = css({
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
 });
 
-let footerSocialIconStyle = css({
+const footerSocialIconStyle = css({
   width: "20px",
   height: "20px",
 });

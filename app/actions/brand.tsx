@@ -8,16 +8,16 @@ import {
   pageMetaStyle,
   pageTitleSmallStyle,
   pageTitleStyle,
-} from "../ui/public/marketing-styles.ts";
-import { breakpointMedia, theme } from "../ui/public/theme.ts";
-import { getSocialHeadTags } from "../utils/social-head-tags.ts";
+} from "../ui/public/styles/marketing-styles.ts";
+import { breakpointMedia, theme } from "../ui/public/styles/theme.ts";
+import { getSocialHeadTagsForRequest } from "../utils/social-head-tags-for-request.ts";
 
 export function BrandPage(handle: Handle<{ requestUrl: string }>) {
   return () => (
     <Document
       title="Remix Assets and Branding Guidelines"
       description="Remix brand assets and guidelines for using the Remix name and logos."
-      headTags={getSocialHeadTags({
+      headTags={getSocialHeadTagsForRequest({
         requestUrl: handle.props.requestUrl,
         title: "Remix Assets and Branding Guidelines",
         description:
@@ -52,7 +52,7 @@ type BrandAsset = {
   formats: readonly [BrandAssetFormat, ...BrandAssetFormat[]];
 };
 
-let previewThemes = {
+const previewThemes = {
   light: css({
     borderColor: "light-dark(#f7f7f7, transparent)",
     backgroundColor: "#ffffff",
@@ -71,7 +71,7 @@ let previewThemes = {
   }),
 } as const;
 
-let logoAssets = [
+const logoAssets = [
   {
     title: "Logo, light mode",
     fileBase: "remix-logo-light-mode",
@@ -98,7 +98,7 @@ let logoAssets = [
   },
 ] satisfies BrandAsset[];
 
-let wordmarkAssets = [
+const wordmarkAssets = [
   {
     title: "Wordmark, light mode",
     fileBase: "remix-wordmark-light-mode",
@@ -255,7 +255,7 @@ function BrandPageContent() {
           href={BRAND_ASSETS_ZIP}
           mix={css({
             textDecorationLine: "underline",
-            "&:hover": { color: "#f44250" },
+            "&:hover": { color: theme.colors.brand.red },
           })}
           download
         >
@@ -280,4 +280,4 @@ function BrandPageContent() {
   );
 }
 
-let brandHeadingStyle = css({ color: theme.colors.text.primary });
+const brandHeadingStyle = css({ color: theme.colors.text.primary });

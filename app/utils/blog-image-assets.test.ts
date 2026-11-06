@@ -1,7 +1,10 @@
 import { expect } from "remix/assert";
 import { describe, it } from "remix/test";
 
-import { getBlogImageAsset } from "./blog-image-assets.ts";
+import {
+  getBlogImageAsset,
+  getFailedImageSources,
+} from "./blog-image-assets.ts";
 
 describe("Blog image assets", () => {
   it("falls back to the original source when optimization fails", async (t) => {
@@ -9,5 +12,6 @@ describe("Blog image assets", () => {
     let source = "/blog-images/does-not-exist.png";
 
     expect(await getBlogImageAsset(source)).toEqual({ src: source });
+    expect(getFailedImageSources()).toContain(source);
   });
 });

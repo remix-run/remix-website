@@ -1,6 +1,6 @@
 import { form, get, post, route } from "remix/routes";
 
-export let routes = route({
+export const routes = route({
   assets: get("/assets/*path"),
   blog: route("blog", {
     index: get("/"),
@@ -12,7 +12,9 @@ export let routes = route({
   healthcheck: get("/healthcheck"),
   home: get("/"),
   homeMarkdown: get("/index.md"),
-  homeNewsletterSignup: get("/newsletter/signup/home"),
+  // The landing page's own subscribe form frame. The root controller owns it
+  // (it renders landing UI); the URL sits under /newsletter for continuity.
+  homeNewsletterSubscribeForm: get("/newsletter/signup/home"),
   remixHistory: route("remix-history", {
     index: get("/"),
   }),
@@ -20,7 +22,7 @@ export let routes = route({
     index: get("/"),
     y2025: route("2025", {
       index: get("/"),
-      newsletterSignup: get("newsletter-signup"),
+      newsletterSubscribeForm: get("newsletter-signup"),
       coc: get("coc"),
       faq: get("faq"),
       gallery: route("gallery", {
@@ -32,14 +34,14 @@ export let routes = route({
     }),
     y2026: route("2026", {
       index: get("/"),
-      newsletterSignup: get("newsletter-signup"),
+      newsletterSubscribeForm: get("newsletter-signup"),
       theme: post("theme"),
       ticket: form("ticket"),
     }),
   }),
   newsletter: route("newsletter", {
     index: get("/"),
-    signup: get("signup"),
+    subscribeForm: get("signup"),
     subscribe: post("/"),
     issue: get(":number"),
     image: get(":number/image/:filename"),

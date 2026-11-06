@@ -14,6 +14,26 @@ const SIZE_BOOST_FRACTION = 0.03;
 const SIZE_BOOST_MIN = 1.32;
 const SIZE_BOOST_MAX = 3.05;
 
+/**
+ * Per-particle attributes: a uniform random seed for shader variation, and a
+ * size multiplier that enlarges a small fraction of particles.
+ */
+export function createParticleAttributes(
+  count: number,
+  random: () => number = Math.random,
+) {
+  let randoms = new Float32Array(count);
+  let sizeBoost = new Float32Array(count);
+  for (let i = 0; i < count; i++) {
+    randoms[i] = random();
+    sizeBoost[i] =
+      random() < SIZE_BOOST_FRACTION
+        ? SIZE_BOOST_MIN + random() * (SIZE_BOOST_MAX - SIZE_BOOST_MIN)
+        : 1.0;
+  }
+  return { randoms, sizeBoost };
+}
+
 // Built per-init() so the bake-texture height (which depends on particleCount)
 // can be inlined as a literal — saves a uniform fetch per vertex and keeps the
 // uv math constant-foldable by the GLSL compiler.
@@ -209,7 +229,6 @@ export class ParticleSystem {
   private points: Points | null = null;
   private geometry: BufferGeometry | null = null;
   private material: RawShaderMaterial | null = null;
-  private count = 0;
   // Per-frame setter caches. NaN sentinels guarantee the first call after
   // init() always writes, since `NaN !== anything` is always true.
   private lastPointSize = NaN;
@@ -244,19 +263,10 @@ export class ParticleSystem {
 
   init(scene: Scene, count: number, pointSize: number, pixelRatio: number) {
     this.dispose(scene);
-    this.count = count;
     this.resetSetterCaches();
 
-    const positions = new Float32Array(count * 3);
-    const randoms = new Float32Array(count);
-    const sizeBoost = new Float32Array(count);
-    for (let i = 0; i < count; i++) {
-      randoms[i] = Math.random();
-      sizeBoost[i] =
-        Math.random() < SIZE_BOOST_FRACTION
-          ? SIZE_BOOST_MIN + Math.random() * (SIZE_BOOST_MAX - SIZE_BOOST_MIN)
-          : 1.0;
-    }
+    let positions = new Float32Array(count * 3);
+    let { randoms, sizeBoost } = createParticleAttributes(count);
 
     this.geometry = new BufferGeometry();
     this.geometry.setAttribute("position", new BufferAttribute(positions, 3));

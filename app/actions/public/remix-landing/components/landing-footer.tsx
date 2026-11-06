@@ -1,8 +1,8 @@
 import { css, type Handle } from "remix/component";
 import { Icon } from "../../../../ui/public/icon.tsx";
-import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
 import { Wordmark } from "../../../../ui/public/wordmark.tsx";
-import { colors } from "../styles/tokens.ts";
+import { colors } from "../tokens.ts";
 
 const SOCIAL_LINKS = [
   {

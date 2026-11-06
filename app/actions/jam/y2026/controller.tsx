@@ -4,27 +4,12 @@ import { SuperHeaders } from "remix/headers";
 import { redirect } from "remix/response/redirect";
 import { createController } from "remix/router";
 
-import { getJam2026Schedule } from "../../../data/jam-schedule-2026.ts";
 import { CACHE } from "../../../utils/cache-control.ts";
-import type { AppRenderer } from "../../../middleware/render.ts";
 import { routes } from "../../../routes.ts";
-import { getNewsletterSubscriptionStatus } from "../../newsletter/subscription.tsx";
-import {
-  resolveJam2026Discount,
-  type Jam2026Discount,
-} from "./discount-code.ts";
-import { Jam2026TicketsModalFrame } from "./public/tickets-modal.tsx";
-import { Jam2026NewsletterSignup } from "./public/newsletter-signup.tsx";
-import { Jam2026HomePage } from "./home-page.tsx";
-import { ticketModalConfig } from "./public/tickets-modal-contract.ts";
-import {
-  getJam2026ThemePreference,
-  serializeJam2026ThemePreference,
-} from "./theme-preference.ts";
-import {
-  createTicketCheckout,
-  type Jam2026TicketCheckout,
-} from "./ticket-checkout.ts";
+import { getNewsletterSubscriptionStatus } from "../../../utils/newsletter-subscription.ts";
+import { Jam2026NewsletterForm } from "./public/newsletter-form.tsx";
+import { renderJam2026Page } from "./render-page.tsx";
+import { serializeJam2026ThemePreference } from "./theme-preference.ts";
 
 export default createController(routes.jam.y2026, {
   actions: {
@@ -32,12 +17,12 @@ export default createController(routes.jam.y2026, {
       return renderJam2026Page({ render, request });
     },
 
-    newsletterSignup({ render, request }) {
+    newsletterSubscribeForm({ render, request }) {
       return render(
-        <Jam2026NewsletterSignup
+        <Jam2026NewsletterForm
           status={getNewsletterSubscriptionStatus(request)}
         />,
-        { headers: { "Cache-Control": CACHE.PRIVATE } },
+        { headers: CACHE.PRIVATE },
       );
     },
 
@@ -54,7 +39,7 @@ export default createController(routes.jam.y2026, {
       return redirect(routes.jam.y2026.index.href(), {
         status: 303,
         headers: new SuperHeaders({
-          cacheControl: CACHE.PRIVATE,
+          cacheControl: CACHE.PRIVATE["Cache-Control"],
           setCookie: await serializeJam2026ThemePreference(result.value.theme),
         }),
       });
@@ -62,74 +47,6 @@ export default createController(routes.jam.y2026, {
   },
 });
 
-/**
- * Renders the Jam 2026 page, or just the tickets modal when the request targets
- * the modal frame. Shared with the ticket route, which renders the same page
- * with the modal open.
- */
-export async function renderJam2026Page({
-  cacheControl,
-  discount,
-  render,
-  request,
-  status = 200,
-  ticketCheckout,
-}: {
-  cacheControl?: string;
-  discount?: Jam2026Discount;
-  render: AppRenderer;
-  request: Request;
-  status?: number;
-  ticketCheckout?: Jam2026TicketCheckout;
-}) {
-  let requestUrl = new URL(request.url);
-
-  discount ??= await resolveJam2026Discount(request);
-  let ticketsModalOpen =
-    requestUrl.pathname === routes.jam.y2026.ticket.index.href();
-  let isTicketsFrameRequest =
-    request.headers.get("x-remix-target") === ticketModalConfig.frameName;
-  let isServerResolvedFrame =
-    request.headers.get("x-remix-ssr-frame") === "true";
-  let theme = await getJam2026ThemePreference(request.headers.get("cookie"));
-  // Conference-day sales are closed, regardless of Shopify inventory.
-  // Do not fetch products or create discount-validation carts for this page.
-  if (ticketsModalOpen) {
-    ticketCheckout ??= createTicketCheckout({ product: null });
-  }
-
-  // Never let a shared cache store a response that hands out a Set-Cookie.
-  let headers = new SuperHeaders({
-    cacheControl: discount.setCookie ? CACHE.PRIVATE : cacheControl,
-    vary: ["Cookie", "x-remix-target", "x-remix-ssr-frame"],
-  });
-  if (discount.setCookie) headers.append("Set-Cookie", discount.setCookie);
-
-  let responseInit = { status, headers };
-
-  if (isTicketsFrameRequest) {
-    return render(
-      <Jam2026TicketsModalFrame
-        animateEntrance={!isServerResolvedFrame}
-        open={ticketsModalOpen}
-        ticketCheckout={ticketCheckout}
-      />,
-      responseInit,
-    );
-  }
-
-  return render(
-    <Jam2026HomePage
-      requestUrl={request.url}
-      schedule={await getJam2026Schedule()}
-      ticketsModalOpen={ticketsModalOpen}
-      theme={theme}
-      ticketCheckout={ticketCheckout}
-    />,
-    responseInit,
-  );
-}
-
-let themeSubmissionSchema = f.object({
+const themeSubmissionSchema = f.object({
   theme: f.field(s.enum_(["light", "dark"])),
 });

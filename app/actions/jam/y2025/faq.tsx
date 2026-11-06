@@ -1,15 +1,11 @@
 import { css, type Handle, type RemixNode } from "remix/component";
-import { JamDocument } from "./document.tsx";
-import {
-  AddressLink,
-  Paragraph,
-  ScrambleText,
-  Subheader,
-  Title,
-} from "./public/shared.tsx";
+import { JamTextPage } from "./document.tsx";
+import { JamScrambleText } from "./public/scramble-text.tsx";
+import { Paragraph, Subheader } from "./public/typography.tsx";
 import { routes } from "../../../routes.ts";
 import { assetPaths } from "../../../utils/public/asset-paths.ts";
-import { breakpointMedia, theme } from "../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../ui/public/styles/theme.ts";
+import { jamColors } from "./public/theme.ts";
 
 function slugify(input: string) {
   return input
@@ -21,221 +17,205 @@ function slugify(input: string) {
 
 export function Jam2025FaqPage(handle: Handle<{ requestUrl: string }>) {
   return () => (
-    <JamDocument
+    <JamTextPage
       title="FAQ | Remix Jam 2025"
       description="It's time to get the band back together"
       previewImage={assetPaths.jam2025.ogThumbnail1}
       requestUrl={handle.props.requestUrl}
       activePath={routes.jam.y2025.faq.href()}
-    >
-      <main
-        mix={css({
-          display: "flex",
-          maxWidth: "800px",
-          marginInline: "auto",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "48px",
-          paddingBlock: "80px",
-          paddingTop: "120px",
-          [breakpointMedia.md]: { paddingTop: "270px" },
-          [breakpointMedia.lg]: { paddingTop: "280px" },
-        })}
-      >
-        <Title mix={css({ textAlign: "center" })}>
-          <ScrambleText
+      heading={
+        <>
+          <JamScrambleText
             text="Frequently Asked"
             delay={100}
             color="blue"
             nowrap
           />
-          <ScrambleText text="Questions" delay={300} color="green" />
-        </Title>
+          <JamScrambleText text="Questions" delay={300} color="green" />
+        </>
+      }
+    >
+      <div
+        mix={css({
+          position: "relative",
+          zIndex: 10,
+          color: jamColors.white,
+          fontSize: "1rem",
+          lineHeight: 1.5,
+          textAlign: "justify",
+          [breakpointMedia.md]: { fontSize: "1.125rem", lineHeight: 1.556 },
+        })}
+      >
+        <FAQSection
+          question="Where can I find the event lineup?"
+          answer={
+            <Paragraph>
+              Checkout our full{" "}
+              <a href={routes.jam.y2025.lineup.href()}>Schedule & Lineup</a> for
+              the list of speakers and topics, as well as all the day-of
+              information you need.
+            </Paragraph>
+          }
+        />
 
-        <div
-          mix={css({
-            position: "relative",
-            zIndex: 10,
-            color: "#ffffff",
-            fontSize: "1rem",
-            lineHeight: 1.5,
-            textAlign: "justify",
-            [breakpointMedia.md]: { fontSize: "1.125rem", lineHeight: 1.556 },
-          })}
-        >
-          <FAQSection
-            question="Where can I find the event lineup?"
-            answer={
+        <FAQSection
+          question="Where will the event be hosted?"
+          answer={
+            <>
               <Paragraph>
-                Checkout our full{" "}
-                <a href={routes.jam.y2025.lineup.href()}>Schedule & Lineup</a>{" "}
-                for the list of speakers and topics, as well as all the day-of
-                information you need.
+                The Remix team is hosting this event at the Shopify Toronto
+                office: <AddressLink />.
               </Paragraph>
-            }
-          />
-
-          <FAQSection
-            question="Where will the event be hosted?"
-            answer={
-              <>
-                <Paragraph>
-                  The Remix team is hosting this event at the Shopify Toronto
-                  office: <AddressLink />.
-                </Paragraph>
-                <Paragraph>
-                  Check-in starts at <strong mix={strongStyle}>8:30 AM</strong>{" "}
-                  in the lobby. Enter on the west side of the building on
-                  Waterloo Terrace.
-                </Paragraph>
-              </>
-            }
-          />
-
-          <FAQSection
-            question="Will there be a bag check?"
-            answer={
               <Paragraph>
-                Yes, there will be bag and coat check available all day on L11
-                (the first floor you will go to after registration).
+                Check-in starts at <strong mix={strongStyle}>8:30 AM</strong> in
+                the lobby. Enter on the west side of the building on Waterloo
+                Terrace.
               </Paragraph>
-            }
-          />
+            </>
+          }
+        />
 
-          <FAQSection
-            question="Will there be a CFP?"
-            answer={
-              <>
-                <Paragraph>No, there will not be a CFP.</Paragraph>
-                <Paragraph>
-                  We are putting together a great "set list" of speakers and
-                  topics exploring the past, present, and future of Remix and
-                  the web. You can expect to hear from the founders, well known
-                  members of the community, and other industry experts.
-                </Paragraph>
-                <Paragraph>
-                  The full lineup will be announced in July.
-                </Paragraph>
-              </>
-            }
-          />
+        <FAQSection
+          question="Will there be a bag check?"
+          answer={
+            <Paragraph>
+              Yes, there will be bag and coat check available all day on L11
+              (the first floor you will go to after registration).
+            </Paragraph>
+          }
+        />
 
-          <FAQSection
-            question="Where should I stay?"
-            answer={
-              <>
-                <Paragraph>We have 2 hotel blocks for the event:</Paragraph>
-                <ul mix={faqListStyle}>
-                  <li>
-                    <a
-                      href="https://reservation.germainhotels.com/ibe/details.aspx?propertyid=17522&nights=2&checkin=10/09/2025&group=2510SHOPIF&lang=en-us&adults=2"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Le Germain Mercer
-                    </a>{" "}
-                    — $259/night
-                  </li>
-                  <li>
-                    <a
-                      href="https://www.hyatt.com/en-US/group-booking/TORRT/G-SH0F"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Hyatt Regency Toronto
-                    </a>{" "}
-                    — $279/night
-                  </li>
-                </ul>
+        <FAQSection
+          question="Will there be a CFP?"
+          answer={
+            <>
+              <Paragraph>No, there will not be a CFP.</Paragraph>
+              <Paragraph>
+                We are putting together a great "set list" of speakers and
+                topics exploring the past, present, and future of Remix and the
+                web. You can expect to hear from the founders, well known
+                members of the community, and other industry experts.
+              </Paragraph>
+              <Paragraph>The full lineup will be announced in July.</Paragraph>
+            </>
+          }
+        />
 
-                <Paragraph mix={strongStyle}>
-                  <strong>You must select the dates Oct 9-11.</strong>
-                </Paragraph>
-              </>
-            }
-          />
-
-          <FAQSection
-            question="What airport should I fly into?"
-            answer="The closest airport is Toronto Pearson International Airport (YYZ)."
-          />
-
-          <FAQSection
-            question="Do I need a visa to attend?"
-            answer={
+        <FAQSection
+          question="Where should I stay?"
+          answer={
+            <>
+              <Paragraph>We have 2 hotel blocks for the event:</Paragraph>
               <ul mix={faqListStyle}>
                 <li>
-                  Check{" "}
                   <a
-                    href="https://ircc.canada.ca/english/visit/visas.asp"
+                    href="https://reservation.germainhotels.com/ibe/details.aspx?propertyid=17522&nights=2&checkin=10/09/2025&group=2510SHOPIF&lang=en-us&adults=2"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    if you need a visa
+                    Le Germain Mercer
                   </a>{" "}
-                  (<i>select "attending meetings/conference"</i>).
+                  — $259/night
                 </li>
                 <li>
-                  Determine{" "}
                   <a
-                    href="https://www.canada.ca/en/immigration-refugees-citizenship/services/application/check-processing-times.html"
+                    href="https://www.hyatt.com/en-US/group-booking/TORRT/G-SH0F"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    visa processing times
-                  </a>
-                  .
-                </li>
-                <li>
-                  Request a{" "}
-                  <a
-                    href="https://forms.gle/DdPs7rREJaFz8Pzf9"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    mix={textLinkStyle}
-                  >
-                    letter of invitation
+                    Hyatt Regency Toronto
                   </a>{" "}
-                  from Shopify.
+                  — $279/night
                 </li>
               </ul>
-            }
-          />
 
-          <FAQSection
-            question="What's the refund policy?"
-            answer="There are no refunds, but tickets are transferable."
-          />
-
-          <FAQSection
-            question="How do I get an invoice for tax purposes?"
-            answer={
-              <Paragraph>
-                Please email <JamEmail /> for invoice requests.
+              <Paragraph mix={strongStyle}>
+                <strong>You must select the dates Oct 9-11.</strong>
               </Paragraph>
-            }
-          />
+            </>
+          }
+        />
 
-          <FAQSection
-            question="How do I transfer a ticket?"
-            answer={
-              <Paragraph>
-                Please email <JamEmail /> for ticket transfer requests.
-              </Paragraph>
-            }
-          />
+        <FAQSection
+          question="What airport should I fly into?"
+          answer="The closest airport is Toronto Pearson International Airport (YYZ)."
+        />
 
-          <FAQSection
-            question="What if I have other questions?"
-            answer={
-              <Paragraph>
-                You guessed it, email <JamEmail />.
-              </Paragraph>
-            }
-          />
-        </div>
-      </main>
-    </JamDocument>
+        <FAQSection
+          question="Do I need a visa to attend?"
+          answer={
+            <ul mix={faqListStyle}>
+              <li>
+                Check{" "}
+                <a
+                  href="https://ircc.canada.ca/english/visit/visas.asp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  if you need a visa
+                </a>{" "}
+                (<i>select "attending meetings/conference"</i>).
+              </li>
+              <li>
+                Determine{" "}
+                <a
+                  href="https://www.canada.ca/en/immigration-refugees-citizenship/services/application/check-processing-times.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  visa processing times
+                </a>
+                .
+              </li>
+              <li>
+                Request a{" "}
+                <a
+                  href="https://forms.gle/DdPs7rREJaFz8Pzf9"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  mix={textLinkStyle}
+                >
+                  letter of invitation
+                </a>{" "}
+                from Shopify.
+              </li>
+            </ul>
+          }
+        />
+
+        <FAQSection
+          question="What's the refund policy?"
+          answer="There are no refunds, but tickets are transferable."
+        />
+
+        <FAQSection
+          question="How do I get an invoice for tax purposes?"
+          answer={
+            <Paragraph>
+              Please email <JamEmail /> for invoice requests.
+            </Paragraph>
+          }
+        />
+
+        <FAQSection
+          question="How do I transfer a ticket?"
+          answer={
+            <Paragraph>
+              Please email <JamEmail /> for ticket transfer requests.
+            </Paragraph>
+          }
+        />
+
+        <FAQSection
+          question="What if I have other questions?"
+          answer={
+            <Paragraph>
+              You guessed it, email <JamEmail />.
+            </Paragraph>
+          }
+        />
+      </div>
+    </JamTextPage>
   );
 }
 
@@ -248,7 +228,7 @@ function FAQSection(handle: Handle<{ question: string; answer: RemixNode }>) {
         mix={css({
           marginTop: "20px",
           scrollMarginTop: "128px",
-          color: "#ffffff",
+          color: jamColors.white,
           fontSize: "1rem",
           lineHeight: 1.5,
           "& > * + *": { marginTop: "12px" },
@@ -282,18 +262,34 @@ function JamEmail() {
   );
 }
 
-let strongStyle = css({
-  color: "#ffffff",
+function AddressLink() {
+  return () => (
+    <a
+      href="https://maps.app.goo.gl/uxa4a9ANKAYAcWx7A"
+      target="_blank"
+      rel="noopener noreferrer"
+      mix={css({
+        color: jamColors.link,
+        "&:hover": { textDecoration: "underline" },
+      })}
+    >
+      620 King St W Toronto, ON M5V 1M7, Canada
+    </a>
+  );
+}
+
+const strongStyle = css({
+  color: jamColors.white,
   fontWeight: theme.fontWeight.bold,
 });
 
-let faqListStyle = css({
+const faqListStyle = css({
   paddingLeft: "32px",
   listStyleType: "disc",
   "& > * + *": { marginTop: "4px" },
 });
 
-let textLinkStyle = css({
-  color: "#59b0ff",
+const textLinkStyle = css({
+  color: jamColors.link,
   "&:hover": { textDecoration: "underline" },
 });

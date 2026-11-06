@@ -25,30 +25,34 @@ describe("rateLimit", () => {
     );
   });
 
-  it("isolates quotas by normalized client address and header precedence", async () => {
-    let normalizations: Array<
-      [Record<string, string>, Record<string, string>]
-    > = [
+  it("keys proxied requests by the visitor Fastly saw, not the POP", async () => {
+    let sameVisitor: Array<[Record<string, string>, Record<string, string>]> = [
+      // Different POPs and a forged leftmost entry still map to one visitor.
       [
-        { "x-forwarded-for": "203.0.113.1, 70.41.3.18" },
-        { "x-forwarded-for": "203.0.113.1, 192.0.2.1" },
+        {
+          "fly-client-ip": "151.101.1.1",
+          "x-forwarded-for": "203.0.113.1, 151.101.1.1, 66.241.124.1",
+        },
+        {
+          "fly-client-ip": "151.101.2.2",
+          "x-forwarded-for":
+            "198.51.100.99, 203.0.113.1, 151.101.2.2, 66.241.124.1",
+        },
       ],
-      [{ "x-real-ip": '"198.51.100.2"' }, { "x-real-ip": "198.51.100.2" }],
+      // Addresses are normalized before comparing.
       [
-        { "cf-connecting-ip": "192.0.2.3", "x-real-ip": "10.0.0.1" },
-        { "cf-connecting-ip": "192.0.2.3", "x-real-ip": "10.0.0.2" },
-      ],
-      [
-        { "true-client-ip": "[2001:db8::1]:443" },
-        { "true-client-ip": "2001:db8::1" },
-      ],
-      [
-        { "x-forwarded-for": "::ffff:203.0.113.4" },
-        { "x-forwarded-for": "203.0.113.4:8080" },
+        {
+          "fly-client-ip": "151.101.1.1",
+          "x-forwarded-for": "[2001:db8::1]:443, 151.101.1.1",
+        },
+        {
+          "fly-client-ip": "::ffff:151.101.1.1",
+          "x-forwarded-for": "2001:db8::1, 151.101.1.1",
+        },
       ],
     ];
 
-    for (let [firstHeaders, equivalentHeaders] of normalizations) {
+    for (let [firstHeaders, equivalentHeaders] of sameVisitor) {
       let router = createRateLimitedRouter({ max: 1, windowMs: 60_000 });
       expect((await request(router, undefined, firstHeaders)).status).toBe(200);
       expect((await request(router, undefined, equivalentHeaders)).status).toBe(
@@ -57,7 +61,27 @@ describe("rateLimit", () => {
     }
 
     let router = createRateLimitedRouter({ max: 1, windowMs: 60_000 });
+    for (let visitor of ["203.0.113.10", "203.0.113.11"]) {
+      let response = await request(router, undefined, {
+        "fly-client-ip": "151.101.1.1",
+        "x-forwarded-for": `${visitor}, 151.101.1.1, 66.241.124.1`,
+      });
+      expect(response.status).toBe(200);
+    }
+  });
+
+  it("ignores client-settable IP headers on direct requests", async () => {
+    let router = createRateLimitedRouter({ max: 1, windowMs: 60_000 });
     expect((await request(router, "192.0.2.10")).status).toBe(200);
+
+    let forged = await request(router, "192.0.2.10", {
+      "cf-connecting-ip": "198.51.100.1",
+      "fastly-client-ip": "198.51.100.2",
+      "true-client-ip": "198.51.100.3",
+      "x-real-ip": "198.51.100.4",
+    });
+    expect(forged.status).toBe(429);
+
     expect((await request(router, "192.0.2.11")).status).toBe(200);
   });
 
@@ -115,13 +139,13 @@ function createRateLimitedRouter(options: Parameters<typeof rateLimit>[0]) {
 
 function request(
   router: ReturnType<typeof createRateLimitedRouter>,
-  forwardedFor?: string,
+  flyClientIp?: string,
   extraHeaders: Record<string, string> = {},
   pathname = "/",
   hostname = "example.com",
 ) {
   let headers = new Headers(extraHeaders);
-  if (forwardedFor) headers.set("x-forwarded-for", forwardedFor);
+  if (flyClientIp) headers.set("fly-client-ip", flyClientIp);
   return router.fetch(
     new Request(`http://${hostname}${pathname}`, { headers }),
   );

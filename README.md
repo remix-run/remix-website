@@ -49,7 +49,7 @@ The app keeps browsers conservative while serving shared content from Fastly:
 | Fingerprinted `/assets/*`                   | Browsers and Fastly cache immutable URLs for 1 year                                 | Never           |
 | Personalized, mutation, and error responses | `private, no-store`                                                                 | Not cached      |
 
-`app/middleware/render.ts` applies the document policy unless an action sets its own `Cache-Control`. `app/router.ts` tags root `public/` files. The production workflow completes the Fly rollout, then purges the `documents` and `static-assets` surrogate keys twice to cover Fastly edge/shield propagation.
+`app/middleware/render.ts` applies the document policy unless an action sets its own `Cache-Control`. `app/middleware/root-public-files.ts` tags root `public/` files. The production workflow completes the Fly rollout, then purges the `documents` and `static-assets` surrogate keys twice to cover Fastly edge/shield propagation.
 
 Surrogate keys are public cache tags, not credentials; Fastly normally removes them before responding to browsers. Purge requests are authorized with the GitHub Actions `FASTLY_API_TOKEN` secret. Fingerprinted assets are not purged so older documents and open tabs can continue loading their matching assets.
 
@@ -71,8 +71,10 @@ Surrogate keys are public cache tags, not credentials; Fastly normally removes t
 ### Newsletter Archive
 
 - The `/newsletter` archive renders issues from the private
-  `remix-run/newsletter` GitHub repository at runtime via a single tarball
-  fetch.
+  `remix-run/newsletter` GitHub repository at runtime. It lists the repo with
+  one recursive git tree request (pinned to blob SHAs), loads every issue's
+  Markdown in one batched GraphQL request, and fetches images on demand into a
+  bounded filesystem cache.
 - Because the repo is currently private, set `NEWSLETTER_GITHUB_TOKEN` (see
   `.env.example`) locally and in production to enable archive rendering.
   Without it, `/newsletter` returns a 503 when no cached snapshot exists.

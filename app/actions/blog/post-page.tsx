@@ -9,33 +9,24 @@ import {
   pageTitleExtraSmallStyle,
   pageTitleSmallStyle,
   pageTitleStyle,
-} from "../../ui/public/marketing-styles.ts";
-import { breakpointMedia, theme } from "../../ui/public/theme.ts";
-import { NewsletterSignupCta } from "../../ui/newsletter-signup.tsx";
+} from "../../ui/public/styles/marketing-styles.ts";
+import { breakpointMedia, theme } from "../../ui/public/styles/theme.ts";
+import { NewsletterCta } from "../../ui/newsletter-cta.tsx";
 import type { BlogImageAsset } from "../../utils/blog-image-assets.ts";
-import { CACHE } from "../../utils/cache-control.ts";
-import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
+import { getSocialHeadTagsForRequest } from "../../utils/social-head-tags-for-request.ts";
 import { routes } from "../../routes.ts";
-import type { getBlogPost } from "../../data/blog.ts";
+import type { BlogPost } from "../../data/blog.ts";
 
 interface BlogPostImageAssets {
   authors: Record<string, BlogImageAsset>;
   hero: BlogImageAsset;
 }
 
-export const NOT_FOUND_RESPONSE = {
-  status: 404,
-  statusText: "Not Found",
-  headers: {
-    "Cache-Control": CACHE.PRIVATE,
-  },
-};
-
 export function BlogPostPage(
   handle: Handle<{
     requestUrl: string;
     slug: string;
-    post: Awaited<ReturnType<typeof getBlogPost>>;
+    post: BlogPost;
     images: BlogPostImageAssets;
     socialImageUrl: string;
   }>,
@@ -52,7 +43,7 @@ export function BlogPostPage(
           href: routes.blog.post.href({ slug: handle.props.slug, ext: "md" }),
           type: "text/markdown",
         },
-        ...getSocialHeadTags({
+        ...getSocialHeadTagsForRequest({
           requestUrl: handle.props.requestUrl,
           title: handle.props.post.title,
           description: handle.props.post.summary,
@@ -84,7 +75,7 @@ export function BlogPostPage(
 
 function BlogPostContent(
   handle: Handle<{
-    post: Awaited<ReturnType<typeof getBlogPost>>;
+    post: BlogPost;
     images: BlogPostImageAssets;
   }>,
 ) {
@@ -296,20 +287,20 @@ function BlogPostContent(
           marginBlock: "96px 48px",
         })}
       >
-        <NewsletterSignupCta />
+        <NewsletterCta />
       </div>
     </>
   );
 }
 
-let blogPostContainerStyle = {
+const blogPostContainerStyle = {
   boxSizing: "border-box",
   width: "100%",
   marginInline: "auto",
   paddingInline: theme.space.edge,
 } as const;
 
-let blogPostHeroImageStyle = css({
+const blogPostHeroImageStyle = css({
   width: "100%",
   height: "100%",
   objectFit: "cover",
@@ -317,4 +308,4 @@ let blogPostHeroImageStyle = css({
   [breakpointMedia.md]: { borderRadius: "12px" },
 });
 
-let blogPostOnImageStyle = css({ color: "#ffffff" });
+const blogPostOnImageStyle = css({ color: theme.colors.text.onDark });

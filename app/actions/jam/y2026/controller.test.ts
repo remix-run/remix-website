@@ -1,13 +1,13 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
-import { DOCUMENT_REDIRECT_HEADER } from "../../public/document-redirect.ts";
+import { DOCUMENT_REDIRECT_HEADER } from "../../../utils/public/frame-headers.ts";
 import { routes } from "../../../routes.ts";
 import { createRouteTestRouter } from "../../../../test/setup.ts";
 import jam2026Controller from "./controller.tsx";
 import jam2026TicketController from "./ticket/controller.tsx";
-import { remixJam2026Ticket } from "./public/ticket-data.ts";
-import { ticketModalConfig } from "./public/tickets-modal-contract.ts";
+import { remixJam2026Ticket } from "./public/tickets/ticket-data.ts";
+import { ticketModalConfig } from "./public/tickets/tickets-modal-contract.ts";
 import {
   getJam2026ThemePreference,
   serializeJam2026ThemePreference,
@@ -28,9 +28,7 @@ describe("Remix Jam 2026 routes", () => {
     expect(response.headers.get("Vary")).toContain("x-remix-ssr-frame");
     let html = await response.text();
     expect(html).toContain("<title>Remix Jam 2026</title>");
-    expect(html).toContain(
-      'data-remix-managed-head="true" rel="canonical" href="http://localhost:3000/jam/2026"',
-    );
+    expect(getCanonicalLinks(html)).toEqual(["http://localhost:3000/jam/2026"]);
     expect(html).toContain('aria-label="Page navigation"');
     expect(html).toContain(
       'src="https://www.youtube.com/embed/TaKBQnYm9tM?si=jdVAJ6fS6hWvoLTG"',
@@ -48,7 +46,7 @@ describe("Remix Jam 2026 routes", () => {
 
   it("renders the newsletter signup fragment", async () => {
     let response = await createJam2026TestRouter().fetch(
-      appUrl(routes.jam.y2026.newsletterSignup, "?subscription=success"),
+      appUrl(routes.jam.y2026.newsletterSubscribeForm, "?subscription=success"),
     );
     expect(response.status).toBe(200);
     expect(response.headers.get("Cache-Control")).toBe("private, no-store");
@@ -64,9 +62,7 @@ describe("Remix Jam 2026 routes", () => {
     );
     expect(response.status).toBe(200);
     let html = await response.text();
-    expect(html).toContain(
-      'data-remix-managed-head="true" rel="canonical" href="https://remix.run/jam/2026"',
-    );
+    expect(getCanonicalLinks(html)).toEqual(["https://remix.run/jam/2026"]);
     expect(html).not.toContain("example.com");
   });
 
@@ -90,7 +86,7 @@ describe("Remix Jam 2026 routes", () => {
         `data-rmx-target="${ticketModalConfig.frameName}"`,
       );
       // The native disabled attribute protects checkout even before hydration.
-      expect(html).toMatch(/<button[^>]*disabled[^>]*type="submit"/);
+      expect(isTicketSubmitDisabled(html)).toBe(true);
       if (frame) {
         expect(html).not.toContain('aria-label="Page navigation"');
       } else {
@@ -215,7 +211,7 @@ describe("Remix Jam 2026 routes", () => {
       expect(response.headers.get(DOCUMENT_REDIRECT_HEADER)).toBe(null);
       let html = await response.text();
       expect(html).toContain("Ticket sales are closed");
-      expect(html).toMatch(/<button[^>]*disabled[^>]*type="submit"/);
+      expect(isTicketSubmitDisabled(html)).toBe(true);
     }
     expect(requests).toEqual([]);
   });
@@ -235,9 +231,29 @@ describe("Remix Jam 2026 routes", () => {
     );
     let html = await response.text();
     expect(html).not.toContain("will be applied at checkout");
-    expect(html).toMatch(/<button[^>]*disabled[^>]*type="submit"/);
+    expect(isTicketSubmitDisabled(html)).toBe(true);
   });
 });
+
+// Checks the native disabled attribute on the ticket form's submit button
+// regardless of how the renderer orders attributes.
+function isTicketSubmitDisabled(html: string) {
+  let form = html.match(
+    /<form\b[^>]*action="\/jam\/2026\/ticket"[\s\S]*?<\/form>/,
+  )?.[0];
+  let submitButton = form
+    ?.match(/<button\b[^>]*>/g)
+    ?.find((tag) => /\stype="submit"/.test(tag));
+  expect(submitButton).toBeDefined();
+  return /\sdisabled(?=[\s=>])/.test(submitButton!);
+}
+
+function getCanonicalLinks(html: string) {
+  return Array.from(
+    html.matchAll(/<link\b[^>]*\brel="canonical"[^>]*>/g),
+    (match) => match[0].match(/\bhref="([^"]+)"/)?.[1],
+  );
+}
 
 function appUrl(route: { href(): string }, search = "") {
   return new URL(`${route.href()}${search}`, "http://localhost:3000");

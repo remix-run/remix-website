@@ -1,13 +1,15 @@
+import { prefersReducedMotion } from "@remix-run/ui/animation";
 import { clientEntry, css, type Handle } from "remix/component";
 
-import { theme } from "../../../../ui/public/theme.ts";
+import { theme } from "../../../../ui/public/styles/theme.ts";
+import { jamColors } from "./theme.ts";
 
 const SCRAMBLE_CHARS =
   "!@#$%^&*(){}[]<>~`'\",.?/\\|=+-_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 type ScrambleColor = "blue" | "green" | "yellow";
 
-type ScrambleState = {
+export type ScrambleState = {
   visible: boolean;
   iteration: number;
   resolved: boolean;
@@ -22,11 +24,18 @@ type ScrambleSetup = {
   cycleDelay?: number;
 };
 
+type ScrambleTiming = {
+  delay: number;
+  charDelay: number;
+  cycleDelay: number;
+  cyclesToResolve: number;
+};
+
 type JamScrambleTextProps = ScrambleSetup & {
   nowrap?: boolean;
 };
 
-let playedAnimations = new Set<string>();
+const playedAnimations = new Set<string>();
 let activePathname: string | null = null;
 
 function syncPlayedAnimationsPathname() {
@@ -41,6 +50,162 @@ function getAnimationKey(text: string) {
   if (typeof window === "undefined") return text;
   syncPlayedAnimationsPathname();
   return `${window.location.pathname}::${text}`;
+}
+
+export const JamScrambleText = clientEntry(
+  import.meta.url,
+  function JamScrambleText(handle: Handle<JamScrambleTextProps>) {
+    let text = handle.props.text;
+    let animationKey = getAnimationKey(text);
+    let textChars = text.split("");
+    let cyclesToResolve = handle.props.cyclesToResolve ?? 10;
+    let timing: ScrambleTiming = {
+      delay: handle.props.delay ?? 0,
+      charDelay: handle.props.charDelay ?? 100,
+      cycleDelay: handle.props.cycleDelay ?? 50,
+      cyclesToResolve,
+    };
+    let state = playedAnimations.has(animationKey)
+      ? getResolvedState(text)
+      : getInitialState(text);
+    let cancelScramble = () => {};
+
+    handle.queueTask((signal) => {
+      if (signal.aborted || handle.signal.aborted) return;
+
+      window.addEventListener("pagehide", () => cancelScramble(), {
+        signal: handle.signal,
+      });
+      handle.signal.addEventListener("abort", () => cancelScramble(), {
+        once: true,
+      });
+
+      let alreadyPlayed = playedAnimations.has(animationKey);
+      playedAnimations.add(animationKey);
+      if (alreadyPlayed || prefersReducedMotion()) {
+        state = getResolvedState(text);
+        handle.update();
+        return;
+      }
+
+      state = getInitialState(text);
+      handle.update();
+      cancelScramble = scheduleScramble(state, timing, handle.signal, () =>
+        handle.update(),
+      );
+    });
+
+    return () => (
+      <>
+        <span mix={visuallyHiddenStyle}>{text}</span>
+        <span
+          mix={handle.props.nowrap ? nowrapStyle : undefined}
+          aria-hidden="true"
+        >
+          {textChars.map((char, index) => {
+            let current = state[index];
+            return (
+              <span
+                key={index}
+                mix={[
+                  current?.visible ? visibleStyle : hiddenStyle,
+                  current?.resolved
+                    ? resolvedStyle
+                    : colorStyles[handle.props.color ?? "blue"],
+                ]}
+              >
+                {getDisplayChar(char, current, cyclesToResolve)}
+              </span>
+            );
+          })}
+        </span>
+      </>
+    );
+  },
+);
+
+/**
+ * Starts the per-character timers: each character fades in `charDelay` after the
+ * previous one, then cycles through scramble glyphs every `cycleDelay` until it
+ * resolves (only once every character before it has resolved). Mutates `state`
+ * in place and calls `onChange` after each step. Returns a cancel function.
+ */
+function scheduleScramble(
+  state: ScrambleState[],
+  { delay, charDelay, cycleDelay, cyclesToResolve }: ScrambleTiming,
+  signal: AbortSignal,
+  onChange: () => void,
+) {
+  let timers: number[] = [];
+
+  let revealChar = (charIndex: number) => {
+    if (signal.aborted) return;
+    state[charIndex] = { visible: true, iteration: 0, resolved: false };
+    onChange();
+
+    let iteration = 0;
+    let cycleTimer = window.setInterval(() => {
+      if (signal.aborted) {
+        window.clearInterval(cycleTimer);
+        return;
+      }
+      iteration += 1;
+
+      let next = advanceScrambleChar(
+        state,
+        charIndex,
+        iteration,
+        cyclesToResolve,
+      );
+      if (!next) return;
+      if (next.resolved) window.clearInterval(cycleTimer);
+      state[charIndex] = next;
+      onChange();
+    }, cycleDelay);
+    timers.push(cycleTimer);
+  };
+
+  for (let charIndex = 0; charIndex < state.length; charIndex++) {
+    timers.push(
+      window.setTimeout(
+        () => revealChar(charIndex),
+        delay + charIndex * charDelay,
+      ),
+    );
+  }
+
+  return () => {
+    for (let timerId of timers) {
+      window.clearTimeout(timerId);
+      window.clearInterval(timerId);
+    }
+    timers = [];
+  };
+}
+
+/**
+ * Next state for a revealed character on scramble cycle `iteration`, or `null`
+ * while an earlier character is still unresolved (characters resolve in order).
+ */
+export function advanceScrambleChar(
+  state: ScrambleState[],
+  charIndex: number,
+  iteration: number,
+  cyclesToResolve: number,
+): ScrambleState | null {
+  let canProgress = state.slice(0, charIndex).every((item) => item.resolved);
+  if (!canProgress) return null;
+  return { visible: true, iteration, resolved: iteration >= cyclesToResolve };
+}
+
+/** Glyph to show for `char`: a deterministic scramble glyph while it is visible but unresolved. */
+export function getDisplayChar(
+  char: string,
+  current: ScrambleState | undefined,
+  cyclesToResolve: number,
+) {
+  if (!current?.visible || current.resolved) return char;
+  return getScrambledLetter(char, current.iteration, cyclesToResolve);
 }
 
 function getScrambledLetter(
@@ -68,179 +233,23 @@ function getResolvedState(text: string): ScrambleState[] {
     .map(() => ({ visible: true, iteration: 0, resolved: true }));
 }
 
-export let JamScrambleText = clientEntry(
-  import.meta.url,
-  function JamScrambleText(handle: Handle<JamScrambleTextProps>) {
-    let text = handle.props.text;
-    let animationKey = getAnimationKey(text);
-    let textChars = text.split("");
-    let delay = handle.props.delay ?? 0;
-    let cyclesToResolve = handle.props.cyclesToResolve ?? 10;
-    let charDelay = handle.props.charDelay ?? 100;
-    let cycleDelay = handle.props.cycleDelay ?? 50;
-    let state = playedAnimations.has(animationKey)
-      ? getResolvedState(text)
-      : getInitialState(text);
-    let timers: number[] = [];
+const visuallyHiddenStyle = css({
+  position: "absolute",
+  width: "1px",
+  height: "1px",
+  margin: "-1px",
+  overflow: "hidden",
+  clip: "rect(0, 0, 0, 0)",
+  whiteSpace: "nowrap",
+});
 
-    let cleanupTimers = () => {
-      for (let timerId of timers) {
-        window.clearTimeout(timerId);
-        window.clearInterval(timerId);
-      }
-      timers = [];
-    };
+const nowrapStyle = css({ whiteSpace: "nowrap" });
+const visibleStyle = css({ opacity: 1 });
+const hiddenStyle = css({ opacity: 0 });
+const resolvedStyle = css({ color: jamColors.white });
 
-    let startAnimation = () => {
-      cleanupTimers();
-      if (handle.signal.aborted) return;
-      playedAnimations.add(animationKey);
-      state = getInitialState(text);
-      handle.update();
-
-      for (let charIndex = 0; charIndex < text.length; charIndex++) {
-        let revealTimer = window.setTimeout(
-          () => {
-            if (handle.signal.aborted) return;
-            if (!state[charIndex]) return;
-
-            state[charIndex] = {
-              visible: true,
-              iteration: 0,
-              resolved: false,
-            };
-            handle.update();
-
-            let iteration = 0;
-            let cycleTimer = window.setInterval(() => {
-              if (handle.signal.aborted) {
-                window.clearInterval(cycleTimer);
-                return;
-              }
-              iteration += 1;
-
-              let canProgress =
-                charIndex === 0 ||
-                state.slice(0, charIndex).every((item) => item.resolved);
-              if (!canProgress) return;
-
-              if (!state[charIndex]) return;
-
-              if (iteration >= cyclesToResolve) {
-                window.clearInterval(cycleTimer);
-                state[charIndex] = {
-                  visible: true,
-                  iteration,
-                  resolved: true,
-                };
-              } else {
-                state[charIndex] = {
-                  visible: true,
-                  iteration,
-                  resolved: false,
-                };
-              }
-              handle.update();
-            }, cycleDelay);
-
-            timers.push(cycleTimer);
-          },
-          delay + charIndex * charDelay,
-        );
-
-        timers.push(revealTimer);
-      }
-    };
-
-    handle.queueTask((signal) => {
-      if (signal.aborted || handle.signal.aborted) return;
-
-      let cleanupOnPageHide = () => cleanupTimers();
-      window.addEventListener("pagehide", cleanupOnPageHide, {
-        signal: handle.signal,
-      });
-      handle.signal.addEventListener(
-        "abort",
-        () => {
-          cleanupTimers();
-        },
-        { once: true },
-      );
-      let prefersReducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-      if (prefersReducedMotion) {
-        cleanupTimers();
-        playedAnimations.add(animationKey);
-        state = getResolvedState(text);
-        handle.update();
-        return;
-      }
-      if (playedAnimations.has(animationKey)) {
-        cleanupTimers();
-        state = getResolvedState(text);
-        handle.update();
-        return;
-      }
-      startAnimation();
-    });
-
-    return () => {
-      return (
-        <>
-          <span
-            mix={css({
-              position: "absolute",
-              width: "1px",
-              height: "1px",
-              margin: "-1px",
-              overflow: "hidden",
-              clip: "rect(0, 0, 0, 0)",
-              whiteSpace: "nowrap",
-            })}
-          >
-            {text}
-          </span>
-          <span
-            mix={
-              handle.props.nowrap ? css({ whiteSpace: "nowrap" }) : undefined
-            }
-            aria-hidden="true"
-          >
-            {textChars.map((char, index) => {
-              let current = state[index];
-              let visible = current?.visible ?? false;
-              let resolved = current?.resolved ?? false;
-              let iteration = current?.iteration ?? 0;
-              let displayChar = resolved
-                ? char
-                : visible
-                  ? getScrambledLetter(char, iteration, cyclesToResolve)
-                  : char;
-
-              return (
-                <span
-                  key={index}
-                  mix={[
-                    visible ? css({ opacity: 1 }) : css({ opacity: 0 }),
-                    resolved
-                      ? css({ color: "#ffffff" })
-                      : colorStyles[handle.props.color ?? "blue"],
-                  ]}
-                >
-                  {displayChar}
-                </span>
-              );
-            })}
-          </span>
-        </>
-      );
-    };
-  },
-);
-
-let colorStyles = {
+const colorStyles = {
   blue: css({ color: theme.colors.brand.blue }),
   green: css({ color: theme.colors.brand.green }),
-  yellow: css({ color: "#fecc1b" }),
+  yellow: css({ color: theme.colors.brand.yellow }),
 } satisfies Record<ScrambleColor, ReturnType<typeof css>>;

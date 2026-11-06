@@ -1,32 +1,54 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
-import { parseEnv } from "./env.ts";
+import { assertProductionEnv, parseEnv } from "./env.ts";
+
+const convertKitDefaults = {
+  CONVERTKIT_API_URL: "https://api.convertkit.com/v3",
+  CONVERTKIT_FORM_ID: "1334747",
+};
 
 describe("parseEnv", () => {
-  it("accepts optional integration keys outside production", () => {
-    expect(parseEnv({}, "development")).toEqual({});
-    expect(parseEnv({}, "test")).toEqual({});
+  it("accepts missing integration keys", () => {
+    expect(parseEnv({})).toEqual(convertKitDefaults);
   });
 
-  it("requires a non-blank ConvertKit key in production", () => {
-    expect(() => parseEnv({}, "production")).toThrow();
+  it("lets the ConvertKit endpoint and form be overridden", () => {
+    expect(
+      parseEnv({
+        CONVERTKIT_API_URL: "http://localhost:4010/v3",
+        CONVERTKIT_FORM_ID: "42",
+      }),
+    ).toMatchObject({
+      CONVERTKIT_API_URL: "http://localhost:4010/v3",
+      CONVERTKIT_FORM_ID: "42",
+    });
+  });
+
+  it("preserves configured integration keys", () => {
+    let input = Object.fromEntries([
+      ["CONVERTKIT_KEY", ["alpha", "beta"].join("-")],
+      ["PUBLIC_STOREFRONT_API_TOKEN", ["gamma", "delta"].join("-")],
+      ["NEWSLETTER_GITHUB_TOKEN", ["epsilon", "zeta"].join("-")],
+    ]);
+
+    expect(parseEnv(input)).toEqual({ ...convertKitDefaults, ...input });
+  });
+});
+
+describe("assertProductionEnv", () => {
+  it("requires a non-blank ConvertKit key", () => {
+    expect(() => assertProductionEnv(parseEnv({}))).toThrow();
     let blankKey = Object.fromEntries([
       ["CONVERTKIT_KEY", [" ", " "].join("")],
     ]);
-    expect(() => parseEnv(blankKey, "production")).toThrow();
+    expect(() => assertProductionEnv(parseEnv(blankKey))).toThrow();
   });
 
-  it("preserves configured production integration keys", () => {
-    let firstValue = ["alpha", "beta"].join("-");
-    let secondValue = ["gamma", "delta"].join("-");
-    let thirdValue = ["epsilon", "zeta"].join("-");
+  it("accepts a configured ConvertKit key", () => {
     let input = Object.fromEntries([
-      ["CONVERTKIT_KEY", firstValue],
-      ["PUBLIC_STOREFRONT_API_TOKEN", secondValue],
-      ["NEWSLETTER_GITHUB_TOKEN", thirdValue],
+      ["CONVERTKIT_KEY", ["alpha", "beta"].join("-")],
     ]);
-
-    expect(parseEnv(input, "production")).toEqual(input);
+    expect(() => assertProductionEnv(parseEnv(input))).not.toThrow();
   });
 });

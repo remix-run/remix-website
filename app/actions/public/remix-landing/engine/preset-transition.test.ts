@@ -3,9 +3,9 @@ import { it } from "remix/test";
 import { presets } from "./presets.ts";
 
 it("keeps the racecar rotation synchronized through the camera orbit", () => {
-  const racecarIndex = presets.findIndex((preset) => preset.name === "Racecar");
-  const racecar = presets[racecarIndex];
-  const underTheHood = presets[racecarIndex + 1];
+  let racecarIndex = presets.findIndex((preset) => preset.name === "Racecar");
+  let racecar = presets[racecarIndex];
+  let underTheHood = presets[racecarIndex + 1];
 
   expect(underTheHood.cameraTransition).toBe("orbit-left");
   expect(underTheHood.modelUrl).toBe(racecar.modelUrl);

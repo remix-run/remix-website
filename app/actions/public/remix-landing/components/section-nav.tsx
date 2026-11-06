@@ -1,7 +1,8 @@
-import { css, on, type Handle } from "remix/component";
-import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
-import { colors } from "../styles/tokens.ts";
-import { clamp } from "../utils/math.ts";
+import { clientEntry, css, on, type Handle } from "remix/component";
+import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
+import { colors } from "../tokens.ts";
+import { clamp } from "../math.ts";
+import { landingScroll } from "../landing-scroll.ts";
 
 const TRACK_WIDTH = 11;
 const ITEM_HEIGHT = 16;
@@ -113,7 +114,7 @@ const linkStyles = css({
 
 const linkActiveStyles = css({
   fontWeight: theme.fontWeight.bold,
-  color: "#ffffff",
+  color: colors.fgStrong,
   lineHeight: `${ITEM_HEIGHT}px`,
   height: `${ITEM_HEIGHT}px`,
 });
@@ -133,16 +134,9 @@ const SECTIONS = [
 // The first item points to the Hero section, while the remaining items map to
 // the landing-page sections in DOM order.
 
-type NavigateEventWithManualScroll = NavigateEvent & {
-  intercept(options: {
-    handler: () => Promise<void>;
-    scroll?: "manual" | "after-transition";
-  }): void;
-};
-
 async function replaceHash(anchor: string) {
-  const navigation = window.navigation;
-  const url = new URL(window.location.href);
+  let navigation = window.navigation;
+  let url = new URL(window.location.href);
   url.hash = anchor;
 
   if (!navigation) {
@@ -150,11 +144,11 @@ async function replaceHash(anchor: string) {
     return;
   }
 
-  const state = navigation.currentEntry?.getState();
+  let state = navigation.currentEntry?.getState();
 
-  const preventNativeHashScroll = (event: NavigateEvent) => {
+  let preventNativeHashScroll = (event: NavigateEvent) => {
     if (!event.canIntercept || event.destination.url !== url.href) return;
-    (event as NavigateEventWithManualScroll).intercept({
+    event.intercept({
       scroll: "manual",
       async handler() {},
     });
@@ -165,7 +159,7 @@ async function replaceHash(anchor: string) {
     once: true,
   });
 
-  const transition = navigation.navigate(url.href, {
+  let transition = navigation.navigate(url.href, {
     history: "replace",
   });
 
@@ -179,7 +173,30 @@ async function replaceHash(anchor: string) {
   }
 }
 
-export function SectionNav(
+// Rendered inside the hero (rather than with the other landing enhancements)
+// so the section links follow the hero's controls in tab order.
+export const RemixLandingSectionNav = clientEntry(
+  import.meta.url,
+  function RemixLandingSectionNav(handle: Handle) {
+    let isHydrated = false;
+
+    handle.queueTask(() => {
+      isHydrated = true;
+      landingScroll.subscribe(() => handle.update(), handle.signal);
+    });
+
+    return () =>
+      isHydrated ? (
+        <SectionNav
+          activeIndex={landingScroll.state.activeIndex}
+          morphValue={landingScroll.state.morphValue}
+          onJump={landingScroll.jumpToPreset}
+        />
+      ) : null;
+  },
+);
+
+function SectionNav(
   handle: Handle<{
     activeIndex: number;
     morphValue: number;
@@ -187,21 +204,21 @@ export function SectionNav(
   }>,
 ) {
   return () => {
-    const count = SECTIONS.length;
-    const maxMorph = count - 1;
-    const step = ITEM_HEIGHT + ITEM_GAP;
-    const trackHeight = (count - 1) * step + ITEM_HEIGHT;
-    const morph = clamp(handle.props.morphValue, 0, maxMorph);
-    const activeIndex = clamp(handle.props.activeIndex, 0, maxMorph);
-    const dotCenterY = (index: number) => index * step + ITEM_HEIGHT / 2;
-    const scrollFillPx =
+    let count = SECTIONS.length;
+    let maxMorph = count - 1;
+    let step = ITEM_HEIGHT + ITEM_GAP;
+    let trackHeight = (count - 1) * step + ITEM_HEIGHT;
+    let morph = clamp(handle.props.morphValue, 0, maxMorph);
+    let activeIndex = clamp(handle.props.activeIndex, 0, maxMorph);
+    let dotCenterY = (index: number) => index * step + ITEM_HEIGHT / 2;
+    let scrollFillPx =
       maxMorph > 0
         ? ITEM_HEIGHT / 2 + (morph / maxMorph) * (trackHeight - ITEM_HEIGHT / 2)
         : trackHeight;
     // Scroll-based length (continuous morph) and at least to the active section's
     // marker — rounded activeIndex can be ahead of morph after jump-to-section,
     // which left the bar short of the highlighted label.
-    const fillPx = Math.max(TRACK_WIDTH, scrollFillPx, dotCenterY(activeIndex));
+    let fillPx = Math.max(TRACK_WIDTH, scrollFillPx, dotCenterY(activeIndex));
 
     return (
       <aside mix={[shellStyles]}>
@@ -212,9 +229,9 @@ export function SectionNav(
           </div>
           <ul mix={[listStyles]}>
             {SECTIONS.map((section, i) => {
-              const bulletCenter = i * step + ITEM_HEIGHT / 2;
-              const covered = fillPx >= bulletCenter;
-              const isActive = i === activeIndex;
+              let bulletCenter = i * step + ITEM_HEIGHT / 2;
+              let covered = fillPx >= bulletCenter;
+              let isActive = i === activeIndex;
               return (
                 <li key={section.anchor} mix={[itemStyles]}>
                   <div

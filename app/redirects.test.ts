@@ -7,9 +7,9 @@ import {
   parseRedirectsFile,
 } from "./redirects.ts";
 
-let redirects = loadRedirectsFromFile();
-let { redirectController, redirectRoutes } = createRedirectRoutes(redirects);
-let router = createRouter();
+const redirects = loadRedirectsFromFile();
+const { redirectController, redirectRoutes } = createRedirectRoutes(redirects);
+const router = createRouter();
 router.map(redirectRoutes, redirectController);
 
 async function getRedirectResult(

@@ -2,15 +2,15 @@ import { css, navigate, on, type Handle } from "remix/component";
 import * as popover from "@remix-run/ui/popover";
 import { routes } from "../../../../routes.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
-import { isEditableKeyTarget } from "../../../../ui/public/keyboard.ts";
+import { isEditableKeyTarget } from "../../../../ui/public/dom/keyboard.ts";
 import {
   breakpointMedia,
   breakpoints,
   theme,
-} from "../../../../ui/public/theme.ts";
-import { colors } from "../styles/tokens.ts";
+} from "../../../../ui/public/styles/theme.ts";
+import { colors } from "../tokens.ts";
 import { landingContent } from "../landing-content.ts";
-import { clamp01 } from "../utils/math.ts";
+import { clamp01 } from "../math.ts";
 
 const headerStyles = css({
   position: "fixed",
@@ -160,7 +160,7 @@ type NavItem = (typeof NAV_ITEMS)[number];
 function isKeyHandlingTarget(event: KeyboardEvent) {
   if (isEditableKeyTarget(event)) return true;
 
-  const target = event.target;
+  let target = event.target;
   return (
     target instanceof Element &&
     target.closest(
@@ -222,18 +222,18 @@ export function LandingNav(
 
       if (event.key === "ArrowDown") {
         event.preventDefault();
-        const next = Math.min(activeIndexRef.current + 1, totalSections - 1);
+        let next = Math.min(activeIndexRef.current + 1, totalSections - 1);
         onJump?.(next);
         return;
       }
       if (event.key === "ArrowUp") {
         event.preventDefault();
-        const prev = Math.max(activeIndexRef.current - 1, 0);
+        let prev = Math.max(activeIndexRef.current - 1, 0);
         onJump?.(prev);
         return;
       }
 
-      const item = NAV_ITEMS.find(
+      let item = NAV_ITEMS.find(
         (item) => item.key.toLowerCase() === event.key.toLowerCase(),
       );
       if (item) {
@@ -269,7 +269,7 @@ export function LandingNav(
     onJump = handle.props.onJump;
     scrollYRef = handle.props.scrollYRef;
 
-    const hintOpacity = clamp01(1 - scrollYRef.current / 80);
+    let hintOpacity = clamp01(1 - scrollYRef.current / 80);
 
     return (
       <header mix={[headerStyles]}>

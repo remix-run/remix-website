@@ -5,7 +5,7 @@ import { expect } from "remix/assert";
 
 import { assets, getWebpHref } from "./assets.ts";
 
-let originalNodeEnv = process.env.NODE_ENV;
+const originalNodeEnv = process.env.NODE_ENV;
 let productionAssets: typeof import("./assets.ts");
 
 try {
@@ -19,8 +19,8 @@ try {
 
 afterAll(() => productionAssets.assets.close());
 
-let rootDir = path.resolve(import.meta.dirname, "../..");
-let appDir = path.join(rootDir, "app");
+const rootDir = path.resolve(import.meta.dirname, "../..");
+const appDir = path.join(rootDir, "app");
 
 describe("browser asset boundary", () => {
   it("production-compiles every browser-owned module and the shared route contract", async () => {

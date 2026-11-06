@@ -6,6 +6,7 @@ import satori from "satori";
 import sharp from "sharp";
 import { createAction } from "remix/router";
 import { routes } from "../routes.ts";
+import { memoizeAsync } from "../utils/memoize-async.ts";
 
 type ParsedOgImageQuery =
   | { success: true; value: OgImageQuery }
@@ -20,7 +21,7 @@ type OgNode = {
   };
 };
 
-export let blogOgImageAction = createAction(
+export const blogOgImageAction = createAction(
   routes.blogOgImage,
   async ({ request }) => {
     let parsedQuery = parseOgImageQuery(request);
@@ -33,8 +34,8 @@ export let blogOgImageAction = createAction(
       let svg = await createOgImageSVG(request, parsedQuery.value);
       pngData = await renderSvgToPng(svg);
     } catch (error) {
-      let message = error instanceof Error ? error.message : String(error);
-      return new Response(message || "Failed to generate image", {
+      console.error("[blog-og-image] Failed to generate image", error);
+      return new Response("Failed to generate image", {
         status: 500,
         headers: { "Content-Type": "text/plain; charset=utf-8" },
       });
@@ -268,18 +269,13 @@ function toArrayBuffer(buffer: Buffer): ArrayBuffer {
 
 // satori draws text as paths and inlines images as data URIs, so sharp can
 // rasterize and compress the SVG in one pass.
-async function renderSvgToPng(svg: string): Promise<Uint8Array> {
+function renderSvgToPng(svg: string): Promise<Uint8Array> {
   return sharp(Buffer.from(svg))
     .png({ compressionLevel: 9, effort: 6 })
     .toBuffer();
 }
 
-async function getOgImageAssets(): Promise<OgImageAssets> {
-  if (!ogImageAssetsPromise) {
-    ogImageAssetsPromise = loadOgImageAssets();
-  }
-  return ogImageAssetsPromise;
-}
+const getOgImageAssets = memoizeAsync(loadOgImageAssets);
 
 async function loadOgImageAssets(): Promise<OgImageAssets> {
   let [interBoldBuffer, interRegularBuffer, socialBackgroundBuffer] =
@@ -321,30 +317,29 @@ function getAuthorImgSrc(siteUrl: string, name: string) {
   return `${siteUrl}/authors/profile-${authorNameSlug}.png`;
 }
 
-let PRIMARY_TEXT_COLOR = "#ffffff";
-let PRIMARY_FONT = "Inter";
+const PRIMARY_TEXT_COLOR = "#ffffff";
+const PRIMARY_FONT = "Inter";
 
-let PAGE_TITLE_TYPOGRAPHY = {
+const PAGE_TITLE_TYPOGRAPHY = {
   fontWeight: 700,
   lineHeight: 1,
   letterSpacing: "-0.02em",
   color: PRIMARY_TEXT_COLOR,
 };
-let PAGE_BODY_TYPOGRAPHY = {
+const PAGE_BODY_TYPOGRAPHY = {
   fontWeight: 400,
   lineHeight: 1.4,
   letterSpacing: "-0.008px",
   color: PRIMARY_TEXT_COLOR,
 };
-let ogImageAssetsPromise: Promise<OgImageAssets> | undefined;
 
-let ogImageAuthorSchema = s.object({
+const ogImageAuthorSchema = s.object({
   name: s.string(),
   title: s.string(),
   imgSrc: s.string(),
 });
 
-let ogImageQuerySchema = s.object({
+const ogImageQuerySchema = s.object({
   title: s.string(),
   displayDate: s.string(),
   ogImage: s.optional(s.string()),

@@ -2,16 +2,22 @@ import { clientEntry, css, on, type Handle } from "remix/component";
 import * as popover from "@remix-run/ui/popover";
 import * as select from "@remix-run/ui/select";
 
-import { visuallyHiddenStyle } from "../../../../ui/public/css-mixins.ts";
+import { visuallyHiddenStyle } from "../../../../ui/public/styles/css-mixins.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
-import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
-import { colors } from "../styles/tokens.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
+import { colors } from "../tokens.ts";
 import { packageRunners as PACKAGE_RUNNERS } from "../landing-content.ts";
 
 type PackageRunner = (typeof PACKAGE_RUNNERS)[number];
 type CopyStatus = "idle" | "copied" | "error";
 
-export let CreateRemixCommand = clientEntry(
+const COPY_STATUS_MESSAGES: Record<CopyStatus, string | null> = {
+  idle: null,
+  copied: "Create command copied",
+  error: "Unable to copy the create command",
+};
+
+export const CreateRemixCommand = clientEntry(
   import.meta.url,
   function CreateRemixCommand(handle: Handle) {
     let runner: PackageRunner = PACKAGE_RUNNERS[0];
@@ -21,42 +27,45 @@ export let CreateRemixCommand = clientEntry(
 
     handle.signal.addEventListener("abort", () => {
       copyRequestId++;
-      if (resetTimer) clearTimeout(resetTimer);
+      clearResetTimer();
     });
+
+    function clearResetTimer() {
+      if (!resetTimer) return;
+      clearTimeout(resetTimer);
+      resetTimer = null;
+    }
+
+    function resetCopyStatus() {
+      resetTimer = null;
+      copyStatus = "idle";
+      handle.update();
+    }
 
     function setRunner(nextRunner: PackageRunner) {
       copyRequestId++;
       runner = nextRunner;
       copyStatus = "idle";
-      if (resetTimer) {
-        clearTimeout(resetTimer);
-        resetTimer = null;
-      }
+      clearResetTimer();
       handle.update();
     }
 
     async function copyCommand() {
-      const requestId = ++copyRequestId;
-      if (resetTimer) {
-        clearTimeout(resetTimer);
-        resetTimer = null;
-      }
+      let requestId = ++copyRequestId;
+      clearResetTimer();
 
+      let nextStatus: CopyStatus;
       try {
         await navigator.clipboard.writeText(runner.command);
-        if (handle.signal.aborted || requestId !== copyRequestId) return;
-        copyStatus = "copied";
+        nextStatus = "copied";
       } catch {
-        if (handle.signal.aborted || requestId !== copyRequestId) return;
-        copyStatus = "error";
+        nextStatus = "error";
       }
+      if (handle.signal.aborted || requestId !== copyRequestId) return;
+      copyStatus = nextStatus;
       handle.update();
 
-      resetTimer = setTimeout(() => {
-        resetTimer = null;
-        copyStatus = "idle";
-        handle.update();
-      }, 1800);
+      resetTimer = setTimeout(resetCopyStatus, 1800);
     }
 
     return () => {
@@ -78,11 +87,7 @@ export let CreateRemixCommand = clientEntry(
             </button>
           </div>
           <span role="status" aria-live="polite" mix={visuallyHiddenStyle}>
-            {copyStatus === "copied"
-              ? "Create command copied"
-              : copyStatus === "error"
-                ? "Unable to copy the create command"
-                : null}
+            {COPY_STATUS_MESSAGES[copyStatus]}
           </span>
         </div>
       );
@@ -135,7 +140,7 @@ function PackageRunnerSelect(
   }
 
   function restoreScrollPosition() {
-    const restore = () => {
+    let restore = () => {
       if (
         window.scrollX !== scrollPosition.x ||
         window.scrollY !== scrollPosition.y
@@ -173,7 +178,7 @@ function PackageRunnerSelect(
             }),
             select.trigger(),
             select.onSelectChange((event) => {
-              const runner = PACKAGE_RUNNERS.find(
+              let runner = PACKAGE_RUNNERS.find(
                 (option) => option.value === event.value,
               );
               if (runner) handle.props.onChange(runner);
@@ -278,7 +283,7 @@ const selectTriggerStyles = css({
   borderRight: `1px solid ${colors.line}`,
   borderRadius: "13px 0 0 13px",
   background: "var(--runner-trigger-bg)",
-  color: "#ffffff",
+  color: colors.fgStrong,
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.medium,
   fontSize: "13px",
@@ -346,7 +351,7 @@ const popoverSurfaceStyles = css({
   borderRadius: "14px 0 0 14px",
   // Opaque match for the left end of the command bar's gradient.
   background: "rgb(11, 16, 27)",
-  color: "#ffffff",
+  color: colors.fgStrong,
   textAlign: "left",
   // No shadow or lift: the list should read as the control expanding in place,
   // not a layer floating above it.
@@ -412,12 +417,12 @@ const optionStyles = css({
   // matches the trigger's hover color. Highlight is declared last so it wins.
   "&[aria-selected='true']": {
     "--runner-option-bg": "var(--runner-trigger-bg)",
-    color: "#ffffff",
+    color: colors.fgStrong,
     fontWeight: theme.fontWeight.medium,
   },
   "&[data-highlighted='true']": {
     "--runner-option-bg": "var(--runner-trigger-highlight-bg)",
-    color: "#ffffff",
+    color: colors.fgStrong,
   },
   "& [data-runner-check]": {
     opacity: "0",
@@ -473,7 +478,7 @@ const copyButtonStyles = css({
   "&:hover": {
     background:
       "color-mix(in srgb, var(--brand-cycle, #2dacf9) 10%, rgba(255, 255, 255, 0.035))",
-    color: "#ffffff",
+    color: colors.fgStrong,
   },
   "&:focus-visible": {
     outline: "2px solid var(--brand-cycle, #2dacf9)",

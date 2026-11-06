@@ -1,15 +1,16 @@
 import { createCookie } from "remix/cookie";
 
 import type { Jam2026ThemeMode } from "./public/theme.ts";
+import { isProduction } from "../../../utils/node-env.ts";
 
 export const JAM_2026_THEME_COOKIE = "remix_jam_2026_theme";
 
-let jam2026ThemeCookie = createCookie(JAM_2026_THEME_COOKIE, {
+const jam2026ThemeCookie = createCookie(JAM_2026_THEME_COOKIE, {
   httpOnly: true,
   maxAge: 60 * 60 * 24 * 365,
   path: "/jam/2026",
   sameSite: "Lax",
-  secure: process.env.NODE_ENV === "production",
+  secure: isProduction,
 });
 
 export async function getJam2026ThemePreference(

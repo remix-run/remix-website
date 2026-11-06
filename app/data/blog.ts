@@ -1,24 +1,64 @@
-import assert from "node:assert";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { LRUCache } from "lru-cache";
+import * as s from "remix/data-schema";
 import yaml from "yaml";
 import { parseFrontmatter } from "./frontmatter.ts";
-import { processMarkdown } from "./md.ts";
+import { renderMarkdown } from "./markdown.ts";
+import { isProduction } from "../utils/node-env.ts";
 
 const DATA_DIRECTORY = path.join(process.cwd(), "data");
 const POSTS_DIRECTORY = path.join(DATA_DIRECTORY, "posts");
 const AUTHORS_FILE_PATH = path.join(DATA_DIRECTORY, "authors.yml");
 
-const shouldCacheBlogData = process.env.NODE_ENV === "production";
+const authorSchema = s.object({
+  name: s.string(),
+  title: s.string(),
+  avatar: s.string(),
+});
+
+const frontmatterSchema = s.object({
+  title: s.string(),
+  summary: s.string(),
+  date: s.instanceof_(Date),
+  draft: s.optional(s.boolean()),
+  featured: s.optional(s.boolean()),
+  image: s.string(),
+  imageAlt: s.string(),
+  ogImage: s.optional(s.string()),
+  imageDisableOverlay: s.optional(s.boolean()),
+  authors: s.array(s.string()),
+});
+
+type BlogAuthor = s.InferOutput<typeof authorSchema>;
+type BlogPostFrontmatter = s.InferOutput<typeof frontmatterSchema>;
+
+export interface BlogPostListing {
+  slug: string;
+  title: string;
+  summary: string;
+  date: Date;
+  dateDisplay: string;
+  image: string;
+  imageAlt: string;
+  featured?: boolean;
+}
+
+export interface BlogPost extends Omit<BlogPostFrontmatter, "authors"> {
+  authors: BlogAuthor[];
+  dateDisplay: string;
+  html: string;
+}
+
+const shouldCacheBlogData = isProduction;
 const cachedPostContentsBySlug = shouldCacheBlogData
   ? readPostContentsBySlug()
   : undefined;
 
-const AUTHORS: BlogAuthor[] = yaml.parse(
-  readFileSync(AUTHORS_FILE_PATH, "utf8"),
+const AUTHORS = s.parse(
+  s.array(authorSchema),
+  yaml.parse(readFileSync(AUTHORS_FILE_PATH, "utf8")),
 );
-const AUTHOR_NAMES = AUTHORS.map((a) => a.name);
 
 const postsCache = new LRUCache<string, BlogPost>({
   maxSize: 1024 * 1024 * 12,
@@ -27,95 +67,90 @@ const postsCache = new LRUCache<string, BlogPost>({
   },
 });
 
-export async function getBlogPost(slug: string): Promise<BlogPost> {
+/** Render a post, or return `null` when no post has this slug. */
+export async function getBlogPost(slug: string): Promise<BlogPost | null> {
   if (shouldCacheBlogData) {
     let cached = postsCache.get(slug);
     if (cached) return cached;
   }
 
-  let contents = getPostContentsBySlug()[slug];
-  if (!contents) {
-    throw new Response("Not Found", { status: 404, statusText: "Not Found" });
-  }
+  let contents = getRawBlogPostMarkdown(slug);
+  if (contents === null) return null;
 
-  let result = await processMarkdown(contents);
-  let { attributes, html } = result;
-  assert(
-    isMarkdownPostFrontmatter(attributes),
-    `Invalid post frontmatter in ${slug}`,
-  );
-
-  let validatedAuthors = getValidAuthorNames(attributes.authors);
-  if (validatedAuthors.length === 0) {
+  let { attributes, html } = await renderMarkdown(contents);
+  let frontmatter = parsePostFrontmatter(slug, attributes);
+  let authors = frontmatter.authors.flatMap((name) => {
+    let author = AUTHORS.find((a) => a.name === name);
+    return author ? [author] : [];
+  });
+  if (authors.length === 0) {
     console.warn(
       "The author info in `%s` is incorrect and should be fixed to match what’s in the `authors.yaml` file.",
       slug,
     );
   }
-  attributes.authors = validatedAuthors;
-
-  assert(
-    isMarkdownPostFrontmatter(attributes),
-    `Invalid post frontmatter in ${slug}`,
-  );
 
   let post: BlogPost = {
-    ...attributes,
-    authors: attributes.authors
-      .map(getAuthor)
-      .filter((a): a is BlogAuthor => !!a),
-    dateDisplay: formatDate(attributes.date),
+    ...frontmatter,
+    authors,
+    dateDisplay: formatDate(frontmatter.date),
     html,
   };
   if (shouldCacheBlogData) postsCache.set(slug, post);
   return post;
 }
 
-let postListings: Array<MarkdownPostListing> | undefined;
+let postListings: BlogPostListing[] | undefined;
 
 /**
+ * Published posts, newest first. Used by the blog index and the RSS feed.
+ *
  * The listing only renders frontmatter, so it parses frontmatter instead of
  * running every post through the markdown/Shiki pipeline. Rendering all posts
  * just to read their titles cost ~1.1s on the first request to /blog.
  */
-export function getBlogPostListings(): Array<MarkdownPostListing> {
+export function getBlogPostListings(): BlogPostListing[] {
   if (shouldCacheBlogData && postListings) return postListings;
 
-  let listings: Array<MarkdownPostListing & { date: Date }> = [];
+  let listings: BlogPostListing[] = [];
   for (let [slug, contents] of Object.entries(getPostContentsBySlug())) {
-    let { attributes } = parseFrontmatter(contents);
-    assert(
-      isMarkdownPostFrontmatter(attributes),
-      `Invalid post frontmatter in ${slug}`,
+    let frontmatter = parsePostFrontmatter(
+      slug,
+      parseFrontmatter(contents).attributes,
     );
-    if (attributes.draft) continue;
+    if (frontmatter.draft) continue;
 
     listings.push({
       slug,
-      title: attributes.title,
-      summary: attributes.summary,
-      date: attributes.date,
-      dateDisplay: formatDate(attributes.date),
-      image: attributes.image,
-      imageAlt: attributes.imageAlt,
-      featured: attributes.featured,
+      title: frontmatter.title,
+      summary: frontmatter.summary,
+      date: frontmatter.date,
+      dateDisplay: formatDate(frontmatter.date),
+      image: frontmatter.image,
+      imageAlt: frontmatter.imageAlt,
+      featured: frontmatter.featured,
     });
   }
+  listings.sort((a, b) => b.date.getTime() - a.date.getTime());
 
-  let sortedListings = listings
-    .sort((a, b) => b.date.getTime() - a.date.getTime())
-    .map(({ date: _date, ...listing }) => listing);
-
-  if (shouldCacheBlogData) postListings = sortedListings;
-  return sortedListings;
+  if (shouldCacheBlogData) postListings = listings;
+  return listings;
 }
 
-export function getRawBlogPostMarkdown(slug: string): string {
-  let contents = getPostContentsBySlug()[slug];
-  if (!contents) {
-    throw new Response("Not Found", { status: 404, statusText: "Not Found" });
+/** The post's Markdown source, or `null` when no post has this slug. */
+export function getRawBlogPostMarkdown(slug: string): string | null {
+  return getPostContentsBySlug()[slug] ?? null;
+}
+
+function parsePostFrontmatter(
+  slug: string,
+  attributes: unknown,
+): BlogPostFrontmatter {
+  try {
+    return s.parse(frontmatterSchema, attributes);
+  } catch (error) {
+    throw new Error(`Invalid post frontmatter in ${slug}`, { cause: error });
   }
-  return contents;
 }
 
 function getPostContentsBySlug(): Record<string, string> {
@@ -133,67 +168,9 @@ function readPostContentsBySlug(): Record<string, string> {
   );
 }
 
-function getAuthor(name: string): BlogAuthor | undefined {
-  return AUTHORS.find((a) => a.name === name);
-}
-
-function getValidAuthorNames(authorNames: string[]) {
-  return authorNames.filter((authorName) => AUTHOR_NAMES.includes(authorName));
-}
-
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat("en-US", {
     dateStyle: "long",
     timeZone: "UTC",
   }).format(date);
-}
-
-function isMarkdownPostFrontmatter(obj: any): obj is MarkdownPost {
-  return (
-    typeof obj === "object" &&
-    obj.title &&
-    obj.summary &&
-    obj.date instanceof Date &&
-    (typeof obj.draft === "boolean" || typeof obj.draft === "undefined") &&
-    (typeof obj.featured === "boolean" ||
-      typeof obj.featured === "undefined") &&
-    obj.image &&
-    obj.imageAlt &&
-    Array.isArray(obj.authors)
-  );
-}
-
-interface MarkdownPostListing {
-  title: string;
-  slug: string;
-  summary: string;
-  dateDisplay: string;
-  image: string;
-  imageAlt: string;
-  featured?: boolean;
-}
-
-interface MarkdownPost {
-  title: string;
-  summary: string;
-  date: Date;
-  dateDisplay: string;
-  draft?: boolean;
-  featured?: boolean;
-  image: string;
-  imageAlt: string;
-  ogImage?: string;
-  imageDisableOverlay?: boolean;
-  authors: string[];
-  html: string;
-}
-
-interface BlogAuthor {
-  name: string;
-  title: string;
-  avatar: string;
-}
-
-interface BlogPost extends Omit<MarkdownPost, "authors"> {
-  authors: BlogAuthor[];
 }

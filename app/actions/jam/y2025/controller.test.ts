@@ -8,7 +8,7 @@ import jam2025Controller, { getEventStatus } from "./controller.tsx";
 // The event runs Oct 10, 2025, 00:00–18:00 in Toronto (EDT, UTC-04:00). These
 // assertions use absolute instants so the result must not depend on the
 // machine's local timezone.
-let instant = (iso: string) => new Date(iso).getTime();
+const instant = (iso: string) => new Date(iso).getTime();
 
 describe("Remix Jam 2025 routes", () => {
   it("renders the newsletter signup fragment", async () => {
@@ -17,7 +17,7 @@ describe("Remix Jam 2025 routes", () => {
 
     let response = await router.fetch(
       new URL(
-        `${routes.jam.y2025.newsletterSignup.href()}?subscription=success`,
+        `${routes.jam.y2025.newsletterSubscribeForm.href()}?subscription=success`,
         "http://localhost:3000",
       ),
     );

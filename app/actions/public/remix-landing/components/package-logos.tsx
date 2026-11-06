@@ -1,32 +1,150 @@
 import { css, type Handle } from "remix/component";
-import { breakpoints } from "../../../../ui/public/theme.ts";
-import { clamp01 } from "../utils/math.ts";
-import { reducedMotion } from "../utils/reduced-motion.ts";
-
-const LOGOS = [
-  { src: "/landing/remix-package-auth.svg", alt: "Auth", ratio: "904 / 245" },
-  {
-    src: "/landing/remix-package-routing.svg",
-    alt: "Routing",
-    ratio: "1440 / 288",
-  },
-  { src: "/landing/remix-package-data.svg", alt: "Data", ratio: "577 / 290" },
-  {
-    src: "/landing/remix-package-session.svg",
-    alt: "Session",
-    ratio: "797 / 288",
-  },
-  {
-    src: "/landing/remix-package-component.svg",
-    alt: "Component",
-    ratio: "1438 / 414",
-  },
-];
-
-const LOGO_MAX_WIDTHS = [440, 460, 310, 360, 440] as const;
-const LOGO_STAGE_WIDTHS = [0.85, 0.86, 0.65, 0.72, 0.85] as const;
+import { reducedMotion } from "../reduced-motion.ts";
+import {
+  layoutPackageLogos,
+  PACKAGE_LOGOS,
+  type PanelRect,
+} from "./package-logos-layout.ts";
 
 const PANEL_SELECTOR = "[data-package-logos-panel]";
+
+export function PackageLogos(handle: Handle) {
+  let scrollFrameId = 0;
+  let panel = createPanelTracker(() => handle.update());
+
+  function scheduleScrollUpdate() {
+    if (scrollFrameId) return;
+    scrollFrameId = requestAnimationFrame(() => {
+      scrollFrameId = 0;
+      handle.update();
+    });
+  }
+
+  window.addEventListener("scroll", scheduleScrollUpdate, {
+    signal: handle.signal,
+  });
+  window.addEventListener(
+    "resize",
+    () => {
+      if (panel.measure()) handle.update();
+    },
+    { signal: handle.signal },
+  );
+
+  handle.queueTask(() => {
+    panel.locate();
+    handle.update();
+  });
+
+  handle.signal.addEventListener("abort", () => {
+    if (scrollFrameId) {
+      cancelAnimationFrame(scrollFrameId);
+      scrollFrameId = 0;
+    }
+    panel.dispose();
+  });
+
+  return () => {
+    panel.locate();
+
+    let rect = panel.rect;
+    let layout = layoutPackageLogos({
+      panel: rect,
+      scrollY: window.scrollY,
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
+      reduceMotion: reducedMotion.current,
+    });
+
+    return (
+      <div
+        mix={[shellStyles]}
+        style={{
+          top: `${layout.top}px`,
+          left: `${rect.left}px`,
+          right: "auto",
+          width: `${rect.width}px`,
+          height: `${layout.height}px`,
+        }}
+      >
+        {PACKAGE_LOGOS.map((logo, i) => {
+          let { top, right, width, height, opacity } = layout.logos[i];
+          return (
+            <div
+              key={logo.alt}
+              mix={[logoStyles]}
+              style={{
+                top: `${top}px`,
+                left: "auto",
+                right: `${right}px`,
+                width: `${width}px`,
+                height: `${height}px`,
+                aspectRatio: logo.ratio,
+                maskImage: `url(${logo.src})`,
+                WebkitMaskImage: `url(${logo.src})`,
+                opacity: `${opacity}`,
+              }}
+            />
+          );
+        })}
+      </div>
+    );
+  };
+}
+
+/**
+ * Finds the package logos panel and tracks its document-relative rect.
+ * `onResize` runs when a ResizeObserver reports a changed rect.
+ */
+function createPanelTracker(onResize: () => void) {
+  let rect: PanelRect = { top: 0, left: 0, width: 0, height: 0 };
+  let element: HTMLElement | null = null;
+  let resizeObserver: ResizeObserver | null = null;
+
+  /** Re-reads the rect; returns whether it changed. */
+  function measure(): boolean {
+    if (!element) return false;
+    let bounds = element.getBoundingClientRect();
+    let next = {
+      top: bounds.top + window.scrollY,
+      left: bounds.left + window.scrollX,
+      width: bounds.width,
+      height: bounds.height,
+    };
+    if (
+      next.top === rect.top &&
+      next.left === rect.left &&
+      next.width === rect.width &&
+      next.height === rect.height
+    ) {
+      return false;
+    }
+    Object.assign(rect, next);
+    return true;
+  }
+
+  function locate() {
+    if (element && element.isConnected) return;
+    element = document.querySelector<HTMLElement>(PANEL_SELECTOR);
+    if (!element) return;
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver?.disconnect();
+      resizeObserver = new ResizeObserver(() => {
+        if (measure()) onResize();
+      });
+      resizeObserver.observe(element);
+    }
+    measure();
+  }
+
+  function dispose() {
+    resizeObserver?.disconnect();
+    resizeObserver = null;
+    element = null;
+  }
+
+  return { rect, measure, locate, dispose };
+}
 
 const shellStyles = css({
   position: "absolute",
@@ -45,183 +163,3 @@ const logoStyles = css({
   WebkitMaskSize: "contain",
   WebkitMaskRepeat: "no-repeat",
 });
-
-const STAGGER = 0.18;
-const FADE_IN = 0.16;
-const FADE_OUT_VIEWPORT_START = 0.45;
-const FADE_OUT_VIEWPORT_END = 0.1;
-
-function logoOpacity(
-  revealProgress: number,
-  panelBottomInViewport: number,
-  viewportHeight: number,
-  index: number,
-) {
-  const inStart = index * STAGGER;
-  const fadeIn = clamp01((revealProgress - inStart) / FADE_IN);
-  const fadeOut = clamp01(
-    (panelBottomInViewport - viewportHeight * FADE_OUT_VIEWPORT_END) /
-      (viewportHeight * (FADE_OUT_VIEWPORT_START - FADE_OUT_VIEWPORT_END)),
-  );
-  return fadeIn * fadeOut;
-}
-
-export function PackageLogos(handle: Handle) {
-  let scrollFrameId = 0;
-
-  let panelTop = 0;
-  let panelLeft = 0;
-  let panelWidth = 0;
-  let panelHeight = 0;
-  let panelElement: HTMLElement | null = null;
-  let resizeObserver: ResizeObserver | null = null;
-
-  function measurePanel(): boolean {
-    if (!panelElement) return false;
-    const rect = panelElement.getBoundingClientRect();
-    const nextTop = rect.top + window.scrollY;
-    const nextLeft = rect.left + window.scrollX;
-    const nextWidth = rect.width;
-    const nextHeight = rect.height;
-    if (
-      nextTop === panelTop &&
-      nextLeft === panelLeft &&
-      nextWidth === panelWidth &&
-      nextHeight === panelHeight
-    ) {
-      return false;
-    }
-    panelTop = nextTop;
-    panelLeft = nextLeft;
-    panelWidth = nextWidth;
-    panelHeight = nextHeight;
-    return true;
-  }
-
-  function locatePanel() {
-    if (panelElement && panelElement.isConnected) return;
-    panelElement = document.querySelector<HTMLElement>(PANEL_SELECTOR);
-    if (!panelElement) return;
-    if (typeof ResizeObserver !== "undefined") {
-      resizeObserver?.disconnect();
-      resizeObserver = new ResizeObserver(() => {
-        if (measurePanel()) handle.update();
-      });
-      resizeObserver.observe(panelElement);
-    }
-    measurePanel();
-  }
-
-  function scheduleScrollUpdate() {
-    if (scrollFrameId) return;
-    scrollFrameId = requestAnimationFrame(() => {
-      scrollFrameId = 0;
-      handle.update();
-    });
-  }
-
-  window.addEventListener("scroll", scheduleScrollUpdate, {
-    signal: handle.signal,
-  });
-  window.addEventListener(
-    "resize",
-    () => {
-      if (measurePanel()) handle.update();
-    },
-    { signal: handle.signal },
-  );
-
-  handle.queueTask(() => {
-    locatePanel();
-    handle.update();
-  });
-
-  handle.signal.addEventListener("abort", () => {
-    if (scrollFrameId) {
-      cancelAnimationFrame(scrollFrameId);
-      scrollFrameId = 0;
-    }
-    resizeObserver?.disconnect();
-    resizeObserver = null;
-    panelElement = null;
-  });
-
-  return () => {
-    if (!panelElement || !panelElement.isConnected) locatePanel();
-
-    const reduceMotion = reducedMotion.current;
-    const revealDistance = Math.min(900, Math.max(650, window.innerHeight));
-    const revealProgress = clamp01(
-      (window.scrollY + window.innerHeight * 0.68 - panelTop) / revealDistance,
-    );
-    const panelBottomInViewport = panelTop + panelHeight - window.scrollY;
-    const inSection =
-      panelTop < window.scrollY + window.innerHeight &&
-      panelBottomInViewport > 0;
-    const stackedHeight = panelHeight * 0.94;
-    const logoScale =
-      window.innerWidth < Number.parseInt(breakpoints.md, 10) ? 0.8 : 1;
-    const logoLayouts = LOGOS.map((logo, index) => {
-      const [intrinsicWidth, intrinsicHeight] = logo.ratio
-        .split("/")
-        .map((value) => parseFloat(value.trim()));
-      const width =
-        Math.min(
-          LOGO_MAX_WIDTHS[index],
-          panelWidth * LOGO_STAGE_WIDTHS[index],
-        ) * logoScale;
-      return { width, height: width * (intrinsicHeight / intrinsicWidth) };
-    });
-    const logoHeight = logoLayouts.reduce(
-      (total, layout) => total + layout.height,
-      0,
-    );
-    const rowGap = (stackedHeight - logoHeight) / (LOGOS.length - 1);
-
-    return (
-      <div
-        mix={[shellStyles]}
-        style={{
-          top: `${panelTop + (panelHeight - stackedHeight) / 2}px`,
-          left: `${panelLeft}px`,
-          right: "auto",
-          width: `${panelWidth}px`,
-          height: `${stackedHeight}px`,
-        }}
-      >
-        {LOGOS.map((logo, i) => {
-          const layout = logoLayouts[i];
-          const top = logoLayouts
-            .slice(0, i)
-            .reduce((offset, row) => offset + row.height + rowGap, 0);
-          return (
-            <div
-              key={logo.alt}
-              mix={[logoStyles]}
-              style={{
-                top: `${top}px`,
-                left: "auto",
-                right: `${(panelWidth - layout.width) / 2}px`,
-                width: `${layout.width}px`,
-                height: `${layout.height}px`,
-                aspectRatio: logo.ratio,
-                maskImage: `url(${logo.src})`,
-                WebkitMaskImage: `url(${logo.src})`,
-                opacity: `${
-                  reduceMotion && inSection
-                    ? 1
-                    : logoOpacity(
-                        revealProgress,
-                        panelBottomInViewport,
-                        window.innerHeight,
-                        i,
-                      )
-                }`,
-              }}
-            />
-          );
-        })}
-      </div>
-    );
-  };
-}

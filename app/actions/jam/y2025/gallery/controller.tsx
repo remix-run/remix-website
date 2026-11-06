@@ -1,15 +1,18 @@
 import { createController } from "remix/router";
 
-import { getPhotos } from "../../../../data/jam-storefront.ts";
 import { jam2025GalleryDownloadHandler } from "./download.ts";
+import {
+  getGalleryPhotos,
+  getSelectedPhotoIndex,
+  transformShopifyImageUrl,
+  type Photo,
+} from "./photos.ts";
 import type { AppRenderer } from "../../../../middleware/render.ts";
 import { routes } from "../../../../routes.ts";
+import { CACHE } from "../../../../utils/cache-control.ts";
 import { JamDocument } from "../document.tsx";
-import {
-  ScrambleText,
-  Title,
-  transformShopifyImageUrl,
-} from "../public/shared.tsx";
+import { JamScrambleText } from "../public/scramble-text.tsx";
+import { Title } from "../public/typography.tsx";
 import {
   JamGalleryModalHost,
   type JamGalleryModalNav,
@@ -17,9 +20,8 @@ import {
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { css, type Handle, type Props, type RemixNode } from "remix/component";
-import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
-
-type Photo = Awaited<ReturnType<typeof getPhotos>>[number];
+import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
+import { jamColors, whiteAlpha } from "../public/theme.ts";
 
 export default createController(routes.jam.y2025.gallery, {
   actions: {
@@ -27,7 +29,7 @@ export default createController(routes.jam.y2025.gallery, {
       let photos = await getGalleryPhotos();
       let selectedPhotoIndex = getSelectedPhotoIndex(
         new URL(request.url).searchParams.get("photo"),
-        photos.length,
+        photos?.length ?? 0,
       );
 
       return renderGalleryPage({ photos, render, request, selectedPhotoIndex });
@@ -43,7 +45,8 @@ function renderGalleryPage({
   request,
   selectedPhotoIndex,
 }: {
-  photos: Photo[];
+  /** `null` when Storefront is unavailable. */
+  photos: Photo[] | null;
   render: AppRenderer;
   request: Request;
   selectedPhotoIndex: number | null;
@@ -73,19 +76,15 @@ function renderGalleryPage({
         })}
       >
         <Title>
-          <ScrambleText text="Photo" delay={100} color="blue" />
-          <ScrambleText text="Gallery" delay={300} color="green" />
+          <JamScrambleText text="Photo" delay={100} color="blue" />
+          <JamScrambleText text="Gallery" delay={300} color="green" />
         </Title>
 
-        {photos.length === 0 ? (
-          <p
-            mix={css({
-              color: "rgb(255 255 255 / 0.7)",
-              fontSize: "1.125rem",
-              lineHeight: 1.556,
-            })}
-          >
-            No photos available yet.
+        {photos === null || photos.length === 0 ? (
+          <p mix={emptyGalleryMessageStyle}>
+            {photos === null
+              ? "Photos are unavailable right now. Please try again later."
+              : "No photos available yet."}
           </p>
         ) : (
           <div mix={css({ width: "100%" })}>
@@ -115,7 +114,7 @@ function renderGalleryPage({
                       display: "block",
                       overflow: "hidden",
                       borderRadius: "8px",
-                      backgroundColor: "rgb(255 255 255 / 0.05)",
+                      backgroundColor: whiteAlpha(0.05),
                       outline: "none",
                       transition: "opacity 300ms",
                       "&:is(:hover, :focus-visible)": { opacity: 0.85 },
@@ -143,11 +142,16 @@ function renderGalleryPage({
         )}
       </main>
     </JamDocument>,
+    // Never let the CDN cache a gallery rendered during a Storefront outage.
+    photos === null ? UNAVAILABLE_RESPONSE : undefined,
   );
 }
 
-export { getSelectedPhotoIndex };
-export { getGalleryPhotos };
+const UNAVAILABLE_RESPONSE = {
+  status: 503,
+  statusText: "Service Unavailable",
+  headers: CACHE.PRIVATE,
+} as const;
 
 function GalleryModal(
   handle: Handle<{
@@ -243,8 +247,8 @@ function GalleryModal(
               mix={css({
                 borderRadius: theme.radius.full,
                 padding: "8px 16px",
-                backgroundColor: "#ffffff",
-                color: "#000000",
+                backgroundColor: jamColors.white,
+                color: jamColors.black,
                 fontSize: "0.875rem",
                 fontWeight: theme.fontWeight.semibold,
                 lineHeight: 1.425,
@@ -292,7 +296,7 @@ function ModalImage(handle: Handle<{ photo: Photo }>) {
       <div
         mix={css({
           marginInline: "-24px",
-          backgroundColor: "rgb(255 255 255 / 0.05)",
+          backgroundColor: whiteAlpha(0.05),
           [breakpointMedia.md]: { marginInline: 0 },
         })}
         style={{
@@ -379,10 +383,10 @@ function getJamGalleryModalNav(
   };
 }
 
-let GALLERY_MODAL_MAX_WIDTH = 1920;
-let GALLERY_MODAL_MAX_HEIGHT = 1080;
-let GALLERY_GRID_IMAGE_WIDTHS = [400, 600, 800, 1200];
-let GALLERY_GRID_DEFAULT_WIDTH = 800;
+const GALLERY_MODAL_MAX_WIDTH = 1920;
+const GALLERY_MODAL_MAX_HEIGHT = 1080;
+const GALLERY_GRID_IMAGE_WIDTHS = [400, 600, 800, 1200];
+const GALLERY_GRID_DEFAULT_WIDTH = 800;
 
 function getGalleryModalImageSrc(photo: Photo) {
   return transformShopifyImageUrl(photo.url, {
@@ -391,24 +395,6 @@ function getGalleryModalImageSrc(photo: Photo) {
     format: "webp",
     quality: 90,
   });
-}
-
-function getSelectedPhotoIndex(
-  photoParam: string | null,
-  photosCount: number,
-): number | null {
-  if (!photoParam) return null;
-  let parsed = Number.parseInt(photoParam, 10);
-  if (!Number.isFinite(parsed)) return null;
-  if (parsed < 0 || parsed >= photosCount) return null;
-  return parsed;
-}
-
-async function getGalleryPhotos() {
-  return Promise.all([
-    getPhotos("remix-jam-2025-photos-1"),
-    getPhotos("remix-jam-2025-photos-2"),
-  ]).then((p) => p.flat());
 }
 
 function PhotoImage(handle: Handle<Photo>) {
@@ -452,27 +438,33 @@ function PhotoImage(handle: Handle<Photo>) {
   };
 }
 
-let modalChevronStyle = css({
+const emptyGalleryMessageStyle = css({
+  color: whiteAlpha(0.7),
+  fontSize: "1.125rem",
+  lineHeight: 1.556,
+});
+
+const modalChevronStyle = css({
   position: "absolute",
   top: "50%",
   zIndex: 10,
   transform: "translateY(-50%)",
 });
 
-let iconLinkStyle = css({
+const iconLinkStyle = css({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   margin: "4px",
   borderRadius: theme.radius.full,
   padding: "12px",
-  backgroundColor: "#ffffff",
-  color: "#000000",
+  backgroundColor: jamColors.white,
+  color: jamColors.black,
   outline: "none",
   transition: "color 300ms, background-color 300ms",
   "&:is(:hover, :focus-visible)": {
     backgroundColor: theme.colors.brand.blue,
-    color: "#ffffff",
+    color: jamColors.white,
   },
   "&:focus-visible": {
     outline: `2px solid ${theme.colors.brand.blue}`,
@@ -481,10 +473,10 @@ let iconLinkStyle = css({
   "@media (prefers-reduced-motion: reduce)": { transition: "none" },
 });
 
-let iconLinkIconStyle = css({
+const iconLinkIconStyle = css({
   width: "24px",
   height: "24px",
   pointerEvents: "none",
 });
 
-let flippedIconStyle = css({ transform: "rotate(180deg)" });
+const flippedIconStyle = css({ transform: "rotate(180deg)" });

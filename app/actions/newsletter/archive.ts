@@ -1,7 +1,6 @@
 import * as os from "node:os";
 import * as path from "node:path";
 import { createFsFileCache, type FileCache } from "remix/assets";
-import { detectMimeType } from "remix/mime";
 
 import {
   NEWSLETTER_MARKDOWN_PATTERN,
@@ -28,7 +27,13 @@ const NEWSLETTER_REPO_NAME = "newsletter";
 const NEWSLETTER_REPO_REF = "main";
 
 /** Raster image types we are willing to serve. SVG is intentionally excluded. */
-const SAFE_IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "gif", "webp"] as const;
+const SAFE_IMAGE_CONTENT_TYPES: Record<string, string> = {
+  png: "image/png",
+  jpg: "image/jpeg",
+  jpeg: "image/jpeg",
+  gif: "image/gif",
+  webp: "image/webp",
+};
 
 const FRESH_TTL_MS = 6 * 60 * 60 * 1000;
 const MAX_ISSUES = 200;
@@ -100,196 +105,208 @@ interface NewsletterSnapshot {
 export function parseNewsletterSnapshot(
   files: NewsletterFile[],
 ): NewsletterSnapshot {
-  let issueDirs = new Map<number, Map<string, NewsletterFile>>();
-
+  // One pass: the first published-issue Markdown per issue, plus the Git SHA
+  // of every safe raster image keyed by its `newsletter-<N>/<filename>` path.
+  let markdownFiles = new Map<number, IssueMarkdownFile>();
+  let imageShas = new Map<string, string>();
   for (let file of files) {
-    let parts = file.name.split("/");
-    // Expected relative path: `newsletter-<N>/<filename>`
-    if (parts.length !== 2) continue;
-    let dirName = parts[0];
-    let dirMatch = dirName.match(/^newsletter-(\d+)$/);
-    if (!dirMatch) continue;
-    let number = parseInt(dirMatch[1], 10);
-    if (!Number.isInteger(number) || number <= 0) continue;
+    let location = parseIssueFilePath(file.name);
+    if (!location) continue;
 
-    let bucket = issueDirs.get(number);
-    if (!bucket) {
-      bucket = new Map();
-      issueDirs.set(number, bucket);
+    if ("sha" in file) {
+      if (isSafeImageFilename(location.filename)) {
+        imageShas.set(file.name, file.sha);
+      }
+    } else if (!markdownFiles.has(location.number)) {
+      // The pattern's backreference ties the filename's issue number to its
+      // directory, so a match always belongs to `location.number`.
+      let match = file.name.match(NEWSLETTER_MARKDOWN_PATTERN);
+      if (!match) continue;
+      let [, , year, month, day] = match.map(Number);
+      markdownFiles.set(location.number, {
+        markdown: file.markdown,
+        year,
+        month,
+        day,
+      });
     }
-    // Keep the last segment as the key so callers can look up by filename.
-    bucket.set(parts.slice(1).join("/"), file);
   }
 
   let issues: ParsedIssue[] = [];
-  for (let [number, bucket] of issueDirs) {
-    let markdown: string | undefined;
-    let dateMatch: RegExpMatchArray | null = null;
-    for (let file of bucket.values()) {
-      let match = file.name.match(NEWSLETTER_MARKDOWN_PATTERN);
-      if (!match || Number(match[1]) !== number || !("markdown" in file)) {
-        continue;
-      }
-      markdown = file.markdown;
-      dateMatch = match;
-      break;
-    }
-    if (markdown === undefined || !dateMatch) continue;
-    let [, , yearValue, monthValue, dayValue] = dateMatch;
-    let year = Number(yearValue);
-    let month = Number(monthValue);
-    let day = Number(dayValue);
-    let date = new Date(Date.UTC(year, month - 1, day));
-    if (
-      date.getUTCFullYear() !== year ||
-      date.getUTCMonth() !== month - 1 ||
-      date.getUTCDate() !== day
-    ) {
-      continue;
-    }
+  let summaries: NewsletterSummary[] = [];
+  for (let [number, file] of markdownFiles) {
+    let issue = parseIssue(number, file);
+    if (!issue) continue;
+    issues.push(issue.parsed);
+    summaries.push(
+      buildSummary(issue.parsed, issue.body, (filename) =>
+        imageShas.has(`newsletter-${number}/${filename}`),
+      ),
+    );
+  }
 
-    let frontmatter = readNewsletterFrontmatter(markdown);
-    if (frontmatter.draft === true) continue;
-    let title = extractTitle(markdown, number);
+  let byNewest = (a: { number: number }, b: { number: number }) =>
+    b.number - a.number;
+  return {
+    issues: issues.sort(byNewest).slice(0, MAX_ISSUES),
+    summaries: summaries.sort(byNewest).slice(0, MAX_ISSUES),
+    files: imageShas,
+  };
+}
 
-    issues.push({
+/** Splits `newsletter-<N>/<filename>`, the only layout the archive reads. */
+function parseIssueFilePath(name: string) {
+  let match = name.match(/^newsletter-(\d+)\/([^/]+)$/);
+  if (!match) return null;
+  let number = Number(match[1]);
+  return number > 0 ? { number, filename: match[2] } : null;
+}
+
+interface IssueMarkdownFile {
+  markdown: string;
+  /** Publication date parts from the filename, not yet validated. */
+  year: number;
+  month: number;
+  day: number;
+}
+
+/** Returns null for drafts and filenames with an impossible date. */
+function parseIssue(
+  number: number,
+  { markdown, year, month, day }: IssueMarkdownFile,
+): { parsed: ParsedIssue; body: string } | null {
+  let date = new Date(Date.UTC(year, month - 1, day));
+  if (
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() !== month - 1 ||
+    date.getUTCDate() !== day
+  ) {
+    return null;
+  }
+
+  let { attributes, body } = readNewsletterMarkdown(markdown);
+  if (attributes.draft === true) return null;
+
+  return {
+    parsed: {
       number,
       date,
-      title,
-      preview: getNewsletterPreview(frontmatter),
+      title: findTitleHeading(body)?.title ?? `Remix Newsletter #${number}`,
+      preview:
+        typeof attributes.previewText === "string"
+          ? attributes.previewText.trim()
+          : "",
       markdown,
-    });
-  }
-
-  issues.sort((a, b) => b.number - a.number);
-  issues = issues.slice(0, MAX_ISSUES);
-
-  let fileMap = new Map<string, string>();
-  for (let file of files) {
-    let [directory, filename] = file.name.split("/");
-    if (
-      !directory ||
-      !filename ||
-      !/^newsletter-\d+$/.test(directory) ||
-      !isSafeImageFilename(filename) ||
-      !("sha" in file)
-    ) {
-      continue;
-    }
-    fileMap.set(file.name, file.sha);
-  }
-
-  let summaries = issues.map((issue) => {
-    let image = extractNewsletterPreviewImage(issue.markdown, (filename) =>
-      fileMap.has(`newsletter-${issue.number}/${filename}`),
-    );
-
-    return {
-      number: issue.number,
-      date: issue.date,
-      preview: issue.preview,
-      image: image
-        ? {
-            src: routes.newsletter.image.href({
-              number: issue.number,
-              filename: image.filename,
-            }),
-            alt: image.alt,
-          }
-        : null,
-    };
-  });
-
-  return { issues, summaries, files: fileMap };
+    },
+    body,
+  };
 }
 
-interface NewsletterFrontmatter {
-  draft?: unknown;
-  previewText?: unknown;
+function buildSummary(
+  issue: ParsedIssue,
+  body: string,
+  isImageAvailable: (filename: string) => boolean,
+): NewsletterSummary {
+  let image = extractNewsletterPreviewImage(body, isImageAvailable);
+  return {
+    number: issue.number,
+    date: issue.date,
+    preview: issue.preview,
+    image: image
+      ? {
+          src: routes.newsletter.image.href({
+            number: issue.number,
+            filename: image.filename,
+          }),
+          alt: image.alt,
+        }
+      : null,
+  };
 }
 
-function readNewsletterFrontmatter(markdown: string): NewsletterFrontmatter {
+function readNewsletterMarkdown(markdown: string): {
+  attributes: { draft?: unknown; previewText?: unknown };
+  body: string;
+} {
   try {
-    let { attributes } = parseFrontmatter(markdown);
-    if (
-      !attributes ||
-      typeof attributes !== "object" ||
-      Array.isArray(attributes)
-    ) {
-      return {};
-    }
-    return attributes;
+    let { attributes, body } = parseFrontmatter(markdown);
+    return {
+      attributes:
+        attributes !== null &&
+        typeof attributes === "object" &&
+        !Array.isArray(attributes)
+          ? attributes
+          : {},
+      body,
+    };
   } catch {
     // Malformed remote frontmatter falls back to defaults instead of dropping
     // the newsletter issue from the archive.
-    return {};
+    return { attributes: {}, body: markdown };
   }
 }
 
-function getNewsletterPreview(frontmatter: NewsletterFrontmatter): string {
-  return typeof frontmatter.previewText === "string"
-    ? frontmatter.previewText.trim()
-    : "";
+/**
+ * Find the issue title: the first ATX H1 line in a Markdown body (frontmatter
+ * already removed). `start`/`end` span the heading line so the issue page can
+ * drop it instead of rendering the title twice.
+ */
+export function findTitleHeading(
+  body: string,
+): { title: string; start: number; end: number } | null {
+  let match = /^#[ \t]+(.+)$/m.exec(body);
+  if (!match) return null;
+  return {
+    title: match[1].trim(),
+    start: match.index,
+    end: match.index + match[0].length,
+  };
 }
 
-function extractTitle(markdown: string, fallbackNumber: number): string {
-  // Prefer an explicit H1 in the body, then use the issue number as fallback.
-  let h1 = markdown.match(/^#\s+(.+)$/m);
-  if (h1) return h1[1].trim();
-  return `Remix Newsletter #${fallbackNumber}`;
-}
-
-/** Return the first safe, same-directory raster image in newsletter Markdown. */
+/**
+ * Return the first safe, same-directory raster image in a newsletter's
+ * Markdown body (frontmatter already removed).
+ */
 export function extractNewsletterPreviewImage(
-  markdown: string,
+  body: string,
   isAvailable: (filename: string) => boolean = () => true,
 ): { filename: string; alt: string } | null {
-  let body = stripFrontmatter(markdown);
   let imagePattern = /!\[([^\]]*)\]\(\s*(?:<([^>\n]+)>|([^\s)]+))[^\n)]*\)/g;
 
   for (let match of body.matchAll(imagePattern)) {
-    let url = match[2] ?? match[3];
-    let filenameMatch = url.match(/^(?:\.\/)?([^/?#]+)(?:[?#].*)?$/);
-    if (
-      !filenameMatch ||
-      !isSafeImageFilename(filenameMatch[1]) ||
-      !isAvailable(filenameMatch[1])
-    ) {
-      continue;
+    let filename = parseSameDirImageFilename(match[2] ?? match[3]);
+    if (filename && isAvailable(filename)) {
+      return { filename, alt: match[1].trim() };
     }
-    return { filename: filenameMatch[1], alt: match[1].trim() };
   }
 
   return null;
 }
 
-function stripFrontmatter(markdown: string): string {
-  if (!markdown.startsWith("---\n")) return markdown;
-  let end = markdown.indexOf("\n---\n", 4);
-  if (end === -1) return markdown;
-  return markdown.slice(end + 5);
+/** `header.png`, `./header.png?raw=1` -> `header.png`; null otherwise. */
+function parseSameDirImageFilename(url: string): string | null {
+  let filename = url.match(/^(?:\.\/)?([^/?#]+)(?:[?#].*)?$/)?.[1];
+  return filename && isSafeImageFilename(filename) ? filename : null;
 }
 
 export function isSafeImageFilename(filename: string): boolean {
-  if (!filename || filename.includes("/") || filename.includes("\\")) {
-    return false;
-  }
-  if (filename === "." || filename === "..") return false;
-  let ext = filename.split(".").pop()?.toLowerCase() ?? "";
-  return (SAFE_IMAGE_EXTENSIONS as ReadonlyArray<string>).includes(ext);
+  return getSafeImageContentType(filename) !== null;
 }
 
-function isSafeImageContentType(contentType: string): boolean {
-  let base = contentType.split(";")[0].trim().toLowerCase();
-  return ["image/png", "image/jpeg", "image/gif", "image/webp"].includes(base);
+/** The content type to serve for a safe raster image filename, else null. */
+function getSafeImageContentType(filename: string): string | null {
+  if (!filename || filename.includes("/") || filename.includes("\\")) {
+    return null;
+  }
+  let ext = filename.split(".").pop()?.toLowerCase() ?? "";
+  return Object.hasOwn(SAFE_IMAGE_CONTENT_TYPES, ext)
+    ? SAFE_IMAGE_CONTENT_TYPES[ext]
+    : null;
 }
 
 export function createGitHubNewsletterRepository(options: {
   /** Stores downloaded images by Git SHA. Failures never block serving. */
   imageCache: FileCache;
-  owner?: string;
-  repo?: string;
-  ref?: string;
   token?: string;
   fetchImpl?: typeof fetch;
   ttlMs?: number;
@@ -297,19 +314,19 @@ export function createGitHubNewsletterRepository(options: {
   onImageError?: (error: unknown) => void;
   onImageCacheError?: (error: unknown) => void;
 }): NewsletterRepository {
-  let owner = options.owner ?? NEWSLETTER_REPO_OWNER;
-  let repo = options.repo ?? NEWSLETTER_REPO_NAME;
-  let ref = options.ref ?? NEWSLETTER_REPO_REF;
-  let token = options.token;
-  let fetchImpl = options.fetchImpl ?? globalThis.fetch;
-  let ttlMs = options.ttlMs ?? FRESH_TTL_MS;
-  let onRefreshError = options.onRefreshError;
-  let onImageError = options.onImageError;
-  let onImageCacheError = options.onImageCacheError;
+  let {
+    imageCache,
+    token,
+    fetchImpl = globalThis.fetch,
+    ttlMs = FRESH_TTL_MS,
+    onRefreshError,
+    onImageError,
+    onImageCacheError,
+  } = options;
   let source = createGitHubNewsletterSource({
-    owner,
-    repo,
-    ref,
+    owner: NEWSLETTER_REPO_OWNER,
+    repo: NEWSLETTER_REPO_NAME,
+    ref: NEWSLETTER_REPO_REF,
     token,
     fetchImpl,
   });
@@ -326,7 +343,7 @@ export function createGitHubNewsletterRepository(options: {
 
   async function loadImageBytes(sha: string): Promise<Uint8Array> {
     try {
-      let cached = await options.imageCache.get(sha);
+      let cached = await imageCache.get(sha);
       if (cached) return new Uint8Array(await cached.arrayBuffer());
     } catch (error) {
       onImageCacheError?.(error);
@@ -344,10 +361,7 @@ export function createGitHubNewsletterRepository(options: {
     }
 
     try {
-      await options.imageCache.put(
-        sha,
-        new File([Uint8Array.from(bytes)], sha),
-      );
+      await imageCache.put(sha, new File([Uint8Array.from(bytes)], sha));
     } catch (error) {
       onImageCacheError?.(error);
     }
@@ -416,47 +430,56 @@ export function createGitHubNewsletterRepository(options: {
 
     async getImage(number, filename) {
       if (!Number.isInteger(number) || number <= 0) return null;
-      if (!isSafeImageFilename(filename)) return null;
+      let contentType = getSafeImageContentType(filename);
+      if (!contentType) return null;
       let snap = await getSnapshot();
       let sha = snap.files.get(`newsletter-${number}/${filename}`);
       if (!sha) return null;
-      let mimeType = detectMimeType(filename);
-      if (!mimeType || !isSafeImageContentType(mimeType)) return null;
       let bytes = await getImageBytes(sha);
-      return { filename, contentType: mimeType, bytes };
+      return { filename, contentType, bytes };
     },
   };
 }
 
 /** Rewrite a same-directory markdown image src to its archive route. */
 export function resolveNewsletterImageUrl(number: number, url: string): string {
-  let match = url.match(/^(?:\.\/)?([^/?#]+)(?:[?#].*)?$/);
-  if (!match || !isSafeImageFilename(match[1])) return url;
-  return routes.newsletter.image.href({ number, filename: match[1] });
+  let filename = parseSameDirImageFilename(url);
+  return filename ? routes.newsletter.image.href({ number, filename }) : url;
 }
 
+let liveNewsletterRepository: NewsletterRepository | undefined;
+
 /**
- * Shared live repository. Reusing one process-wide instance keeps the snapshot
- * and concurrent refresh and download dedupe effective across requests.
+ * The shared live repository, created on first use so importing this module
+ * has no filesystem side effects and reads the token when it's needed. Reusing
+ * one process-wide instance keeps the snapshot and concurrent refresh and
+ * download dedupe effective across requests.
  */
-export const liveNewsletterRepository = createGitHubNewsletterRepository({
-  imageCache: createFsFileCache({
-    directory: path.join(os.tmpdir(), "remix-website-newsletter-images"),
-    maxEntries: 1_000,
-    maxFileSize: MAX_CACHED_IMAGE_ENTRY_BYTES,
-    maxTotalSize: MAX_CACHED_IMAGE_BYTES,
-  }),
-  onRefreshError(error, { servingStale }) {
-    console.error("[newsletter] GitHub refresh failed", {
-      servingStale,
-      error,
-    });
-  },
-  onImageError(error) {
-    console.error("[newsletter] GitHub image fetch failed", { error });
-  },
-  onImageCacheError(error) {
-    console.error("[newsletter] Image cache failed", { error });
-  },
-  token: env.NEWSLETTER_GITHUB_TOKEN,
-});
+export function getLiveNewsletterRepository(): NewsletterRepository {
+  liveNewsletterRepository ??= createLiveNewsletterRepository();
+  return liveNewsletterRepository;
+}
+
+function createLiveNewsletterRepository() {
+  return createGitHubNewsletterRepository({
+    imageCache: createFsFileCache({
+      directory: path.join(os.tmpdir(), "remix-website-newsletter-images"),
+      maxEntries: 1_000,
+      maxFileSize: MAX_CACHED_IMAGE_ENTRY_BYTES,
+      maxTotalSize: MAX_CACHED_IMAGE_BYTES,
+    }),
+    onRefreshError(error, { servingStale }) {
+      console.error("[newsletter] GitHub refresh failed", {
+        servingStale,
+        error,
+      });
+    },
+    onImageError(error) {
+      console.error("[newsletter] GitHub image fetch failed", { error });
+    },
+    onImageCacheError(error) {
+      console.error("[newsletter] Image cache failed", { error });
+    },
+    token: env.NEWSLETTER_GITHUB_TOKEN,
+  });
+}

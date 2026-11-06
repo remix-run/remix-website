@@ -5,7 +5,7 @@ import { routes } from "../../routes.ts";
 import {
   NEWSLETTER_SUBSCRIBE_FRAME_NAME,
   type NewsletterSubscribeFrameContext,
-} from "../../ui/public/newsletter-subscribe.tsx";
+} from "../../ui/public/newsletter-frame-form.tsx";
 import { env } from "../../utils/env.ts";
 import { newsletterTagIds } from "../../utils/public/newsletter-tags.ts";
 import { createRouteTestRouter } from "../../../test/setup.ts";
@@ -131,7 +131,7 @@ describe("Newsletter subscribe route", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Cache-Control")).toBe("private, no-store");
-    expect(response.headers.get("Vary")).toBe("x-remix-target");
+    expect(response.headers.get("Vary")?.toLowerCase()).toBe("x-remix-target");
     let html = await response.text();
     expect(html).toContain('role="status"');
     expect(html).toContain("check your email");
@@ -153,9 +153,9 @@ describe("Newsletter subscribe route", () => {
 
     expect(response.status).toBe(303);
     expect(response.headers.get("Cache-Control")).toBe("private, no-store");
-    expect(response.headers.get("Vary")).toBe("x-remix-target");
+    expect(response.headers.get("Vary")?.toLowerCase()).toBe("x-remix-target");
     expect(response.headers.get("Location")).toBe(
-      `${routes.jam.y2025.newsletterSignup.href()}?subscription=success`,
+      `${routes.jam.y2025.newsletterSubscribeForm.href()}?subscription=success`,
     );
 
     let invalid = await submitNewsletter(
@@ -169,7 +169,7 @@ describe("Newsletter subscribe route", () => {
 
     expect(invalid.status).toBe(303);
     expect(invalid.headers.get("Location")).toBe(
-      `${routes.jam.y2025.newsletterSignup.href()}?subscription=invalid-email`,
+      `${routes.jam.y2025.newsletterSubscribeForm.href()}?subscription=invalid-email`,
     );
   });
 

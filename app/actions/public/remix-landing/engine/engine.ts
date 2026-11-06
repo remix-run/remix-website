@@ -16,7 +16,7 @@ import { BackgroundPass } from "./background-pass.ts";
 import type { SystemSettings } from "./types.ts";
 
 function screenScale(width: number): number {
-  const ref = 1440;
+  let ref = 1440;
   return Math.min(width / ref, 1);
 }
 
@@ -108,7 +108,7 @@ export class Engine {
     this.controls = new CameraTargetControls(this.camera);
 
     // Preserve Three's HalfFloat color target without depth/stencil buffers.
-    const composerTarget = new WebGLRenderTarget(1, 1, {
+    let composerTarget = new WebGLRenderTarget(1, 1, {
       type: HalfFloatType,
       depthBuffer: false,
       stencilBuffer: false,
@@ -120,7 +120,7 @@ export class Engine {
     this.backgroundPass.setSize(container.clientWidth, container.clientHeight);
     this.composer.addPass(this.backgroundPass);
 
-    const renderPass = new RenderPass(this.scene, this.camera);
+    let renderPass = new RenderPass(this.scene, this.camera);
     renderPass.clear = false;
     this.composer.addPass(renderPass);
 
@@ -128,11 +128,8 @@ export class Engine {
     this.composer.addPass(this.afterImagePass);
 
     this.containerWidth = container.clientWidth;
-    const s = screenScale(this.containerWidth);
-    const bloomSize = new Vector2(
-      container.clientWidth,
-      container.clientHeight,
-    );
+    let s = screenScale(this.containerWidth);
+    let bloomSize = new Vector2(container.clientWidth, container.clientHeight);
     this.bloomPass = new HalfResolutionBloomPass(
       bloomSize,
       settings.bloomStrength * s,
@@ -162,8 +159,8 @@ export class Engine {
       return false;
     }
 
-    const width = this.container.clientWidth;
-    const height = this.container.clientHeight;
+    let width = this.container.clientWidth;
+    let height = this.container.clientHeight;
     if (width <= 0 || height <= 0) return false;
 
     this.resizeRequestedAt = null;
@@ -207,7 +204,7 @@ export class Engine {
     this.lastAppliedSettings = settings;
     this.lastAppliedWidth = this.containerWidth;
 
-    const s = screenScale(this.containerWidth);
+    let s = screenScale(this.containerWidth);
     this.clearColor.set(settings.backgroundColor);
     this.renderer.setClearColor(this.clearColor);
     this.bloomPass.strength = settings.bloomStrength * s;

@@ -207,7 +207,7 @@ describe("Newsletter index route", () => {
     });
 
     let response = await router.fetch(
-      new URL(routes.newsletter.signup.href(), "http://localhost:3000"),
+      new URL(routes.newsletter.subscribeForm.href(), "http://localhost:3000"),
     );
 
     expect(response.status).toBe(200);
@@ -283,6 +283,31 @@ describe("Newsletter issue route", () => {
 
     // Signup form present on the detail page.
     expect(html).toContain(`action="${routes.newsletter.subscribe.href()}"`);
+  });
+
+  it("drops frontmatter and the title heading even after an intro paragraph", async () => {
+    let markdown =
+      "\ufeff---\nsecret: frontmatter-sentinel\n...\n\nIntro paragraph.\n\n# Remix Newsletter #2\n\n## Section\n";
+    let repo = fakeRepository({
+      issues: new Map([
+        [2, makeIssue(2, "2024-02-01T00:00:00.000Z", markdown)],
+      ]),
+    });
+    let router = routerWith(repo);
+
+    let response = await router.fetch(
+      new URL(
+        routes.newsletter.issue.href({ number: 2 }),
+        "http://localhost:3000",
+      ),
+    );
+
+    expect(response.status).toBe(200);
+    let html = await response.text();
+    // Only the page header's title remains.
+    expect([...html.matchAll(/<h1\b/g)].length).toBe(1);
+    expect(html).not.toContain("frontmatter-sentinel");
+    expect(html).toMatch(/<p>Intro paragraph\.<\/p>\s*<h2\b/);
   });
 
   it("uses the issue preview text for its descriptions", async () => {

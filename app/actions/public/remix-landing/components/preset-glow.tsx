@@ -1,6 +1,6 @@
 import { css, ref, type Handle } from "remix/component";
 import { presets } from "../engine/presets.ts";
-import { clamp, lerp } from "../utils/math.ts";
+import { clamp, lerp } from "../math.ts";
 
 const glowStyles = css({
   position: "fixed",
@@ -16,31 +16,25 @@ const BRAND_GRADIENT =
 function buildGradient(morphValue: number, brandGradientMode: boolean): string {
   if (brandGradientMode) return BRAND_GRADIENT;
 
-  const maxIdx = presets.length - 1;
-  const clamped = clamp(morphValue, 0, maxIdx);
-  const fromIndex = Math.floor(clamped);
-  const toIndex = Math.min(fromIndex + 1, maxIdx);
-  const blend = clamped - fromIndex;
-  const fallback: [number, number, number] = [0.3, 0.3, 0.3];
-  const a = presets[fromIndex]?.glowColor ?? fallback;
-  const b = presets[toIndex]?.glowColor ?? fallback;
-  const r = Math.round(lerp(a[0], b[0], blend) * 255);
-  const g = Math.round(lerp(a[1], b[1], blend) * 255);
-  const bl = Math.round(lerp(a[2], b[2], blend) * 255);
+  let maxIdx = presets.length - 1;
+  let clamped = clamp(morphValue, 0, maxIdx);
+  let fromIndex = Math.floor(clamped);
+  let toIndex = Math.min(fromIndex + 1, maxIdx);
+  let blend = clamped - fromIndex;
+  let fallback: [number, number, number] = [0.3, 0.3, 0.3];
+  let a = presets[fromIndex]?.glowColor ?? fallback;
+  let b = presets[toIndex]?.glowColor ?? fallback;
+  let r = Math.round(lerp(a[0], b[0], blend) * 255);
+  let g = Math.round(lerp(a[1], b[1], blend) * 255);
+  let bl = Math.round(lerp(a[2], b[2], blend) * 255);
 
   return `radial-gradient(ellipse at 50% 50%, rgba(${r},${g},${bl},0.40) 0%, rgba(${r},${g},${bl},0.12) 40%, transparent 70%)`;
 }
 
-// Previously implemented inline in App as a full-viewport <div> whose
-// `background` (a radial-gradient string) was recomputed and re-assigned via
-// an inline `style` prop on every scroll frame. That forced the browser to
-// re-rasterize the entire viewport-sized layer 60x/s during scroll —
-// competing with the particle canvas for main-thread budget.
-//
-// Instead we own an internal rAF, read morphValue from a mutable ref set by
-// the parent (so App.handle.update() doesn't have to walk through us),
-// quantize the value to avoid writing unchanged backgrounds, and write
-// directly to the DOM.
+// Owns its own rAF loop and writes `background` straight to the DOM. The
+// parent passes morphValue through a mutable ref, so scroll frames don't
+// re-render App, and the quantized morph value means unchanged gradients are
+// never re-assigned, avoiding a re-raster of this viewport-sized layer.
 export function PresetGlow(
   handle: Handle<{
     morphValueRef: { current: number };
@@ -60,8 +54,8 @@ export function PresetGlow(
     // Quantize to 0.01 steps so tiny scroll-jitter floats don't retrigger
     // background reassignment. 100 discrete gradients per preset transition
     // is well beyond what's visually distinguishable.
-    const quantized = Math.round(morphValueRef.current * 100) / 100;
-    const background = buildGradient(quantized, brandGradientMode);
+    let quantized = Math.round(morphValueRef.current * 100) / 100;
+    let background = buildGradient(quantized, brandGradientMode);
     if (background !== lastBackground) {
       glowEl.style.background = background;
       lastBackground = background;

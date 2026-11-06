@@ -4,7 +4,7 @@ import { describe, it } from "remix/test";
 
 import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
-import { swallowAbortErrors } from "../test/setup.ts";
+import { swallowAbortErrors } from "./setup.ts";
 
 async function markPage(page: Page) {
   return page.evaluate(() => {

@@ -2,7 +2,7 @@ import {
   landingContent,
   packageRunners,
 } from "./public/remix-landing/landing-content.ts";
-import { stackCategories } from "./public/remix-landing/components/stack-explorer-content.tsx";
+import { stackCategories } from "./public/remix-landing/stack-explorer-content.tsx";
 
 export function renderHomeMarkdown() {
   let mentalModel = landingContent.storySections.find(

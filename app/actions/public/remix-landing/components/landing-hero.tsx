@@ -3,10 +3,10 @@ import {
   breakpointMedia,
   breakpoints,
   theme,
-} from "../../../../ui/public/theme.ts";
-import { textBoxTrim } from "../../../../ui/public/css-mixins.ts";
-import { RemixLandingSectionNav } from "../landing-enhancements.tsx";
-import { colors, glowWhite } from "../styles/tokens.ts";
+} from "../../../../ui/public/styles/theme.ts";
+import { textBoxTrim } from "../../../../ui/public/styles/css-mixins.ts";
+import { RemixLandingSectionNav } from "./section-nav.tsx";
+import { colors, glowWhite } from "../tokens.ts";
 import { landingContent } from "../landing-content.ts";
 import { CreateRemixCommand } from "./create-remix-command.tsx";
 
@@ -71,7 +71,7 @@ const headingStyles = css({
   fontSize: "clamp(42px, 6vw, 84px)",
   lineHeight: "1",
   letterSpacing: "-0.03em",
-  color: "#ffffff",
+  color: colors.fgStrong,
   textShadow: glowWhite,
   textWrap: "balance",
   ...textBoxTrim,

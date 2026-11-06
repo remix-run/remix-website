@@ -1,4 +1,4 @@
-let FOCUS_RESTORE_KEY = "jam-gallery-focus-index";
+const FOCUS_RESTORE_KEY = "jam-gallery-focus-index";
 
 export function storeGalleryFocus(href: string) {
   window.sessionStorage.setItem(FOCUS_RESTORE_KEY, href);

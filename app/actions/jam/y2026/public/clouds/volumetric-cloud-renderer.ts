@@ -91,21 +91,15 @@ function createSeededRandom(seed: number): () => number {
 }
 
 function createJitterTexture(seed: number): DataTexture {
-  const size = 64;
-  const random = createSeededRandom(seed ^ 0xa53a9b1f);
-  const data = new Uint8Array(size * size);
+  let size = 64;
+  let random = createSeededRandom(seed ^ 0xa53a9b1f);
+  let data = new Uint8Array(size * size);
 
   for (let i = 0; i < data.length; i += 1) {
     data[i] = Math.floor(random() * 256);
   }
 
-  const texture = new DataTexture(
-    data,
-    size,
-    size,
-    RedFormat,
-    UnsignedByteType,
-  );
+  let texture = new DataTexture(data, size, size, RedFormat, UnsignedByteType);
   texture.minFilter = NearestFilter;
   texture.magFilter = NearestFilter;
   texture.wrapS = RepeatWrapping;
@@ -116,7 +110,7 @@ function createJitterTexture(seed: number): DataTexture {
 }
 
 function create3DTarget(size: number): WebGL3DRenderTarget {
-  const target = new WebGL3DRenderTarget(size, size, size, {
+  let target = new WebGL3DRenderTarget(size, size, size, {
     depthBuffer: false,
     stencilBuffer: false,
   });
@@ -136,7 +130,7 @@ function create2DTarget(
   height: number,
   filter: MinificationTextureFilter = LinearFilter,
 ): WebGLRenderTarget {
-  const target = new WebGLRenderTarget(width, height, {
+  let target = new WebGLRenderTarget(width, height, {
     depthBuffer: false,
     stencilBuffer: false,
   });
@@ -196,7 +190,7 @@ function getAdaptiveRenderScale(
   reducedMotion: boolean,
   adaptiveRenderScale: number,
 ) {
-  const scale = reducedMotion
+  let scale = reducedMotion
     ? Math.min(settings.renderScale, 0.36)
     : settings.renderScale * adaptiveRenderScale;
   return MathUtils.clamp(scale, 0.28, 0.85);
@@ -249,7 +243,7 @@ export class VolumetricCloudRenderer {
     this.settings = normalizeCloudSettings(settings);
     this.jitterTexture = createJitterTexture(seed);
 
-    const textureProfile = getTextureProfile(reducedMotion);
+    let textureProfile = getTextureProfile(reducedMotion);
     this.baseTextureTarget = create3DTarget(textureProfile.baseSize);
     this.detailTextureTarget = create3DTarget(textureProfile.detailSize);
     this.curlTextureTarget = create2DTarget(
@@ -434,23 +428,23 @@ export class VolumetricCloudRenderer {
   }
 
   private generateStaticTextures(seed: number) {
-    const previousTarget = this.renderer.getRenderTarget();
-    const baseMaterial = createGenerationMaterial(
+    let previousTarget = this.renderer.getRenderTarget();
+    let baseMaterial = createGenerationMaterial(
       BASE_3D_FRAGMENT_SHADER,
       seed,
       true,
     );
-    const detailMaterial = createGenerationMaterial(
+    let detailMaterial = createGenerationMaterial(
       DETAIL_3D_FRAGMENT_SHADER,
       seed ^ 0x9e3779b9,
       true,
     );
-    const curlMaterial = createGenerationMaterial(
+    let curlMaterial = createGenerationMaterial(
       CURL_FRAGMENT_SHADER,
       seed ^ 0x85ebca6b,
       false,
     );
-    const envelopeMaterial = createGenerationMaterial(
+    let envelopeMaterial = createGenerationMaterial(
       ENVELOPE_FRAGMENT_SHADER,
       seed ^ 0xc2b2ae35,
       false,
@@ -494,16 +488,16 @@ export class VolumetricCloudRenderer {
   }
 
   private resizeCloudTarget() {
-    const scale = getAdaptiveRenderScale(
+    let scale = getAdaptiveRenderScale(
       this.settings,
       this.reducedMotion,
       this.adaptiveRenderScale,
     );
-    const width = Math.max(
+    let width = Math.max(
       1,
       Math.floor(this.viewportWidth * this.pixelRatio * scale),
     );
-    const height = Math.max(
+    let height = Math.max(
       1,
       Math.floor(this.viewportHeight * this.pixelRatio * scale),
     );
@@ -548,12 +542,12 @@ export class VolumetricCloudRenderer {
     if (!this.settingsDirty) return;
     this.settingsDirty = false;
 
-    const current = this.settings;
-    const lighting = current.lighting;
-    const primarySteps = this.reducedMotion
+    let current = this.settings;
+    let lighting = current.lighting;
+    let primarySteps = this.reducedMotion
       ? Math.min(current.primarySteps, 36)
       : current.primarySteps;
-    const lightSteps = this.reducedMotion
+    let lightSteps = this.reducedMotion
       ? Math.min(current.lightSteps, 2)
       : current.lightSteps;
 
@@ -656,11 +650,11 @@ export class VolumetricCloudRenderer {
   }
 
   private updateBounds() {
-    const width = 58 * Math.max(this.settings.horizontalDistribution, 0.2);
-    const height = 14 * Math.max(this.settings.verticalDistribution, 0.2);
-    const depth = 34 * Math.max(this.settings.depthDistribution, 0.2);
-    const baseY = -6.8;
-    const shapeLift = MathUtils.lerp(-1.2, 1.4, this.settings.shape);
+    let width = 58 * Math.max(this.settings.horizontalDistribution, 0.2);
+    let height = 14 * Math.max(this.settings.verticalDistribution, 0.2);
+    let depth = 34 * Math.max(this.settings.depthDistribution, 0.2);
+    let baseY = -6.8;
+    let shapeLift = MathUtils.lerp(-1.2, 1.4, this.settings.shape);
 
     this.boxMin.set(-width * 0.5, baseY, -18 - depth * 0.5);
     this.boxMax.set(width * 0.5, baseY + height + shapeLift, -18 + depth * 0.5);
@@ -668,17 +662,17 @@ export class VolumetricCloudRenderer {
 
   private sampleFrameRate() {
     this.frameRateSampleCount += 1;
-    const now = performance.now();
+    let now = performance.now();
 
     if (this.frameRateSampleStart === 0) {
       this.frameRateSampleStart = now;
       return;
     }
 
-    const elapsed = now - this.frameRateSampleStart;
+    let elapsed = now - this.frameRateSampleStart;
     if (elapsed < 500) return;
 
-    const fps = Math.round((this.frameRateSampleCount * 1000) / elapsed);
+    let fps = Math.round((this.frameRateSampleCount * 1000) / elapsed);
     this.adjustAdaptiveQuality(fps);
 
     this.frameRateSampleCount = 0;
@@ -688,8 +682,8 @@ export class VolumetricCloudRenderer {
   private adjustAdaptiveQuality(fps: number) {
     if (this.reducedMotion) return;
 
-    const targetFps = getTargetFps(this.reducedMotion);
-    const previousRenderScale = this.adaptiveRenderScale;
+    let targetFps = getTargetFps(this.reducedMotion);
+    let previousRenderScale = this.adaptiveRenderScale;
 
     if (fps < targetFps * 0.8) {
       this.adaptiveRenderScale = Math.max(0.68, this.adaptiveRenderScale * 0.9);

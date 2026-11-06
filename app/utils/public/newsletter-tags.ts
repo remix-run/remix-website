@@ -3,7 +3,9 @@ export const newsletterTagIds = {
   jam2026Updates: 19736081,
 } as const;
 
-let allowedNewsletterTagIds = new Set<number>(Object.values(newsletterTagIds));
+const allowedNewsletterTagIds = new Set<number>(
+  Object.values(newsletterTagIds),
+);
 
 export function isAllowedNewsletterTagId(tagId: number) {
   return Number.isSafeInteger(tagId) && allowedNewsletterTagIds.has(tagId);

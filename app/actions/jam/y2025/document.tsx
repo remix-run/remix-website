@@ -1,7 +1,9 @@
 import { css, type Handle, type RemixNode } from "remix/component";
+import { breakpointMedia } from "../../../ui/public/styles/theme.ts";
 import { Document } from "../../../ui/document.tsx";
-import { getSocialHeadTags } from "../../../utils/social-head-tags.ts";
-import { JamPageScaffold } from "./public/shared.tsx";
+import { getSocialHeadTagsForRequest } from "../../../utils/social-head-tags-for-request.ts";
+import { JamPageScaffold } from "./public/page-scaffold.tsx";
+import { Title } from "./public/typography.tsx";
 
 type JamPageProps = {
   title: string;
@@ -42,7 +44,7 @@ export function JamDocument(handle: Handle<JamPageProps>) {
             scrollBehavior: "auto",
           },
         })}
-        headTags={getSocialHeadTags({
+        headTags={getSocialHeadTagsForRequest({
           requestUrl,
           title,
           description,
@@ -57,6 +59,38 @@ export function JamDocument(handle: Handle<JamPageProps>) {
           {children}
         </JamPageScaffold>
       </Document>
+    );
+  };
+}
+
+/** Centered single-column layout shared by the long-form 2025 text pages. */
+export function JamTextPage(
+  handle: Handle<
+    Omit<JamPageProps, "hideBackground" | "showSeats"> & { heading: RemixNode }
+  >,
+) {
+  return () => {
+    let { heading, children, ...documentProps } = handle.props;
+    return (
+      <JamDocument {...documentProps}>
+        <main
+          mix={css({
+            display: "flex",
+            maxWidth: "800px",
+            marginInline: "auto",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "48px",
+            paddingBlock: "80px",
+            paddingTop: "120px",
+            [breakpointMedia.md]: { paddingTop: "270px" },
+            [breakpointMedia.lg]: { paddingTop: "280px" },
+          })}
+        >
+          <Title mix={css({ textAlign: "center" })}>{heading}</Title>
+          {children}
+        </main>
+      </JamDocument>
     );
   };
 }

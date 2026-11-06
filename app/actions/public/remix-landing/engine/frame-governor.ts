@@ -9,11 +9,11 @@ export function nextRenderDeadline(
   deadlineMs: number,
   idle: boolean,
 ): number | null {
-  const intervalMs = 1000 / (idle ? IDLE_MAX_FPS : ACTIVE_MAX_FPS);
+  let intervalMs = 1000 / (idle ? IDLE_MAX_FPS : ACTIVE_MAX_FPS);
   if (deadlineMs === 0) return nowMs + intervalMs;
   if (nowMs < deadlineMs - intervalMs * FRAME_TIME_TOLERANCE) return null;
 
-  const elapsedIntervals = Math.max(
+  let elapsedIntervals = Math.max(
     1,
     Math.floor((nowMs - deadlineMs) / intervalMs) + 1,
   );

@@ -1,0 +1,475 @@
+import { css, type Handle, type Props } from "remix/component";
+
+import { captionStyle } from "../../ui/public/styles/marketing-styles.ts";
+import { theme } from "../../ui/public/styles/theme.ts";
+
+export function TimelineDiagramDesktop(
+  handle: Handle<{ mix?: Props<"svg">["mix"] }>,
+) {
+  return () => (
+    <svg
+      mix={handle.props.mix}
+      width="1919"
+      height="209"
+      viewBox="0 0 1919 209"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* Year labels (non-interactive years) */}
+      <g
+        mix={[captionStyle, css({ fill: "var(--rmx-text-tertiary)" })]}
+        textAnchor="middle"
+      >
+        <text x="373" y="9" opacity="0.1">
+          2014
+        </text>
+        <text x="462" y="9" opacity="0.25">
+          2015
+        </text>
+        <text x="551" y="9" opacity="0.5">
+          2016
+        </text>
+        <text x="728" y="9">
+          2018
+        </text>
+        <text x="1086" y="9">
+          2022
+        </text>
+        <text x="1451" y="9" opacity="0.5">
+          2026
+        </text>
+        <text x="1543" y="9" opacity="0.25">
+          2027
+        </text>
+      </g>
+
+      {/* React Router track (red) */}
+      <rect
+        y="64.494"
+        width="1918.49"
+        height="36"
+        fill="var(--rmx-shade-red)"
+      />
+      <g filter="url(#glow-react-router)">
+        <path
+          d="M365 82.494C365 72.5529 373.059 64.494 383 64.494H1454.2C1464.14 64.494 1472.2 72.5529 1472.2 82.494C1472.2 92.4351 1464.14 100.494 1454.2 100.494H383C373.059 100.494 365 92.4351 365 82.494Z"
+          fill="var(--rmx-highlight-red)"
+        />
+      </g>
+      <TrackLabel x={497} y={87} label="react router" />
+
+      {/* Remix 3 track (green) */}
+      <rect
+        y="152.494"
+        width="1918.49"
+        height="36"
+        fill="var(--rmx-shade-green)"
+      />
+      <g filter="url(#glow-remix-3)">
+        <path
+          d="M1336 170.494C1336 160.553 1344 152.494 1354 152.494H1454.2C1464.14 152.494 1472.2 160.553 1472.2 170.494C1472.2 180.435 1464.14 188.494 1454.2 188.494H1354C1344 188.494 1336 180.435 1336 170.494Z"
+          fill="var(--rmx-highlight-green)"
+        />
+      </g>
+      <TrackLabel x={476} y={175} label="remix 3" />
+
+      {/* Remix track (blue) */}
+      <rect
+        y="108.494"
+        width="1918.49"
+        height="36"
+        fill="var(--rmx-shade-blue)"
+      />
+      <TrackLabel x={481} y={131} label="remix 1-2" />
+
+      {/* Blue glow segments */}
+      <g filter="url(#glow-blue)">
+        <path
+          d="M986.2 126.494C986.2 116.553 994.259 108.494 1004.2 108.494H1181.8C1191.74 108.494 1199.8 116.553 1199.8 126.494C1199.8 136.435 1191.74 144.494 1181.8 144.494H1004.2C994.259 144.494 986.2 136.435 986.2 126.494Z"
+          fill="var(--rmx-highlight-blue)"
+        />
+      </g>
+      <g filter="url(#glow-blue)">
+        <path
+          d="M884 82.494C884 72.5529 892 64.494 902 64.494H955C964.941 64.494 973 72.5529 973 82.494C973 92.4351 964.941 100.494 955 100.494H902C892 100.494 884 92.4351 884 82.494Z"
+          fill="var(--rmx-highlight-blue)"
+        />
+      </g>
+
+      {/* Gradient and diagonal connectors */}
+      <path
+        d="M1208.75 82.494C1208.75 72.5529 1216.81 64.494 1226.75 64.494H1368.75V100.494H1226.75C1216.81 100.494 1208.75 92.4351 1208.75 82.494Z"
+        fill="url(#gradient-remix-to-router)"
+      />
+      <g filter="url(#glow-blue)">
+        <path
+          d="M1016.93 138.996C1023.96 131.966 1023.96 120.569 1016.93 113.54L973.391 70.0023C966.361 62.9729 954.964 62.9729 947.935 70.0023C940.905 77.0318 940.905 88.4287 947.935 95.4582L991.472 138.996C998.502 146.025 1009.9 146.025 1016.93 138.996Z"
+          fill="var(--rmx-highlight-blue)"
+        />
+      </g>
+      <g filter="url(#glow-blue)">
+        <path
+          d="M1169.68 138.996C1162.66 131.966 1162.66 120.569 1169.68 113.54L1213.5 69.7279C1220.53 62.6985 1231.92 62.6985 1238.95 69.7279C1245.98 76.7574 1245.98 88.1543 1238.95 95.1838L1195.14 138.996C1188.11 146.025 1176.71 146.025 1169.68 138.996Z"
+          fill="var(--rmx-highlight-blue)"
+        />
+      </g>
+
+      {/* Track end circles */}
+      <TrackEndCircle cx={1450.7} cy={82.494} />
+      <TrackEndCircle cx={1450.7} cy={170.494} />
+
+      {/* Milestones */}
+      <Milestone
+        year="2017"
+        yearX={640}
+        nodeX={640}
+        nodeY={82.494}
+        lineY1={58}
+        label="v4"
+        labelY={87}
+        labelColor="var(--rmx-highlight-red)"
+      />
+      <Milestone
+        year="2019"
+        yearX={817}
+        nodeX={817}
+        nodeY={82.494}
+        lineY1={58}
+        label="v5"
+        labelY={87}
+        labelColor="var(--rmx-highlight-red)"
+        href="https://v5.reactrouter.com/"
+      />
+      <Milestone
+        year="2020"
+        yearX={906}
+        nodeX={906}
+        nodeY={82.494}
+        lineY1={58}
+        label="v6"
+        labelY={87}
+        labelColor="var(--rmx-highlight-red)"
+        href="https://reactrouter.com/v6"
+      />
+      <Milestone
+        year="2021"
+        yearX={997}
+        nodeX={1004.2}
+        nodeY={125.994}
+        lineY1={102}
+        label="v1"
+        labelY={131}
+        labelColor="var(--rmx-highlight-blue)"
+      />
+      <Milestone
+        year="2023"
+        yearX={1177}
+        nodeX={1182.8}
+        nodeY={125.994}
+        lineY1={102}
+        label="v2"
+        labelY={131}
+        labelColor="var(--rmx-highlight-blue)"
+        href="https://v2.remix.run/"
+      />
+      <Milestone
+        year="2024"
+        yearX={1268}
+        nodeX={1274.95}
+        nodeY={82.494}
+        lineY1={58}
+        label="v7"
+        labelY={87}
+        labelColor="var(--rmx-highlight-red)"
+        href="https://reactrouter.com/"
+      />
+      <Milestone
+        year="2025"
+        yearX={1360}
+        nodeX={1360}
+        nodeY={170.494}
+        lineY1={146}
+        label="v3"
+        labelY={175}
+        labelColor="var(--rmx-highlight-green)"
+        href="https://github.com/remix-run/remix"
+      />
+
+      <defs>
+        <GlowFilter
+          id="glow-react-router"
+          x={345}
+          y={44.494}
+          width={1147.2}
+          height={76}
+          rgb={[0.85098, 0.172549, 0.286275]}
+        />
+        <GlowFilter
+          id="glow-remix-3"
+          x={1302}
+          y={132.494}
+          width={188}
+          height={76}
+          rgb={[0.0235294, 0.917647, 0.541176]}
+        />
+        <GlowFilter
+          id="glow-blue"
+          x="-50%"
+          y="-50%"
+          width="200%"
+          height="200%"
+          filterUnits="objectBoundingBox"
+          rgb={[0.145098, 0.619608, 0.937255]}
+        />
+        <linearGradient
+          id="gradient-remix-to-router"
+          x1="1269.81"
+          y1="82.494"
+          x2="1368.75"
+          y2="82.494"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="var(--rmx-highlight-blue)" />
+          <stop offset="1" stopColor="var(--rmx-highlight-red)" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+
+/** Blur radius and opacity of each stacked drop-shadow pass, innermost first. */
+const GLOW_PASSES = [
+  { stdDeviation: 1, opacity: 0.65 },
+  { stdDeviation: 4, opacity: 0.35 },
+  { stdDeviation: 8, opacity: 0.35 },
+  { stdDeviation: 10, opacity: 0.35 },
+] as const;
+
+/** Layered outer glow behind a track segment, tinted with `rgb` (0–1 channels). */
+function GlowFilter(
+  handle: Handle<{
+    id: string;
+    x: number | string;
+    y: number | string;
+    width: number | string;
+    height: number | string;
+    filterUnits?: "userSpaceOnUse" | "objectBoundingBox";
+    rgb: readonly [number, number, number];
+  }>,
+) {
+  return () => {
+    let [r, g, b] = handle.props.rgb;
+    return (
+      <filter
+        id={handle.props.id}
+        x={handle.props.x}
+        y={handle.props.y}
+        width={handle.props.width}
+        height={handle.props.height}
+        filterUnits={handle.props.filterUnits ?? "userSpaceOnUse"}
+        colorInterpolationFilters="sRGB"
+      >
+        <feFlood floodOpacity="0" result="glow0" />
+        {GLOW_PASSES.map((pass, index) => (
+          <>
+            <feColorMatrix
+              in="SourceAlpha"
+              type="matrix"
+              values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+              result="hardAlpha"
+            />
+            <feOffset />
+            <feGaussianBlur stdDeviation={pass.stdDeviation} />
+            <feComposite in2="hardAlpha" operator="out" />
+            <feColorMatrix
+              type="matrix"
+              values={`0 0 0 0 ${r} 0 0 0 0 ${g} 0 0 0 0 ${b} 0 0 0 ${pass.opacity} 0`}
+            />
+            <feBlend
+              mode="normal"
+              in2={`glow${index}`}
+              result={`glow${index + 1}`}
+            />
+          </>
+        ))}
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2={`glow${GLOW_PASSES.length}`}
+          result="shape"
+        />
+      </filter>
+    );
+  };
+}
+
+/** Track name label (e.g., "REACT ROUTER", "REMIX", "REMIX 3") */
+function TrackLabel(handle: Handle<{ x: number; y: number; label: string }>) {
+  return () => (
+    <text
+      x={handle.props.x}
+      y={handle.props.y}
+      mix={[
+        captionStyle,
+        css({
+          fill: "var(--rmx-neutral-100)",
+          fontWeight: theme.fontWeight.semibold,
+          letterSpacing: "0.05em",
+          textTransform: "uppercase",
+        }),
+      ]}
+      textAnchor="middle"
+    >
+      {handle.props.label}
+    </text>
+  );
+}
+
+/** Open circle at the end of a track */
+function TrackEndCircle(handle: Handle<{ cx: number; cy: number }>) {
+  return () => (
+    <circle
+      cx={handle.props.cx}
+      cy={handle.props.cy}
+      r="5"
+      stroke="var(--rmx-neutral-200)"
+      strokeWidth="2"
+      fill="none"
+    />
+  );
+}
+
+type MilestoneProps = {
+  year: string;
+  yearX: number;
+  nodeX: number;
+  nodeY: number;
+  lineY1: number;
+  label: string;
+  labelY: number;
+  labelColor: string;
+  href?: string;
+};
+
+/** Interactive milestone marker with hover/focus states */
+function Milestone(handle: Handle<MilestoneProps>) {
+  return () => {
+    let content = (
+      <>
+        {/* Year label */}
+        <text
+          x={handle.props.yearX}
+          y="9"
+          textAnchor="middle"
+          data-milestone-year=""
+          mix={captionStyle}
+        >
+          {handle.props.year}
+        </text>
+
+        {/* Hover hitbox */}
+        <circle
+          cx={handle.props.nodeX}
+          cy={handle.props.nodeY}
+          r="24"
+          fill="transparent"
+        />
+
+        {/* Connecting line */}
+        <line
+          x1={handle.props.nodeX}
+          y1={handle.props.lineY1}
+          x2={handle.props.nodeX}
+          y2="20"
+          stroke="var(--rmx-neutral-200)"
+          strokeWidth="2"
+          data-milestone-line=""
+        />
+
+        {/* Default state: small dot */}
+        <circle
+          cx={handle.props.nodeX}
+          cy={handle.props.nodeY}
+          r="6"
+          fill="var(--rmx-neutral-200)"
+          data-milestone-dot=""
+        />
+
+        {/* Hover/focus state: white circle with colored label */}
+        <g data-milestone-label="">
+          <circle
+            cx={handle.props.nodeX}
+            cy={handle.props.nodeY}
+            r="24"
+            fill="white"
+          />
+          <text
+            x={handle.props.nodeX}
+            y={handle.props.labelY}
+            textAnchor="middle"
+            mix={[captionStyle, css({ fontWeight: theme.fontWeight.semibold })]}
+            fill={handle.props.labelColor}
+          >
+            {handle.props.label}
+          </text>
+        </g>
+      </>
+    );
+
+    if (handle.props.href) {
+      return (
+        <a
+          href={handle.props.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          mix={[milestoneStyle, css({ cursor: "pointer" })]}
+        >
+          {content}
+        </a>
+      );
+    }
+
+    return (
+      <g
+        tabIndex={0}
+        role="img"
+        aria-label={`${handle.props.label} released in ${handle.props.year}`}
+        mix={[milestoneStyle, css({ cursor: "default" })]}
+      >
+        {content}
+      </g>
+    );
+  };
+}
+
+const milestoneStyle = css({
+  "& [data-milestone-year]": {
+    fill: "var(--rmx-text-tertiary)",
+    transition: "all 150ms ease",
+  },
+  "& [data-milestone-line]": {
+    opacity: 0,
+    transition: "opacity 150ms ease",
+  },
+  "& [data-milestone-dot]": {
+    opacity: 1,
+    transition: "opacity 150ms ease",
+  },
+  "& [data-milestone-label]": {
+    opacity: 0,
+    transition: "opacity 150ms ease",
+  },
+  "&:is(:hover, :focus-visible) [data-milestone-year]": {
+    fill: "var(--rmx-neutral-100)",
+    fontWeight: theme.fontWeight.bold,
+  },
+  "&:is(:hover, :focus-visible) [data-milestone-line]": { opacity: 1 },
+  "&:is(:hover, :focus-visible) [data-milestone-dot]": { opacity: 0 },
+  "&:is(:hover, :focus-visible) [data-milestone-label]": { opacity: 1 },
+  "@media (prefers-reduced-motion: reduce)": {
+    "& [data-milestone-year], & [data-milestone-line], & [data-milestone-dot], & [data-milestone-label]":
+      {
+        transition: "none",
+      },
+  },
+});

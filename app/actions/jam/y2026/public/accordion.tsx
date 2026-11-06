@@ -59,17 +59,21 @@ export function AccordionContent(handle: Handle<AccordionPartProps>) {
   );
 }
 
-let rootStyle = css({ display: "flex", flexDirection: "column", minWidth: 0 });
-let itemStyle = css({ minWidth: 0 });
-let headingStyle = css({ margin: 0, minWidth: 0 });
-let triggerStyle = css({
+const rootStyle = css({
+  display: "flex",
+  flexDirection: "column",
+  minWidth: 0,
+});
+const itemStyle = css({ minWidth: 0 });
+const headingStyle = css({ margin: 0, minWidth: 0 });
+const triggerStyle = css({
   all: "unset",
   boxSizing: "border-box",
   cursor: "pointer",
   width: "100%",
   textAlign: "left",
 });
-let panelStyle = css({
+const panelStyle = css({
   display: "grid",
   gridTemplateRows: "0fr",
   transition: `grid-template-rows ${spring()}`,
@@ -77,8 +81,8 @@ let panelStyle = css({
   "&[data-state='closed']": { pointerEvents: "none" },
   "@media (prefers-reduced-motion: reduce)": { transition: "none" },
 });
-let panelClipStyle = css({ minHeight: 0, overflow: "hidden" });
-let bodyStyle = css({
+const panelClipStyle = css({ minHeight: 0, overflow: "hidden" });
+const bodyStyle = css({
   display: "flow-root",
   minHeight: 0,
   "& > :first-child": { marginTop: 0 },

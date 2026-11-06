@@ -2,8 +2,10 @@ import { redirect } from "remix/response/redirect";
 import semver from "semver";
 
 import type { AppRenderer } from "../middleware/render.ts";
-import { StatusErrorDocument } from "../ui/not-found-page.tsx";
-import { CACHE } from "../utils/cache-control.ts";
+import {
+  NOT_FOUND_RESPONSE,
+  StatusErrorDocument,
+} from "../ui/status-error-document.tsx";
 
 const SAFE_STATIC_FILE_EXTENSIONS = [
   ".html",
@@ -52,13 +54,10 @@ export function catchallHandler({
     return new Response("", { status: 404, statusText: "Not Found" });
   }
 
-  return render(<StatusErrorDocument status={404} statusText="Not Found" />, {
-    status: 404,
-    statusText: "Not Found",
-    headers: {
-      "Cache-Control": CACHE.PRIVATE,
-    },
-  });
+  return render(
+    <StatusErrorDocument status={404} statusText="Not Found" />,
+    NOT_FOUND_RESPONSE,
+  );
 }
 
 function getCatchallRedirect(url: URL): string | null {

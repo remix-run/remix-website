@@ -12,7 +12,7 @@ describe("home route", () => {
 
     let response = await router.fetch(
       new URL(
-        `${routes.homeNewsletterSignup.href()}?subscription=success`,
+        `${routes.homeNewsletterSubscribeForm.href()}?subscription=success`,
         "http://localhost:3000",
       ),
     );

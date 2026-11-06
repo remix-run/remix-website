@@ -5,12 +5,9 @@ import { describe, it } from "remix/test";
 import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
 import type { NewsletterRepository } from "../app/actions/newsletter/archive.ts";
-import {
-  swallowAbortErrors,
-  waitForClientEntryHydration,
-} from "../test/setup.ts";
+import { swallowAbortErrors, waitForClientEntryHydration } from "./setup.ts";
 
-let emptyNewsletterRepository: NewsletterRepository = {
+const emptyNewsletterRepository: NewsletterRepository = {
   async listSummaries() {
     return [];
   },

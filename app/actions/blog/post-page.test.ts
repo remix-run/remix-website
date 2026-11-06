@@ -15,6 +15,7 @@ import {
 describe("Blog post route", () => {
   it("renders a post for a valid slug", async () => {
     let post = await getBlogPost("remix-v2");
+    if (!post) throw new Error("Expected the remix-v2 post to exist");
     let router = createRouteTestRouter();
     router.map(routes.blog, blogController);
 

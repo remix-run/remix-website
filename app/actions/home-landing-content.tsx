@@ -1,23 +1,23 @@
 import { css, type Handle } from "remix/component";
 
-import { textBoxTrim } from "../ui/public/css-mixins.ts";
-import { breakpointMedia, theme } from "../ui/public/theme.ts";
+import { textBoxTrim } from "../ui/public/styles/css-mixins.ts";
+import { breakpointMedia, theme } from "../ui/public/styles/theme.ts";
 import { FeatureSection } from "./public/remix-landing/components/feature-section.tsx";
 import { LandingFooter } from "./public/remix-landing/components/landing-footer.tsx";
 import { LandingHero } from "./public/remix-landing/components/landing-hero.tsx";
 import { StackExplorer } from "./public/remix-landing/components/stack-explorer.tsx";
 import { landingContent } from "./public/remix-landing/landing-content.ts";
-import type { StackExplorerCodeHighlights } from "./public/remix-landing/components/stack-explorer-content.tsx";
+import type { StackExplorerCodeHighlights } from "./public/remix-landing/stack-explorer-content.tsx";
 import {
   colors,
   glowWhite,
   pageMaxWidth,
-} from "./public/remix-landing/styles/tokens.ts";
+} from "./public/remix-landing/tokens.ts";
 
 const differentiatorInlineCodeStyles = css({
   fontFamily: "'JetBrains Mono', monospace",
   fontSize: "0.92em",
-  color: "#ffffff",
+  color: colors.fgStrong,
 });
 
 type LandingContentProps = {
@@ -183,7 +183,7 @@ const differentiatorItemTitleStyles = css({
   margin: "0",
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.bold,
-  color: "#ffffff",
+  color: colors.fgStrong,
   fontSize: "18px",
   lineHeight: "1.3",
   letterSpacing: "-0.015em",

@@ -2,7 +2,7 @@ import { css } from "remix/component";
 
 export type Jam2026ThemeMode = "light" | "dark";
 
-let jamThemeVars = {
+const jamThemeVars = {
   ink: "--jam-2026-ink",
   inkMuted: "--jam-2026-ink-muted",
   inkWash: "--jam-2026-ink-wash",
@@ -29,7 +29,7 @@ let jamThemeVars = {
   cloudFilter: "--jam-2026-cloud-filter",
 };
 
-export let jamTheme = {
+export const jamTheme = {
   ink: `var(${jamThemeVars.ink})`,
   inkMuted: `var(${jamThemeVars.inkMuted})`,
   inkWash: `var(${jamThemeVars.inkWash})`,
@@ -56,7 +56,7 @@ export let jamTheme = {
   cloudFilter: `var(${jamThemeVars.cloudFilter})`,
 };
 
-let jamThemeVarsStyle = css({
+const jamThemeVarsStyle = css({
   [jamThemeVars.ink]: "light-dark(#082845, #ffffff)",
   [jamThemeVars.inkMuted]:
     "light-dark(rgb(8 40 69 / 0.62), rgb(255 255 255 / 0.64))",
@@ -95,7 +95,7 @@ let jamThemeVarsStyle = css({
   [jamThemeVars.cloudFilter]: "contrast(106%) saturate(92%)",
 });
 
-let jamThemeModeVarsStyle = css({
+const jamThemeModeVarsStyle = css({
   ":root.dark &": {
     [jamThemeVars.cloudOpacity]: "1",
     [jamThemeVars.cloudFilter]: "contrast(106%) saturate(92%)",
@@ -110,7 +110,7 @@ let jamThemeModeVarsStyle = css({
   },
 });
 
-let jamSelectionStyle = css({
+const jamSelectionStyle = css({
   "&::selection": {
     backgroundColor: jamTheme.highlight,
     color: "#ffffff",
@@ -121,7 +121,35 @@ let jamSelectionStyle = css({
   },
 });
 
-export let jamThemeStyle = [
+const LIGHT_LOGO_FILTER =
+  "brightness(0) saturate(100%) invert(14%) sepia(48%) saturate(1162%) hue-rotate(171deg) brightness(91%) contrast(97%)";
+const DARK_LOGO_FILTER = "brightness(0) invert(1)";
+
+/**
+ * Recolors the black Jam logo artwork to the theme ink. Follows the system
+ * preference until the root has a forced `data-theme`, and also honors the
+ * root `.dark` class and a local `data-theme` ancestor (the header).
+ */
+export const jamLogoFilterStyle = css({
+  filter: LIGHT_LOGO_FILTER,
+  "@media (prefers-color-scheme: dark)": {
+    filter: DARK_LOGO_FILTER,
+  },
+  ':root[data-theme="light"] &': {
+    filter: LIGHT_LOGO_FILTER,
+  },
+  ":root.dark &": {
+    filter: DARK_LOGO_FILTER,
+  },
+  ':root[data-theme="dark"] &': {
+    filter: DARK_LOGO_FILTER,
+  },
+  '[data-theme="dark"] &': {
+    filter: DARK_LOGO_FILTER,
+  },
+});
+
+export const jamThemeStyle = [
   jamThemeVarsStyle,
   jamThemeModeVarsStyle,
   jamSelectionStyle,

@@ -1,0 +1,924 @@
+import { clientEntry, css, navigate, on, type Handle } from "remix/component";
+import {
+  animateEntrance,
+  prefersReducedMotion,
+  spring,
+} from "@remix-run/ui/animation";
+import { Icon } from "../../../../../ui/public/icon.tsx";
+import { theme } from "../../../../../ui/public/styles/theme.ts";
+
+import { syncDocumentHead } from "../../../../../ui/public/document/document-head-sync.ts";
+import { assetPaths } from "../../../../../utils/public/asset-paths.ts";
+import {
+  getJam2026ClientManagedHeadTags,
+  getJam2026HeadContent,
+} from "../head-content.ts";
+import { remixJam2026Ticket } from "./ticket-data.ts";
+import { jamLogoFilterStyle, jamTheme } from "../theme.ts";
+import {
+  ticketModalConfig,
+  type Jam2026TicketCheckout,
+} from "./tickets-modal-contract.ts";
+import { routes } from "../../../../../routes.ts";
+import { createJam2026TicketsModalEffects } from "./tickets-modal-effects.ts";
+
+type Jam2026TicketsModalProps = {
+  animateEntrance?: boolean;
+  open?: boolean;
+  ticketCheckout?: Jam2026TicketCheckout;
+};
+
+const usdFormatter = new Intl.NumberFormat("en-US", {
+  currency: "USD",
+  maximumFractionDigits: 0,
+  style: "currency",
+});
+
+export const Jam2026TicketsModalFrame = clientEntry(
+  import.meta.url,
+  function Jam2026TicketsModalFrame(handle: Handle<Jam2026TicketsModalProps>) {
+    let modalClosing = false;
+    let closeNavigationTimer: ReturnType<typeof setTimeout> | undefined;
+    let modalEffects = createJam2026TicketsModalEffects(handle, {
+      isActive: () => isOpen() && !modalClosing,
+      requestClose,
+    });
+    let queueHeadSync = queueOnce(handle, () => syncTicketsModalHead(isOpen()));
+    let queueNavigationEntrySync = queueOnce(handle, () => {
+      if (handle.frame === handle.frames.top) return;
+      syncTicketModalNavigationEntry(isOpen());
+    });
+
+    function isOpen() {
+      return Boolean(handle.props.open);
+    }
+
+    function requestClose(event?: Event) {
+      event?.preventDefault();
+      if (modalClosing || !isOpen()) return;
+
+      modalClosing = true;
+      let scrollX = window.scrollX;
+      let scrollY = window.scrollY;
+      handle.update();
+
+      // Let the closing animation play before the frame navigation unmounts it.
+      closeNavigationTimer = setTimeout(
+        () => {
+          closeNavigationTimer = undefined;
+          void navigateModalFrameHome(scrollX, scrollY, handle.signal);
+        },
+        prefersReducedMotion() ? 0 : 220,
+      );
+    }
+
+    handle.signal.addEventListener(
+      "abort",
+      () => {
+        if (closeNavigationTimer) clearTimeout(closeNavigationTimer);
+      },
+      { once: true },
+    );
+
+    return () => {
+      let open = isOpen();
+
+      if (!open) modalClosing = false;
+
+      modalEffects.queueStateSync();
+      queueNavigationEntrySync();
+      queueHeadSync();
+
+      // The frame runtime needs a stable child when toggling between empty
+      // frame content and the hydrated modal.
+      return (
+        <div>
+          {open ? (
+            <Jam2026TicketsModalContent
+              animateEntrance={handle.props.animateEntrance ?? true}
+              closing={modalClosing}
+              onRequestClose={requestClose}
+              ticketCheckout={handle.props.ticketCheckout}
+            />
+          ) : null}
+        </div>
+      );
+    };
+  },
+);
+
+type Jam2026TicketsModalContentProps = {
+  animateEntrance?: boolean;
+  closing?: boolean;
+  onRequestClose: (event: Event) => void;
+  ticketCheckout?: Jam2026TicketCheckout;
+};
+
+export function Jam2026TicketsModalContent(
+  handle: Handle<Jam2026TicketsModalContentProps>,
+) {
+  return () => {
+    let state = handle.props.closing ? "closing" : "open";
+    let entrance = getEntranceMixes(
+      (handle.props.animateEntrance ?? true) && !prefersReducedMotion(),
+    );
+
+    return (
+      <div data-state={state} mix={entrance.scrim}>
+        <a
+          aria-label="Close tickets"
+          href={routes.jam.y2026.index.href()}
+          mix={[
+            ticketsModalBackdropStyle,
+            on("click", (event) => handle.props.onRequestClose(event)),
+          ]}
+          data-rmx-reset-scroll="manual"
+          data-rmx-target={ticketModalConfig.frameName}
+          tabIndex={-1}
+        />
+        <section
+          aria-labelledby="tickets-modal-title"
+          aria-modal="true"
+          data-state={state}
+          role="dialog"
+          tabIndex={-1}
+          mix={entrance.window}
+        >
+          <div mix={ticketsModalTitlebarStyle}>
+            <a
+              aria-label="Close tickets"
+              href={routes.jam.y2026.index.href()}
+              mix={[
+                ticketsModalCloseStyle,
+                on("click", (event) => handle.props.onRequestClose(event)),
+              ]}
+              data-rmx-reset-scroll="manual"
+              data-rmx-target={ticketModalConfig.frameName}
+            >
+              <Icon
+                name="x-mark"
+                aria-hidden="true"
+                focusable="false"
+                mix={ticketsModalCloseIconStyle}
+                viewBox="0 0 14 14"
+              />
+            </a>
+            <p id="tickets-modal-title" mix={ticketsModalFilenameStyle}>
+              TICKETS.TS
+            </p>
+          </div>
+          <div mix={ticketsModalBodyStyle}>
+            <div mix={ticketsModalContentStyle}>
+              <div mix={ticketsModalHeadingStyle}>
+                <img
+                  alt="Remix Jam Toronto 2026"
+                  src={assetPaths.jam2026.horizontalLockup}
+                  mix={[jamLogoFilterStyle, ticketsModalLockupStyle]}
+                />
+              </div>
+              <div aria-hidden="true" mix={ticketsModalFigureStyle}>
+                <img
+                  alt=""
+                  draggable={false}
+                  src={assetPaths.jam2026.keyring}
+                  mix={entrance.keyring}
+                />
+              </div>
+              <div mix={ticketsModalBottomStyle}>
+                <article
+                  aria-label="Remix Jam 2026 ticket"
+                  mix={ticketCardStyle}
+                >
+                  <span mix={ticketCardTopRowStyle}>
+                    <span>{remixJam2026Ticket.label}</span>
+                    <span mix={ticketCardPriceStyle}>
+                      {formatCurrency(remixJam2026Ticket.price)}
+                    </span>
+                  </span>
+                  <span mix={ticketCardDateStyle}>October 2, 2026</span>
+                  <span mix={ticketCardDescriptionStyle}>
+                    Conference and afterparty. Food and drinks included.
+                  </span>
+                </article>
+                <TicketCheckoutForm
+                  ticketCheckout={handle.props.ticketCheckout}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  };
+}
+
+/**
+ * Quantity picker and checkout submit. Owns the selected quantity and the
+ * pending-submit state, which resets when the page is restored from the
+ * back/forward cache after leaving for checkout.
+ */
+function TicketCheckoutForm(
+  handle: Handle<{ ticketCheckout?: Jam2026TicketCheckout }>,
+) {
+  let ticket = remixJam2026Ticket;
+  let quantity = handle.props.ticketCheckout?.initialQuantity ?? 1;
+  let submitting = false;
+
+  handle.queueTask(() => {
+    window.addEventListener(
+      "pageshow",
+      (event) => {
+        if (!event.persisted || !submitting) return;
+        submitting = false;
+        handle.update();
+      },
+      { signal: handle.signal },
+    );
+  });
+
+  function getMaxQuantity() {
+    return handle.props.ticketCheckout?.maxQuantity ?? ticket.maxQuantity;
+  }
+
+  function setQuantity(nextQuantity: number) {
+    quantity = Math.min(getMaxQuantity(), Math.max(1, nextQuantity));
+    handle.update();
+  }
+
+  return () => {
+    let ticketCheckout = handle.props.ticketCheckout;
+    let maxQuantity = getMaxQuantity();
+    let checkoutEnabled = Boolean(
+      ticketCheckout?.availableForSale && ticketCheckout.productId,
+    );
+
+    return (
+      <form
+        aria-busy={submitting ? "true" : undefined}
+        action={routes.jam.y2026.ticket.action.href()}
+        method="post"
+        mix={[
+          ticketsModalCheckoutStyle,
+          on("submit", (event) => {
+            if (!checkoutEnabled || submitting) {
+              event.preventDefault();
+              return;
+            }
+
+            submitting = true;
+            handle.update();
+          }),
+        ]}
+      >
+        <input type="hidden" name="ticketType" value={ticket.type} />
+        <input
+          type="hidden"
+          name="productId"
+          value={ticketCheckout?.productId ?? ""}
+        />
+        <input type="hidden" name="quantity" value={String(quantity)} />
+        <div mix={ticketsModalCheckoutGroupStyle}>
+          <span mix={ticketsModalCheckoutLabelStyle}>Qty</span>
+          <div mix={ticketsModalQuantityStyle}>
+            <QuantityButton
+              label="Decrease quantity"
+              icon="circle-minus"
+              disabled={submitting || quantity <= 1}
+              onPress={() => setQuantity(quantity - 1)}
+            />
+            <span aria-live="polite" mix={ticketsModalQuantityValueStyle}>
+              {quantity}
+            </span>
+            <QuantityButton
+              label="Increase quantity"
+              icon="circle-plus"
+              disabled={submitting || quantity >= maxQuantity}
+              onPress={() => setQuantity(quantity + 1)}
+            />
+          </div>
+        </div>
+        <div mix={ticketsModalCheckoutGroupStyle}>
+          <span mix={ticketsModalCheckoutLabelStyle}>Subtotal</span>
+          <div mix={ticketsModalSubtotalStyle}>
+            <span mix={ticketsModalSubtotalAmountStyle}>
+              {formatCurrency(ticket.price * quantity)}
+            </span>
+            <span mix={ticketsModalSubtotalCurrencyStyle}>USD</span>
+          </div>
+        </div>
+        <button
+          disabled={!checkoutEnabled || submitting}
+          type="submit"
+          mix={ticketsModalCheckoutButtonStyle}
+        >
+          {submitting ? (
+            <>
+              <span aria-hidden="true" mix={ticketsModalBusyDotStyle} />
+              <span>Checking out...</span>
+            </>
+          ) : checkoutEnabled ? (
+            "Check out"
+          ) : (
+            "Unavailable"
+          )}
+        </button>
+        {ticketCheckout?.error ? (
+          <p role="alert" mix={ticketsModalCheckoutErrorStyle}>
+            {ticketCheckout.error}
+          </p>
+        ) : null}
+      </form>
+    );
+  };
+}
+
+function QuantityButton(
+  handle: Handle<{
+    label: string;
+    icon: "circle-minus" | "circle-plus";
+    disabled: boolean;
+    onPress: () => void;
+  }>,
+) {
+  return () => (
+    <button
+      aria-label={handle.props.label}
+      disabled={handle.props.disabled}
+      type="button"
+      mix={[
+        ticketsModalQuantityButtonStyle,
+        on("click", () => {
+          if (!handle.props.disabled) handle.props.onPress();
+        }),
+      ]}
+    >
+      <Icon
+        name={handle.props.icon}
+        aria-hidden="true"
+        focusable="false"
+        mix={ticketsModalQuantityIconStyle}
+        viewBox="0 0 24 24"
+      />
+    </button>
+  );
+}
+
+/**
+ * Returns a function that schedules `task` for after the next render, at most
+ * once until it has run.
+ */
+function queueOnce(handle: Pick<Handle, "queueTask">, task: () => void) {
+  let queued = false;
+
+  return () => {
+    if (queued) return;
+    queued = true;
+    handle.queueTask(() => {
+      queued = false;
+      task();
+    });
+  };
+}
+
+function syncTicketsModalHead(ticketsModalOpen: boolean) {
+  let head = getJam2026HeadContent({ ticketsModalOpen });
+
+  syncDocumentHead(
+    {
+      title: head.title,
+      headTags: getJam2026ClientManagedHeadTags(head),
+    },
+    { syncTheme: false },
+  );
+}
+
+async function navigateModalFrameHome(
+  scrollX: number,
+  scrollY: number,
+  signal: AbortSignal,
+) {
+  try {
+    await navigate(routes.jam.y2026.index.href(), {
+      target: ticketModalConfig.frameName,
+      history: "replace",
+      resetScroll: "manual",
+      resetFocus: "manual",
+    });
+  } finally {
+    restoreScrollPosition(scrollX, scrollY, signal);
+  }
+}
+
+function restoreScrollPosition(
+  scrollX: number,
+  scrollY: number,
+  signal: AbortSignal,
+) {
+  if (signal.aborted) return;
+
+  window.scrollTo(scrollX, scrollY);
+  window.requestAnimationFrame(() => {
+    if (!signal.aborted) window.scrollTo(scrollX, scrollY);
+  });
+}
+
+function syncTicketModalNavigationEntry(open: boolean) {
+  let navigation = window.navigation;
+  if (!navigation?.currentEntry) return;
+
+  let homeHref = routes.jam.y2026.index.href();
+  let ticketHref = routes.jam.y2026.ticket.index.href();
+  let pathname = window.location.pathname;
+
+  if (pathname !== homeHref && pathname !== ticketHref) return;
+
+  // Direct document loads start with top-frame history state. Once the named
+  // modal frame hydrates, mark Jam ticket entries as frame-owned so browser
+  // Back closes the modal without remounting the animated page.
+  let state = {
+    $rmx: true,
+    resetScroll: "manual",
+    resetFocus: "after-transition",
+    src: new URL(open ? ticketHref : homeHref, window.location.href).href,
+    target: ticketModalConfig.frameName,
+  };
+  let currentState = navigation.currentEntry.getState();
+  if (isMatchingState(currentState, state)) return;
+
+  navigation.updateCurrentEntry({ state });
+}
+
+function isMatchingState(value: unknown, expected: Record<string, unknown>) {
+  if (typeof value !== "object" || value === null) return false;
+  let record = value as Record<string, unknown>;
+  return Object.entries(expected).every(([key, item]) => record[key] === item);
+}
+
+function getEntranceMixes(useEntranceMotion: boolean) {
+  if (!useEntranceMotion) {
+    return {
+      scrim: ticketsModalScrimStyle,
+      window: ticketsModalWindowStyle,
+      keyring: ticketsModalFigureImageStyle,
+    };
+  }
+
+  return {
+    scrim: [
+      ticketsModalScrimStyle,
+      animateEntrance({ opacity: 0, duration: 100, easing: "ease-out" }),
+    ],
+    window: [
+      ticketsModalWindowStyle,
+      animateEntrance({
+        clipPath: "inset(0 0 100% 0 round 8px)",
+        ...spring("snappy", { duration: 220 }),
+      }),
+    ],
+    keyring: [
+      ticketsModalFigureImageStyle,
+      ticketsModalFigureImageEntranceStyle,
+    ],
+  };
+}
+
+function formatCurrency(value: number) {
+  return usdFormatter.format(value);
+}
+
+const ticketsModalScrimStyle = css({
+  alignItems: "center",
+  background: "rgb(0 0 0 / 0.85)",
+  display: "flex",
+  inset: 0,
+  justifyContent: "center",
+  padding: "16px",
+  position: "fixed",
+  transition: "background 120ms ease-out",
+  zIndex: 60,
+  "&[data-state='closing']": {
+    background: "rgb(0 0 0 / 0)",
+    pointerEvents: "none",
+  },
+  "@media (prefers-reduced-motion: reduce)": {
+    transition: "none",
+  },
+});
+
+const ticketsModalBackdropStyle = css({
+  background: "transparent",
+  display: "block",
+  inset: 0,
+  position: "absolute",
+});
+
+const ticketsModalWindowStyle = css({
+  background: "light-dark(rgb(255 255 255 / 0.82), rgb(10 29 39 / 0.82))",
+  borderRadius: "8px",
+  boxShadow:
+    "0 1px 2px light-dark(rgb(8 40 69 / 0.06), rgb(0 0 0 / 0.2)), 0 6px 16px light-dark(rgb(8 40 69 / 0.08), rgb(0 0 0 / 0.28)), 0 24px 60px light-dark(rgb(8 40 69 / 0.18), rgb(0 0 0 / 0.36)), 0 60px 120px light-dark(rgb(8 40 69 / 0.22), rgb(0 0 0 / 0.44))",
+  clipPath: "inset(0 0 0 0 round 8px)",
+  color: jamTheme.ink,
+  display: "flex",
+  flexDirection: "column",
+  height: "100%",
+  maxHeight: "868px",
+  maxWidth: "854px",
+  overflow: "hidden",
+  transition: `clip-path ${spring("snappy", { duration: 180 })}`,
+  width: "100%",
+  "&[data-state='closing']": {
+    clipPath: "inset(0 0 100% 0 round 8px)",
+  },
+  "@media (prefers-reduced-motion: reduce)": {
+    transition: "none",
+  },
+});
+
+const ticketsModalTitlebarStyle = css({
+  alignItems: "center",
+  display: "flex",
+  flexShrink: 0,
+  gap: "6px",
+  padding: "8px",
+  width: "100%",
+});
+
+const ticketsModalCloseStyle = css({
+  alignItems: "center",
+  background: "transparent",
+  borderRadius: "50%",
+  color: jamTheme.ink,
+  cursor: "pointer",
+  display: "inline-flex",
+  flexShrink: 0,
+  height: "16px",
+  justifyContent: "center",
+  padding: 0,
+  textDecoration: "none",
+  width: "16px",
+  "&:hover, &:focus-visible": {
+    opacity: 0.7,
+  },
+  "&:focus-visible": {
+    outline: `2px solid ${jamTheme.brandRed}`,
+    outlineOffset: "2px",
+  },
+});
+
+const ticketsModalCloseIconStyle = css({
+  display: "block",
+  height: "14px",
+  width: "14px",
+});
+
+const ticketsModalFilenameStyle = css({
+  color: jamTheme.ink,
+  fontFamily: theme.fontFamily.mono,
+  fontSize: "10px",
+  fontWeight: theme.fontWeight.normal,
+  letterSpacing: "0.02em",
+  lineHeight: 1.2,
+  margin: 0,
+  textTransform: "uppercase",
+  whiteSpace: "nowrap",
+});
+
+const ticketsModalBodyStyle = css({
+  background:
+    "radial-gradient(ellipse 64% 60% at 50% 50%, light-dark(rgb(255 255 255), rgb(10 29 39 / 0.9)) 18%, transparent 100%)",
+  display: "flex",
+  flexDirection: "column",
+  flex: "1 1 auto",
+  minHeight: 0,
+  overflowY: "auto",
+  padding: "24px 24px 32px",
+  width: "100%",
+  "@media (max-width: 640px)": {
+    padding: "16px 16px 24px",
+  },
+});
+
+const ticketsModalContentStyle = css({
+  alignItems: "center",
+  display: "flex",
+  flex: "1 1 auto",
+  flexDirection: "column",
+  gap: "24px",
+  justifyContent: "center",
+  marginInline: "auto",
+  maxWidth: "720px",
+  width: "100%",
+});
+
+const ticketsModalHeadingStyle = css({
+  alignItems: "center",
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px",
+  textAlign: "center",
+});
+
+const ticketsModalLockupStyle = css({
+  display: "block",
+  height: "auto",
+  maxWidth: "100%",
+  width: "clamp(280px, 38vw, 484px)",
+});
+
+const ticketsModalFigureStyle = css({
+  alignItems: "center",
+  aspectRatio: "1 / 1",
+  display: "flex",
+  flexShrink: 0,
+  height: "clamp(220px, 38vh, 371px)",
+  justifyContent: "center",
+  padding: "24px",
+});
+
+const ticketsModalFigureImageStyle = css({
+  display: "block",
+  height: "100%",
+  maxWidth: "none",
+  objectFit: "contain",
+  transformOrigin: "center",
+  userSelect: "none",
+  width: "auto",
+});
+
+const ticketsModalFigureImageEntranceStyle = css({
+  animation:
+    "jam-2026-ticket-keychain-pop 260ms cubic-bezier(0.16, 1, 0.3, 1) both",
+  "@keyframes jam-2026-ticket-keychain-pop": {
+    "0%": {
+      opacity: 0,
+      transform: "scale(0.82) rotate(-3deg)",
+    },
+    "62%": {
+      opacity: 1,
+      transform: "scale(1.06) rotate(1deg)",
+    },
+    "100%": {
+      opacity: 1,
+      transform: "scale(1) rotate(0)",
+    },
+  },
+  "@media (prefers-reduced-motion: reduce)": {
+    animation: "none",
+  },
+});
+
+const ticketsModalBottomStyle = css({
+  alignItems: "center",
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px",
+  width: "100%",
+});
+
+const ticketCardStyle = css({
+  background: "light-dark(rgb(255 255 255), rgb(255 255 255 / 0.12))",
+  borderRadius: "8px",
+  color: jamTheme.ink,
+  display: "flex",
+  flexDirection: "column",
+  gap: "12px",
+  maxWidth: "512px",
+  padding: "14px 16px",
+  width: "100%",
+});
+
+const ticketCardTopRowStyle = css({
+  alignItems: "center",
+  display: "flex",
+  fontFamily: theme.fontFamily.mono,
+  fontSize: "16px",
+  fontWeight: theme.fontWeight.bold,
+  gap: "16px",
+  justifyContent: "space-between",
+  letterSpacing: "0.03em",
+  lineHeight: 1,
+  textTransform: "uppercase",
+  width: "100%",
+  "@media (max-width: 480px)": {
+    alignItems: "flex-start",
+    flexDirection: "column",
+    gap: "8px",
+  },
+});
+
+const ticketCardPriceStyle = css({
+  color: jamTheme.brandRed,
+  flexShrink: 0,
+});
+
+const ticketCardDateStyle = css({
+  color: jamTheme.ink,
+  fontFamily: theme.fontFamily.mono,
+  fontSize: "11px",
+  fontWeight: theme.fontWeight.normal,
+  letterSpacing: "0.03em",
+  lineHeight: 1,
+  textTransform: "uppercase",
+});
+
+const ticketCardDescriptionStyle = css({
+  color: jamTheme.ink,
+  fontFamily: theme.fontFamily.sans,
+  fontSize: "12px",
+  fontWeight: theme.fontWeight.normal,
+  lineHeight: 1.4,
+});
+
+const ticketsModalCheckoutStyle = css({
+  alignItems: "center",
+  background: "light-dark(rgb(255 255 255), rgb(255 255 255 / 0.08))",
+  borderRadius: "8px",
+  display: "grid",
+  gap: "16px",
+  gridTemplateColumns: "auto 1fr auto",
+  maxWidth: "512px",
+  padding: "12px",
+  width: "100%",
+  "@media (max-width: 640px)": {
+    gridTemplateColumns: "1fr 1fr",
+    rowGap: "16px",
+  },
+});
+
+const ticketsModalCheckoutGroupStyle = css({
+  display: "flex",
+  flexDirection: "column",
+  gap: "10px",
+  minWidth: 0,
+});
+
+const ticketsModalCheckoutLabelStyle = css({
+  color: jamTheme.ink,
+  fontFamily: theme.fontFamily.mono,
+  fontSize: "11px",
+  fontWeight: theme.fontWeight.normal,
+  letterSpacing: "0.03em",
+  lineHeight: 1,
+  opacity: 0.5,
+  textTransform: "uppercase",
+});
+
+const ticketsModalQuantityStyle = css({
+  alignItems: "center",
+  display: "flex",
+  gap: "12px",
+});
+
+const ticketsModalQuantityButtonStyle = css({
+  alignItems: "center",
+  background: "transparent",
+  border: 0,
+  borderRadius: "50%",
+  color: jamTheme.ink,
+  cursor: "pointer",
+  display: "inline-flex",
+  height: "18px",
+  justifyContent: "center",
+  padding: 0,
+  width: "18px",
+  "&:hover:not(:disabled), &:focus-visible": {
+    opacity: 0.7,
+  },
+  "&:focus-visible": {
+    outline: `2px solid ${jamTheme.brandRed}`,
+    outlineOffset: "2px",
+  },
+  "&:disabled": {
+    cursor: "not-allowed",
+    opacity: 0.3,
+  },
+});
+
+const ticketsModalQuantityIconStyle = css({
+  display: "block",
+  height: "18px",
+  width: "18px",
+});
+
+const ticketsModalQuantityValueStyle = css({
+  color: jamTheme.ink,
+  fontFamily: theme.fontFamily.mono,
+  fontSize: "11px",
+  fontVariantNumeric: "tabular-nums",
+  fontWeight: theme.fontWeight.bold,
+  letterSpacing: "0.03em",
+  lineHeight: 1,
+  minWidth: "1ch",
+  textAlign: "center",
+  textTransform: "uppercase",
+});
+
+const ticketsModalSubtotalStyle = css({
+  alignItems: "center",
+  display: "flex",
+  flexWrap: "wrap",
+  fontFamily: theme.fontFamily.mono,
+  fontSize: "11px",
+  fontWeight: theme.fontWeight.normal,
+  gap: "8px",
+  letterSpacing: "0.03em",
+  lineHeight: 1,
+  textTransform: "uppercase",
+});
+
+const ticketsModalSubtotalAmountStyle = css({
+  color: jamTheme.brandRed,
+  fontWeight: theme.fontWeight.bold,
+});
+
+const ticketsModalSubtotalCurrencyStyle = css({
+  color: jamTheme.ink,
+  fontWeight: theme.fontWeight.normal,
+});
+
+const ticketsModalCheckoutButtonStyle = css({
+  appearance: "none",
+  alignItems: "center",
+  background: jamTheme.brandRed,
+  border: 0,
+  borderRadius: "6px",
+  color: jamTheme.onAccent,
+  cursor: "pointer",
+  display: "inline-flex",
+  fontFamily: theme.fontFamily.mono,
+  fontSize: "11px",
+  fontWeight: theme.fontWeight.bold,
+  gap: "8px",
+  justifyContent: "center",
+  justifySelf: "end",
+  letterSpacing: "0.06em",
+  lineHeight: 1,
+  minWidth: "160px",
+  padding: "12px 16px",
+  textTransform: "uppercase",
+  transition: "transform 180ms ease",
+  "&:hover, &:focus-visible": {
+    transform: "scale(1.04)",
+  },
+  "&:focus-visible": {
+    outline: `2px solid ${jamTheme.ink}`,
+    outlineOffset: "3px",
+  },
+  "&:active": {
+    transform: "scale(1)",
+  },
+  "&:disabled": {
+    cursor: "not-allowed",
+    opacity: 0.55,
+    transform: "none",
+  },
+  "@media (prefers-reduced-motion: reduce)": {
+    transition: "none",
+    "&:hover, &:focus-visible": {
+      transform: "none",
+    },
+  },
+  "@media (max-width: 640px)": {
+    gridColumn: "1 / -1",
+    justifySelf: "stretch",
+    minWidth: 0,
+    width: "100%",
+  },
+});
+
+const ticketsModalBusyDotStyle = css({
+  animation: "jam-2026-ticket-checkout-pulse 720ms ease-in-out infinite",
+  background: "currentColor",
+  borderRadius: "50%",
+  display: "inline-block",
+  flexShrink: 0,
+  height: "7px",
+  opacity: 0.78,
+  width: "7px",
+  "@keyframes jam-2026-ticket-checkout-pulse": {
+    "0%, 100%": {
+      opacity: 0.4,
+      transform: "scale(0.72)",
+    },
+    "50%": {
+      opacity: 1,
+      transform: "scale(1)",
+    },
+  },
+  "@media (prefers-reduced-motion: reduce)": {
+    animation: "none",
+    opacity: 1,
+  },
+});
+
+const ticketsModalCheckoutErrorStyle = css({
+  color: jamTheme.brandRed,
+  fontFamily: theme.fontFamily.sans,
+  fontSize: "12px",
+  fontWeight: theme.fontWeight.bold,
+  gridColumn: "1 / -1",
+  lineHeight: 1.35,
+  margin: 0,
+  width: "100%",
+});

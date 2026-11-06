@@ -18,3 +18,7 @@ node_modules
 /.playwright-cli/
 
 /references/
+
+# desloppify local state
+/.desloppify/
+/scorecard.png

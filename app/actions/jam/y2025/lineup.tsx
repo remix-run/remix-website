@@ -1,16 +1,19 @@
-import { css, unsafeHTML, type Handle } from "remix/component";
-import { getSchedule } from "../../../data/jam-schedule.ts";
+import { css, type Handle } from "remix/component";
+import { getJam2025Schedule } from "./schedule-data.ts";
 import { routes } from "../../../routes.ts";
 import { JamDocument } from "./document.tsx";
-import { ScrambleText, Title } from "./public/shared.tsx";
+import { JamScrambleText } from "./public/scramble-text.tsx";
+import { Title } from "./public/typography.tsx";
 import { assetPaths } from "../../../utils/public/asset-paths.ts";
 import {
   JamLineupAccordionItem,
+  ScheduleItemDetails,
   scheduleGridStyle,
 } from "./public/lineup-accordion-item.tsx";
-import { breakpointMedia, theme } from "../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../ui/public/styles/theme.ts";
+import { jamColors, whiteAlpha } from "./public/theme.ts";
 
-type Schedule = Awaited<ReturnType<typeof getSchedule>>;
+type Schedule = Awaited<ReturnType<typeof getJam2025Schedule>>;
 
 export function Jam2025LineupPage(
   handle: Handle<{ requestUrl: string; schedule: Schedule }>,
@@ -39,8 +42,8 @@ export function Jam2025LineupPage(
         })}
       >
         <Title mix={css({ textAlign: "center" })}>
-          <ScrambleText text="Schedule" delay={100} color="blue" />
-          <ScrambleText text="& Lineup" delay={300} color="green" />
+          <JamScrambleText text="Schedule" delay={100} color="blue" />
+          <JamScrambleText text="& Lineup" delay={300} color="green" />
         </Title>
 
         <div
@@ -59,7 +62,7 @@ export function Jam2025LineupPage(
         >
           <h1
             mix={css({
-              color: "#ffffff",
+              color: jamColors.white,
               fontSize: "1.125rem",
               lineHeight: 1.556,
               [breakpointMedia.sm]: { fontSize: "1.875rem", lineHeight: 1.2 },
@@ -69,7 +72,7 @@ export function Jam2025LineupPage(
           </h1>
           <h2
             mix={css({
-              color: "#ffffff",
+              color: jamColors.white,
               fontSize: "1.25rem",
               fontWeight: theme.fontWeight.bold,
               lineHeight: 1.556,
@@ -100,7 +103,7 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
         <div
           mix={css({
             marginInline: "-40px",
-            borderBlock: "2px solid rgb(255 255 255 / 0.2)",
+            borderBlock: `2px solid ${whiteAlpha(0.2)}`,
             paddingInline: "16px",
           })}
         >
@@ -109,7 +112,7 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
               scheduleGridStyle,
               css({
                 padding: "24px",
-                color: "rgb(255 255 255 / 0.4)",
+                color: whiteAlpha(0.4),
                 fontFamily: theme.fontFamily.mono,
                 fontSize: "0.75rem",
                 lineHeight: 1.333,
@@ -131,9 +134,9 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
                     scheduleGridStyle,
                     css({
                       marginBlock: "8px",
-                      borderTop: "1px solid rgb(255 255 255 / 0.1)",
+                      borderTop: `1px solid ${whiteAlpha(0.1)}`,
                       padding: "24px",
-                      color: "#ffffff",
+                      color: jamColors.white,
                       fontSize: "0.875rem",
                       fontWeight: theme.fontWeight.bold,
                       lineHeight: 1.425,
@@ -145,7 +148,7 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
                     <br />
                     <span
                       mix={css({
-                        color: "rgb(255 255 255 / 0.6)",
+                        color: whiteAlpha(0.6),
                         fontSize: "0.75rem",
                         fontWeight: theme.fontWeight.normal,
                         lineHeight: 1.333,
@@ -158,56 +161,7 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
                   <span>{item.speaker}</span>
                 </div>
                 <div mix={css({ paddingBottom: "24px" })}>
-                  <div
-                    mix={[scheduleGridStyle, css({ paddingInline: "24px" })]}
-                  >
-                    <div
-                      mix={css({
-                        gridColumn: "1 / -1",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "16px",
-                        color: "#ffffff",
-                        fontSize: "0.875rem",
-                        lineHeight: 1.425,
-                        "& a": { color: "#59b0ff" },
-                        "& a:hover": { textDecoration: "underline" },
-                      })}
-                      innerHTML={unsafeHTML(item.description)}
-                    />
-                    {item.imgSrc ? (
-                      <img
-                        src={item.imgSrc}
-                        alt={item.speaker}
-                        mix={css({
-                          gridColumn: "1 / -1",
-                          width: "100%",
-                          borderRadius: "16px",
-                          objectFit: "cover",
-                          aspectRatio: "1",
-                        })}
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    ) : null}
-                    {item.bio ? (
-                      <div
-                        mix={css({
-                          gridColumn: "1 / -1",
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "16px",
-                          color: "#ffffff",
-                          fontFamily: theme.fontFamily.mono,
-                          fontSize: "0.75rem",
-                          lineHeight: "20px",
-                          "& a": { color: "#59b0ff" },
-                          "& a:hover": { textDecoration: "underline" },
-                        })}
-                        innerHTML={unsafeHTML(item.bio)}
-                      />
-                    ) : null}
-                  </div>
+                  <ScheduleItemDetails item={item} />
                 </div>
               </div>
             );
@@ -227,7 +181,7 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
         <div
           mix={css({
             marginInline: "-40px",
-            borderBlock: "2px solid rgb(255 255 255 / 0.2)",
+            borderBlock: `2px solid ${whiteAlpha(0.2)}`,
           })}
         >
           <div
@@ -235,7 +189,7 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
               scheduleGridStyle,
               css({
                 padding: "16px",
-                color: "rgb(255 255 255 / 0.4)",
+                color: whiteAlpha(0.4),
                 fontFamily: theme.fontFamily.mono,
                 fontSize: "0.75rem",
                 lineHeight: 1.333,
@@ -257,14 +211,10 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
           </div>
           {handle.props.items.map((item) => {
             let key = `${item.time}-${item.title}`;
-            return <DesktopScheduleItem key={key} item={item} />;
+            return <JamLineupAccordionItem key={key} item={item} />;
           })}
         </div>
       </section>
     </>
   );
-}
-
-function DesktopScheduleItem(handle: Handle<{ item: Schedule[number] }>) {
-  return () => <JamLineupAccordionItem item={handle.props.item} />;
 }

@@ -4,7 +4,9 @@ import { createMatcher } from "remix/route-pattern/match";
 
 import { assets, getWebpHref } from "./assets.ts";
 
-let imageSourceMatcher = createMatcher("http(s)://remix.run/:directory/*path");
+const imageSourceMatcher = createMatcher(
+  "http(s)://remix.run/:directory/*path",
+);
 
 export interface BlogImageAsset {
   fullSrc?: string;
@@ -14,8 +16,17 @@ export interface BlogImageAsset {
   width?: number;
 }
 
-let authorAssetBySource = new Map<string, Promise<BlogImageAsset>>();
-let blogAssetBySource = new Map<string, Promise<BlogImageAsset>>();
+const authorAssetBySource = new Map<string, Promise<BlogImageAsset>>();
+const blogAssetBySource = new Map<string, Promise<BlogImageAsset>>();
+const failedSources = new Set<string>();
+
+/**
+ * Sources whose optimization failed and fell back to the original image.
+ * Pages still render; the build-time cache warmer fails on any entry here.
+ */
+export function getFailedImageSources(): string[] {
+  return [...failedSources];
+}
 
 export function getAuthorImageAsset(source: string): Promise<BlogImageAsset> {
   let existing = authorAssetBySource.get(source);
@@ -93,6 +104,7 @@ async function createImageAsset(
           : undefined,
     };
   } catch (error) {
+    failedSources.add(source);
     console.error(
       `Failed to optimize image "${source}"; using its original source.`,
       error,

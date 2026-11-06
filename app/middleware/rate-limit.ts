@@ -34,7 +34,7 @@ export function rateLimit({
       return next();
     }
 
-    let ip = keyGenerator(context)?.trim() || "unknown";
+    let ip = keyGenerator(context).trim() || "unknown";
     let now = Date.now();
     requestsSinceCleanup++;
     if (requestsSinceCleanup >= 100) {
@@ -58,7 +58,7 @@ export function rateLimit({
       return new Response("Too Many Requests", {
         status: 429,
         headers: {
-          "Cache-Control": CACHE.PRIVATE,
+          ...CACHE.PRIVATE,
           "Content-Type": "text/plain; charset=utf-8",
           "Retry-After": String(retryAfterSeconds),
           "X-Remix-Response": "yes",
@@ -78,26 +78,23 @@ function cleanupExpiredEntries(hits: Map<string, RateLimitEntry>, now: number) {
   }
 }
 
+// Only Fly's proxy is trusted. `Fly-Client-IP` is whoever connected to Fly:
+// the visitor on direct `*.fly.dev` traffic, or a Fastly POP in production.
+// Fly appends that peer to `X-Forwarded-For` after the visitor address Fastly
+// appended, so the entry just left of the rightmost peer is the visitor as
+// Fastly saw it. Entries further left are client-supplied and ignored, as are
+// headers no proxy here sets (`True-Client-IP`, `CF-Connecting-IP`, ...).
+// Until the origin only accepts Fastly traffic, a direct request can still
+// pick that left neighbor (see the parity backlog in AGENTS.md).
 function getClientIp(context: Parameters<Middleware>[0]) {
-  let headers = [
-    "cf-connecting-ip",
-    "true-client-ip",
-    "x-real-ip",
-    "x-forwarded-for",
-  ];
+  let peer = normalizeClientIp(context.headers.get("fly-client-ip") ?? "");
+  if (!peer) return "unknown";
 
-  for (let headerName of headers) {
-    let rawValue = context.headers.get(headerName);
-    if (!rawValue) continue;
-
-    let firstValue = rawValue.split(",")[0]?.trim();
-    if (!firstValue) continue;
-
-    let normalizedValue = normalizeClientIp(firstValue);
-    if (normalizedValue) return normalizedValue;
-  }
-
-  return "unknown";
+  let forwardedFor = (context.headers.get("x-forwarded-for") ?? "")
+    .split(",")
+    .map((value) => normalizeClientIp(value.trim()));
+  let peerIndex = forwardedFor.lastIndexOf(peer);
+  return (peerIndex > 0 && forwardedFor[peerIndex - 1]) || peer;
 }
 
 function normalizeClientIp(ip: string) {

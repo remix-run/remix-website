@@ -1,28 +1,21 @@
-import * as s from "remix/data-schema";
-import { max, min } from "remix/data-schema/checks";
-import * as coerce from "remix/data-schema/coerce";
-import * as f from "remix/data-schema/form-data";
 import { css, type Handle } from "remix/component";
 
-import { getProduct, MAX_QUANTITY } from "../../../../data/jam-storefront.ts";
+import { MAX_QUANTITY, type Product } from "../../../../data/jam-storefront.ts";
 import { JamDocument } from "../document.tsx";
-import {
-  InfoText,
-  ScrambleText,
-  SectionLabel,
-  Title,
-} from "../public/shared.tsx";
+import { JamScrambleText } from "../public/scramble-text.tsx";
+import { InfoText, SectionLabel, Title } from "../public/typography.tsx";
 import { JamTicketCard } from "../public/ticket-card.tsx";
 import { JamTicketPurchase } from "../public/ticket-purchase.tsx";
 import { routes } from "../../../../routes.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
-import { breakpointMedia } from "../../../../ui/public/theme.ts";
+import { breakpointMedia } from "../../../../ui/public/styles/theme.ts";
 
 export function Jam2025TicketPage(
   handle: Handle<{
     formError?: string;
     initialQuantity: number;
-    product: Jam2025TicketProduct;
+    /** Null when Storefront can't load the ticket; renders as sold out. */
+    product: Product | null;
     requestUrl: string;
   }>,
 ) {
@@ -50,13 +43,13 @@ export function Jam2025TicketPage(
         })}
       >
         <Title>
-          <ScrambleText
+          <JamScrambleText
             text="General Admission"
             delay={100}
             color="blue"
             nowrap
           />
-          <ScrambleText text="ticket" delay={300} color="green" />
+          <JamScrambleText text="ticket" delay={300} color="green" />
         </Title>
 
         <SectionLabel>this ticket for illustration purposes only</SectionLabel>
@@ -70,9 +63,9 @@ export function Jam2025TicketPage(
         <JamTicketPurchase
           initialQuantity={handle.props.initialQuantity}
           maxQuantity={MAX_QUANTITY}
-          price={handle.props.product.price}
-          productId={handle.props.product.productId}
-          isSoldOut={!handle.props.product.availableForSale}
+          price={handle.props.product?.price ?? "399.00"}
+          productId={handle.props.product?.productId ?? ""}
+          isSoldOut={!handle.props.product?.availableForSale}
           error={handle.props.formError}
         />
 
@@ -84,21 +77,3 @@ export function Jam2025TicketPage(
     </JamDocument>
   );
 }
-
-type Jam2025TicketProduct = Awaited<ReturnType<typeof getProduct>>;
-
-export function parseTicketPurchaseSubmission(formData: FormData) {
-  let result = s.parseSafe(ticketPurchaseSubmissionSchema, formData);
-  if (!result.success) {
-    return { success: false as const, error: "Invalid ticket request" };
-  }
-
-  return { success: true as const, value: result.value };
-}
-
-let ticketPurchaseSubmissionSchema = f.object({
-  productId: f.field(s.string()),
-  quantity: f.field(
-    coerce.number().refine(Number.isInteger).pipe(min(1), max(MAX_QUANTITY)),
-  ),
-});

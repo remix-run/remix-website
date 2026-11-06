@@ -1,6 +1,6 @@
 import { css } from "remix/component";
 
-import { breakpointMedia, theme } from "../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../ui/public/styles/theme.ts";
 
 export function HeroSection() {
   return () => (

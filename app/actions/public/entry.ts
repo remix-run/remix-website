@@ -4,12 +4,16 @@ import {
   preloadShim,
 } from "remix/multiple-import-maps-polyfill";
 import { run } from "remix/component";
-import { DOCUMENT_REDIRECT_HEADER } from "./document-redirect.ts";
+import {
+  DOCUMENT_REDIRECT_HEADER,
+  FRAME_HEADER,
+  FRAME_TARGET_HEADER,
+} from "../../utils/public/frame-headers.ts";
 import { initFathomAnalytics } from "./fathom.ts";
 
 initFathomAnalytics();
 
-let app = run({
+const app = run({
   async loadModule(src, exportName) {
     let mod = await importModule(src);
 
@@ -29,8 +33,8 @@ let app = run({
   async resolveFrame(src, options) {
     let headers = new Headers();
     headers.set("accept", "text/html");
-    headers.set("x-remix-frame", "true");
-    if (options?.target) headers.set("x-remix-target", options.target);
+    headers.set(FRAME_HEADER, "true");
+    if (options?.target) headers.set(FRAME_TARGET_HEADER, options.target);
 
     let res = await fetch(src, {
       headers,

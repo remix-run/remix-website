@@ -29,6 +29,19 @@ const markdownSchema = s.object({
   isTruncated: s.literal(false),
 });
 
+// GraphQL can answer HTTP 200 with `errors` and partial `data`. Blob aliases
+// (`file0`, `file1`, ...) are validated individually with `markdownSchema`.
+const graphQLResponseSchema = s.object({
+  errors: s.optional(s.nullable(s.array(s.any()))),
+  data: s.optional(
+    s.nullable(
+      s.object({
+        repository: s.nullable(s.record(s.string(), s.any())),
+      }),
+    ),
+  ),
+});
+
 /** All authenticated requests stay on api.github.com; redirects are rejected. */
 export function createGitHubNewsletterSource(options: {
   owner: string;
@@ -68,14 +81,7 @@ export function createGitHubNewsletterSource(options: {
         `${repoPath}/git/trees/${encodeURIComponent(options.ref)}?recursive=1`,
         { headers: { Accept: "application/vnd.github+json" }, signal },
       );
-      let tree = s.parse(
-        treeSchema,
-        JSON.parse(
-          new TextDecoder().decode(
-            await readBytes(response, MAX_RESPONSE_BYTES),
-          ),
-        ),
-      );
+      let tree = s.parse(treeSchema, await readJson(response, "tree"));
       let files = tree.tree.filter(
         (file) =>
           file.type === "blob" &&
@@ -126,10 +132,9 @@ export function createGitHubNewsletterSource(options: {
           }),
           signal,
         });
-        let result = JSON.parse(
-          new TextDecoder().decode(
-            await readBytes(response, MAX_RESPONSE_BYTES),
-          ),
+        let result = s.parse(
+          graphQLResponseSchema,
+          await readJson(response, "GraphQL"),
         );
         // GraphQL may return partial data with HTTP 200. Never replace a good
         // snapshot with a partial archive or silently drop a truncated issue.
@@ -167,6 +172,19 @@ export function createGitHubNewsletterSource(options: {
       return readBytes(response, MAX_FILE_BYTES);
     },
   };
+}
+
+async function readJson(response: Response, label: string): Promise<unknown> {
+  let text = new TextDecoder().decode(
+    await readBytes(response, MAX_RESPONSE_BYTES),
+  );
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    throw new Error(`Newsletter GitHub ${label} response is not valid JSON`, {
+      cause: error,
+    });
+  }
 }
 
 async function readBytes(

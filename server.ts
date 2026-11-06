@@ -1,12 +1,14 @@
 import * as http from "node:http";
 import { createRequestListener } from "remix/node-fetch-server";
-import { router } from "./app/router.ts";
+import { createAppRouter } from "./app/router.ts";
 import { assets } from "./app/utils/assets.ts";
+import { assertProductionEnv, env } from "./app/utils/env.ts";
+import { isDevelopment, isProduction } from "./app/utils/node-env.ts";
 import { warmServer } from "./app/utils/warm-up.ts";
 
-const isHmr = Boolean(
-  process.env.NODE_ENV === "development" && process.env.REMIX_NODE_HMR,
-);
+const router = createAppRouter();
+
+const isHmr = Boolean(isDevelopment && process.env.REMIX_NODE_HMR);
 
 const port = Number(process.env.PORT ?? 3000);
 if (!Number.isFinite(port) || port <= 0) {
@@ -49,7 +51,8 @@ const server = http.createServer(
   ),
 );
 
-if (process.env.NODE_ENV === "production") {
+if (isProduction) {
+  assertProductionEnv(env);
   await warmServer(router, `http://localhost:${port}`);
 }
 
@@ -65,37 +68,29 @@ server.listen(port, () => {
   );
 });
 
-installShutdownHandlers(server);
+let shuttingDown = false;
+for (let signal of ["SIGINT", "SIGTERM"] as const) {
+  process.once(signal, () => void shutdown(signal));
+}
 
-function installShutdownHandlers(server: http.Server) {
-  let shuttingDown = false;
+async function shutdown(signal: NodeJS.Signals) {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  console.log(`${signal} received, shutting down HTTP server...`);
+  const forceExitTimer = setTimeout(() => {
+    console.error("Timed out waiting for HTTP server to close");
+    process.exit(1);
+  }, 10_000);
+  forceExitTimer.unref();
 
-  const shutdown = async (signal: NodeJS.Signals) => {
-    if (shuttingDown) return;
-    shuttingDown = true;
-    console.log(`${signal} received, shutting down HTTP server...`);
-    const forceExitTimer = setTimeout(() => {
-      console.error("Timed out waiting for HTTP server to close");
+  await assets.close();
+  server.close((error) => {
+    clearTimeout(forceExitTimer);
+    if (error) {
+      console.error("Error while closing HTTP server", error);
       process.exit(1);
-    }, 10_000);
-    forceExitTimer.unref();
-
-    await assets.close();
-    server.close((error) => {
-      clearTimeout(forceExitTimer);
-      if (error) {
-        console.error("Error while closing HTTP server", error);
-        process.exit(1);
-      }
-      process.exit(0);
-    });
-    server.closeAllConnections();
-  };
-
-  process.once("SIGINT", () => {
-    void shutdown("SIGINT");
+    }
+    process.exit(0);
   });
-  process.once("SIGTERM", () => {
-    void shutdown("SIGTERM");
-  });
+  server.closeAllConnections();
 }

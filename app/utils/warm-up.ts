@@ -4,6 +4,8 @@ import type { Router } from "remix/router";
 import { getBlogPostListings } from "../data/blog.ts";
 import { routes } from "../routes.ts";
 
+export type WarmUpResult = "completed" | "failed" | "timed-out";
+
 /**
  * Renders the busiest pages before the server listens. Fly routes traffic to a
  * machine only after its health checks pass, so the first visitors after a
@@ -16,18 +18,11 @@ import { routes } from "../routes.ts";
 export async function warmServer(
   router: Pick<Router, "fetch">,
   origin: string,
-) {
+  { timeoutMs = 20_000 }: { timeoutMs?: number } = {},
+): Promise<WarmUpResult> {
   let start = performance.now();
   let renderPages = (async () => {
-    let latestPost = getBlogPostListings()[0];
-    let pathnames = [
-      routes.home.href(),
-      routes.blog.index.href(),
-      ...(latestPost ? [routes.blog.post.href({ slug: latestPost.slug })] : []),
-      routes.jam.y2026.index.href(),
-    ];
-
-    for (let pathname of pathnames) {
+    for (let pathname of getWarmUpPathnames()) {
       try {
         let response = await router.fetch(
           new Request(new URL(pathname, origin), {
@@ -49,20 +44,34 @@ export async function warmServer(
 
   // Abort signals don't stop work that runs before rendering starts, so race
   // a timer to guarantee the deadline.
-  let warmedUp = await Promise.race([
+  let result = await Promise.race([
     renderPages.then(
-      () => true,
-      (error: unknown) => {
+      (): WarmUpResult => "completed",
+      (error: unknown): WarmUpResult => {
         console.error("Warm-up failed", error);
-        return true;
+        return "failed";
       },
     ),
-    sleep(20_000, false, { ref: false }),
+    sleep(timeoutMs, "timed-out" as const, { ref: false }),
   ]);
 
-  if (warmedUp) {
-    console.log(`Warmed up in ${Math.round(performance.now() - start)} ms`);
+  let elapsed = Math.round(performance.now() - start);
+  if (result === "completed") {
+    console.log(`Warmed up in ${elapsed} ms`);
+  } else if (result === "failed") {
+    console.warn(`Warm-up failed after ${elapsed} ms; listening anyway`);
   } else {
-    console.warn("Warm-up exceeded 20s; listening anyway");
+    console.warn(`Warm-up exceeded ${timeoutMs} ms; listening anyway`);
   }
+  return result;
+}
+
+function getWarmUpPathnames() {
+  let latestPost = getBlogPostListings()[0];
+  return [
+    routes.home.href(),
+    routes.blog.index.href(),
+    ...(latestPost ? [routes.blog.post.href({ slug: latestPost.slug })] : []),
+    routes.jam.y2026.index.href(),
+  ];
 }

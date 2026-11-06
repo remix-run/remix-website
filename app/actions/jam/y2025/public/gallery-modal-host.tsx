@@ -13,11 +13,20 @@ import {
 import {
   getFocusableElementsWithin,
   isFocusable,
-} from "../../../../ui/public/focus-trap.ts";
-import { lockScroll } from "../../../../ui/public/scroll-lock.ts";
+} from "../../../../ui/public/dom/focus-trap.ts";
+import { lockScroll } from "../../../../ui/public/dom/scroll-lock.ts";
+import {
+  getGalleryKeyAction,
+  getGalleryPhotoIndex,
+  getTabTrapTarget,
+  isPlainPrimaryClick,
+  wrapPhotoIndex,
+  type GalleryKeyAction,
+} from "./gallery-modal-navigation.ts";
+import { blackAlpha } from "./theme.ts";
 
 /** Which chevron to focus after keyboard prev/next (URL updates before the new modal paints). */
-let PENDING_KEYBOARD_CHEVRON_KEY = "jam-gallery-pending-chevron-focus";
+const PENDING_KEYBOARD_CHEVRON_KEY = "jam-gallery-pending-chevron-focus";
 
 /** Keyboard / programmatic navigation targets for the gallery modal (anchors use the same values). */
 export type JamGalleryModalNav = {
@@ -46,7 +55,7 @@ export function JamGalleryModalHost(handle: Handle<JamGalleryModalHostProps>) {
         width: "100%",
         height: "100%",
         userSelect: "none",
-        backgroundColor: "rgb(0 0 0 / 0.7)",
+        backgroundColor: blackAlpha(0.7),
         backdropFilter: "blur(8px)",
       })}
     >
@@ -61,7 +70,7 @@ export function JamGalleryModalHost(handle: Handle<JamGalleryModalHostProps>) {
 
 // Keep styled modal children outside client-entry props: CSS mix descriptors are
 // runtime values and cannot survive client-entry serialization.
-export let JamGalleryModalBehavior = clientEntry(
+export const JamGalleryModalBehavior = clientEntry(
   import.meta.url,
   function JamGalleryModalBehavior(
     handle: Handle<Pick<JamGalleryModalHostProps, "photoCount" | "nav">>,
@@ -82,113 +91,109 @@ function createJamGalleryModalNavigation() {
     HTMLElement,
     [nav: JamGalleryModalNav, photoCount: number]
   >((handle) => {
-    let closeHref = "";
-    let previousHref = "";
-    let nextHref = "";
+    let nav: JamGalleryModalNav = {
+      closeHref: "",
+      previousHref: "",
+      nextHref: "",
+    };
     let photoCount = 0;
-    let galleryPathname = "";
     let modal: HTMLElement | null = null;
-    let unlockScroll = () => {};
     let didInitialFocus = false;
 
-    let getFocusableElements = () => {
-      if (!modal) return [];
-      return getFocusableElementsWithin(modal);
-    };
+    let getFocusableElements = () =>
+      modal ? getFocusableElementsWithin(modal) : [];
 
-    let focusBoundary = (direction: "start" | "end") => {
-      let focusableElements = getFocusableElements();
+    let focusFirstElement = () => {
       if (!modal) return;
-      if (focusableElements.length === 0) {
-        modal.focus();
-        return;
-      }
-
-      if (direction === "start") {
-        focusableElements[0].focus();
-        return;
-      }
-
-      focusableElements[focusableElements.length - 1].focus();
+      let [first] = getFocusableElements();
+      (first ?? modal).focus();
     };
 
-    let navigateGallery = (href: string) => {
-      void navigate(href, { resetScroll: "manual" });
-    };
-
-    let currentPhotoIndexFromLocation = () => {
-      if (photoCount <= 0) return 0;
-      try {
-        let url = new URL(window.location.href);
-        if (url.pathname !== galleryPathname) return 0;
-        let parsed = Number.parseInt(url.searchParams.get("photo") ?? "", 10);
-        if (!Number.isFinite(parsed) || parsed < 0 || parsed >= photoCount) {
-          return 0;
-        }
-        return parsed;
-      } catch {
-        return 0;
-      }
-    };
+    let currentPhotoIndex = () =>
+      getGalleryPhotoIndex(window.location.href, nav.closeHref, photoCount);
 
     let navigateGalleryByDelta = (delta: number) => {
       if (photoCount <= 0) return;
-      let current = currentPhotoIndexFromLocation();
-      let next = (current + delta + photoCount) % photoCount;
+      let next = wrapPhotoIndex(currentPhotoIndex(), delta, photoCount);
       stashKeyboardGalleryChevron(delta > 0 ? "next" : "previous");
-      navigateGallery(`${closeHref}?photo=${next}`);
+      void navigate(`${nav.closeHref}?photo=${next}`, {
+        resetScroll: "manual",
+      });
     };
 
     let closeGallery = async () => {
       clearKeyboardGalleryChevron();
-      storeGalleryFocus(
-        `${closeHref}?photo=${currentPhotoIndexFromLocation()}`,
-      );
-      await navigate(closeHref, { resetScroll: "manual" });
+      storeGalleryFocus(`${nav.closeHref}?photo=${currentPhotoIndex()}`);
+      await navigate(nav.closeHref, { resetScroll: "manual" });
       await new Promise<void>((resolve) => {
         window.requestAnimationFrame(() => resolve());
       });
       restoreGalleryFocus();
     };
 
-    let focusPendingKeyboardChevron = (): boolean => {
-      if (!modal) return false;
-
-      let pendingChevron = peekKeyboardGalleryChevron();
-      if (!pendingChevron) return false;
-
-      let chevron = findLinkByHref(
-        modal,
-        pendingChevron === "previous" ? previousHref : nextHref,
-      );
-      if (!chevron || !isFocusable(chevron)) return false;
-
-      chevron.focus();
-      clearKeyboardGalleryChevron();
-      return true;
-    };
-
     let tryInitialFocus = (): boolean => {
       if (!modal) return false;
-      if (didInitialFocus) return true;
+      if (!didInitialFocus) didInitialFocus = focusInitialElement(modal, nav);
+      return didInitialFocus;
+    };
 
-      let focusableElements = getFocusableElements();
-      if (focusableElements.length === 0) return false;
+    let keyActions: Record<
+      GalleryKeyAction,
+      (event: KeyboardEvent, host: HTMLElement) => void
+    > = {
+      "trap-focus": (event, host) => {
+        let active = document.activeElement;
+        let target = getTabTrapTarget({
+          host,
+          focusableElements: getFocusableElements(),
+          activeElement: active,
+          hostContainsActive: host.contains(active),
+          shiftKey: event.shiftKey,
+        });
+        if (!target) return;
+        event.preventDefault();
+        target.focus();
+      },
+      close: (event) => {
+        event.preventDefault();
+        void closeGallery();
+      },
+      previous: (event) => {
+        event.preventDefault();
+        navigateGalleryByDelta(-1);
+      },
+      next: (event) => {
+        event.preventDefault();
+        navigateGalleryByDelta(1);
+      },
+      "block-scroll": (event) => {
+        event.preventDefault();
+      },
+    };
 
-      if (focusPendingKeyboardChevron()) {
-        didInitialFocus = true;
-        return true;
-      }
+    let onKeydown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || !modal) return;
+      let action = getGalleryKeyAction(event);
+      if (action) keyActions[action](event, modal);
+    };
 
-      let active = document.activeElement;
-      if (active instanceof HTMLElement && modal.contains(active)) {
-        didInitialFocus = true;
-        return true;
-      }
+    let onClick = (event: MouseEvent) => {
+      let target = event.target;
+      if (!(target instanceof Element) || !modal) return;
 
-      focusBoundary("start");
-      didInitialFocus = true;
-      return true;
+      let closeTarget = target.closest<HTMLAnchorElement>("a[href]");
+      if (!closeTarget || !modal.contains(closeTarget)) return;
+      if (closeTarget.getAttribute("href") !== nav.closeHref) return;
+      if (!isPlainPrimaryClick(event)) return;
+
+      event.preventDefault();
+      void closeGallery();
+    };
+
+    let onFocusin = (event: FocusEvent) => {
+      let target = event.target;
+      if (!modal || (target instanceof Node && modal.contains(target))) return;
+      focusFirstElement();
     };
 
     handle.addEventListener("insert", (event) => {
@@ -196,132 +201,15 @@ function createJamGalleryModalNavigation() {
       if (!modal) return;
 
       didInitialFocus = false;
-      unlockScroll = lockScroll();
+      let unlockScroll = lockScroll();
+      handle.signal.addEventListener("abort", unlockScroll, { once: true });
 
-      let onKeydown = (event: KeyboardEvent) => {
-        if (event.defaultPrevented) return;
-        let host = modal;
-        if (!host) return;
+      let { signal } = handle;
+      document.addEventListener("keydown", onKeydown, { signal });
+      document.addEventListener("focusin", onFocusin, { signal });
+      document.addEventListener("click", onClick, { signal });
 
-        let key = event.key;
-        let isModified = event.metaKey || event.ctrlKey || event.altKey;
-
-        switch (key) {
-          case "Tab": {
-            let focusableElements = getFocusableElements();
-            let first = focusableElements[0] ?? host;
-            let last = focusableElements.at(-1) ?? host;
-            let active = document.activeElement;
-            let target = !host.contains(active)
-              ? event.shiftKey
-                ? last
-                : first
-              : event.shiftKey && active === first
-                ? last
-                : !event.shiftKey && active === last
-                  ? first
-                  : null;
-            if (!target) break;
-            event.preventDefault();
-            target.focus();
-            break;
-          }
-          case "Escape":
-            event.preventDefault();
-            void closeGallery();
-            break;
-          case "ArrowLeft":
-            if (isModified) break;
-            event.preventDefault();
-            navigateGalleryByDelta(-1);
-            break;
-          case "ArrowRight":
-            if (isModified) break;
-            event.preventDefault();
-            navigateGalleryByDelta(1);
-            break;
-          case "ArrowUp":
-          case "ArrowDown":
-            if (isModified) break;
-            event.preventDefault();
-            break;
-          default:
-            break;
-        }
-      };
-
-      let onClick = (event: MouseEvent) => {
-        let target = event.target;
-        if (!(target instanceof Element)) return;
-        let host = modal;
-        if (!host) return;
-
-        let closeTarget = target.closest<HTMLAnchorElement>("a[href]");
-        if (!closeTarget || !host.contains(closeTarget)) return;
-        if (closeTarget.getAttribute("href") !== closeHref) return;
-        if (
-          event.defaultPrevented ||
-          event.button !== 0 ||
-          event.metaKey ||
-          event.ctrlKey ||
-          event.shiftKey ||
-          event.altKey
-        ) {
-          return;
-        }
-
-        event.preventDefault();
-        void closeGallery();
-      };
-
-      document.addEventListener("keydown", onKeydown, {
-        signal: handle.signal,
-      });
-      document.addEventListener(
-        "focusin",
-        (event) => {
-          let host = modal;
-          let target = event.target;
-          if (!host || (target instanceof Node && host.contains(target)))
-            return;
-          focusBoundary("start");
-        },
-        { signal: handle.signal },
-      );
-      document.addEventListener("click", onClick, {
-        signal: handle.signal,
-      });
-
-      // `insert` can run before descendants are committed or before layout (see `isFocusable` +
-      // getClientRects). Try once right away, then wait one paint before falling back to subtree
-      // observation for late descendants.
-      let focusWatchRaf = 0;
-      let subtreeObserver: MutationObserver | null = null;
-
-      handle.signal.addEventListener(
-        "abort",
-        () => {
-          unlockScroll();
-          unlockScroll = () => {};
-          window.cancelAnimationFrame(focusWatchRaf);
-          subtreeObserver?.disconnect();
-        },
-        { once: true },
-      );
-
-      if (tryInitialFocus()) return;
-
-      focusWatchRaf = window.requestAnimationFrame(() => {
-        if (handle.signal.aborted || !modal) return;
-        if (tryInitialFocus()) return;
-
-        subtreeObserver = new MutationObserver(() => {
-          if (handle.signal.aborted || tryInitialFocus()) {
-            subtreeObserver?.disconnect();
-          }
-        });
-        subtreeObserver.observe(modal, { childList: true, subtree: true });
-      });
+      focusWhenReady(() => modal, signal, tryInitialFocus);
     });
 
     handle.addEventListener("remove", () => {
@@ -330,17 +218,84 @@ function createJamGalleryModalNavigation() {
     });
 
     handle.addEventListener("commit", () => {
-      focusPendingKeyboardChevron();
+      if (modal) focusPendingKeyboardChevron(modal, nav);
     });
 
     return (nextNav, nextPhotoCount) => {
-      closeHref = nextNav.closeHref;
-      previousHref = nextNav.previousHref;
-      nextHref = nextNav.nextHref;
+      nav = nextNav;
       photoCount = nextPhotoCount;
-      galleryPathname = nextNav.closeHref.split("?")[0];
     };
   });
+}
+
+/**
+ * `insert` can run before descendants are committed or before layout (see `isFocusable` +
+ * getClientRects). Try once right away, then wait one paint before falling back to subtree
+ * observation for late descendants.
+ */
+function focusWhenReady(
+  getModal: () => HTMLElement | null,
+  signal: AbortSignal,
+  tryFocus: () => boolean,
+) {
+  let raf = 0;
+  let subtreeObserver: MutationObserver | null = null;
+  signal.addEventListener(
+    "abort",
+    () => {
+      window.cancelAnimationFrame(raf);
+      subtreeObserver?.disconnect();
+    },
+    { once: true },
+  );
+
+  if (tryFocus()) return;
+
+  raf = window.requestAnimationFrame(() => {
+    let modal = getModal();
+    if (signal.aborted || !modal) return;
+    if (tryFocus()) return;
+
+    subtreeObserver = new MutationObserver(() => {
+      if (signal.aborted || tryFocus()) subtreeObserver?.disconnect();
+    });
+    subtreeObserver.observe(modal, { childList: true, subtree: true });
+  });
+}
+
+/**
+ * Moves focus into a freshly opened modal: the chevron used for keyboard prev/next,
+ * else whatever inside already has focus, else the first focusable element.
+ * Returns false while the modal has no focusable content yet.
+ */
+function focusInitialElement(modal: HTMLElement, nav: JamGalleryModalNav) {
+  let focusableElements = getFocusableElementsWithin(modal);
+  if (focusableElements.length === 0) return false;
+  if (focusPendingKeyboardChevron(modal, nav)) return true;
+
+  let active = document.activeElement;
+  if (active instanceof HTMLElement && modal.contains(active)) return true;
+
+  focusableElements[0].focus();
+  return true;
+}
+
+function focusPendingKeyboardChevron(
+  modal: HTMLElement,
+  nav: JamGalleryModalNav,
+): boolean {
+  let pendingChevron = peekKeyboardGalleryChevron();
+  if (!pendingChevron) return false;
+
+  let chevron = findLinkByHref(
+    modal,
+    pendingChevron === "previous" ? nav.previousHref : nav.nextHref,
+  );
+  if (!chevron || !isFocusable(chevron)) return false;
+
+  chevron.focus();
+  clearKeyboardGalleryChevron();
+  return true;
 }
 
 function stashKeyboardGalleryChevron(direction: "previous" | "next") {

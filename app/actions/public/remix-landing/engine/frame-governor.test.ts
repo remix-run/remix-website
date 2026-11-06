@@ -3,11 +3,11 @@ import { it } from "remix/test";
 import { nextRenderDeadline } from "./frame-governor.ts";
 
 function renderedFramesPerSecond(refreshHz: number, idle: boolean): number {
-  const tickMs = 1000 / refreshHz;
+  let tickMs = 1000 / refreshHz;
   let deadlineMs = 0;
   let rendered = 0;
   for (let tick = 0; tick < refreshHz; tick++) {
-    const nextDeadline = nextRenderDeadline(
+    let nextDeadline = nextRenderDeadline(
       (tick + 1) * tickMs,
       deadlineMs,
       idle,
@@ -44,8 +44,8 @@ it("tolerates slightly early animation-frame timestamps", () => {
 });
 
 it("does not catch up missed frames after a long pause", () => {
-  const deadlineMs = nextRenderDeadline(100, 0, false)!;
-  const resumedDeadlineMs = nextRenderDeadline(10_000, deadlineMs, false)!;
+  let deadlineMs = nextRenderDeadline(100, 0, false)!;
+  let resumedDeadlineMs = nextRenderDeadline(10_000, deadlineMs, false)!;
   expect(resumedDeadlineMs).toBeGreaterThan(10_000);
   expect(nextRenderDeadline(10_001, resumedDeadlineMs, false)).toBe(null);
 });

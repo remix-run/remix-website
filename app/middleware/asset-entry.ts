@@ -10,25 +10,21 @@ import {
 import { assets } from "../utils/assets.ts";
 
 interface AssetEntry {
-  fonts: Record<FontName, FontAsset>;
+  fonts: Record<FontName, ResolvedAsset>;
   scriptEntry: ScriptEntry;
-  stylesheets: Record<StylesheetName, StylesheetAsset>;
+  stylesheets: Record<StylesheetName, ResolvedAsset>;
 }
 
-interface FontAsset {
+interface ResolvedAsset {
   href: string;
 }
 
-interface StylesheetAsset {
-  href: string;
-}
-
-let assetEntryKey = createContextKey<AssetEntry>();
-let defaultEntry = path.resolve(
+const assetEntryKey = createContextKey<AssetEntry>();
+const defaultEntry = path.resolve(
   import.meta.dirname,
   "../actions/public/entry.ts",
 );
-let fontEntries = {
+const fontEntries = {
   interItalic: path.resolve(
     import.meta.dirname,
     "../styles/public/font/inter-italic-latin-var.woff2",
@@ -42,7 +38,7 @@ let fontEntries = {
     "../styles/public/font/jet-brains-mono.woff2",
   ),
 } as const;
-let stylesheetEntries = {
+const stylesheetEntries = {
   global: path.resolve(import.meta.dirname, "../styles/public/global.css"),
   home: path.resolve(import.meta.dirname, "../styles/public/home.css"),
   md: path.resolve(import.meta.dirname, "../styles/public/md.css"),
@@ -61,29 +57,9 @@ export function loadAssetEntry(
 ): Middleware<AssetEntryContextEntry> {
   return async (context, next) => {
     let [fonts, scriptEntry, stylesheets] = await Promise.all([
-      Promise.all(
-        Object.entries(fontEntries).map(async ([name, fontEntry]) => {
-          let href = await assets.getHref(fontEntry);
-          return [name, { href }] as const;
-        }),
-      ).then(
-        (entries) => Object.fromEntries(entries) as Record<FontName, FontAsset>,
-      ),
+      resolveHrefs(fontEntries),
       assets.getScriptEntry(entry),
-      Promise.all(
-        Object.entries(stylesheetEntries).map(
-          async ([name, stylesheetEntry]) => {
-            let href = await assets.getHref(stylesheetEntry);
-            return [name, { href }] as const;
-          },
-        ),
-      ).then(
-        (entries) =>
-          Object.fromEntries(entries) as Record<
-            StylesheetName,
-            StylesheetAsset
-          >,
-      ),
+      resolveHrefs(stylesheetEntries),
     ]);
 
     context.set(assetEntryKey, {
@@ -95,8 +71,21 @@ export function loadAssetEntry(
   };
 }
 
+/** Resolves each named source file to its served (fingerprinted) URL. */
+async function resolveHrefs<Name extends string>(
+  entries: Record<Name, string>,
+): Promise<Record<Name, ResolvedAsset>> {
+  let resolved = await Promise.all(
+    Object.entries<string>(entries).map(async ([name, file]) => [
+      name,
+      { href: await assets.getHref(file) },
+    ]),
+  );
+  return Object.fromEntries(resolved);
+}
+
 export function getAssetEntry(
-  context: RequestContext<any, any> = getContext(),
+  context: Pick<RequestContext, "get"> = getContext(),
 ): AssetEntry {
   let entry = getOptionalAssetEntry(context);
   if (!entry) throw new Error("Asset entry is not loaded");
@@ -104,7 +93,7 @@ export function getAssetEntry(
 }
 
 export function getOptionalAssetEntry(
-  context: RequestContext<any, any> = getContext(),
+  context: Pick<RequestContext, "get"> = getContext(),
 ): AssetEntry | undefined {
-  return context.get(assetEntryKey) as AssetEntry | undefined;
+  return context.get(assetEntryKey);
 }

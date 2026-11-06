@@ -1,8 +1,9 @@
 import { clientEntry, css, on, ref, type Handle } from "remix/component";
 
-import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
+import { jamColors } from "./theme.ts";
 
-export let JamTicketCard = clientEntry(
+export const JamTicketCard = clientEntry(
   import.meta.url,
   function JamTicketCard(
     handle: Handle<{
@@ -179,7 +180,7 @@ export let JamTicketCard = clientEntry(
                 zIndex: 40,
                 paddingBottom: "4px",
                 paddingLeft: "8px",
-                color: "#ffffff",
+                color: jamColors.white,
                 fontFamily: theme.fontFamily.mono,
                 fontSize: "8px",
                 textAlign: "left",
@@ -221,7 +222,7 @@ export let JamTicketCard = clientEntry(
   },
 );
 
-let largeOverlayStyle = css({
+const largeOverlayStyle = css({
   position: "absolute",
   inset: 0,
   top: "50%",

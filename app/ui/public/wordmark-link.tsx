@@ -1,10 +1,10 @@
 import { clientEntry, css, type Handle } from "remix/component";
 import { brandContextMenu } from "./brand-context-menu.ts";
-import { visuallyHiddenStyle } from "./css-mixins.ts";
-import { theme } from "./theme.ts";
+import { visuallyHiddenStyle } from "./styles/css-mixins.ts";
+import { theme } from "./styles/theme.ts";
 import { Wordmark } from "./wordmark.tsx";
 
-export let WordmarkLink = clientEntry(
+export const WordmarkLink = clientEntry(
   import.meta.url,
   function WordmarkLink(
     handle: Handle<{

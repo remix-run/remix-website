@@ -1,4 +1,4 @@
-import type { ManagedHeadTag } from "../../ui/public/document-head.ts";
+import type { ManagedHeadTag } from "../../ui/public/document/document-head.ts";
 
 type SocialHeadTagsProps = {
   title?: string;

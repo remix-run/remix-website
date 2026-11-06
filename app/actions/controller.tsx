@@ -5,9 +5,9 @@ import { routes } from "../routes.ts";
 import { assetPaths } from "../utils/public/asset-paths.ts";
 import { assets } from "../utils/assets.ts";
 import { CACHE } from "../utils/cache-control.ts";
-import { getCanonicalUrl } from "../utils/public/canonical-url.ts";
-import { getNewsletterSubscriptionStatus } from "./newsletter/subscription.tsx";
-import { LandingNewsletterSubscribeForm } from "./public/remix-landing/components/feature-section.tsx";
+import { createMarkdownResponse } from "../utils/markdown-response.ts";
+import { getNewsletterSubscriptionStatus } from "../utils/newsletter-subscription.ts";
+import { LandingNewsletterSubscribeForm } from "./public/remix-landing/components/landing-newsletter-subscribe-form.tsx";
 import { blogOgImageAction } from "./blog-og-image.tsx";
 import { BrandPage } from "./brand.tsx";
 import { HomePage } from "./home.tsx";
@@ -24,7 +24,7 @@ export default createController(routes, {
         response ??
         new Response("Not found", {
           status: 404,
-          headers: { "Cache-Control": CACHE.PRIVATE },
+          headers: CACHE.PRIVATE,
         })
       );
     },
@@ -36,15 +36,10 @@ export default createController(routes, {
     },
 
     homeMarkdown({ request }) {
-      let htmlUrl = getCanonicalUrl(new URL(request.url), routes.home.href());
-      return new Response(renderHomeMarkdown(), {
-        headers: {
-          "Content-Type": "text/markdown; charset=utf-8",
-          Link: `<${htmlUrl}>; rel="canonical"`,
-          ...(process.env.NODE_ENV === "development"
-            ? { "Cache-Control": "no-store" }
-            : CACHE.DOCUMENT),
-        },
+      return createMarkdownResponse(renderHomeMarkdown(), {
+        request,
+        htmlPathname: routes.home.href(),
+        headers: CACHE.DOCUMENT,
       });
     },
 
@@ -64,14 +59,10 @@ export default createController(routes, {
         markdownQuality <= 1 &&
         markdownQuality >= htmlQuality
       ) {
-        return new Response(renderHomeMarkdown(), {
-          headers: {
-            "Content-Type": "text/markdown; charset=utf-8",
-            Vary: "Accept",
-            ...(process.env.NODE_ENV === "development"
-              ? { "Cache-Control": "no-store" }
-              : CACHE.DOCUMENT),
-          },
+        return createMarkdownResponse(renderHomeMarkdown(), {
+          request,
+          htmlPathname: routes.home.href(),
+          headers: { ...CACHE.DOCUMENT, Vary: "Accept" },
         });
       }
 
@@ -90,12 +81,12 @@ export default createController(routes, {
       );
     },
 
-    homeNewsletterSignup({ render, request }) {
+    homeNewsletterSubscribeForm({ render, request }) {
       return render(
         <LandingNewsletterSubscribeForm
           status={getNewsletterSubscriptionStatus(request)}
         />,
-        { headers: { "Cache-Control": CACHE.PRIVATE } },
+        { headers: CACHE.PRIVATE },
       );
     },
 
@@ -104,7 +95,7 @@ export default createController(routes, {
     healthcheck() {
       return new Response("OK", {
         headers: {
-          "Cache-Control": CACHE.PRIVATE,
+          ...CACHE.PRIVATE,
           "Content-Type": "text/plain; charset=utf-8",
         },
       });

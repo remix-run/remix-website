@@ -1,12 +1,12 @@
 import { css } from "remix/component";
 
-import { NewsletterSubscribe } from "../../ui/newsletter-subscribe.tsx";
+import { NewsletterFrame } from "../../ui/newsletter-frame.tsx";
 import {
   bodyStyle,
   headingExtraLargeStyle,
   headingSmallStyle,
-} from "../../ui/public/marketing-styles.ts";
-import { breakpointMedia, theme } from "../../ui/public/theme.ts";
+} from "../../ui/public/styles/marketing-styles.ts";
+import { breakpointMedia, theme } from "../../ui/public/styles/theme.ts";
 
 export function StayInTheLoopSection() {
   return () => (
@@ -61,7 +61,7 @@ function NewsletterCard() {
           to keep up with what comes next. No spam. Unsubscribe anytime.
         </p>
       </div>
-      <NewsletterSubscribe />
+      <NewsletterFrame />
     </div>
   );
 }
@@ -118,7 +118,7 @@ function DiscordCard() {
   );
 }
 
-let cardStyle = css({
+const cardStyle = css({
   display: "flex",
   flexDirection: "column",
   borderRadius: "16px",
@@ -127,7 +127,7 @@ let cardStyle = css({
   boxShadow: theme.shadow.mid,
 });
 
-let cardContentStyle = css({
+const cardContentStyle = css({
   display: "flex",
   flex: 1,
   flexDirection: "column",
@@ -135,5 +135,5 @@ let cardContentStyle = css({
   paddingBottom: "32px",
 });
 
-let cardHeadingStyle = css({ color: "var(--rmx-text-secondary)" });
-let cardBodyStyle = css({ color: "var(--rmx-text-primary)" });
+const cardHeadingStyle = css({ color: "var(--rmx-text-secondary)" });
+const cardBodyStyle = css({ color: "var(--rmx-text-primary)" });

@@ -1,7 +1,9 @@
 import { createController, type Middleware } from "remix/router";
 
-import { processMarkdown } from "../../data/md.ts";
+import { parseFrontmatter } from "../../data/frontmatter.ts";
+import { renderMarkdown } from "../../data/markdown.ts";
 import {
+  findTitleHeading,
   isSafeImageFilename,
   NewsletterUpstreamUnavailableError,
   type NewsletterIssue,
@@ -10,15 +12,17 @@ import {
   resolveNewsletterImageUrl,
 } from "./archive.ts";
 import { routes } from "../../routes.ts";
-import { NewsletterSubscribeFrame } from "./signup-frame.tsx";
-import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
+import { NewsletterSubscribeFrame } from "./subscribe-frame.tsx";
+import {
+  NOT_FOUND_RESPONSE,
+  StatusErrorDocument,
+} from "../../ui/status-error-document.tsx";
 import { CACHE } from "../../utils/cache-control.ts";
 import { NewsletterIndexPage, NewsletterIssuePage } from "./pages.tsx";
-import {
-  getNewsletterSubscriptionStatus,
-  handleNewsletterSubscriptionError,
-  submitNewsletter,
-} from "./subscription.tsx";
+import { getNewsletterSubscriptionStatus } from "../../utils/newsletter-subscription.ts";
+import { submitNewsletter } from "./subscribe.tsx";
+import { rateLimit } from "../../middleware/rate-limit.ts";
+import { isProduction } from "../../utils/node-env.ts";
 
 /**
  * Build a newsletter controller bound to a specific repository. Tests pass a
@@ -52,23 +56,34 @@ export function createNewsletterController(repository: NewsletterRepository) {
           {
             headers:
               unavailable || subscriptionStatus
-                ? { "Cache-Control": CACHE.PRIVATE }
+                ? CACHE.PRIVATE
                 : CACHE.PREFETCHABLE_DOCUMENT,
           },
         );
       },
 
-      signup({ render, request }) {
+      subscribeForm({ render, request }) {
         return render(
           <NewsletterSubscribeFrame
             status={getNewsletterSubscriptionStatus(request)}
           />,
-          { headers: { "Cache-Control": CACHE.PRIVATE } },
+          { headers: CACHE.PRIVATE },
         );
       },
 
-      async subscribe({ formData, render, request }) {
-        return submitNewsletter(request, formData, render);
+      subscribe: {
+        // Every valid submission calls ConvertKit, so cap it well below the
+        // site-wide page limit.
+        middleware: [
+          rateLimit({
+            windowMs: 10 * 60 * 1000,
+            max: 30,
+            skipLocalhost: !isProduction,
+          }),
+        ],
+        handler({ formData, render, request }) {
+          return submitNewsletter({ formData, render, request });
+        },
       },
 
       async issue({ params, render, request }) {
@@ -103,7 +118,7 @@ export function createNewsletterController(repository: NewsletterRepository) {
           );
         }
 
-        let { html } = await processMarkdown(
+        let { html } = await renderMarkdown(
           withoutNewsletterTitle(issue.markdown),
           {
             allowHtml: false,
@@ -122,19 +137,15 @@ export function createNewsletterController(repository: NewsletterRepository) {
       },
 
       async image({ params }) {
+        let notFound = () =>
+          new Response("Not Found", {
+            status: 404,
+            headers: CACHE.PRIVATE,
+          });
         let number = parseIssueNumber(params.number);
-        if (number == null) {
-          return new Response("Not Found", {
-            status: 404,
-            headers: NOT_FOUND_RESPONSE.headers,
-          });
-        }
         let filename = params.filename;
-        if (!filename || !isSafeImageFilename(filename)) {
-          return new Response("Not Found", {
-            status: 404,
-            headers: NOT_FOUND_RESPONSE.headers,
-          });
+        if (number == null || !filename || !isSafeImageFilename(filename)) {
+          return notFound();
         }
 
         let image;
@@ -144,23 +155,18 @@ export function createNewsletterController(repository: NewsletterRepository) {
           if (error instanceof NewsletterUpstreamUnavailableError) {
             return new Response("Service Unavailable", {
               status: 503,
-              headers: UNAVAILABLE_RESPONSE.headers,
+              headers: CACHE.PRIVATE,
             });
           }
           throw error;
         }
 
-        if (!image) {
-          return new Response("Not Found", {
-            status: 404,
-            headers: NOT_FOUND_RESPONSE.headers,
-          });
-        }
+        if (!image) return notFound();
 
         return new Response(Uint8Array.from(image.bytes), {
           headers: {
             "Content-Type": image.contentType,
-            "Cache-Control": CACHE.RESOURCE,
+            ...CACHE.RESOURCE,
             "Content-Length": String(image.bytes.byteLength),
           },
         });
@@ -181,32 +187,23 @@ function newsletterErrorLogger(): Middleware {
         pathname: context.url.pathname,
         error,
       });
-
-      let response = handleNewsletterSubscriptionError(error);
-      if (response) return response;
-
       throw error;
     }
   };
 }
 
-const NOT_FOUND_RESPONSE = {
-  status: 404,
-  statusText: "Not Found",
-  headers: { "Cache-Control": CACHE.PRIVATE },
-} as const;
-
 const UNAVAILABLE_RESPONSE = {
   status: 503,
   statusText: "Service Unavailable",
-  headers: { "Cache-Control": CACHE.PRIVATE },
+  headers: CACHE.PRIVATE,
 } as const;
 
+/** The page header shows the issue title, so drop the heading it came from. */
 function withoutNewsletterTitle(markdown: string): string {
-  let frontmatter = markdown.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n/);
-  let prefix = frontmatter?.[0] ?? "";
-  let body = markdown.slice(prefix.length);
-  return `${prefix}${body.replace(/^\s*#\s+[^\r\n]+\r?\n+/, "")}`;
+  let { body } = parseFrontmatter(markdown);
+  let heading = findTitleHeading(body);
+  if (!heading) return body;
+  return body.slice(0, heading.start) + body.slice(heading.end);
 }
 
 function parseIssueNumber(value: string | undefined): number | null {

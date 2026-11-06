@@ -1,0 +1,146 @@
+import { clientEntry, css, type Handle } from "remix/component";
+
+import {
+  createNewsletterFrameForm,
+  type NewsletterSubscriptionStatus,
+} from "../../../../ui/public/newsletter-frame-form.tsx";
+import { routes } from "../../../../routes.ts";
+import { newsletterTagIds } from "../../../../utils/public/newsletter-tags.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
+import { jamColors, whiteAlpha } from "./theme.ts";
+import { SectionLabel } from "./typography.tsx";
+
+export const JamNewsletterForm = clientEntry(
+  import.meta.url,
+  function JamNewsletterForm(
+    handle: Handle<{
+      status?: NewsletterSubscriptionStatus | null;
+    }>,
+  ) {
+    let form = createNewsletterFrameForm(handle, "jam2025");
+
+    return () => {
+      let status = form.state.status;
+
+      return (
+        <form
+          action={routes.newsletter.subscribe.href()}
+          method="post"
+          {...form.navigation}
+          mix={[
+            css({
+              position: "relative",
+              zIndex: 10,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }),
+            form.submit,
+          ]}
+        >
+          <input
+            type="hidden"
+            name="tag"
+            value={String(newsletterTagIds.jam2025Updates)}
+          />
+          <SectionLabel>
+            <label htmlFor="jam-newsletter-email">email</label>
+          </SectionLabel>
+          <input
+            type="email"
+            id="jam-newsletter-email"
+            name="email"
+            required
+            autoComplete="email"
+            placeholder="your@email.com"
+            aria-invalid={status === "invalid-email" ? true : undefined}
+            aria-describedby={
+              status === "idle" ? undefined : "jam-newsletter-message"
+            }
+            mix={css({
+              width: "100%",
+              maxWidth: "384px",
+              marginTop: "10px",
+              border: 0,
+              borderRadius: theme.radius.full,
+              padding: "16px 24px",
+              backgroundColor: jamColors.black,
+              color: jamColors.white,
+              fontSize: "1.125rem",
+              lineHeight: 1.556,
+              textAlign: "center",
+              outline: "none",
+              "&::placeholder": { color: whiteAlpha(0.3) },
+              "&:focus": {
+                boxShadow: `inset 0 0 0 2px ${theme.colors.brand.blue}`,
+              },
+              [breakpointMedia.sm]: { lineHeight: "24px" },
+            })}
+          />
+          <button
+            type="submit"
+            disabled={status === "submitting"}
+            mix={css({
+              width: "100%",
+              minWidth: "fit-content",
+              maxWidth: "384px",
+              marginTop: "20px",
+              borderRadius: theme.radius.full,
+              padding: "12px 16px",
+              backgroundColor: jamColors.black,
+              color: jamColors.white,
+              fontSize: "0.875rem",
+              fontWeight: theme.fontWeight.semibold,
+              lineHeight: 1.425,
+              transition: "color 300ms, background-color 300ms",
+              "&:disabled": { cursor: "not-allowed", opacity: 0.5 },
+              [breakpointMedia.md]: {
+                padding: "16px 24px",
+                fontSize: "1.25rem",
+                lineHeight: 1.556,
+              },
+              "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+            })}
+          >
+            {status === "submitting" ? "Signing Up..." : "Sign Up"}
+          </button>
+          <div
+            id="jam-newsletter-message"
+            aria-live="polite"
+            mix={
+              status !== "idle" && status !== "submitting"
+                ? css({
+                    marginTop: "16px",
+                    color: jamColors.white,
+                    fontSize: "0.875rem",
+                    lineHeight: 1.425,
+                  })
+                : css({ display: "none" })
+            }
+          >
+            {status === "success" ? (
+              <p>
+                You&apos;re good to go. Please confirm your email to be notified
+                when ticket sales are available.
+              </p>
+            ) : status === "invalid-email" ? (
+              <p mix={newsletterErrorStyle}>
+                Please enter a valid email address.
+              </p>
+            ) : status === "invalid-tag" ? (
+              <p mix={newsletterErrorStyle}>
+                The selected newsletter is not available. Please try again.
+              </p>
+            ) : status === "error" ? (
+              <p mix={newsletterErrorStyle}>
+                Something went wrong. Please try again.
+              </p>
+            ) : null}
+          </div>
+        </form>
+      );
+    };
+  },
+);
+
+const newsletterErrorStyle = css({ color: theme.colors.brand.red });

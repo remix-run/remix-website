@@ -82,6 +82,37 @@ describe("Jam2026Header", () => {
       theme: "dark",
     });
   });
+
+  it("reports a failed theme save without reverting the applied theme", async (t) => {
+    protectRootTheme(t);
+    t.mock.method(window, "matchMedia", (query: string) =>
+      createMediaQueryList(query, false),
+    );
+    let themeFetch: typeof fetch = async () =>
+      new Response(null, { status: 500 });
+    t.mock.method(window, "fetch", themeFetch);
+    let errors: unknown[][] = [];
+    t.mock.method(console, "error", (...args: unknown[]) => {
+      errors.push(args);
+    });
+
+    let result = render(<Jam2026Header initialTheme="light" />);
+    t.after(result.cleanup);
+    await result.act(() => {});
+
+    await result.act(() =>
+      result.container
+        .querySelector<HTMLButtonElement>(
+          'button[aria-label="Switch to dark mode"]',
+        )!
+        .click(),
+    );
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(document.documentElement.dataset.theme).toBe("dark");
+    expect(errors.length).toBe(1);
+    expect(errors[0][0]).toBe("[jam-theme] Failed to save theme preference");
+  });
 });
 
 function protectRootTheme(t: { after(cleanup: () => void): void }) {
@@ -98,44 +129,23 @@ function protectRootTheme(t: { after(cleanup: () => void): void }) {
   });
 }
 
+/**
+ * A `MediaQueryList` stand-in built on `EventTarget`, so `change` listeners
+ * honor `{ signal }`. It omits the deprecated `addListener` API on purpose.
+ */
 function createMediaQueryList(media: string, initialMatches: boolean) {
-  let listeners = new Set<(event: MediaQueryListEvent) => void>();
-  let query = {
+  let query = Object.assign(new EventTarget(), {
     matches: initialMatches,
     media,
     onchange: null,
-    addListener(listener: (event: MediaQueryListEvent) => void) {
-      listeners.add(listener);
-    },
-    removeListener(listener: (event: MediaQueryListEvent) => void) {
-      listeners.delete(listener);
-    },
-    addEventListener(
-      _type: string,
-      listener: EventListenerOrEventListenerObject,
-    ) {
-      if (typeof listener === "function") {
-        listeners.add(listener as (event: MediaQueryListEvent) => void);
-      }
-    },
-    removeEventListener(
-      _type: string,
-      listener: EventListenerOrEventListenerObject,
-    ) {
-      if (typeof listener === "function") {
-        listeners.delete(listener as (event: MediaQueryListEvent) => void);
-      }
-    },
-    dispatchEvent: () => false,
     setMatches(matches: boolean) {
       query.matches = matches;
     },
     dispatchChange() {
-      let event = { matches: query.matches, media } as MediaQueryListEvent;
-      for (let listener of listeners) listener(event);
+      query.dispatchEvent(new Event("change"));
     },
-  };
-  return query as MediaQueryList & {
+  });
+  return query as unknown as MediaQueryList & {
     setMatches(matches: boolean): void;
     dispatchChange(): void;
   };

@@ -1,6 +1,5 @@
 import zlib from "node:zlib";
 
-import { asyncContext } from "remix/middleware/async-context";
 import { compression } from "remix/middleware/compression";
 import { cop } from "remix/middleware/cop";
 import {
@@ -9,12 +8,9 @@ import {
   type Middleware,
   type MiddlewareContext,
 } from "remix/router";
-import { formData } from "remix/middleware/form-data";
-import { logger } from "remix/middleware/logger";
 
 import { rateLimit } from "./middleware/rate-limit.ts";
-import { loadAssetEntry } from "./middleware/asset-entry.ts";
-import { renderMiddleware } from "./middleware/render.ts";
+import { requestContextMiddleware } from "./middleware/request-context.ts";
 import { rootPublicFiles } from "./middleware/root-public-files.ts";
 import { securityHeaders } from "./middleware/security-headers.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
@@ -31,14 +27,11 @@ import jam2026Controller from "./actions/jam/y2026/controller.tsx";
 import jam2026TicketController from "./actions/jam/y2026/ticket/controller.tsx";
 import { createNewsletterController } from "./actions/newsletter/controller.tsx";
 import {
-  liveNewsletterRepository,
+  getLiveNewsletterRepository,
   type NewsletterRepository,
 } from "./actions/newsletter/archive.ts";
 import remixHistoryController from "./actions/remix-history/controller.tsx";
-
-let isDev = process.env.NODE_ENV !== "production";
-let isTest = process.env.NODE_ENV === "test";
-let shouldBypassLoopbackRateLimit = isDev;
+import { isProduction } from "./utils/node-env.ts";
 
 function shouldSkipRateLimit(pathname: string) {
   return (
@@ -48,9 +41,9 @@ function shouldSkipRateLimit(pathname: string) {
   );
 }
 
-let ignoreChromeDevToolsRequest: Middleware = (context, next) => {
+const ignoreChromeDevToolsRequest: Middleware = (context, next) => {
   if (
-    isDev &&
+    !isProduction &&
     context.request.method === "GET" &&
     context.url.pathname === "/.well-known/appspecific/com.chrome.devtools.json"
   ) {
@@ -81,14 +74,10 @@ function createAppMiddleware() {
     rateLimit({
       windowMs: 2 * 60 * 1000,
       max: 1000,
-      skipLocalhost: shouldBypassLoopbackRateLimit,
+      skipLocalhost: !isProduction,
       skip: (context) => shouldSkipRateLimit(context.url.pathname),
     }),
-    formData(),
-    asyncContext(),
-    loadAssetEntry(),
-    renderMiddleware,
-    isTest ? logger({ log() {} }) : logger(),
+    ...requestContextMiddleware(),
   );
 }
 
@@ -124,7 +113,7 @@ export function createAppRouter(
   appRouter.map(
     routes.newsletter,
     createNewsletterController(
-      options.newsletterRepository ?? liveNewsletterRepository,
+      options.newsletterRepository ?? getLiveNewsletterRepository(),
     ),
   );
 
@@ -134,5 +123,3 @@ export function createAppRouter(
 
   return appRouter;
 }
-
-export let router = createAppRouter();

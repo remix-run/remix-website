@@ -40,6 +40,31 @@ describe("Jam 2025 gallery route", () => {
     );
     expect(await downloadResponse.text()).toBe("fake image");
   });
+
+  it("answers a Storefront outage with an uncacheable 503 instead of an empty gallery", async (t) => {
+    let originalToken = env.PUBLIC_STOREFRONT_API_TOKEN;
+    env.PUBLIC_STOREFRONT_API_TOKEN = "test-storefront-token";
+    t.after(() => {
+      env.PUBLIC_STOREFRONT_API_TOKEN = originalToken;
+    });
+    t.mock.method(console, "error", () => {});
+    t.mock.method(globalThis, "fetch", async () => {
+      throw new Error("Storefront unavailable");
+    });
+
+    let router = createRouteTestRouter();
+    router.map(routes.jam.y2025.gallery, jam2025GalleryController);
+
+    for (let href of [
+      routes.jam.y2025.gallery.index.href(),
+      `${routes.jam.y2025.gallery.download.href()}?photo=0`,
+    ]) {
+      let response = await router.fetch(new URL(href, "http://localhost:3000"));
+      expect(response.status).toBe(503);
+      expect(response.headers.get("Cache-Control")).toContain("private");
+      expect(response.headers.get("Surrogate-Control")).toBe(null);
+    }
+  });
 });
 
 function mockStorefrontPhotoRequests(t: TestContext) {

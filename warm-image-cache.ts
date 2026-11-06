@@ -3,30 +3,31 @@
 // cache made a fresh machine resize every blog image inside its first /blog
 // request (~20s on one shared CPU). This uses the same functions the blog
 // routes call, so the cache keys match what production renders.
+//
+// Pass blog post slugs as arguments to warm only those posts.
 import { getBlogPost, getBlogPostListings } from "./app/data/blog.ts";
 import { assets } from "./app/utils/assets.ts";
 import {
   getAuthorImageAsset,
   getBlogImageAsset,
+  getFailedImageSources,
 } from "./app/utils/blog-image-assets.ts";
 
-// `createImageAsset` logs failures and falls back to the original image, which
-// would ship a partial cache. Count those logs so the build fails instead.
-let errorCount = 0;
-let logError = console.error;
-console.error = (...args: unknown[]) => {
-  errorCount++;
-  logError(...args);
-};
-
-let start = performance.now();
-let listings = getBlogPostListings();
+const start = performance.now();
+const slugs = process.argv.slice(2);
+const listings = getBlogPostListings().filter(
+  ({ slug }) => slugs.length === 0 || slugs.includes(slug),
+);
+if (listings.length === 0) {
+  throw new Error(`No blog posts match ${slugs.join(", ")}`);
+}
 
 // One post at a time keeps sharp's memory bounded; each post's widths still
 // resize in parallel.
 for (let { slug } of listings) {
   // Rendering the post also resolves the images inside its Markdown.
   let post = await getBlogPost(slug);
+  if (!post) throw new Error(`Listed blog post "${slug}" could not be loaded`);
   await Promise.all([
     getBlogImageAsset(post.image),
     ...post.authors.map((author) => getAuthorImageAsset(author.avatar)),
@@ -35,9 +36,12 @@ for (let { slug } of listings) {
 
 await assets.close();
 
-if (errorCount > 0) {
+// Failed images fall back to the original source at runtime, which would ship
+// a partial cache. Fail the build instead.
+const failedSources = getFailedImageSources();
+if (failedSources.length > 0) {
   throw new Error(
-    `Failed to warm ${errorCount} blog image(s); see errors above`,
+    `Failed to warm ${failedSources.length} blog image(s): ${failedSources.join(", ")}`,
   );
 }
 
