@@ -17,7 +17,7 @@ import {
 } from "./public/theme.ts";
 import { jam2026ModalConfig } from "./public/modal-contract.ts";
 import { Jam2026Faq } from "./faq.tsx";
-import { Jam2026Hero } from "./hero.tsx";
+import { Jam2026Hero, Jam2026Livestream } from "./hero.tsx";
 import { Jam2026Photos } from "./photos.tsx";
 import { Jam2026Schedule } from "./schedule.tsx";
 import type { PhotoCard, PhotoViewerState } from "./public/shopify-photo.ts";
@@ -124,6 +124,7 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
                 dealt={Boolean(photoViewer)}
                 photos={handle.props.photos}
               />
+              <Jam2026Livestream />
               <Jam2026Schedule items={handle.props.schedule} />
               <Jam2026Faq />
               <NewsletterSubscribeFrameHost

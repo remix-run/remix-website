@@ -48,7 +48,7 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).not.toContain('src="/jam/2026/photos/');
   });
 
-  it("stacks a card per photo between the livestream and the schedule, loading only the top ten", async (t) => {
+  it("stacks a card per photo between the hero and the livestream, loading only the top ten", async (t) => {
     mockStorefrontPhotos(
       t,
       Array.from({ length: 12 }, (_, index) => `DSC${index + 1}.jpg`),
@@ -61,10 +61,8 @@ describe("Remix Jam 2026 routes", () => {
       html.match(/src="https:\/\/cdn\.shopify\.com\/files\//g),
     ).toHaveLength(10);
     expect(html).toContain('aria-label="Deal 12 photos"');
-    expect(html.indexOf("<iframe")).toBeLessThan(html.indexOf('id="photos"'));
-    expect(html.indexOf('id="photos"')).toBeLessThan(
-      html.indexOf('id="schedule"'),
-    );
+    expect(html.indexOf('id="photos"')).toBeLessThan(html.indexOf("<iframe"));
+    expect(html.indexOf("<iframe")).toBeLessThan(html.indexOf('id="schedule"'));
   });
 
   it("tilts each photo card by its filename, regardless of order", async (t) => {

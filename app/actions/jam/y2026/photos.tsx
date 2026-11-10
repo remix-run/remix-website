@@ -18,17 +18,12 @@ export function Jam2026Photos(
   };
 }
 
+// Directly under the hero, whose bottom padding is the gap above.
 let sectionStyle = css({
   position: "relative",
-  padding: "72px 16px 0",
+  padding: "0 16px",
   scrollMarginBlockStart: "48px",
   [breakpointMedia.sm]: {
     paddingInline: "max(24px, 3.2vw)",
-  },
-  [breakpointMedia.lg]: {
-    paddingBlockStart: "40px",
-  },
-  [breakpointMedia.xl]: {
-    paddingBlockStart: "144px",
   },
 });
