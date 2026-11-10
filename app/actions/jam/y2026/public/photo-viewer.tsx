@@ -1,4 +1,11 @@
-import { clientEntry, css, navigate, on, type Handle } from "remix/component";
+import {
+  clientEntry,
+  css,
+  navigate,
+  on,
+  ref,
+  type Handle,
+} from "remix/component";
 import {
   animateEntrance,
   animateLayout,
@@ -43,9 +50,6 @@ const VIEWER_IMAGE_WIDTH = 1920;
 // image loads.
 const PLACEHOLDER_IMAGE_WIDTH = 480;
 const TIMELINE_IMAGE_WIDTH = 200;
-// Portrait photos get this share of the photo area's height, so they don't
-// tower over the cards.
-const PORTRAIT_HEIGHT_SCALE = 0.78;
 
 let frameNavigation = {
   target: jam2026ModalConfig.frameName,
@@ -57,6 +61,9 @@ export let Jam2026PhotoViewerFrame = clientEntry(
   import.meta.url,
   function Jam2026PhotoViewerFrame(handle: Handle<Jam2026PhotoViewerProps>) {
     let closing = false;
+    // How the window leaves: shrinking back into the photo's card, or rolling
+    // up when there's no card to shrink into.
+    let exit: "shrink" | "roll" = "roll";
     let closeNavigationTimer: ReturnType<typeof setTimeout> | undefined;
     let lastSlug = handle.props.viewer?.photo.slug;
     let modalEffects = createJam2026ModalEffects(handle, {
@@ -71,10 +78,17 @@ export let Jam2026PhotoViewerFrame = clientEntry(
       getReturnFocus: getCurrentCard,
     });
 
+    function getViewerWindow() {
+      return document.querySelector<HTMLElement>(
+        "[role='dialog'][aria-labelledby='photo-viewer-title'] section",
+      );
+    }
+
+    // The link covering the current photo's card in the gallery, which is
+    // where focus returns and what the window grows from and shrinks into.
     function getCurrentCard() {
       if (!lastSlug) return null;
-      let href = routes.jam.y2026.photos.show.href({ photo: lastSlug });
-      return document.querySelector<HTMLElement>(`a[href="${href}"]`);
+      return findGalleryCardLink(lastSlug);
     }
     // Starts out matching the server-rendered head; synced as photos change.
     let headSyncedSlug = lastSlug;
@@ -85,27 +99,71 @@ export let Jam2026PhotoViewerFrame = clientEntry(
       if (closing || !handle.props.viewer) return;
 
       closing = true;
-      let scrollX = window.scrollX;
-      let scrollY = window.scrollY;
+      let reduceMotion = prefersReducedMotion();
+      exit = !reduceMotion && getCurrentCard() ? "shrink" : "roll";
       handle.update();
 
-      closeNavigationTimer = setTimeout(
-        () => {
-          closeNavigationTimer = undefined;
-          void navigate(routes.jam.y2026.index.href(), {
-            ...frameNavigation,
-            history: "replace",
-          }).finally(() => {
-            restoreScrollPosition(scrollX, scrollY, handle.signal);
+      let finish = (scrollX: number, scrollY: number, card?: HTMLElement) => {
+        void navigate(routes.jam.y2026.index.href(), {
+          ...frameNavigation,
+          history: "replace",
+        }).finally(() => {
+          restoreScrollPosition(scrollX, scrollY, handle.signal);
+          if (!card) {
             revealCurrentCard();
-          });
-        },
-        prefersReducedMotion() ? 0 : 220,
-      );
+            return;
+          }
+          card.style.visibility = "";
+          // The usual focus return ran while the card was hidden mid-shrink,
+          // when it couldn't take focus.
+          getCurrentCard()?.focus({ preventScroll: true });
+        });
+      };
+
+      if (exit === "roll") {
+        let { scrollX, scrollY } = window;
+        closeNavigationTimer = setTimeout(
+          () => {
+            closeNavigationTimer = undefined;
+            finish(scrollX, scrollY);
+          },
+          reduceMotion ? 0 : 220,
+        );
+        return;
+      }
+
+      // Next frame, once closing has unlocked the page's scroll (which puts
+      // it back where it was), so scrolling to the card sticks.
+      window.requestAnimationFrame(() => {
+        let section = getViewerWindow();
+        let card = getCurrentCard()?.parentElement;
+        if (handle.signal.aborted || !section || !card) {
+          finish(window.scrollX, window.scrollY);
+          return;
+        }
+
+        // Stepping can leave the photo's card far from where the viewer
+        // opened; bring it on screen behind the scrim to shrink into.
+        let box = card.getBoundingClientRect();
+        if (box.bottom < 0 || box.top > window.innerHeight) {
+          card.scrollIntoView({ block: "center", behavior: "instant" });
+        }
+        let { scrollX, scrollY } = window;
+
+        let shrink = animateWindowToCard(section, card, "close");
+        if (!shrink) {
+          finish(scrollX, scrollY);
+          return;
+        }
+        shrink.finished.then(
+          () => finish(scrollX, scrollY, card),
+          () => finish(scrollX, scrollY, card),
+        );
+      });
     }
 
-    // After a photo link, or after stepping well past the card that opened
-    // the viewer, bring the photo's card on screen behind the closing viewer.
+    // Without a shrink (reduced motion), snap the photo's card on screen after
+    // closing, as stepping may have left it far away.
     function revealCurrentCard() {
       window.requestAnimationFrame(() => {
         let card = getCurrentCard();
@@ -114,7 +172,7 @@ export let Jam2026PhotoViewerFrame = clientEntry(
         if (box.bottom > 0 && box.top < window.innerHeight) return;
         card.scrollIntoView({
           block: "center",
-          behavior: prefersReducedMotion() ? "auto" : "smooth",
+          behavior: "instant",
         });
       });
     }
@@ -208,6 +266,7 @@ export let Jam2026PhotoViewerFrame = clientEntry(
             <PhotoViewerContent
               animateEntrance={handle.props.animateEntrance ?? true}
               closing={closing}
+              exit={exit}
               onRequestClose={requestClose}
               viewer={viewer}
             />
@@ -222,6 +281,7 @@ function PhotoViewerContent(
   handle: Handle<{
     animateEntrance: boolean;
     closing: boolean;
+    exit: "shrink" | "roll";
     onRequestClose: (event: Event) => void;
     viewer: PhotoViewerState;
   }>,
@@ -279,21 +339,16 @@ function PhotoViewerContent(
         >
           <div mix={viewerWindowAreaStyle}>
             <section
+              data-exit={handle.props.exit}
               data-state={state}
               mix={[
                 viewerWindowStyle,
                 useEntranceMotion
-                  ? animateEntrance({
-                      clipPath: "inset(0 0 100% 0 round 8px)",
-                      ...spring("snappy", { duration: 220 }),
-                    })
+                  ? ref((section) => playEntrance(section, photo.slug))
                   : null,
               ]}
               style={{
                 "--photo-ratio": String(photo.width / photo.height),
-                "--photo-height-scale": String(
-                  photo.width < photo.height ? PORTRAIT_HEIGHT_SCALE : 1,
-                ),
               }}
             >
               <div mix={jam2026ModalTitlebarStyle}>
@@ -391,6 +446,100 @@ const TIMELINE_CARD_PADDING = 8;
  * tilted toward the edges. Each card keeps its key, so stepping slides the
  * row along instead of redrawing it.
  */
+function findGalleryCardLink(slug: string) {
+  let href = routes.jam.y2026.photos.show.href({ photo: slug });
+  return (
+    document
+      .getElementById(jam2026ModalConfig.pageBackgroundId)
+      ?.querySelector<HTMLElement>(`a[href="${href}"]`) ?? null
+  );
+}
+
+/**
+ * Grows the viewer out of the gallery card that opened it. Without that card
+ * on screen (opened another way), the window rolls down instead, like the
+ * tickets modal.
+ */
+function playEntrance(section: HTMLElement, slug: string) {
+  let card = findGalleryCardLink(slug)?.parentElement;
+  let box = card?.getBoundingClientRect();
+  let onScreen = box && box.bottom > 0 && box.top < window.innerHeight;
+  if (card && onScreen && animateWindowToCard(section, card, "open")) return;
+
+  section.animate(
+    [
+      { clipPath: "inset(0 0 100% 0 round 8px)" },
+      { clipPath: "inset(0 0 0 0 round 8px)" },
+    ],
+    { ...spring("snappy", { duration: 220 }) },
+  );
+}
+
+/**
+ * Animates the viewer's window between its place and a gallery card's size,
+ * spot, and tilt: out of the card when opening, back into it when closing.
+ * The card and the viewer's photo share an aspect ratio, so a single scale
+ * maps one onto the other. The card is hidden meanwhile, so the photo looks
+ * lifted out of the grid rather than copied.
+ */
+function animateWindowToCard(
+  section: HTMLElement,
+  card: HTMLElement,
+  direction: "open" | "close",
+) {
+  let cardImage = card.lastElementChild;
+  let body = section.lastElementChild;
+  if (!(cardImage instanceof HTMLElement) || !(body instanceof HTMLElement)) {
+    return null;
+  }
+
+  // Box centers don't change with rotation, and offset sizes ignore it, so
+  // these hold for a tilted card.
+  let cardBox = cardImage.getBoundingClientRect();
+  let sectionBox = section.getBoundingClientRect();
+  let bodyBox = body.getBoundingClientRect();
+  let bodyCenter = {
+    x: bodyBox.left + bodyBox.width / 2,
+    y: bodyBox.top + bodyBox.height / 2,
+  };
+  let dx = cardBox.left + cardBox.width / 2 - bodyCenter.x;
+  let dy = cardBox.top + cardBox.height / 2 - bodyCenter.y;
+  let scale = cardImage.offsetWidth / body.offsetWidth;
+  let { a, b } = new DOMMatrix(getComputedStyle(card).transform);
+  let angle = (Math.atan2(b, a) * 180) / Math.PI;
+  let atCard = `translate(${dx}px, ${dy}px) rotate(${angle}deg) scale(${scale})`;
+
+  card.style.visibility = "hidden";
+  // Show the image the card already has, so the window is never blank while
+  // the viewer's own images load.
+  let cardSrc = cardImage.querySelector("img")?.currentSrc;
+  let placeholder = body.style.backgroundImage;
+  if (direction === "open" && cardSrc) {
+    body.style.backgroundImage = `url("${cardSrc}")`;
+  }
+  section.style.transformOrigin = `${bodyCenter.x - sectionBox.left}px ${bodyCenter.y - sectionBox.top}px`;
+
+  let animation = section.animate(
+    direction === "open"
+      ? [{ transform: atCard }, { transform: "none" }]
+      : [{ transform: "none" }, { transform: atCard }],
+    direction === "open"
+      ? { ...spring({ duration: 220, bounce: 0.1 }) }
+      : // Stays on the card until the closing navigation removes the window,
+        // which also brings the card back.
+        { ...spring({ duration: 160, bounce: 0.05 }), fill: "forwards" },
+  );
+  if (direction === "open") {
+    let reset = () => {
+      card.style.visibility = "";
+      section.style.transformOrigin = "";
+      body.style.backgroundImage = placeholder;
+    };
+    animation.finished.then(reset, reset);
+  }
+  return animation;
+}
+
 function PhotoTimeline(
   handle: Handle<{
     closing: boolean;
@@ -522,8 +671,7 @@ function StepLink(
   );
 }
 
-// Sized to the photo, up to the photo area's height (less for portrait shots)
-// and the window's widest.
+// Sized to the photo at the shared photo height, up to the window's widest.
 let viewerWindowStyle = css({
   background: "light-dark(rgb(255 255 255 / 0.82), rgb(10 29 39 / 0.82))",
   borderRadius: "8px",
@@ -537,8 +685,9 @@ let viewerWindowStyle = css({
   position: "relative",
   transition: `clip-path ${spring("snappy", { duration: 180 })}`,
   width:
-    "min(100%, 1500px, calc(var(--photo-max-height) * var(--photo-height-scale, 1) * var(--photo-ratio) + 16px))",
-  "&[data-state='closing']": {
+    "min(100%, 1500px, calc(var(--photo-height) * var(--photo-ratio) + 16px))",
+  // Shrinking into a card is its own animation.
+  "&[data-state='closing']:not([data-exit='shrink'])": {
     clipPath: "inset(0 0 100% 0 round 8px)",
   },
   "@media (prefers-reduced-motion: reduce)": {
@@ -589,6 +738,11 @@ let viewerScrimStyle = css({
   // bar and bottom edge.
   "--photo-max-height":
     "min(1000px, 100svh - 32px - var(--viewer-breathing-room) - 12px - var(--timeline-height) - 40px)",
+  // Every photo is as tall as a 3:2 landscape shot is here, so portrait
+  // photos match landscape ones instead of standing taller or shorter. On
+  // narrow screens that's set by the width, not the height.
+  "--photo-height":
+    "min(var(--photo-max-height), (min(100vw - 32px, 1500px) - 16px) / 1.5)",
   alignItems: "stretch",
   flexDirection: "column",
   "@media (min-width: 640px)": {
@@ -602,8 +756,7 @@ let viewerScrimStyle = css({
 let viewerStageStyle = css({
   display: "flex",
   flex: "0 0 auto",
-  height:
-    "calc(var(--photo-max-height) + 40px + 12px + var(--timeline-height))",
+  height: "calc(var(--photo-height) + 40px + 12px + var(--timeline-height))",
   flexDirection: "column",
   gap: "12px",
   minHeight: 0,
