@@ -6,6 +6,8 @@ import { routes } from "../../../../routes.ts";
 
 type Jam2026HeadContentProps = {
   ticketsModalOpen?: boolean;
+  /** The filename of the photo open in the viewer, if any. */
+  photo?: string;
 };
 
 type Jam2026HeadTagsProps = {
@@ -18,16 +20,23 @@ type Jam2026HeadTagsProps = {
 const JAM_2026_SHARE_IMAGE_ALT = "Remix Jam 2026 in Toronto";
 
 export function getJam2026HeadContent(props: Jam2026HeadContentProps = {}) {
-  let { ticketsModalOpen = false } = props;
-  return ticketsModalOpen
-    ? {
-        title: "Remix Jam 2026 Tickets",
-        description: "Get tickets for Remix Jam 2026 in Toronto.",
-      }
-    : {
-        title: "Remix Jam 2026",
-        description: "Remix Jam returns to Toronto on October 2, 2026.",
-      };
+  let { ticketsModalOpen = false, photo } = props;
+  if (ticketsModalOpen) {
+    return {
+      title: "Remix Jam 2026 Tickets",
+      description: "Get tickets for Remix Jam 2026 in Toronto.",
+    };
+  }
+  if (photo) {
+    return {
+      title: `${photo} | Remix Jam 2026`,
+      description: "A photo from Remix Jam 2026 in Toronto.",
+    };
+  }
+  return {
+    title: "Remix Jam 2026",
+    description: "Remix Jam returns to Toronto on October 2, 2026.",
+  };
 }
 
 function buildJam2026HeadTags(props: Jam2026HeadTagsProps) {

@@ -15,16 +15,18 @@ import {
   jamThemeStyle,
   type Jam2026ThemeMode,
 } from "./public/theme.ts";
-import { ticketModalConfig } from "./public/tickets-modal-contract.ts";
+import { jam2026ModalConfig } from "./public/modal-contract.ts";
 import { Jam2026Faq } from "./faq.tsx";
 import { Jam2026Hero } from "./hero.tsx";
 import { Jam2026Photos } from "./photos.tsx";
 import { Jam2026Schedule } from "./schedule.tsx";
 import type { Photo } from "./public/shopify-photo.ts";
+import type { PhotoViewerState } from "./public/shopify-photo.ts";
 import type { ScheduleItem } from "./public/schedule-types.ts";
 
 type Jam2026HomePageProps = {
   photos: Photo[];
+  photoViewer?: PhotoViewerState;
   requestUrl: string;
   schedule: ScheduleItem[];
   ticketsModalOpen?: boolean;
@@ -41,15 +43,20 @@ type Jam2026HomePageProps = {
 
 export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
   return () => {
-    let { ticketsModalOpen = false } = handle.props;
-    let head = getJam2026HeadContent({ ticketsModalOpen });
+    let { photoViewer, ticketsModalOpen = false } = handle.props;
+    let head = getJam2026HeadContent({
+      ticketsModalOpen,
+      photo: photoViewer?.photo.filename,
+    });
     // Carry the discount code into the frame URL so the server-resolved modal
     // shows it on the first paint, before the cookie round-trips.
     let discountCode = handle.props.ticketCheckout?.discountCode;
-    let ticketsFrameSrc = ticketsModalOpen
+    let modalFrameSrc = ticketsModalOpen
       ? routes.jam.y2026.ticket.index.href() +
         (discountCode ? `?discount=${encodeURIComponent(discountCode)}` : "")
-      : routes.jam.y2026.index.href();
+      : photoViewer
+        ? routes.jam.y2026.photos.show.href({ photo: photoViewer.photo.slug })
+        : routes.jam.y2026.index.href();
 
     return (
       <Document
@@ -87,7 +94,7 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
           <Jam2026CloudBackdrop />
           <FpsCounterToggle />
           <div
-            id={ticketModalConfig.pageBackgroundId}
+            id={jam2026ModalConfig.pageBackgroundId}
             aria-hidden={ticketsModalOpen ? "true" : undefined}
             inert={ticketsModalOpen || undefined}
             mix={css({
@@ -109,7 +116,12 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
               })}
             >
               <Jam2026Hero />
-              <Jam2026Photos photos={handle.props.photos} />
+              {/* A photo link opens with the photos already dealt, so closing
+                  the viewer leaves the grid behind it. */}
+              <Jam2026Photos
+                dealt={Boolean(photoViewer)}
+                photos={handle.props.photos}
+              />
               <Jam2026Schedule items={handle.props.schedule} />
               <Jam2026Faq />
               <NewsletterSubscribeFrameHost
@@ -134,7 +146,7 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
                 ticketCheckout={handle.props.ticketCheckout}
               />
             ) : (
-              <Frame name={ticketModalConfig.frameName} src={ticketsFrameSrc} />
+              <Frame name={jam2026ModalConfig.frameName} src={modalFrameSrc} />
             )}
           </div>
         </div>

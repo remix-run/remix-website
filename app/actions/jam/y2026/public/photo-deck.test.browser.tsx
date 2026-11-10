@@ -3,12 +3,15 @@ import { describe, it } from "remix/test";
 import { render } from "remix/component/test";
 
 import { Jam2026PhotoDeck } from "./photo-deck.tsx";
+import { jam2026ModalConfig } from "./modal-contract.ts";
+import { routes } from "../../../../routes.ts";
 
 let cards = Array.from({ length: 12 }, (_, index) => ({
   url: `https://cdn.shopify.com/files/DSC${index + 1}.jpg`,
   width: index === 1 ? 800 : 1200,
   height: index === 1 ? 1200 : 800,
   filename: `DSC${index + 1}.jpg`,
+  slug: `DSC${index + 1}`,
   tilt: index - 2,
 }));
 
@@ -41,6 +44,27 @@ describe("Jam2026PhotoDeck", () => {
     expect(result.container.querySelectorAll("img")).toHaveLength(12);
     expect(queryDealButton(result.container)).toBe(null);
     expect(document.activeElement).toBe(result.container.querySelector("ul"));
+  });
+
+  it("starts dealt when asked, with every card linking into the viewer", async (t) => {
+    let result = render(<Jam2026PhotoDeck cards={cards} initiallyDealt />);
+    t.after(result.cleanup);
+
+    expect(queryDealButton(result.container)).toBe(null);
+    expect(result.container.querySelectorAll("img")).toHaveLength(12);
+    let links = [
+      ...result.container.querySelectorAll<HTMLAnchorElement>(
+        'a[aria-label^="View "]',
+      ),
+    ];
+    expect(links.map((link) => link.getAttribute("href"))).toEqual(
+      cards.map((card) =>
+        routes.jam.y2026.photos.show.href({ photo: card.slug }),
+      ),
+    );
+    expect(links[0].getAttribute("data-rmx-target")).toBe(
+      jam2026ModalConfig.frameName,
+    );
   });
 
   it("deals from any visible card in the stack, not just the top one", async (t) => {

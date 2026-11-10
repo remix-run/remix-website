@@ -5,6 +5,7 @@ import {
   spring,
 } from "@remix-run/ui/animation";
 import { jamTheme } from "./theme.ts";
+import { jam2026ModalConfig } from "./modal-contract.ts";
 import { resizeShopifyImage, type Photo } from "./shopify-photo.ts";
 import {
   jam2026WindowSurfaceStyle,
@@ -12,11 +13,18 @@ import {
 } from "./window-styles.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
+import { routes } from "../../../../routes.ts";
 
-export type PhotoCard = Photo & { filename: string; tilt: number };
+export type PhotoCard = Photo & {
+  filename: string;
+  slug: string;
+  tilt: number;
+};
 
 type Jam2026PhotoDeckProps = {
   cards: PhotoCard[];
+  /** Start with the cards dealt, as when a photo link opens the page. */
+  initiallyDealt?: boolean;
 };
 
 const THUMBNAIL_WIDTHS = [320, 480, 640];
@@ -39,8 +47,8 @@ const JITTER = { x: 50, y: 32, rotate: 11 };
 export let Jam2026PhotoDeck = clientEntry(
   import.meta.url,
   function Jam2026PhotoDeck(handle: Handle<Jam2026PhotoDeckProps>) {
-    let dealt = false;
-    let hasDealt = false;
+    let dealt = handle.props.initiallyDealt ?? false;
+    let hasDealt = dealt;
     let list: HTMLUListElement | null = null;
 
     // The stacked blob reaches above and below the single row it sits in.
@@ -101,9 +109,11 @@ export let Jam2026PhotoDeck = clientEntry(
     let deal = () => setDealt(true);
     let gather = () => setDealt(false);
 
-    // Escape gathers the dealt photos from anywhere on the page.
+    // Escape gathers the dealt photos from anywhere on the page, unless a
+    // modal (which makes the page inert) has it.
     let onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape" || event.defaultPrevented || !dealt) return;
+      if (list?.closest("[inert]")) return;
       gather();
     };
     if (typeof document !== "undefined") {
@@ -194,6 +204,18 @@ export let Jam2026PhotoDeck = clientEntry(
                       stacked ? stackedCardStyle : dealtCardStyle,
                     ]}
                   >
+                    {stacked ? null : (
+                      <a
+                        aria-label={`View ${card.filename}`}
+                        data-rmx-reset-focus="manual"
+                        data-rmx-reset-scroll="manual"
+                        data-rmx-target={jam2026ModalConfig.frameName}
+                        href={routes.jam.y2026.photos.show.href({
+                          photo: card.slug,
+                        })}
+                        mix={cardLinkStyle}
+                      />
+                    )}
                     <div mix={cardTitleBarStyle}>
                       <p aria-hidden="true" mix={jam2026WindowTitleStyle}>
                         {card.filename}
@@ -443,6 +465,7 @@ let buriedCellStyle = css({
 // States only change the --card-* offsets, so every transition interpolates
 // the same translate + rotate.
 let cardStyle = css({
+  position: "relative",
   display: "flex",
   flexDirection: "column",
   gap: "8px",
@@ -549,6 +572,20 @@ let deckStyle = css({
   [breakpointMedia["2xl"]]: { maxWidth: "1600px" },
 });
 
+// Covers the whole card, under its minus button, and turns with it.
+let cardLinkStyle = css({
+  position: "absolute",
+  inset: 0,
+  zIndex: 1,
+  borderRadius: "0.5rem",
+  cursor: "zoom-in",
+  outline: "none",
+  "&:focus-visible": {
+    outline: `2px solid ${jamTheme.brandRed}`,
+    outlineOffset: "4px",
+  },
+});
+
 let cardTitleBarStyle = css({
   display: "flex",
   alignItems: "center",
@@ -559,6 +596,8 @@ let cardTitleBarStyle = css({
 // The photo moments' close button, as a minimize: any card stacks them all.
 let stackButtonStyle = css({
   appearance: "none",
+  position: "relative",
+  zIndex: 2,
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",

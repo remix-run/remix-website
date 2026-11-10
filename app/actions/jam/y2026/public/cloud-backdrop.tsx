@@ -1,6 +1,6 @@
 import { clientEntry, css, ref, type Handle } from "remix/component";
 
-import { ticketModalConfig } from "./tickets-modal-contract.ts";
+import { jam2026ModalConfig } from "./modal-contract.ts";
 import { jamTheme } from "./theme.ts";
 
 import {
@@ -143,7 +143,7 @@ async function mountCloudBackdrop(host: HTMLElement, signal: AbortSignal) {
   syncPausedState();
 
   let pageBackground = document.getElementById(
-    ticketModalConfig.pageBackgroundId,
+    jam2026ModalConfig.pageBackgroundId,
   );
   let pageBackgroundObserver = pageBackground
     ? new MutationObserver(syncPausedState)
@@ -192,7 +192,7 @@ function canUseWebGl2() {
 
 function isCloudPaused() {
   let pageBackground = document.getElementById(
-    ticketModalConfig.pageBackgroundId,
+    jam2026ModalConfig.pageBackgroundId,
   );
 
   return (

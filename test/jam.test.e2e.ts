@@ -2,7 +2,7 @@ import { expect, type Page } from "@playwright/test";
 import { createTestServer } from "remix/node-fetch-server/test";
 import { beforeEach, describe, it } from "remix/test";
 
-import { ticketModalConfig } from "../app/actions/jam/y2026/public/tickets-modal-contract.ts";
+import { jam2026ModalConfig } from "../app/actions/jam/y2026/public/modal-contract.ts";
 import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
 import { env } from "../app/utils/env.ts";
@@ -100,7 +100,7 @@ describe("Jam", () => {
       },
       {
         href: routes.jam.y2026.ticket.index.href(),
-        target: ticketModalConfig.frameName,
+        target: jam2026ModalConfig.frameName,
       },
     );
     let opener = page.getByRole("link", { name: "Open tickets" });

@@ -1,11 +1,16 @@
 import { css, type Handle } from "remix/component";
 import { breakpointMedia } from "../../../ui/public/theme.ts";
 import { Jam2026PhotoDeck } from "./public/photo-deck.tsx";
-import { getPhotoFilename, type Photo } from "./public/shopify-photo.ts";
+import {
+  getPhotoFilename,
+  getPhotoSlug,
+  getPhotoTilt,
+  type Photo,
+} from "./public/shopify-photo.ts";
 
-const MAX_TILT_DEGREES = 3;
-
-export function Jam2026Photos(handle: Handle<{ photos: Photo[] }>) {
+export function Jam2026Photos(
+  handle: Handle<{ photos: Photo[]; dealt?: boolean }>,
+) {
   return () => {
     let { photos } = handle.props;
     if (photos.length === 0) return null;
@@ -15,27 +20,18 @@ export function Jam2026Photos(handle: Handle<{ photos: Photo[] }>) {
         <Jam2026PhotoDeck
           cards={photos.map((photo, index) => {
             let filename = getPhotoFilename(photo, index);
-            return { ...photo, filename, tilt: getTilt(filename) };
+            return {
+              ...photo,
+              filename,
+              slug: getPhotoSlug(filename),
+              tilt: getPhotoTilt(filename),
+            };
           })}
+          initiallyDealt={handle.props.dealt}
         />
       </section>
     );
   };
-}
-
-/**
- * Tilts each card by a hash of its filename, so a photo keeps its angle across
- * renders and reorderings without any client-side randomness.
- */
-function getTilt(filename: string) {
-  // FNV-1a, seeded so the spread can be reshuffled by changing the seed.
-  let hash = 0x811c9dc5;
-  for (let char of `remix-jam-2026:${filename}`) {
-    hash ^= char.codePointAt(0)!;
-    hash = Math.imul(hash, 0x01000193);
-  }
-  let unit = (hash >>> 0) / 0xffffffff;
-  return Math.round((unit * 2 - 1) * MAX_TILT_DEGREES * 10) / 10;
 }
 
 let sectionStyle = css({

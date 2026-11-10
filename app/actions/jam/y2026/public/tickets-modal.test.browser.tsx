@@ -5,7 +5,7 @@ import { render } from "remix/component/test";
 
 import { Jam2026TicketsModalFrame } from "./tickets-modal.tsx";
 import { remixJam2026Ticket } from "./ticket-data.ts";
-import { ticketModalConfig } from "./tickets-modal-contract.ts";
+import { jam2026ModalConfig } from "./modal-contract.ts";
 import { routes } from "../../../../routes.ts";
 
 describe("Jam2026TicketsModal", () => {
@@ -32,7 +32,7 @@ describe("Jam2026TicketsModal", () => {
 
     let result = render(
       <div>
-        <main id={ticketModalConfig.pageBackgroundId}>Page content</main>
+        <main id={jam2026ModalConfig.pageBackgroundId}>Page content</main>
         <Jam2026TicketsModalFrame open />
       </div>,
     );
@@ -56,7 +56,7 @@ describe("Jam2026TicketsModal", () => {
     expect(document.documentElement.style.overflow).toBe("hidden");
     expect(
       result.container
-        .querySelector(`#${ticketModalConfig.pageBackgroundId}`)
+        .querySelector(`#${jam2026ModalConfig.pageBackgroundId}`)
         ?.hasAttribute("inert"),
     ).toBe(true);
 
@@ -66,7 +66,7 @@ describe("Jam2026TicketsModal", () => {
     expect(backdrop.getAttribute("href")).toBe(homeHref);
     expect(backdrop.getAttribute("data-rmx-reset-scroll")).toBe("manual");
     expect(backdrop.getAttribute("data-rmx-target")).toBe(
-      ticketModalConfig.frameName,
+      jam2026ModalConfig.frameName,
     );
 
     let close = result.container.querySelector<HTMLAnchorElement>(
@@ -75,7 +75,7 @@ describe("Jam2026TicketsModal", () => {
     expect(close.getAttribute("href")).toBe(homeHref);
     expect(close.getAttribute("data-rmx-reset-scroll")).toBe("manual");
     expect(close.getAttribute("data-rmx-target")).toBe(
-      ticketModalConfig.frameName,
+      jam2026ModalConfig.frameName,
     );
   });
 
@@ -280,7 +280,7 @@ describe("Jam2026TicketsModal", () => {
 
     let renderModal = (open = false) => (
       <div style={{ minHeight: "3000px" }}>
-        <main id={ticketModalConfig.pageBackgroundId}>Page content</main>
+        <main id={jam2026ModalConfig.pageBackgroundId}>Page content</main>
         <Jam2026TicketsModalFrame open={open} />
       </div>
     );
@@ -327,7 +327,7 @@ describe("Jam2026TicketsModal", () => {
 
     let result = render(
       <div>
-        <main id={ticketModalConfig.pageBackgroundId}>Page content</main>
+        <main id={jam2026ModalConfig.pageBackgroundId}>Page content</main>
         <Jam2026TicketsModalFrame open />
       </div>,
     );
@@ -336,7 +336,7 @@ describe("Jam2026TicketsModal", () => {
     await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
 
     let background = result.container.querySelector(
-      `#${ticketModalConfig.pageBackgroundId}`,
+      `#${jam2026ModalConfig.pageBackgroundId}`,
     )!;
     expect(document.documentElement.style.overflow).toBe("hidden");
     expect(background.hasAttribute("inert")).toBe(true);

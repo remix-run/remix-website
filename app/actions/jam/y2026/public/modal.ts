@@ -1,0 +1,333 @@
+import { css, type Handle } from "remix/component";
+
+import { jam2026ModalConfig } from "./modal-contract.ts";
+import { jamTheme } from "./theme.ts";
+import { getFocusableElementsWithin } from "../../../../ui/public/focus-trap.ts";
+import { lockScroll } from "../../../../ui/public/scroll-lock.ts";
+import { theme } from "../../../../ui/public/theme.ts";
+import { routes } from "../../../../routes.ts";
+
+type Jam2026ModalEffectsOptions = {
+  getModalRoot: () => HTMLElement | null;
+  isActive: () => boolean;
+  requestClose: () => void;
+  /** Where focus goes when the modal closes; defaults to the opener. */
+  getReturnFocus?: () => HTMLElement | null;
+};
+
+/**
+ * Page-level effects for a Jam 2026 modal: scroll lock, an inert page
+ * background, a focus trap, Escape to close, and focus restoration.
+ */
+export function createJam2026ModalEffects(
+  handle: Handle<any>,
+  options: Jam2026ModalEffectsOptions,
+) {
+  let modalEffectsOpen = false;
+  let previousFocus: HTMLElement | null = null;
+  let unlockScroll = () => {};
+  let syncQueued = false;
+
+  function setBackgroundInert(nextInert: boolean) {
+    // Modals are hydrated separately from the page background, so this
+    // document-level effect keeps the unhydrated page content inaccessible.
+    let background = document.getElementById(
+      jam2026ModalConfig.pageBackgroundId,
+    );
+    if (!background) return;
+
+    if (nextInert) {
+      background.setAttribute("inert", "");
+      background.setAttribute("aria-hidden", "true");
+    } else {
+      background.removeAttribute("inert");
+      background.removeAttribute("aria-hidden");
+    }
+  }
+
+  function focusFirstModalControl(root: HTMLElement) {
+    let focusableElements = getFocusableElementsWithin(root);
+    if (focusableElements.length > 0) {
+      focusableElements[0].focus({ preventScroll: true });
+      return;
+    }
+
+    root.focus({ preventScroll: true });
+  }
+
+  function preserveScrollPosition(scrollX: number, scrollY: number) {
+    window.scrollTo(scrollX, scrollY);
+    window.requestAnimationFrame(() => {
+      if (!handle.signal.aborted) window.scrollTo(scrollX, scrollY);
+    });
+  }
+
+  function restorePageState() {
+    unlockScroll();
+    unlockScroll = () => {};
+    setBackgroundInert(false);
+
+    let toFocus = options.getReturnFocus?.() ?? previousFocus;
+    previousFocus = null;
+    if (!toFocus) return;
+
+    window.requestAnimationFrame(() => {
+      if (document.contains(toFocus)) toFocus.focus({ preventScroll: true });
+    });
+  }
+
+  function syncModalState() {
+    let modal = options.getModalRoot();
+    let nextOpen = options.isActive() && Boolean(modal);
+    if (modalEffectsOpen === nextOpen) return;
+
+    modalEffectsOpen = nextOpen;
+
+    if (!nextOpen || !modal) {
+      restorePageState();
+      return;
+    }
+
+    if (!previousFocus) {
+      let active = document.activeElement;
+      previousFocus = active instanceof HTMLElement ? active : null;
+    }
+
+    let scrollX = window.scrollX;
+    let scrollY = window.scrollY;
+    unlockScroll();
+    unlockScroll = lockScroll();
+    setBackgroundInert(true);
+    preserveScrollPosition(scrollX, scrollY);
+
+    window.requestAnimationFrame(() => {
+      if (handle.signal.aborted) return;
+
+      focusFirstModalControl(modal);
+      preserveScrollPosition(scrollX, scrollY);
+    });
+  }
+
+  function keepFocusInModal(event: FocusEvent) {
+    if (!options.isActive()) return;
+
+    let modal = options.getModalRoot();
+    let target = event.target;
+    if (!modal || !(target instanceof HTMLElement)) return;
+    if (modal.contains(target)) return;
+
+    focusFirstModalControl(modal);
+  }
+
+  function handleTab(event: KeyboardEvent) {
+    if (!options.isActive() || event.defaultPrevented || event.key !== "Tab") {
+      return;
+    }
+
+    let modal = options.getModalRoot();
+    if (!modal) return;
+
+    let focusableElements = getFocusableElementsWithin(modal);
+    if (focusableElements.length === 0) {
+      event.preventDefault();
+      modal.focus({ preventScroll: true });
+      return;
+    }
+
+    let first = focusableElements[0];
+    let last = focusableElements[focusableElements.length - 1];
+    let active = document.activeElement;
+
+    if (event.shiftKey && active === first) {
+      event.preventDefault();
+      last.focus({ preventScroll: true });
+      return;
+    }
+
+    if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus({ preventScroll: true });
+    }
+  }
+
+  function queueStateSync() {
+    if (syncQueued) return;
+    syncQueued = true;
+    handle.queueTask(() => {
+      syncQueued = false;
+      syncModalState();
+    });
+  }
+
+  handle.queueTask(() => {
+    syncModalState();
+
+    document.addEventListener(
+      "keydown",
+      (event) => {
+        handleTab(event);
+        if (
+          !options.isActive() ||
+          event.defaultPrevented ||
+          event.key !== "Escape"
+        ) {
+          return;
+        }
+
+        event.preventDefault();
+        options.requestClose();
+      },
+      { signal: handle.signal },
+    );
+    document.addEventListener("focusin", keepFocusInModal, {
+      signal: handle.signal,
+    });
+
+    handle.signal.addEventListener(
+      "abort",
+      () => {
+        restorePageState();
+      },
+      { once: true },
+    );
+  });
+
+  return {
+    queueStateSync,
+  };
+}
+
+export function restoreScrollPosition(
+  scrollX: number,
+  scrollY: number,
+  signal?: AbortSignal,
+) {
+  if (typeof window === "undefined" || signal?.aborted) return;
+
+  window.scrollTo(scrollX, scrollY);
+  window.requestAnimationFrame(() => {
+    if (!signal?.aborted) window.scrollTo(scrollX, scrollY);
+  });
+}
+
+/**
+ * Direct document loads start with top-frame history state. Once the modal
+ * frame hydrates, mark the Jam page's entry as owned by that frame, so browser
+ * Back and Forward reload just the modal instead of remounting the animated
+ * page.
+ */
+export function syncModalNavigationEntry() {
+  let navigation = window.navigation;
+  if (!navigation?.currentEntry) return;
+
+  let { pathname, search } = window.location;
+  let homeHref = routes.jam.y2026.index.href();
+  let isModalPage =
+    pathname === homeHref ||
+    pathname === routes.jam.y2026.ticket.index.href() ||
+    pathname.startsWith(`${homeHref}/photos/`);
+  if (!isModalPage) return;
+
+  let state = {
+    $rmx: true,
+    resetScroll: "manual",
+    resetFocus: "after-transition",
+    src: new URL(pathname + search, window.location.href).href,
+    target: jam2026ModalConfig.frameName,
+  };
+  let currentState = navigation.currentEntry.getState();
+
+  if (
+    isRecord(currentState) &&
+    currentState.$rmx === state.$rmx &&
+    currentState.resetScroll === state.resetScroll &&
+    currentState.resetFocus === state.resetFocus &&
+    currentState.src === state.src &&
+    currentState.target === state.target
+  ) {
+    return;
+  }
+
+  navigation.updateCurrentEntry({ state });
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+export let jam2026ModalScrimStyle = css({
+  alignItems: "center",
+  background: "rgb(0 0 0 / 0.85)",
+  display: "flex",
+  inset: 0,
+  justifyContent: "center",
+  padding: "16px",
+  position: "fixed",
+  transition: "background 120ms ease-out",
+  zIndex: 60,
+  "&[data-state='closing']": {
+    background: "rgb(0 0 0 / 0)",
+    pointerEvents: "none",
+  },
+  "@media (prefers-reduced-motion: reduce)": {
+    transition: "none",
+  },
+});
+
+export let jam2026ModalBackdropStyle = css({
+  background: "transparent",
+  display: "block",
+  inset: 0,
+  position: "absolute",
+});
+
+export let jam2026ModalTitlebarStyle = css({
+  alignItems: "center",
+  display: "flex",
+  flexShrink: 0,
+  gap: "6px",
+  padding: "8px",
+  width: "100%",
+});
+
+// Close, download, and step controls in a modal's title bar.
+export let jam2026ModalTitlebarButtonStyle = css({
+  alignItems: "center",
+  background: "transparent",
+  border: 0,
+  borderRadius: "50%",
+  color: jamTheme.ink,
+  cursor: "pointer",
+  display: "inline-flex",
+  flexShrink: 0,
+  height: "16px",
+  justifyContent: "center",
+  padding: 0,
+  textDecoration: "none",
+  width: "16px",
+  "&:hover, &:focus-visible": {
+    opacity: 0.7,
+  },
+  "&:focus-visible": {
+    outline: `2px solid ${jamTheme.brandRed}`,
+    outlineOffset: "2px",
+  },
+});
+
+export let jam2026ModalTitlebarIconStyle = css({
+  display: "block",
+  height: "14px",
+  width: "14px",
+});
+
+export let jam2026ModalTitleStyle = css({
+  color: jamTheme.ink,
+  fontFamily: theme.fontFamily.mono,
+  fontSize: "10px",
+  fontWeight: theme.fontWeight.normal,
+  letterSpacing: "0.02em",
+  lineHeight: 1.2,
+  margin: 0,
+  textTransform: "uppercase",
+  whiteSpace: "nowrap",
+});
