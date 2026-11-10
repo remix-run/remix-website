@@ -1,8 +1,9 @@
-import { describe, it } from "remix/test";
+import { describe, it, type TestContext } from "remix/test";
 import { expect } from "remix/assert";
 
 import { DOCUMENT_REDIRECT_HEADER } from "../../public/document-redirect.ts";
 import { routes } from "../../../routes.ts";
+import { env } from "../../../utils/env.ts";
 import { createRouteTestRouter } from "../../../../test/setup.ts";
 import jam2026Controller from "./controller.tsx";
 import jam2026TicketController from "./ticket/controller.tsx";
@@ -44,6 +45,55 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).not.toContain('href="/jam/2026/ticket"');
     expect(html).not.toContain('role="dialog"');
     expect(html).not.toContain('src="/jam/2026/photos/');
+  });
+
+  it("renders a card per photo between the livestream and the schedule", async (t) => {
+    mockStorefrontPhotos(t, ["DSC01.jpg", "DSC02.jpg", "DSC03.jpg"]);
+
+    let html = await renderJam2026Home();
+
+    expect(
+      html.match(/src="https:\/\/cdn\.shopify\.com\/files\//g),
+    ).toHaveLength(3);
+    expect(html.indexOf("<iframe")).toBeLessThan(html.indexOf('id="photos"'));
+    expect(html.indexOf('id="photos"')).toBeLessThan(
+      html.indexOf('id="schedule"'),
+    );
+  });
+
+  it("tilts each photo card by its filename, regardless of order", async (t) => {
+    let filenames = ["DSC01.jpg", "DSC02.jpg", "DSC03.jpg", "DSC04.jpg"];
+    mockStorefrontPhotos(t, filenames);
+
+    let tilts = getPhotoTilts(await renderJam2026Home());
+    filenames.reverse();
+    let reorderedTilts = getPhotoTilts(await renderJam2026Home());
+
+    expect([...tilts.keys()]).toEqual([
+      "DSC01.jpg",
+      "DSC02.jpg",
+      "DSC03.jpg",
+      "DSC04.jpg",
+    ]);
+    expect([...reorderedTilts.keys()]).toEqual([
+      "DSC04.jpg",
+      "DSC03.jpg",
+      "DSC02.jpg",
+      "DSC01.jpg",
+    ]);
+    for (let [filename, tilt] of tilts) {
+      expect(reorderedTilts.get(filename)).toBe(tilt);
+      expect(Math.abs(tilt)).toBeLessThanOrEqual(3);
+    }
+    expect(new Set(tilts.values()).size).toBeGreaterThan(1);
+  });
+
+  it("omits the photos section when there are no photos", async (t) => {
+    mockStorefrontPhotos(t, []);
+
+    let html = await renderJam2026Home();
+
+    expect(html).not.toContain('id="photos"');
   });
 
   it("renders the newsletter signup fragment", async () => {
@@ -183,10 +233,18 @@ describe("Remix Jam 2026 routes", () => {
 
   it("blocks stale and enhanced checkout submissions without contacting Shopify, even with a discount", async (t) => {
     let requests: string[] = [];
-    t.mock.method(globalThis, "fetch", async (input: RequestInfo | URL) => {
-      requests.push(String(input));
-      throw new Error("Closed ticket sales must not contact Shopify");
-    });
+    t.mock.method(
+      globalThis,
+      "fetch",
+      async (input: RequestInfo | URL, init?: RequestInit) => {
+        // The page's photo gallery may read its metaobject; checkout may not.
+        if (String(init?.body).includes('"remix-jam-2026"')) {
+          return Response.json({ data: { metaobject: null } });
+        }
+        requests.push(String(input));
+        throw new Error("Closed ticket sales must not contact Shopify");
+      },
+    );
     let cookie = await serializeJam2026DiscountCode("PARTNER-2026");
     for (let enhanced of [false, true]) {
       let formData = new FormData();
@@ -248,4 +306,68 @@ function createJam2026TestRouter() {
   router.map(routes.jam.y2026.ticket, jam2026TicketController);
   router.map(routes.jam.y2026, jam2026Controller);
   return router;
+}
+
+async function renderJam2026Home() {
+  let response = await createJam2026TestRouter().fetch(
+    appUrl(routes.jam.y2026.index),
+  );
+  return response.text();
+}
+
+function getPhotoTilts(html: string) {
+  let tilts = new Map<string, number>();
+  for (let [, tilt, filename] of html.matchAll(
+    /--photo-tilt: (-?[\d.]+)deg[\s\S]*?>(DSC\d+\.jpg)</g,
+  )) {
+    tilts.set(filename, Number(tilt));
+  }
+  return tilts;
+}
+
+/** Serves `filenames` as the metaobject's photos, read at request time. */
+function mockStorefrontPhotos(t: TestContext, filenames: string[]) {
+  let originalToken = env.PUBLIC_STOREFRONT_API_TOKEN;
+  env.PUBLIC_STOREFRONT_API_TOKEN = "test-storefront-token";
+
+  t.mock.method(
+    globalThis,
+    "fetch",
+    async (input: RequestInfo | URL, init?: RequestInit) => {
+      let url = String(input);
+      if (url !== "https://jam.remix.run/api/2026-04/graphql.json") {
+        throw new Error(`Unexpected fetch: ${url}`);
+      }
+      expect(JSON.parse(String(init?.body)).variables.handle).toBe(
+        "remix-jam-2026",
+      );
+
+      return Response.json({
+        data: {
+          metaobject: {
+            fields: [
+              {
+                key: "photos",
+                references: {
+                  edges: filenames.map((filename) => ({
+                    node: {
+                      image: {
+                        url: `https://cdn.shopify.com/files/${filename}`,
+                        width: 1200,
+                        height: 800,
+                      },
+                    },
+                  })),
+                },
+              },
+            ],
+          },
+        },
+      });
+    },
+  );
+
+  t.after(() => {
+    env.PUBLIC_STOREFRONT_API_TOKEN = originalToken;
+  });
 }

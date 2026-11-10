@@ -18,10 +18,13 @@ import {
 import { ticketModalConfig } from "./public/tickets-modal-contract.ts";
 import { Jam2026Faq } from "./faq.tsx";
 import { Jam2026Hero } from "./hero.tsx";
+import { Jam2026Photos } from "./photos.tsx";
 import { Jam2026Schedule } from "./schedule.tsx";
+import type { Photo } from "./public/shopify-photo.ts";
 import type { ScheduleItem } from "./public/schedule-types.ts";
 
 type Jam2026HomePageProps = {
+  photos: Photo[];
   requestUrl: string;
   schedule: ScheduleItem[];
   ticketsModalOpen?: boolean;
@@ -106,6 +109,7 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
               })}
             >
               <Jam2026Hero />
+              <Jam2026Photos photos={handle.props.photos} />
               <Jam2026Schedule items={handle.props.schedule} />
               <Jam2026Faq />
               <NewsletterSubscribeFrameHost
