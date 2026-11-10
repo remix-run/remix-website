@@ -1,6 +1,5 @@
 import { clientEntry, css, on, ref, type Handle } from "remix/component";
 import {
-  animateEntrance,
   animateLayout,
   prefersReducedMotion,
   spring,
@@ -11,6 +10,7 @@ import {
   jam2026WindowSurfaceStyle,
   jam2026WindowTitleStyle,
 } from "./window-styles.ts";
+import { Icon } from "../../../../ui/public/icon.tsx";
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 
 export type PhotoCard = Photo & { filename: string; tilt: number };
@@ -45,59 +45,59 @@ export let Jam2026PhotoDeck = clientEntry(
       handle.update();
       handle.queueTask(() => {
         if (!list) return;
+        let reduceMotion = prefersReducedMotion();
+        let resize = spring({ duration: 520, bounce: 0 });
         // Grow or shrink the list instead of snapping the content below it,
         // keeping pace with the first cards (without their bounce, so the page
         // below doesn't wobble).
-        if (!prefersReducedMotion()) {
+        if (!reduceMotion) {
           list.animate(
             [
               { height: `${startHeight}px` },
               { height: `${list.offsetHeight}px` },
             ],
-            { ...spring({ duration: 520, bounce: 0 }) },
+            { ...resize },
           );
         }
-        let focusTarget = dealt ? list : list.querySelector("button");
-        focusTarget?.focus({ preventScroll: true });
+        if (dealt) {
+          list.focus({ preventScroll: true });
+          return;
+        }
+        list
+          .querySelector<HTMLElement>('button[aria-label^="Deal"]')
+          ?.focus({ preventScroll: true });
+        // Any card can gather, even far down the grid, so follow the cards
+        // back up to the stack, centered in the viewport.
+        let top = list.firstElementChild as HTMLElement;
+        let targetY =
+          window.scrollY +
+          list.getBoundingClientRect().top +
+          top.offsetTop -
+          (window.innerHeight - top.offsetHeight) / 2;
+        if (reduceMotion) window.scrollTo(0, targetY);
+        else scrollAlong(targetY, [...resize], handle.signal);
       });
     };
     let deal = () => setDealt(true);
     let gather = () => setDealt(false);
+
+    // Escape gathers the dealt photos from anywhere on the page.
+    let onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || event.defaultPrevented || !dealt) return;
+      gather();
+    };
+    if (typeof document !== "undefined") {
+      document.addEventListener("keydown", onKeyDown, {
+        signal: handle.signal,
+      });
+    }
 
     return () => {
       let { cards } = handle.props;
       let animate = !prefersReducedMotion();
 
       return (
-        <div>
-          {/* Keeps its height while stacked, so the button coming and going
-              never shifts the cards. */}
-          <div mix={gatherBarStyle}>
-            {dealt ? (
-              <div
-                mix={animateEntrance(
-                  animate && {
-                    opacity: 0,
-                    transform: "translateY(-12px)",
-                    delay: 250,
-                    ...spring("snappy"),
-                  },
-                )}
-              >
-                <button
-                  mix={[
-                    jam2026WindowSurfaceStyle,
-                    gatherButtonStyle,
-                    on("click", gather),
-                  ]}
-                  type="button"
-                >
-                  <StackGlyph />
-                  Stack photos
-                </button>
-              </div>
-            ) : null}
-          </div>
+        <div mix={deckStyle}>
           <ul
             aria-label="Photos"
             tabIndex={-1}
@@ -167,9 +167,29 @@ export let Jam2026PhotoDeck = clientEntry(
                       stacked ? stackedCardStyle : dealtCardStyle,
                     ]}
                   >
-                    <p aria-hidden="true" mix={jam2026WindowTitleStyle}>
-                      {card.filename}
-                    </p>
+                    <div mix={cardTitleBarStyle}>
+                      <p aria-hidden="true" mix={jam2026WindowTitleStyle}>
+                        {card.filename}
+                      </p>
+                      {stacked ? null : (
+                        <button
+                          aria-label="Stack photos"
+                          mix={[
+                            stackButtonStyle,
+                            on("click", (event) => {
+                              // The gather re-renders before this click
+                              // finishes bubbling, and by then the top three
+                              // cards deal on click again.
+                              event.stopPropagation();
+                              gather();
+                            }),
+                          ]}
+                          type="button"
+                        >
+                          <Icon name="circle-minus" aria-hidden="true" />
+                        </button>
+                      )}
+                    </div>
                     <div mix={imageFrameStyle}>
                       {/* Buried cards stay empty until the first deal, so the
                         stack doesn't download every photo while it sits on
@@ -212,6 +232,40 @@ export let Jam2026PhotoDeck = clientEntry(
   },
 );
 
+/**
+ * Scrolls the window along a spring curve, frame by frame. A native smooth
+ * scroll gets cut short here, because the list shrinks under it at the same
+ * time.
+ */
+function scrollAlong(targetY: number, curve: number[], signal: AbortSignal) {
+  let startY = window.scrollY;
+  let start = performance.now();
+  let stop = new AbortController();
+  let frame = 0;
+  let cancel = () => {
+    stop.abort();
+    cancelAnimationFrame(frame);
+  };
+  // Let the reader take the scroll back at any point.
+  for (let type of ["wheel", "touchstart", "keydown"]) {
+    window.addEventListener(type, cancel, { once: true, signal: stop.signal });
+  }
+  signal.addEventListener("abort", cancel, { signal: stop.signal });
+
+  let step = (now: number) => {
+    // A frame's timestamp can precede `start`, so clamp at 0 as well: a
+    // negative index would scroll to NaN, which jumps to the top of the page.
+    let index = Math.max(
+      0,
+      Math.min(curve.length - 1, Math.round((now - start) / (1000 / 60))),
+    );
+    window.scrollTo(0, startY + (targetY - startY) * curve[index]);
+    if (index < curve.length - 1) frame = requestAnimationFrame(step);
+    else stop.abort();
+  };
+  frame = requestAnimationFrame(step);
+}
+
 let gridStyle = css({
   "--columns": "2",
   "--column-gap": "16px",
@@ -228,8 +282,7 @@ let gridStyle = css({
   alignItems: "center",
   justifyItems: "center",
   width: "100%",
-  maxWidth: "1200px",
-  margin: "0 auto",
+  margin: 0,
   padding: 0,
   listStyle: "none",
   outline: "none",
@@ -240,7 +293,7 @@ let gridStyle = css({
   },
   [breakpointMedia.lg]: { "--columns": "4" },
   // Wider than the 1200px windows so five columns keep the four-column card size.
-  [breakpointMedia["2xl"]]: { "--columns": "5", maxWidth: "1600px" },
+  [breakpointMedia["2xl"]]: { "--columns": "5" },
 });
 
 // Landscape cards span the cell; portrait cards share the same long edge, so
@@ -347,38 +400,6 @@ let imageFrameStyle = css({
   },
 });
 
-function StackGlyph() {
-  return () => (
-    <svg
-      aria-hidden="true"
-      fill="none"
-      height="14"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      viewBox="0 0 16 14"
-      width="16"
-    >
-      <rect
-        height="8"
-        rx="1"
-        transform="rotate(-8 5 7)"
-        width="10"
-        x="1"
-        y="4"
-      />
-      <rect
-        style={{ fill: jamTheme.surfaceRaised }}
-        height="8"
-        rx="1"
-        transform="rotate(6 10 6)"
-        width="10"
-        x="5"
-        y="2"
-      />
-    </svg>
-  );
-}
-
 let dealButtonStyle = css({
   appearance: "none",
   position: "absolute",
@@ -396,40 +417,48 @@ let dealButtonStyle = css({
   },
 });
 
-let gatherBarStyle = css({
+// Sized to the grid.
+let deckStyle = css({
   position: "relative",
-  zIndex: 1,
-  display: "flex",
-  justifyContent: "center",
-  minHeight: "38px",
-  marginBlockEnd: "32px",
+  width: "100%",
+  maxWidth: "1200px",
+  marginInline: "auto",
+  // Wider than the 1200px windows so five columns keep the four-column card size.
+  [breakpointMedia["2xl"]]: { maxWidth: "1600px" },
 });
 
-// A small window, matching the cards it gathers.
-let gatherButtonStyle = css({
+let cardTitleBarStyle = css({
+  display: "flex",
+  alignItems: "center",
+  gap: "6px",
+  minWidth: 0,
+});
+
+// The photo moments' close button, as a minimize: any card stacks them all.
+let stackButtonStyle = css({
   appearance: "none",
   display: "inline-flex",
   alignItems: "center",
-  gap: "10px",
+  justifyContent: "center",
+  flex: "0 0 auto",
+  width: "28px",
+  height: "28px",
+  // Pinned to the right end of the title bar.
+  margin: "-8px -8px -8px auto",
   border: 0,
+  borderRadius: theme.radius.full,
+  background: "transparent",
   color: jamTheme.ink,
   cursor: "pointer",
-  fontFamily: theme.fontFamily.mono,
-  fontSize: "11px",
-  fontWeight: theme.fontWeight.bold,
-  letterSpacing: "0.06em",
-  lineHeight: 1,
   outline: "none",
-  padding: "12px 16px",
-  textTransform: "uppercase",
-  backdropFilter: "blur(8px)",
-  transition: "color 160ms ease",
-  "& svg": { flex: "0 0 auto" },
-  // Like the header's buttons; tilting is for the photos.
-  "&:hover, &:focus-visible": { color: jamTheme.brandRed },
+  padding: 0,
+  transition: "opacity 140ms ease",
+  "& svg": { display: "block", width: "12px", height: "12px" },
+  "&:hover": { opacity: 0.7 },
   "&:focus-visible": {
+    color: jamTheme.brandRed,
     outline: `2px solid ${jamTheme.brandRed}`,
-    outlineOffset: "3px",
+    outlineOffset: "2px",
   },
   "@media (prefers-reduced-motion: reduce)": { transition: "none" },
 });

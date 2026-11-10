@@ -52,34 +52,50 @@ describe("Jam2026PhotoDeck", () => {
     expect(result.container.querySelectorAll("img")).toHaveLength(6);
   });
 
-  it("gathers the dealt cards back into the stack", async (t) => {
-    let result = render(<Jam2026PhotoDeck cards={cards} />);
-    t.after(result.cleanup);
+  for (let trigger of ["first card", "last card", "Escape"]) {
+    it(`gathers the dealt cards back into the stack: ${trigger}`, async (t) => {
+      let result = render(<Jam2026PhotoDeck cards={cards} />);
+      t.after(result.cleanup);
 
-    expect(
-      [...result.container.querySelectorAll("button")].some((node) =>
-        node.textContent?.includes("Stack photos"),
-      ),
-    ).toBe(false);
-    await result.act(() => getDealButton(result.container).click());
-    await result.act(() => getStackButton(result.container).click());
+      expect(queryStackButtons(result.container)).toHaveLength(0);
+      await result.act(() => getDealButton(result.container).click());
+      // Every dealt card gets its own minus.
+      let stackButtons = queryStackButtons(result.container);
+      expect(stackButtons).toHaveLength(cards.length);
 
-    let items = getItems(result.container);
-    for (let item of items.slice(1)) {
-      expect(Math.abs(getCenterX(item) - getCenterX(items[0]))).toBeLessThan(1);
-    }
-    expect(document.activeElement).toBe(getDealButton(result.container));
-    // The buried cards stay visible while they fly back, then fade out.
-    let isHidden = (item: HTMLElement) =>
-      getComputedStyle(item).visibility === "hidden";
-    expect(items.slice(3).some(isHidden)).toBe(false);
+      await result.act(() => {
+        if (trigger === "Escape") {
+          document.dispatchEvent(
+            new KeyboardEvent("keydown", { bubbles: true, key: "Escape" }),
+          );
+        } else {
+          (trigger === "first card"
+            ? stackButtons[0]
+            : stackButtons.at(-1)!
+          ).click();
+        }
+      });
 
-    await result.act(() => settle(result.container));
-    await settle(result.container);
+      expect(queryStackButtons(result.container)).toHaveLength(0);
+      let items = getItems(result.container);
+      for (let item of items.slice(1)) {
+        expect(Math.abs(getCenterX(item) - getCenterX(items[0]))).toBeLessThan(
+          1,
+        );
+      }
+      expect(document.activeElement).toBe(getDealButton(result.container));
+      // The buried cards stay visible while they fly back, then fade out.
+      let isHidden = (item: HTMLElement) =>
+        getComputedStyle(item).visibility === "hidden";
+      expect(items.slice(3).some(isHidden)).toBe(false);
 
-    expect(items.slice(3).every(isHidden)).toBe(true);
-    expect(items.slice(0, 3).some(isHidden)).toBe(false);
-  });
+      await result.act(() => settle(result.container));
+      await settle(result.container);
+
+      expect(items.slice(3).every(isHidden)).toBe(true);
+      expect(items.slice(0, 3).some(isHidden)).toBe(false);
+    });
+  }
 });
 
 async function settle(container: HTMLElement) {
@@ -110,12 +126,12 @@ function getDealButton(container: HTMLElement) {
   return button;
 }
 
-function getStackButton(container: HTMLElement) {
-  let button = [...container.querySelectorAll("button")].find(
-    (node) => node.textContent?.trim() === "Stack photos",
-  );
-  if (!button) throw new Error("Unable to find the stack button");
-  return button;
+function queryStackButtons(container: HTMLElement) {
+  return [
+    ...container.querySelectorAll<HTMLButtonElement>(
+      'button[aria-label="Stack photos"]',
+    ),
+  ];
 }
 
 function getColumnCount(container: HTMLElement) {
