@@ -10,10 +10,10 @@ import { render } from "remix/component/test";
 
 import { Jam2026PhotoViewerFrame } from "./photo-viewer.tsx";
 import { jam2026ModalConfig } from "./modal-contract.ts";
-import type { PhotoViewerState, ViewerPhoto } from "./shopify-photo.ts";
+import type { PhotoViewerState, PhotoCard } from "./shopify-photo.ts";
 import { routes } from "../../../../routes.ts";
 
-let photos: ViewerPhoto[] = ["DSC01", "DSC02", "DSC03"].map((slug) => ({
+let photos: PhotoCard[] = ["DSC01", "DSC02", "DSC03"].map((slug) => ({
   url: `https://cdn.shopify.com/files/${slug}.jpg`,
   filename: `${slug}.jpg`,
   slug,

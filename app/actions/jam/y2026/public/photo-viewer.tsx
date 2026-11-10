@@ -14,12 +14,8 @@ import {
 } from "@remix-run/ui/animation";
 
 import { Icon } from "../../../../ui/public/icon.tsx";
-import { syncDocumentHead } from "../../../../ui/public/document-head-sync.ts";
 import { routes } from "../../../../routes.ts";
-import {
-  getJam2026ClientManagedHeadTags,
-  getJam2026HeadContent,
-} from "./head-content.ts";
+import { syncJam2026Head } from "./head-content.ts";
 import { jam2026ModalConfig } from "./modal-contract.ts";
 import {
   jam2026WindowSurfaceStyle,
@@ -33,8 +29,8 @@ import {
   jam2026ModalTitlebarButtonStyle,
   jam2026ModalTitlebarIconStyle,
   jam2026ModalTitlebarStyle,
+  jam2026ModalWindowStyle,
   restoreScrollPosition,
-  syncModalNavigationEntry,
 } from "./modal.ts";
 import { resizeShopifyImage, type PhotoViewerState } from "./shopify-photo.ts";
 import { jamTheme } from "./theme.ts";
@@ -66,11 +62,10 @@ export let Jam2026PhotoViewerFrame = clientEntry(
     let exit: "shrink" | "roll" = "roll";
     let closeNavigationTimer: ReturnType<typeof setTimeout> | undefined;
     let lastSlug = handle.props.viewer?.photo.slug;
+    // Starts out matching the server-rendered head; synced as photos change.
+    let headSyncedFilename = handle.props.viewer?.photo.filename;
     let modalEffects = createJam2026ModalEffects(handle, {
-      getModalRoot: () =>
-        document.querySelector<HTMLElement>(
-          "[role='dialog'][aria-labelledby='photo-viewer-title']",
-        ),
+      getModalRoot: getDialog,
       isActive: () => Boolean(handle.props.viewer) && !closing,
       requestClose,
       // Back to the card of the photo being viewed, which may not be the one
@@ -78,9 +73,9 @@ export let Jam2026PhotoViewerFrame = clientEntry(
       getReturnFocus: getCurrentCard,
     });
 
-    function getViewerWindow() {
+    function getDialog() {
       return document.querySelector<HTMLElement>(
-        "[role='dialog'][aria-labelledby='photo-viewer-title'] section",
+        "[role='dialog'][aria-labelledby='photo-viewer-title']",
       );
     }
 
@@ -90,9 +85,6 @@ export let Jam2026PhotoViewerFrame = clientEntry(
       if (!lastSlug) return null;
       return findGalleryCardLink(lastSlug);
     }
-    // Starts out matching the server-rendered head; synced as photos change.
-    let headSyncedSlug = lastSlug;
-    let navigationEntrySyncQueued = false;
 
     function requestClose(event?: Event) {
       event?.preventDefault();
@@ -135,7 +127,7 @@ export let Jam2026PhotoViewerFrame = clientEntry(
       // Next frame, once closing has unlocked the page's scroll (which puts
       // it back where it was), so scrolling to the card sticks.
       window.requestAnimationFrame(() => {
-        let section = getViewerWindow();
+        let section = getDialog()?.querySelector("section");
         let card = getCurrentCard()?.parentElement;
         if (handle.signal.aborted || !section || !card) {
           finish(window.scrollX, window.scrollY);
@@ -208,31 +200,11 @@ export let Jam2026PhotoViewerFrame = clientEntry(
       { once: true },
     );
 
-    function queueHeadSync(slug: string | undefined, filename?: string) {
-      if (headSyncedSlug === slug) return;
-      headSyncedSlug = slug;
+    function queueHeadSync(filename: string | undefined) {
+      if (headSyncedFilename === filename) return;
+      headSyncedFilename = filename;
 
-      handle.queueTask(() => {
-        let head = getJam2026HeadContent({ photo: filename });
-        syncDocumentHead(
-          {
-            title: head.title,
-            headTags: getJam2026ClientManagedHeadTags(head),
-          },
-          { syncTheme: false },
-        );
-      });
-    }
-
-    function queueNavigationEntrySync() {
-      if (navigationEntrySyncQueued) return;
-      navigationEntrySyncQueued = true;
-
-      handle.queueTask(() => {
-        navigationEntrySyncQueued = false;
-        if (handle.frame === handle.frames.top) return;
-        syncModalNavigationEntry();
-      });
+      handle.queueTask(() => syncJam2026Head({ photo: filename }));
     }
 
     // Warm the neighbors so stepping doesn't flash an empty frame.
@@ -254,8 +226,7 @@ export let Jam2026PhotoViewerFrame = clientEntry(
       if (viewer) lastSlug = viewer.photo.slug;
 
       modalEffects.queueStateSync();
-      queueNavigationEntrySync();
-      queueHeadSync(viewer?.photo.slug, viewer?.photo.filename);
+      queueHeadSync(viewer?.photo.filename);
       if (viewer) queueNeighborPreload(viewer);
 
       // The frame runtime needs a stable child when toggling between empty
@@ -342,6 +313,7 @@ function PhotoViewerContent(
               data-exit={handle.props.exit}
               data-state={state}
               mix={[
+                jam2026ModalWindowStyle,
                 viewerWindowStyle,
                 useEntranceMotion
                   ? ref((section) => playEntrance(section, photo.slug))
@@ -440,12 +412,6 @@ const TIMELINE_OPACITIES = [1, 0.92, 0.8, 0.66, 0.5];
 const TIMELINE_GAP = 6;
 const TIMELINE_CARD_PADDING = 8;
 
-/**
- * The photos around the open one, as small versions of the gallery's cards:
- * the open photo largest, straight, and in front, its neighbors smaller and
- * tilted toward the edges. Each card keeps its key, so stepping slides the
- * row along instead of redrawing it.
- */
 function findGalleryCardLink(slug: string) {
   let href = routes.jam.y2026.photos.show.href({ photo: slug });
   return (
@@ -540,6 +506,12 @@ function animateWindowToCard(
   return animation;
 }
 
+/**
+ * The photos around the open one, as small versions of the gallery's cards:
+ * the open photo largest, straight, and in front, its neighbors smaller and
+ * tilted toward the edges. Each card keeps its key, so stepping slides the
+ * row along instead of redrawing it.
+ */
 function PhotoTimeline(
   handle: Handle<{
     closing: boolean;
@@ -590,52 +562,50 @@ function PhotoTimeline(
             : null,
         ]}
       >
-        {cards.map(({ item, distance, scale }) => {
-          return (
-            <li
-              key={item.slug}
-              mix={[
-                animateLayout(animate && { size: false, ...spring("snappy") }),
-                timelineItemStyle,
-              ]}
-              style={{
-                "--card-ratio": String(item.width / item.height),
-                "--card-scale": String(scale),
-                "--card-opacity": String(TIMELINE_OPACITIES[distance]),
-                "--card-tilt": item.current ? "0deg" : `${item.tilt}deg`,
-                zIndex: TIMELINE_SCALES.length - distance,
-              }}
+        {cards.map(({ item, distance, scale }) => (
+          <li
+            key={item.slug}
+            mix={[
+              animateLayout(animate && { size: false, ...spring("snappy") }),
+              timelineItemStyle,
+            ]}
+            style={{
+              "--card-ratio": String(item.width / item.height),
+              "--card-scale": String(scale),
+              "--card-opacity": String(TIMELINE_OPACITIES[distance]),
+              "--card-tilt": item.current ? "0deg" : `${item.tilt}deg`,
+              zIndex: TIMELINE_SCALES.length - distance,
+            }}
+          >
+            <a
+              aria-current={item.current ? "true" : undefined}
+              aria-label={`View ${item.filename}`}
+              data-rmx-history="replace"
+              data-rmx-reset-focus="manual"
+              data-rmx-reset-scroll="manual"
+              data-rmx-target={jam2026ModalConfig.frameName}
+              href={routes.jam.y2026.photos.show.href({ photo: item.slug })}
+              mix={[jam2026WindowSurfaceStyle, timelineCardStyle]}
             >
-              <a
-                aria-current={item.current ? "true" : undefined}
-                aria-label={`View ${item.filename}`}
-                data-rmx-history="replace"
-                data-rmx-reset-focus="manual"
-                data-rmx-reset-scroll="manual"
-                data-rmx-target={jam2026ModalConfig.frameName}
-                href={routes.jam.y2026.photos.show.href({ photo: item.slug })}
-                mix={[jam2026WindowSurfaceStyle, timelineCardStyle]}
+              <span
+                aria-hidden="true"
+                mix={[jam2026WindowTitleStyle, timelineCardTitleStyle]}
               >
-                <span
-                  aria-hidden="true"
-                  mix={[jam2026WindowTitleStyle, timelineCardTitleStyle]}
-                >
-                  {item.filename}
-                </span>
-                <span mix={timelineCardImageStyle}>
-                  <img
-                    alt=""
-                    decoding="async"
-                    draggable={false}
-                    height={item.height}
-                    src={resizeShopifyImage(item.url, TIMELINE_IMAGE_WIDTH)}
-                    width={item.width}
-                  />
-                </span>
-              </a>
-            </li>
-          );
-        })}
+                {item.filename}
+              </span>
+              <span mix={timelineCardImageStyle}>
+                <img
+                  alt=""
+                  decoding="async"
+                  draggable={false}
+                  height={item.height}
+                  src={resizeShopifyImage(item.url, TIMELINE_IMAGE_WIDTH)}
+                  width={item.width}
+                />
+              </span>
+            </a>
+          </li>
+        ))}
       </ol>
     );
   };
@@ -673,26 +643,9 @@ function StepLink(
 
 // Sized to the photo at the shared photo height, up to the window's widest.
 let viewerWindowStyle = css({
-  background: "light-dark(rgb(255 255 255 / 0.82), rgb(10 29 39 / 0.82))",
-  borderRadius: "8px",
-  boxShadow:
-    "0 1px 2px light-dark(rgb(8 40 69 / 0.06), rgb(0 0 0 / 0.2)), 0 6px 16px light-dark(rgb(8 40 69 / 0.08), rgb(0 0 0 / 0.28)), 0 24px 60px light-dark(rgb(8 40 69 / 0.18), rgb(0 0 0 / 0.36)), 0 60px 120px light-dark(rgb(8 40 69 / 0.22), rgb(0 0 0 / 0.44))",
-  clipPath: "inset(0 0 0 0 round 8px)",
-  color: jamTheme.ink,
-  display: "flex",
-  flexDirection: "column",
-  overflow: "hidden",
   position: "relative",
-  transition: `clip-path ${spring("snappy", { duration: 180 })}`,
   width:
     "min(100%, 1500px, calc(var(--photo-height) * var(--photo-ratio) + 16px))",
-  // Shrinking into a card is its own animation.
-  "&[data-state='closing']:not([data-exit='shrink'])": {
-    clipPath: "inset(0 0 100% 0 round 8px)",
-  },
-  "@media (prefers-reduced-motion: reduce)": {
-    transition: "none",
-  },
 });
 
 let viewerTitleStyle = css({

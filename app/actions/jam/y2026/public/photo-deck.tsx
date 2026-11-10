@@ -6,7 +6,7 @@ import {
 } from "@remix-run/ui/animation";
 import { jamTheme } from "./theme.ts";
 import { jam2026ModalConfig } from "./modal-contract.ts";
-import { resizeShopifyImage, type Photo } from "./shopify-photo.ts";
+import { resizeShopifyImage, type PhotoCard } from "./shopify-photo.ts";
 import {
   jam2026WindowSurfaceStyle,
   jam2026WindowTitleStyle,
@@ -14,12 +14,6 @@ import {
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 import { routes } from "../../../../routes.ts";
-
-export type PhotoCard = Photo & {
-  filename: string;
-  slug: string;
-  tilt: number;
-};
 
 type Jam2026PhotoDeckProps = {
   cards: PhotoCard[];
@@ -111,16 +105,19 @@ export let Jam2026PhotoDeck = clientEntry(
 
     // Escape gathers the dealt photos from anywhere on the page, unless a
     // modal (which makes the page inert) has it.
-    let onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "Escape" || event.defaultPrevented || !dealt) return;
-      if (list?.closest("[inert]")) return;
-      gather();
-    };
-    if (typeof document !== "undefined") {
-      document.addEventListener("keydown", onKeyDown, {
-        signal: handle.signal,
-      });
-    }
+    handle.queueTask(() => {
+      document.addEventListener(
+        "keydown",
+        (event) => {
+          if (event.key !== "Escape" || event.defaultPrevented || !dealt) {
+            return;
+          }
+          if (list?.closest("[inert]")) return;
+          gather();
+        },
+        { signal: handle.signal },
+      );
+    });
 
     return () => {
       let { cards } = handle.props;

@@ -1,4 +1,5 @@
 import { css, type Handle } from "remix/component";
+import { spring } from "@remix-run/ui/animation";
 
 import { jam2026ModalConfig } from "./modal-contract.ts";
 import { jamTheme } from "./theme.ts";
@@ -17,10 +18,11 @@ type Jam2026ModalEffectsOptions = {
 
 /**
  * Page-level effects for a Jam 2026 modal: scroll lock, an inert page
- * background, a focus trap, Escape to close, and focus restoration.
+ * background, a focus trap, Escape to close, focus restoration, and a history
+ * entry owned by the modal frame.
  */
 export function createJam2026ModalEffects(
-  handle: Handle<any>,
+  handle: Handle<unknown>,
   options: Jam2026ModalEffectsOptions,
 ) {
   let modalEffectsOpen = false;
@@ -53,13 +55,6 @@ export function createJam2026ModalEffects(
     }
 
     root.focus({ preventScroll: true });
-  }
-
-  function preserveScrollPosition(scrollX: number, scrollY: number) {
-    window.scrollTo(scrollX, scrollY);
-    window.requestAnimationFrame(() => {
-      if (!handle.signal.aborted) window.scrollTo(scrollX, scrollY);
-    });
   }
 
   function restorePageState() {
@@ -98,13 +93,13 @@ export function createJam2026ModalEffects(
     unlockScroll();
     unlockScroll = lockScroll();
     setBackgroundInert(true);
-    preserveScrollPosition(scrollX, scrollY);
+    restoreScrollPosition(scrollX, scrollY, handle.signal);
 
     window.requestAnimationFrame(() => {
       if (handle.signal.aborted) return;
 
       focusFirstModalControl(modal);
-      preserveScrollPosition(scrollX, scrollY);
+      restoreScrollPosition(scrollX, scrollY, handle.signal);
     });
   }
 
@@ -156,6 +151,7 @@ export function createJam2026ModalEffects(
     handle.queueTask(() => {
       syncQueued = false;
       syncModalState();
+      if (handle.frame !== handle.frames.top) syncModalNavigationEntry();
     });
   }
 
@@ -216,7 +212,7 @@ export function restoreScrollPosition(
  * Back and Forward reload just the modal instead of remounting the animated
  * page.
  */
-export function syncModalNavigationEntry() {
+function syncModalNavigationEntry() {
   let navigation = window.navigation;
   if (!navigation?.currentEntry) return;
 
@@ -268,6 +264,27 @@ export let jam2026ModalScrimStyle = css({
   "&[data-state='closing']": {
     background: "rgb(0 0 0 / 0)",
     pointerEvents: "none",
+  },
+  "@media (prefers-reduced-motion: reduce)": {
+    transition: "none",
+  },
+});
+
+// A modal's window, rolling up as it closes. Each modal sizes its own.
+export let jam2026ModalWindowStyle = css({
+  background: "light-dark(rgb(255 255 255 / 0.82), rgb(10 29 39 / 0.82))",
+  borderRadius: "8px",
+  boxShadow:
+    "0 1px 2px light-dark(rgb(8 40 69 / 0.06), rgb(0 0 0 / 0.2)), 0 6px 16px light-dark(rgb(8 40 69 / 0.08), rgb(0 0 0 / 0.28)), 0 24px 60px light-dark(rgb(8 40 69 / 0.18), rgb(0 0 0 / 0.36)), 0 60px 120px light-dark(rgb(8 40 69 / 0.22), rgb(0 0 0 / 0.44))",
+  clipPath: "inset(0 0 0 0 round 8px)",
+  color: jamTheme.ink,
+  display: "flex",
+  flexDirection: "column",
+  overflow: "hidden",
+  transition: `clip-path ${spring("snappy", { duration: 180 })}`,
+  // The photo viewer can shrink into a card instead, its own animation.
+  "&[data-state='closing']:not([data-exit='shrink'])": {
+    clipPath: "inset(0 0 100% 0 round 8px)",
   },
   "@media (prefers-reduced-motion: reduce)": {
     transition: "none",

@@ -1,15 +1,10 @@
 import { css, type Handle } from "remix/component";
 import { breakpointMedia } from "../../../ui/public/theme.ts";
 import { Jam2026PhotoDeck } from "./public/photo-deck.tsx";
-import {
-  getPhotoFilename,
-  getPhotoSlug,
-  getPhotoTilt,
-  type Photo,
-} from "./public/shopify-photo.ts";
+import type { PhotoCard } from "./public/shopify-photo.ts";
 
 export function Jam2026Photos(
-  handle: Handle<{ photos: Photo[]; dealt?: boolean }>,
+  handle: Handle<{ photos: PhotoCard[]; dealt?: boolean }>,
 ) {
   return () => {
     let { photos } = handle.props;
@@ -17,18 +12,7 @@ export function Jam2026Photos(
 
     return (
       <section id="photos" aria-label="Photos" mix={sectionStyle}>
-        <Jam2026PhotoDeck
-          cards={photos.map((photo, index) => {
-            let filename = getPhotoFilename(photo, index);
-            return {
-              ...photo,
-              filename,
-              slug: getPhotoSlug(filename),
-              tilt: getPhotoTilt(filename),
-            };
-          })}
-          initiallyDealt={handle.props.dealt}
-        />
+        <Jam2026PhotoDeck cards={photos} initiallyDealt={handle.props.dealt} />
       </section>
     );
   };

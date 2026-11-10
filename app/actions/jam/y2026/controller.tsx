@@ -17,7 +17,7 @@ import {
 import { Jam2026NewsletterSignup } from "./public/newsletter-signup.tsx";
 import { Jam2026HomePage } from "./home-page.tsx";
 import { Jam2026ModalFrame } from "./modal-frame.tsx";
-import { findPhotoViewerState } from "./photo-lookup.ts";
+import { findPhotoViewerState, getPhotoCards } from "./photo-lookup.ts";
 import { jam2026ModalConfig } from "./public/modal-contract.ts";
 import {
   getJam2026ThemePreference,
@@ -114,12 +114,10 @@ export async function renderJam2026Page({
   // them.
   let photos =
     photo !== undefined || !isModalFrameRequest
-      ? await getPhotos("remix-jam-2026")
+      ? getPhotoCards(await getPhotos("remix-jam-2026"))
       : [];
   let photoViewer =
-    photo === undefined
-      ? undefined
-      : (findPhotoViewerState(photos, photo) ?? undefined);
+    photo === undefined ? undefined : findPhotoViewerState(photos, photo);
   // An unknown photo still renders the page, just without the viewer.
   if (photo !== undefined && !photoViewer) status = 404;
 

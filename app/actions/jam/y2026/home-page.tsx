@@ -20,12 +20,11 @@ import { Jam2026Faq } from "./faq.tsx";
 import { Jam2026Hero } from "./hero.tsx";
 import { Jam2026Photos } from "./photos.tsx";
 import { Jam2026Schedule } from "./schedule.tsx";
-import type { Photo } from "./public/shopify-photo.ts";
-import type { PhotoViewerState } from "./public/shopify-photo.ts";
+import type { PhotoCard, PhotoViewerState } from "./public/shopify-photo.ts";
 import type { ScheduleItem } from "./public/schedule-types.ts";
 
 type Jam2026HomePageProps = {
-  photos: Photo[];
+  photos: PhotoCard[];
   photoViewer?: PhotoViewerState;
   requestUrl: string;
   schedule: ScheduleItem[];

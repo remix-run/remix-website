@@ -4,7 +4,7 @@ import { getPhotos } from "../../../../data/jam-storefront.ts";
 import { routes } from "../../../../routes.ts";
 import { CACHE } from "../../../../utils/cache-control.ts";
 import { renderJam2026Page } from "../controller.tsx";
-import { findPhotoViewerState, parsePhotoSlug } from "../photo-lookup.ts";
+import { getPhotoCards, parsePhotoSlug } from "../photo-lookup.ts";
 
 export default createController(routes.jam.y2026.photos, {
   actions: {
@@ -21,14 +21,13 @@ export default createController(routes.jam.y2026.photos, {
       let slug = parsePhotoSlug(params.photo);
       if (slug === null) return textResponse("Invalid photo", 400);
 
-      let viewer = findPhotoViewerState(
-        await getPhotos("remix-jam-2026"),
-        slug,
+      let photo = getPhotoCards(await getPhotos("remix-jam-2026")).find(
+        (card) => card.slug === slug,
       );
-      if (!viewer) return textResponse("Photo not found", 404);
+      if (!photo) return textResponse("Photo not found", 404);
 
       // The original upload, at full resolution.
-      let upstream = await fetch(viewer.photo.url, { signal: request.signal });
+      let upstream = await fetch(photo.url, { signal: request.signal });
       if (!upstream.ok || !upstream.body) {
         return textResponse("Unable to download photo", 502);
       }
@@ -37,7 +36,7 @@ export default createController(routes.jam.y2026.photos, {
         headers: {
           "Cache-Control": CACHE.RESOURCE,
           "Content-Type": upstream.headers.get("Content-Type") ?? "image/jpeg",
-          "Content-Disposition": `attachment; filename="${viewer.photo.filename.replace(/"/g, "")}"`,
+          "Content-Disposition": `attachment; filename="${photo.filename.replace(/"/g, "")}"`,
         },
       });
     },

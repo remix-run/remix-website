@@ -7,12 +7,8 @@ import {
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { theme } from "../../../../ui/public/theme.ts";
 
-import { syncDocumentHead } from "../../../../ui/public/document-head-sync.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
-import {
-  getJam2026ClientManagedHeadTags,
-  getJam2026HeadContent,
-} from "./head-content.ts";
+import { syncJam2026Head } from "./head-content.ts";
 import { remixJam2026Ticket } from "./ticket-data.ts";
 import { jamTheme } from "./theme.ts";
 import { jam2026ModalConfig } from "./modal-contract.ts";
@@ -24,8 +20,8 @@ import {
   jam2026ModalTitlebarButtonStyle,
   jam2026ModalTitlebarIconStyle,
   jam2026ModalTitlebarStyle,
+  jam2026ModalWindowStyle,
   restoreScrollPosition,
-  syncModalNavigationEntry,
 } from "./modal.ts";
 import { routes } from "../../../../routes.ts";
 
@@ -50,10 +46,6 @@ let usdFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
 });
 
-function shouldAnimateEntrance(animateEntrance = true) {
-  return animateEntrance && !prefersReducedMotion();
-}
-
 export let Jam2026TicketsModalFrame = clientEntry(
   import.meta.url,
   function Jam2026TicketsModalFrame(handle: Handle<Jam2026TicketsModalProps>) {
@@ -71,7 +63,6 @@ export let Jam2026TicketsModalFrame = clientEntry(
     // opens or closes. The photo viewer shares the frame and owns the head
     // while it's open.
     let headSyncedOpen = isOpen();
-    let navigationEntrySyncQueued = false;
 
     function isOpen() {
       return Boolean(handle.props.open);
@@ -113,28 +104,7 @@ export let Jam2026TicketsModalFrame = clientEntry(
       if (headSyncedOpen === open) return;
       headSyncedOpen = open;
 
-      handle.queueTask(() => {
-        let head = getJam2026HeadContent({ ticketsModalOpen: open });
-
-        syncDocumentHead(
-          {
-            title: head.title,
-            headTags: getJam2026ClientManagedHeadTags(head),
-          },
-          { syncTheme: false },
-        );
-      });
-    }
-
-    function queueNavigationEntrySync() {
-      if (navigationEntrySyncQueued) return;
-      navigationEntrySyncQueued = true;
-
-      handle.queueTask(() => {
-        navigationEntrySyncQueued = false;
-        if (handle.frame === handle.frames.top) return;
-        syncModalNavigationEntry();
-      });
+      handle.queueTask(() => syncJam2026Head({ ticketsModalOpen: open }));
     }
 
     return () => {
@@ -143,7 +113,6 @@ export let Jam2026TicketsModalFrame = clientEntry(
       if (!open) modalClosing = false;
 
       modalEffects.queueStateSync();
-      queueNavigationEntrySync();
       queueHeadSync(open);
 
       // The frame runtime needs a stable child when toggling between empty
@@ -179,7 +148,8 @@ export function Jam2026TicketsModalContent(
   let submitting = false;
   // Decided once, when the modal appears, so a later frame response with a
   // different value can't replay the entrance.
-  let useEntranceMotion = shouldAnimateEntrance(handle.props.animateEntrance);
+  let useEntranceMotion =
+    (handle.props.animateEntrance ?? true) && !prefersReducedMotion();
 
   function resetSubmitting() {
     if (!submitting) return;
@@ -225,13 +195,14 @@ export function Jam2026TicketsModalContent(
       : jam2026ModalScrimStyle;
     let windowMix = useEntranceMotion
       ? [
+          jam2026ModalWindowStyle,
           ticketsModalWindowStyle,
           animateEntrance({
             clipPath: "inset(0 0 100% 0 round 8px)",
             ...spring("snappy", { duration: 220 }),
           }),
         ]
-      : ticketsModalWindowStyle;
+      : [jam2026ModalWindowStyle, ticketsModalWindowStyle];
     let keyringMix = useEntranceMotion
       ? [ticketsModalFigureImageStyle, ticketsModalFigureImageEntranceStyle]
       : ticketsModalFigureImageStyle;
@@ -448,26 +419,10 @@ function formatCurrency(value: number) {
 }
 
 let ticketsModalWindowStyle = css({
-  background: "light-dark(rgb(255 255 255 / 0.82), rgb(10 29 39 / 0.82))",
-  borderRadius: "8px",
-  boxShadow:
-    "0 1px 2px light-dark(rgb(8 40 69 / 0.06), rgb(0 0 0 / 0.2)), 0 6px 16px light-dark(rgb(8 40 69 / 0.08), rgb(0 0 0 / 0.28)), 0 24px 60px light-dark(rgb(8 40 69 / 0.18), rgb(0 0 0 / 0.36)), 0 60px 120px light-dark(rgb(8 40 69 / 0.22), rgb(0 0 0 / 0.44))",
-  clipPath: "inset(0 0 0 0 round 8px)",
-  color: jamTheme.ink,
-  display: "flex",
-  flexDirection: "column",
   height: "100%",
   maxHeight: "868px",
   maxWidth: "854px",
-  overflow: "hidden",
-  transition: `clip-path ${spring("snappy", { duration: 180 })}`,
   width: "100%",
-  "&[data-state='closing']": {
-    clipPath: "inset(0 0 100% 0 round 8px)",
-  },
-  "@media (prefers-reduced-motion: reduce)": {
-    transition: "none",
-  },
 });
 
 let ticketsModalBodyStyle = css({

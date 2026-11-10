@@ -1,4 +1,5 @@
 import type { ManagedHeadTag } from "../../../../ui/public/document-head.ts";
+import { syncDocumentHead } from "../../../../ui/public/document-head-sync.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 import { getCanonicalOrigin } from "../../../../utils/public/canonical-url.ts";
 import { createSocialHeadTags } from "../../../../utils/public/social-head-tags.ts";
@@ -53,7 +54,16 @@ function buildJam2026HeadTags(props: Jam2026HeadTagsProps) {
   ] satisfies ManagedHeadTag[];
 }
 
-export function getJam2026ClientManagedHeadTags(head: {
+/** Brings the document head in line with a modal opened or closed in place. */
+export function syncJam2026Head(props: Jam2026HeadContentProps) {
+  let head = getJam2026HeadContent(props);
+  syncDocumentHead(
+    { title: head.title, headTags: getJam2026ClientManagedHeadTags(head) },
+    { syncTheme: false },
+  );
+}
+
+function getJam2026ClientManagedHeadTags(head: {
   title: string;
   description: string;
 }) {
