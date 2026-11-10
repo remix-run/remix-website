@@ -203,6 +203,25 @@ describe("Jam2026PhotoViewerFrame", () => {
     ).toContain("inset(0px 0px 100%");
   });
 
+  it("keeps focus inside the dialog", async (t) => {
+    let result = render(
+      <div>
+        <button type="button">Outside</button>
+        <Jam2026PhotoViewerFrame animateEntrance={false} viewer={viewerAt(1)} />
+      </div>,
+    );
+    t.after(result.cleanup);
+    await nextFrame(result);
+    let dialog =
+      result.container.querySelector<HTMLElement>("[role='dialog']")!;
+
+    await result.act(() =>
+      result.container.querySelector<HTMLButtonElement>("button")!.focus(),
+    );
+
+    expect(dialog.contains(document.activeElement)).toBe(true);
+  });
+
   it("steps to the neighboring photos with the arrow keys", async (t) => {
     let navigations = mockNavigation(t);
     let result = render(

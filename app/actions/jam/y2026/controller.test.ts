@@ -347,6 +347,43 @@ describe("Remix Jam 2026 photo routes", () => {
     }
   });
 
+  it("makes the page behind a photo link inert before anything hydrates", async (t) => {
+    mockStorefrontPhotos(t, filenames);
+
+    let html = await (
+      await createJam2026TestRouter().fetch(photoUrl("DSC02"))
+    ).text();
+    let background = html.match(
+      new RegExp(`<div[^>]*id="${jam2026ModalConfig.pageBackgroundId}"[^>]*>`),
+    )?.[0];
+
+    expect(background).toContain("inert");
+    expect(background).toContain('aria-hidden="true"');
+  });
+
+  it("names photos with header- and URL-safe filenames", async (t) => {
+    mockStorefrontPhotos(t, [
+      encodeURIComponent('Café "shot"\n#1.jpg'),
+      "DSC02.jpg",
+    ]);
+
+    let html = await (
+      await createJam2026TestRouter().fetch(photoUrl("Cafe-shot-1"))
+    ).text();
+    let download = await createJam2026TestRouter().fetch(
+      new URL(
+        routes.jam.y2026.photos.download.href({ photo: "Cafe-shot-1" }),
+        "http://localhost:3000",
+      ),
+    );
+
+    expect(html).toContain("<title>Cafe-shot-1.jpg | Remix Jam 2026</title>");
+    expect(download.status).toBe(200);
+    expect(download.headers.get("Content-Disposition")).toBe(
+      'attachment; filename="Cafe-shot-1.jpg"',
+    );
+  });
+
   it("wraps the viewer's neighbors around the ends", async (t) => {
     mockStorefrontPhotos(t, filenames);
 
@@ -417,6 +454,10 @@ describe("Remix Jam 2026 photo routes", () => {
     let invalid = await createJam2026TestRouter().fetch(
       photoUrl("x".repeat(201)),
     );
+    let unsafe = await createJam2026TestRouter().fetch(
+      photoUrl(encodeURIComponent('DSC02"\n')),
+    );
+    expect(unsafe.status).toBe(400);
 
     expect(unknown.status).toBe(404);
     expect(await unknown.text()).not.toContain('role="dialog"');

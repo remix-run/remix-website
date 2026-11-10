@@ -18,8 +18,9 @@ type Jam2026ModalEffectsOptions = {
 
 /**
  * Page-level effects for a Jam 2026 modal: scroll lock, an inert page
- * background, a focus trap, Escape to close, focus restoration, and a history
- * entry owned by the modal frame.
+ * background, initial focus, Escape to close, focus restoration, and a history
+ * entry owned by the modal frame. The dialog itself traps focus with the
+ * `focusTrap` mixin.
  */
 export function createJam2026ModalEffects(
   handle: Handle<unknown>,
@@ -103,48 +104,6 @@ export function createJam2026ModalEffects(
     });
   }
 
-  function keepFocusInModal(event: FocusEvent) {
-    if (!options.isActive()) return;
-
-    let modal = options.getModalRoot();
-    let target = event.target;
-    if (!modal || !(target instanceof HTMLElement)) return;
-    if (modal.contains(target)) return;
-
-    focusFirstModalControl(modal);
-  }
-
-  function handleTab(event: KeyboardEvent) {
-    if (!options.isActive() || event.defaultPrevented || event.key !== "Tab") {
-      return;
-    }
-
-    let modal = options.getModalRoot();
-    if (!modal) return;
-
-    let focusableElements = getFocusableElementsWithin(modal);
-    if (focusableElements.length === 0) {
-      event.preventDefault();
-      modal.focus({ preventScroll: true });
-      return;
-    }
-
-    let first = focusableElements[0];
-    let last = focusableElements[focusableElements.length - 1];
-    let active = document.activeElement;
-
-    if (event.shiftKey && active === first) {
-      event.preventDefault();
-      last.focus({ preventScroll: true });
-      return;
-    }
-
-    if (!event.shiftKey && active === last) {
-      event.preventDefault();
-      first.focus({ preventScroll: true });
-    }
-  }
-
   function queueStateSync() {
     if (syncQueued) return;
     syncQueued = true;
@@ -161,7 +120,6 @@ export function createJam2026ModalEffects(
     document.addEventListener(
       "keydown",
       (event) => {
-        handleTab(event);
         if (
           !options.isActive() ||
           event.defaultPrevented ||
@@ -175,9 +133,6 @@ export function createJam2026ModalEffects(
       },
       { signal: handle.signal },
     );
-    document.addEventListener("focusin", keepFocusInModal, {
-      signal: handle.signal,
-    });
 
     handle.signal.addEventListener(
       "abort",

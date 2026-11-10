@@ -36,7 +36,8 @@ export default createController(routes.jam.y2026.photos, {
         headers: {
           "Cache-Control": CACHE.RESOURCE,
           "Content-Type": upstream.headers.get("Content-Type") ?? "image/jpeg",
-          "Content-Disposition": `attachment; filename="${photo.filename.replace(/"/g, "")}"`,
+          // Filenames are made header-safe when photos are read.
+          "Content-Disposition": `attachment; filename="${photo.filename}"`,
         },
       });
     },

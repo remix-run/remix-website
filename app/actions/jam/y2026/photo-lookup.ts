@@ -11,7 +11,14 @@ import type {
 const TIMELINE_RADIUS = 4;
 const MAX_TILT_DEGREES = 3;
 
-let photoSlugSchema = s.string().pipe(minLength(1), maxLength(200));
+// Filenames (and so slugs) are reduced to these characters when photos are
+// read, so they're safe in URLs and download headers as is.
+const SAFE_NAME = /^[A-Za-z0-9._-]+$/;
+
+let photoSlugSchema = s
+  .string()
+  .pipe(minLength(1), maxLength(200))
+  .refine((value) => SAFE_NAME.test(value), "Invalid photo");
 
 export function parsePhotoSlug(value: string) {
   let result = s.parseSafe(photoSlugSchema, value);
@@ -63,14 +70,26 @@ export function findPhotoViewerState(
   };
 }
 
+/**
+ * The photo's Shopify filename, reduced to letters, digits, dots, dashes, and
+ * underscores (other runs become a dash). The result is safe to show, to use
+ * as a URL segment, and to send in a `Content-Disposition` header.
+ */
 function getPhotoFilename(photo: Photo, index: number) {
+  let name = "";
   try {
-    let name = new URL(photo.url).pathname.split("/").at(-1);
-    if (name) return decodeURIComponent(name);
+    name = decodeURIComponent(
+      new URL(photo.url).pathname.split("/").at(-1) ?? "",
+    );
   } catch {
     /* fall through to the numbered name */
   }
-  return `PHOTO-${index + 1}.JPG`;
+  let safe = name
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^A-Za-z0-9._-]+/g, "-")
+    .replace(/^[-.]+|-+$/g, "");
+  return SAFE_NAME.test(safe) ? safe : `PHOTO-${index + 1}.JPG`;
 }
 
 /**

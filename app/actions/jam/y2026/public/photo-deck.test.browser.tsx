@@ -67,6 +67,26 @@ describe("Jam2026PhotoDeck", () => {
     );
   });
 
+  it("leaves Escape to an open modal instead of gathering", async (t) => {
+    let result = render(
+      <div>
+        <Jam2026PhotoDeck cards={cards} initiallyDealt />
+        <div role="dialog" aria-modal="true" />
+      </div>,
+    );
+    t.after(result.cleanup);
+    await result.act(() => {});
+
+    await result.act(() =>
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", { bubbles: true, key: "Escape" }),
+      ),
+    );
+
+    expect(queryDealButton(result.container)).toBe(null);
+    expect(queryStackButtons(result.container)).toHaveLength(cards.length);
+  });
+
   it("deals from any visible card in the stack, not just the top one", async (t) => {
     let result = render(<Jam2026PhotoDeck cards={cards} />);
     t.after(result.cleanup);

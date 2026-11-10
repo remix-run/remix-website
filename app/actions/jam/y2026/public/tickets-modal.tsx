@@ -4,6 +4,7 @@ import {
   prefersReducedMotion,
   spring,
 } from "@remix-run/ui/animation";
+import { focusTrap } from "../../../../ui/public/focus-trap.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { theme } from "../../../../ui/public/theme.ts";
 
@@ -229,7 +230,7 @@ export function Jam2026TicketsModalContent(
           data-state={handle.props.closing ? "closing" : "open"}
           role="dialog"
           tabIndex={-1}
-          mix={windowMix}
+          mix={[windowMix, focusTrap(!handle.props.closing)]}
         >
           <div mix={jam2026ModalTitlebarStyle}>
             <a

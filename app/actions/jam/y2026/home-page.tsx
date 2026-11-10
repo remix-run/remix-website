@@ -43,6 +43,9 @@ type Jam2026HomePageProps = {
 export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
   return () => {
     let { photoViewer, ticketsModalOpen = false } = handle.props;
+    // Either modal makes the page behind it inert from the first paint,
+    // before the modal's own effects hydrate.
+    let modalOpen = ticketsModalOpen || Boolean(photoViewer);
     let head = getJam2026HeadContent({
       ticketsModalOpen,
       photo: photoViewer?.photo.filename,
@@ -94,8 +97,8 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
           <FpsCounterToggle />
           <div
             id={jam2026ModalConfig.pageBackgroundId}
-            aria-hidden={ticketsModalOpen ? "true" : undefined}
-            inert={ticketsModalOpen || undefined}
+            aria-hidden={modalOpen ? "true" : undefined}
+            inert={modalOpen || undefined}
             mix={css({
               display: "flex",
               minHeight: "100svh",

@@ -104,7 +104,8 @@ export let Jam2026PhotoDeck = clientEntry(
     let gather = () => setDealt(false);
 
     // Escape gathers the dealt photos from anywhere on the page, unless a
-    // modal (which makes the page inert) has it.
+    // modal is open. That includes one animating closed, which has already
+    // released the page but should still own the key.
     handle.queueTask(() => {
       document.addEventListener(
         "keydown",
@@ -112,7 +113,9 @@ export let Jam2026PhotoDeck = clientEntry(
           if (event.key !== "Escape" || event.defaultPrevented || !dealt) {
             return;
           }
-          if (list?.closest("[inert]")) return;
+          if (document.querySelector("[role='dialog'][aria-modal='true']")) {
+            return;
+          }
           gather();
         },
         { signal: handle.signal },

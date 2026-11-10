@@ -13,6 +13,7 @@ import {
   spring,
 } from "@remix-run/ui/animation";
 
+import { focusTrap } from "../../../../ui/public/focus-trap.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { routes } from "../../../../routes.ts";
 import { syncJam2026Head } from "./head-content.ts";
@@ -306,7 +307,7 @@ function PhotoViewerContent(
           aria-modal="true"
           role="dialog"
           tabIndex={-1}
-          mix={viewerStageStyle}
+          mix={[viewerStageStyle, focusTrap(!closing)]}
         >
           <div mix={viewerWindowAreaStyle}>
             <section
