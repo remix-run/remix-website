@@ -20,15 +20,21 @@ type Jam2026PhotoDeckProps = {
 };
 
 const THUMBNAIL_WIDTHS = [320, 480, 640];
-// How the top three cards sit in the stack, and where they fan to while it's
-// hovered: the cards underneath slide out left, right, and a little down,
-// hinting at the directions the deal will send them. Offsets add to each
-// card's own tilt.
-const STACK = [
-  { rest: ["0px", "0px", "0deg"], fan: ["0px", "-4px", "0deg"] },
-  { rest: ["5px", "4px", "3deg"], fan: ["-24%", "14%", "-8deg"] },
-  { rest: ["-4px", "6px", "-3deg"], fan: ["24%", "14%", "8deg"] },
-];
+// How many cards show in the stack (and load their images) before the deal.
+const STACK_SIZE = 10;
+// The deal sends cards out in a wave: each later card, up to `staggerCap`,
+// takes `stagger` ms longer. Gathering brings them all back at once.
+const DEAL = { duration: 350, stagger: 19, staggerCap: 20, bounce: 0.2 };
+const GATHER = { duration: 350, bounce: 0 };
+// The list grows and shrinks without bounce, so the page below doesn't wobble.
+const RESIZE_DURATION = { deal: 400, gather: 300 };
+// The stack's shape at rest and while hovered: how much of the livestream's
+// width it spreads across, how far apart its rows sit, and how much the edge
+// cards lean outward.
+const STACK_REST = { spread: 0.49, rowSpacing: 35, lean: 9.5 };
+const STACK_HOVER = { spread: 0.65, rowSpacing: 62, lean: 11 };
+// How far each stacked card's fixed jitter can move and turn it.
+const JITTER = { x: 50, y: 32, rotate: 11 };
 
 export let Jam2026PhotoDeck = clientEntry(
   import.meta.url,
@@ -36,6 +42,18 @@ export let Jam2026PhotoDeck = clientEntry(
     let dealt = false;
     let hasDealt = false;
     let list: HTMLUListElement | null = null;
+
+    // The stacked blob reaches above and below the single row it sits in.
+    // Padding the list by that much keeps the space around the photos the same
+    // stacked as dealt, so the deal doesn't shift what's above or below.
+    let padStack = () => {
+      if (!list) return;
+      let { top, bottom } = dealt
+        ? { top: 0, bottom: 0 }
+        : getStackOverflow(list, handle.props.cards);
+      list.style.setProperty("--stack-pad-top", `${top}px`);
+      list.style.setProperty("--stack-pad-bottom", `${bottom}px`);
+    };
 
     let setDealt = (next: boolean) => {
       if (dealt === next) return;
@@ -45,11 +63,13 @@ export let Jam2026PhotoDeck = clientEntry(
       handle.update();
       handle.queueTask(() => {
         if (!list) return;
+        padStack();
         let reduceMotion = prefersReducedMotion();
-        let resize = spring({ duration: 520, bounce: 0 });
-        // Grow or shrink the list instead of snapping the content below it,
-        // keeping pace with the first cards (without their bounce, so the page
-        // below doesn't wobble).
+        let resize = spring({
+          duration: dealt ? RESIZE_DURATION.deal : RESIZE_DURATION.gather,
+          bounce: 0,
+        });
+        // Grow or shrink the list instead of snapping the content below it.
         if (!reduceMotion) {
           list.animate(
             [
@@ -103,19 +123,26 @@ export let Jam2026PhotoDeck = clientEntry(
             tabIndex={-1}
             mix={[
               gridStyle,
+              dealt ? null : stackedListStyle,
               ref((node, signal) => {
                 list = node;
-                signal.addEventListener("abort", () => (list = null), {
-                  once: true,
-                });
+                // Card sizes follow the list's width.
+                let observer = new ResizeObserver(padStack);
+                observer.observe(node);
+                signal.addEventListener(
+                  "abort",
+                  () => {
+                    observer.disconnect();
+                    list = null;
+                  },
+                  { once: true },
+                );
               }),
             ]}
-            style={{ "--card-count": String(cards.length) }}
           >
             {cards.map((card, index) => {
               let stacked = !dealt;
-              let buried = stacked && index >= STACK.length;
-              let pose = stacked ? STACK[index] : undefined;
+              let buried = stacked && index >= STACK_SIZE;
 
               return (
                 <li
@@ -123,26 +150,32 @@ export let Jam2026PhotoDeck = clientEntry(
                   mix={[
                     // First, so it keeps its place in the mix list when the
                     // conditional styles below drop out; a moved mixin remounts
-                    // and loses the stacked position it animates from. Every
-                    // card leaves the stack at once; later cards take a little
-                    // longer, so they land in a wave rather than together.
+                    // and loses the stacked position it animates from. It's
+                    // configured for the move this render starts: back into
+                    // the stack, or out to the grid.
                     animateLayout(
                       animate && {
                         size: false,
-                        ...spring({
-                          duration: 520 + Math.min(index, 24) * 18,
-                          bounce: 0.2,
-                        }),
+                        ...spring(
+                          stacked
+                            ? GATHER
+                            : {
+                                duration:
+                                  DEAL.duration +
+                                  Math.min(index, DEAL.staggerCap) *
+                                    DEAL.stagger,
+                                bounce: DEAL.bounce,
+                              },
+                        ),
                       },
                     ),
                     cellStyle,
-                    stacked ? null : dealtCellStyle,
                     stacked ? stackedCellStyle : null,
                     stacked && index > 0 ? pileCellStyle : null,
                     buried ? buriedCellStyle : null,
                     // The visible cards act as one: clicking any of them deals,
                     // including the button on top, whose click bubbles here.
-                    stacked && index < STACK.length
+                    stacked && index < STACK_SIZE
                       ? [visibleStackCellStyle, on("click", deal)]
                       : null,
                   ]}
@@ -150,14 +183,8 @@ export let Jam2026PhotoDeck = clientEntry(
                     "--photo-ratio": String(card.width / card.height),
                     "--photo-tilt": `${card.tilt}deg`,
                     "--stack-z": String(cards.length - index),
-                    ...(pose && {
-                      "--rest-x": pose.rest[0],
-                      "--rest-y": pose.rest[1],
-                      "--rest-rotate": pose.rest[2],
-                      "--fan-x": pose.fan[0],
-                      "--fan-y": pose.fan[1],
-                      "--fan-rotate": pose.fan[2],
-                    }),
+                    "--deal-index": String(index),
+                    ...(stacked && index < STACK_SIZE && getJitter(index)),
                   }}
                 >
                   <div
@@ -178,8 +205,8 @@ export let Jam2026PhotoDeck = clientEntry(
                             stackButtonStyle,
                             on("click", (event) => {
                               // The gather re-renders before this click
-                              // finishes bubbling, and by then the top three
-                              // cards deal on click again.
+                              // finishes bubbling, and by then the top cards
+                              // deal on click again.
                               event.stopPropagation();
                               gather();
                             }),
@@ -266,6 +293,77 @@ function scrollAlong(targetY: number, curve: number[], signal: AbortSignal) {
   frame = requestAnimationFrame(step);
 }
 
+/**
+ * A fixed nudge for each stacked card, from -1 to 1 on each axis, so the
+ * stack looks tossed together rather than laid out.
+ */
+function getJitter(index: number) {
+  let { x, y, rotate } = getJitterValues(index);
+  return {
+    "--jitter-x": String(x),
+    "--jitter-y": String(y),
+    "--jitter-rotate": String(rotate),
+  };
+}
+
+function getJitterValues(index: number) {
+  let noise = (seed: number) => {
+    let value = Math.sin((index + 1) * 12.9898 + seed * 78.233) * 43758.5453;
+    return Math.round(((value - Math.floor(value)) * 2 - 1) * 100) / 100;
+  };
+  return { x: noise(1), y: noise(2), rotate: noise(3) };
+}
+
+/**
+ * How far the stacked cards reach above and below the row they're centered
+ * in, at rest. Mirrors `stackedCardStyle` with the cards' layout sizes, which
+ * transforms don't affect, so the hover fan and animations don't skew it.
+ */
+function getStackOverflow(list: HTMLElement, cards: PhotoCard[]) {
+  let columns = Number(getComputedStyle(list).getPropertyValue("--columns"));
+  if (!columns) return { top: 0, bottom: 0 };
+  let rows = Math.min(Math.ceil(STACK_SIZE / columns), 3);
+  let items = [...list.children].slice(0, STACK_SIZE) as HTMLElement[];
+  let rowHeight = items[0]?.offsetHeight ?? 0;
+  let top = 0;
+  let bottom = 0;
+
+  items.forEach((item, index) => {
+    let card = item.firstElementChild as HTMLElement;
+    let width = card.offsetWidth;
+    let height = card.offsetHeight;
+    let col = index % columns;
+    let row = Math.min(Math.floor(index / columns), 2);
+    let side = (col - (columns - 1) / 2) / Math.max(1, (columns - 1) / 2);
+    let level = (row - (rows - 1) / 2) / Math.max(1, (rows - 1) / 2);
+    let jitter = getJitterValues(index);
+    let angle =
+      ((cards[index].tilt +
+        side * STACK_REST.lean +
+        jitter.rotate * JITTER.rotate) *
+        Math.PI) /
+      180;
+    // Each card is centered in the row and turns about its bottom center.
+    let originY =
+      rowHeight / 2 +
+      height / 2 +
+      level * STACK_REST.rowSpacing +
+      jitter.y * JITTER.y;
+    for (let [x, y] of [
+      [-width / 2, -height],
+      [width / 2, -height],
+      [-width / 2, 0],
+      [width / 2, 0],
+    ]) {
+      let cornerY = originY + x * Math.sin(angle) + y * Math.cos(angle);
+      top = Math.max(top, -cornerY);
+      bottom = Math.max(bottom, cornerY - rowHeight);
+    }
+  });
+
+  return { top: Math.ceil(top), bottom: Math.ceil(bottom) };
+}
+
 let gridStyle = css({
   "--columns": "2",
   "--column-gap": "16px",
@@ -296,19 +394,20 @@ let gridStyle = css({
   [breakpointMedia["2xl"]]: { "--columns": "5" },
 });
 
+// Room for the stacked blob above and below its row (see padStack). Before
+// hydration measures it, a typical overflow keeps the page close.
+let stackedListStyle = css({
+  paddingBlock: "var(--stack-pad-top, 90px) var(--stack-pad-bottom, 90px)",
+});
+
 // Landscape cards span the cell; portrait cards share the same long edge, so
-// every photo prints at one size, like a stack of Polaroids.
+// every photo prints at one size, like a stack of Polaroids. Cards keep their
+// stacking order whether stacked or dealt; nothing raises one on hover.
 let cellStyle = css({
   position: "relative",
   transition: "opacity 150ms ease-out, visibility 0s",
   zIndex: "var(--stack-z)",
   width: "calc(100% * min(1, var(--photo-ratio)))",
-});
-
-// Once dealt, a hovered card rises above its neighbors. The stack keeps its
-// order, so the cards underneath never jump in front of the top one.
-let dealtCellStyle = css({
-  "&:hover": { zIndex: "calc(var(--card-count) + 1)" },
 });
 
 let visibleStackCellStyle = css({ cursor: "pointer" });
@@ -337,7 +436,7 @@ let pileCellStyle = css({
 let buriedCellStyle = css({
   opacity: 0,
   visibility: "hidden",
-  transition: "opacity 200ms ease-in 400ms, visibility 0s 600ms",
+  transition: "opacity 50ms ease-in 80ms, visibility 0s 130ms",
   "@media (prefers-reduced-motion: reduce)": { transition: "none" },
 });
 
@@ -351,36 +450,54 @@ let cardStyle = css({
     "translate(var(--card-x, 0px), var(--card-y, 0px)) rotate(calc(var(--photo-tilt) + var(--card-rotate, 0deg)))",
   transformOrigin: "50% 100%",
   transition:
-    "transform 350ms cubic-bezier(0.22, 1.5, 0.36, 1), box-shadow 350ms cubic-bezier(0.22, 1.5, 0.36, 1)",
+    "transform 300ms cubic-bezier(0.22, 1.5, 0.36, 1), box-shadow 300ms cubic-bezier(0.22, 1.5, 0.36, 1)",
   "@media (prefers-reduced-motion: reduce)": { transition: "none" },
 });
 
 let liftedShadow =
   "0 2px 4px light-dark(rgb(8 40 69 / 0.08), rgb(0 0 0 / 0.24)), 0 8px 16px light-dark(rgb(8 40 69 / 0.07), rgb(0 0 0 / 0.28)), 0 20px 36px light-dark(rgb(8 40 69 / 0.08), rgb(0 0 0 / 0.32)), 0 40px 72px light-dark(rgb(8 40 69 / 0.1), rgb(0 0 0 / 0.38))";
 
+// The stack is a loose blob: each card leans toward the column it'll be dealt
+// to and its rows sit around the middle, so the deal reads as the blob
+// spreading out, while a fixed jitter per card keeps it from looking like a
+// grid. Hovering spreads it further, toward the livestream's width.
 let stackedCardStyle = css({
-  "--card-x": "var(--rest-x, 0px)",
-  "--card-y": "var(--rest-y, 0px)",
-  "--card-rotate": "var(--rest-rotate, 0deg)",
-  ":is(ul:has(> li:hover, > li > button:focus-visible)) > li > &": {
-    "--card-x": "var(--fan-x, 0px)",
-    "--card-y": "var(--fan-y, 0px)",
-    "--card-rotate": "var(--fan-rotate, 0deg)",
-  },
+  "--stack-col": "mod(var(--deal-index), var(--columns))",
+  "--stack-row": "min(round(down, var(--deal-index) / var(--columns), 1), 2)",
+  "--stack-rows": `min(round(up, ${STACK_SIZE} / var(--columns), 1), 3)`,
+  // -1 for the first column through 1 for the last.
+  "--stack-side":
+    "calc((var(--stack-col) - (var(--columns) - 1) / 2) / max(1, (var(--columns) - 1) / 2))",
+  // -1 for the first row through 1 for the last.
+  "--stack-level":
+    "calc((var(--stack-row) - (var(--stack-rows) - 1) / 2) / max(1, (var(--stack-rows) - 1) / 2))",
+  // How far an edge card's center can sit from the middle and still keep the
+  // card within the livestream's width.
+  "--stack-reach":
+    "max(0px, (var(--livestream-width) - (100cqw - (var(--columns) - 1) * var(--column-gap)) / var(--columns)) / 2)",
+  ...stackPose(STACK_REST),
+  ":is(ul:has(> li:hover, > li > button:focus-visible)) > li > &":
+    stackPose(STACK_HOVER),
   "@media (prefers-reduced-motion: reduce)": {
     // Lift the stack instead of fanning it.
     ":is(ul:has(> li:hover, > li > button:focus-visible)) > li > &": {
-      "--card-x": "var(--rest-x, 0px)",
-      "--card-y": "var(--rest-y, 0px)",
-      "--card-rotate": "var(--rest-rotate, 0deg)",
+      ...stackPose(STACK_REST),
       boxShadow: liftedShadow,
     },
   },
 });
 
+function stackPose(pose: typeof STACK_REST) {
+  return {
+    "--card-x": `calc(var(--stack-side) * var(--stack-reach) * ${pose.spread} + var(--jitter-x, 0) * ${JITTER.x}px)`,
+    "--card-y": `calc(var(--stack-level) * ${pose.rowSpacing}px + var(--jitter-y, 0) * ${JITTER.y}px)`,
+    "--card-rotate": `calc(var(--stack-side) * ${pose.lean}deg + var(--jitter-rotate, 0) * ${JITTER.rotate}deg)`,
+  };
+}
+
 // The photo moments' hover nudge, applied on top of each card's own tilt.
 let dealtCardStyle = css({
-  ":is(li:hover) > &": { "--card-rotate": "-2deg" },
+  ":is(li:hover) > &": { "--card-rotate": "2deg" },
   "@media (prefers-reduced-motion: reduce)": {
     ":is(li:hover) > &": { "--card-rotate": "0deg", boxShadow: liftedShadow },
   },
@@ -419,10 +536,15 @@ let dealButtonStyle = css({
 
 // Sized to the grid.
 let deckStyle = css({
+  // The livestream window's width (see hero.tsx), which the stack spreads to.
+  "--livestream-width": "min(960px, 100vw - 32px)",
   position: "relative",
+  // Lets the stack size its spread from the grid's width (cqw).
+  containerType: "inline-size",
   width: "100%",
   maxWidth: "1200px",
   marginInline: "auto",
+  [breakpointMedia.sm]: { "--livestream-width": "min(960px, 100vw - 64px)" },
   // Wider than the 1200px windows so five columns keep the four-column card size.
   [breakpointMedia["2xl"]]: { maxWidth: "1600px" },
 });

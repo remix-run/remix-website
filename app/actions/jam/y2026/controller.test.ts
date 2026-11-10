@@ -47,22 +47,19 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).not.toContain('src="/jam/2026/photos/');
   });
 
-  it("stacks a card per photo between the livestream and the schedule, loading only the top three", async (t) => {
-    mockStorefrontPhotos(t, [
-      "DSC01.jpg",
-      "DSC02.jpg",
-      "DSC03.jpg",
-      "DSC04.jpg",
-      "DSC05.jpg",
-    ]);
+  it("stacks a card per photo between the livestream and the schedule, loading only the top ten", async (t) => {
+    mockStorefrontPhotos(
+      t,
+      Array.from({ length: 12 }, (_, index) => `DSC${index + 1}.jpg`),
+    );
 
     let html = await renderJam2026Home();
 
-    expect(getPhotoTilts(html).size).toBe(5);
+    expect(getPhotoTilts(html).size).toBe(12);
     expect(
       html.match(/src="https:\/\/cdn\.shopify\.com\/files\//g),
-    ).toHaveLength(3);
-    expect(html).toContain('aria-label="Deal 5 photos"');
+    ).toHaveLength(10);
+    expect(html).toContain('aria-label="Deal 12 photos"');
     expect(html.indexOf("<iframe")).toBeLessThan(html.indexOf('id="photos"'));
     expect(html.indexOf('id="photos"')).toBeLessThan(
       html.indexOf('id="schedule"'),

@@ -4,11 +4,11 @@ import { render } from "remix/component/test";
 
 import { Jam2026PhotoDeck } from "./photo-deck.tsx";
 
-let cards = Array.from({ length: 6 }, (_, index) => ({
-  url: `https://cdn.shopify.com/files/DSC0${index + 1}.jpg`,
+let cards = Array.from({ length: 12 }, (_, index) => ({
+  url: `https://cdn.shopify.com/files/DSC${index + 1}.jpg`,
   width: index === 1 ? 800 : 1200,
   height: index === 1 ? 1200 : 800,
-  filename: `DSC0${index + 1}.jpg`,
+  filename: `DSC${index + 1}.jpg`,
   tilt: index - 2,
 }));
 
@@ -18,7 +18,7 @@ describe("Jam2026PhotoDeck", () => {
     t.after(result.cleanup);
 
     let items = getItems(result.container);
-    expect(items).toHaveLength(6);
+    expect(items).toHaveLength(12);
     let list = result.container.querySelector("ul")!;
     expect(Math.abs(getCenterX(items[0]) - list.clientWidth / 2)).toBeLessThan(
       1,
@@ -27,7 +27,8 @@ describe("Jam2026PhotoDeck", () => {
     for (let item of items.slice(1)) {
       expect(Math.abs(getCenterX(item) - getCenterX(items[0]))).toBeLessThan(1);
     }
-    expect(result.container.querySelectorAll("img")).toHaveLength(3);
+    // Only the ten visible cards in the stack load their images.
+    expect(result.container.querySelectorAll("img")).toHaveLength(10);
 
     await result.act(() => getDealButton(result.container).click());
 
@@ -35,9 +36,9 @@ describe("Jam2026PhotoDeck", () => {
       Math.round(getCenterX(item)),
     );
     expect(new Set(dealtCenters).size).toBe(
-      Math.min(6, getColumnCount(result.container)),
+      Math.min(cards.length, getColumnCount(result.container)),
     );
-    expect(result.container.querySelectorAll("img")).toHaveLength(6);
+    expect(result.container.querySelectorAll("img")).toHaveLength(12);
     expect(queryDealButton(result.container)).toBe(null);
     expect(document.activeElement).toBe(result.container.querySelector("ul"));
   });
@@ -46,10 +47,10 @@ describe("Jam2026PhotoDeck", () => {
     let result = render(<Jam2026PhotoDeck cards={cards} />);
     t.after(result.cleanup);
 
-    await result.act(() => getItems(result.container)[2].click());
+    await result.act(() => getItems(result.container)[9].click());
 
     expect(queryDealButton(result.container)).toBe(null);
-    expect(result.container.querySelectorAll("img")).toHaveLength(6);
+    expect(result.container.querySelectorAll("img")).toHaveLength(12);
   });
 
   for (let trigger of ["first card", "last card", "Escape"]) {
@@ -87,13 +88,13 @@ describe("Jam2026PhotoDeck", () => {
       // The buried cards stay visible while they fly back, then fade out.
       let isHidden = (item: HTMLElement) =>
         getComputedStyle(item).visibility === "hidden";
-      expect(items.slice(3).some(isHidden)).toBe(false);
+      expect(items.slice(10).some(isHidden)).toBe(false);
 
       await result.act(() => settle(result.container));
       await settle(result.container);
 
-      expect(items.slice(3).every(isHidden)).toBe(true);
-      expect(items.slice(0, 3).some(isHidden)).toBe(false);
+      expect(items.slice(10).every(isHidden)).toBe(true);
+      expect(items.slice(0, 10).some(isHidden)).toBe(false);
     });
   }
 });
@@ -116,7 +117,7 @@ function getCenterX(item: HTMLElement) {
 
 function queryDealButton(container: HTMLElement) {
   return container.querySelector<HTMLButtonElement>(
-    'button[aria-label="Deal 6 photos"]',
+    'button[aria-label="Deal 12 photos"]',
   );
 }
 
