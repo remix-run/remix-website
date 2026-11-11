@@ -7,6 +7,7 @@ import {
 import { jamTheme } from "./theme.ts";
 import { jam2026ModalConfig } from "./modal-contract.ts";
 import {
+  preloadViewerImage,
   resizeShopifyImage,
   setGalleryCards,
   type PhotoCard,
@@ -104,6 +105,28 @@ export let Jam2026PhotoDeck = clientEntry(
       });
     };
     let deal = () => setDealt(true);
+
+    // A card about to be opened starts loading its full-size photo: after a
+    // short hover, as Remix's link prefetching waits, or at once on focus
+    // or press.
+    let preloadTimer: ReturnType<typeof setTimeout> | undefined;
+    let preloadOnIntent = (card: PhotoCard) => [
+      on<HTMLAnchorElement, "pointerenter">("pointerenter", (event) => {
+        if (event.pointerType !== "mouse") return;
+        clearTimeout(preloadTimer);
+        preloadTimer = setTimeout(() => preloadViewerImage(card.url), 100);
+      }),
+      on<HTMLAnchorElement, "pointerleave">("pointerleave", () =>
+        clearTimeout(preloadTimer),
+      ),
+      on<HTMLAnchorElement, "focus">("focus", () =>
+        preloadViewerImage(card.url),
+      ),
+      on<HTMLAnchorElement, "pointerdown">("pointerdown", () =>
+        preloadViewerImage(card.url),
+      ),
+    ];
+    handle.signal.addEventListener("abort", () => clearTimeout(preloadTimer));
     let gather = () => setDealt(false);
 
     // Escape gathers the dealt photos from anywhere on the page, unless a
@@ -216,7 +239,7 @@ export let Jam2026PhotoDeck = clientEntry(
                         href={routes.jam.y2026.photos.show.href({
                           photo: card.slug,
                         })}
-                        mix={cardLinkStyle}
+                        mix={[cardLinkStyle, ...preloadOnIntent(card)]}
                       />
                     )}
                     <div mix={cardTitleBarStyle}>

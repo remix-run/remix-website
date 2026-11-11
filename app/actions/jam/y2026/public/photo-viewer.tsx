@@ -36,6 +36,8 @@ import {
 import {
   findPhotoViewerState,
   getGalleryCards,
+  getViewerImageUrl,
+  preloadViewerImage,
   onGalleryCardsChange,
   resizeShopifyImage,
   type PhotoViewerState,
@@ -48,7 +50,6 @@ type Jam2026PhotoViewerProps = {
   viewer?: PhotoViewerState;
 };
 
-const VIEWER_IMAGE_WIDTH = 1920;
 // The grid's thumbnail size, likely already cached, shown while the full
 // image loads.
 const PLACEHOLDER_IMAGE_WIDTH = 480;
@@ -71,6 +72,8 @@ export let Jam2026PhotoViewerFrame = clientEntry(
     // The photo just chosen (a card, a step, or the filmstrip), shown right
     // away from the gallery's cards while its frame request is in flight.
     let pendingSlug: string | undefined;
+    // The filmstrip is being scrubbed past the shown photo (see showPhoto).
+    let scrubbing = false;
     let lastSlug = handle.props.viewer?.photo.slug;
     // Starts out matching the server-rendered head; synced as photos change.
     let headSyncedFilename = handle.props.viewer?.photo.filename;
@@ -90,9 +93,12 @@ export let Jam2026PhotoViewerFrame = clientEntry(
       return findPhotoViewerState(getGalleryCards(), pendingSlug) ?? viewer;
     }
 
-    function showPhoto(slug: string) {
+    // Shows a photo ahead of the server. A preview, for the photos the
+    // filmstrip passes while it's scrubbed, skips the full-size images.
+    function showPhoto(slug: string, { preview = false } = {}) {
       if (closing) return;
       pendingSlug = slug;
+      scrubbing = preview;
       handle.update();
     }
 
@@ -288,10 +294,7 @@ export let Jam2026PhotoViewerFrame = clientEntry(
     function queueNeighborPreload(viewer: PhotoViewerState) {
       handle.queueTask(() => {
         for (let neighbor of [viewer.previous, viewer.next]) {
-          new Image().src = resizeShopifyImage(
-            neighbor.url,
-            VIEWER_IMAGE_WIDTH,
-          );
+          preloadViewerImage(neighbor.url);
         }
       });
     }
@@ -310,7 +313,7 @@ export let Jam2026PhotoViewerFrame = clientEntry(
 
       modalEffects.queueStateSync();
       queueHeadSync(viewer?.photo.filename);
-      if (viewer) queueNeighborPreload(viewer);
+      if (viewer && !scrubbing) queueNeighborPreload(viewer);
 
       // The frame runtime needs a stable child when toggling between empty
       // frame content and the hydrated viewer.
@@ -324,8 +327,9 @@ export let Jam2026PhotoViewerFrame = clientEntry(
               closing={closing}
               exit={exit}
               onRequestClose={requestClose}
-              onPreviewPhoto={showPhoto}
+              onPreviewPhoto={(slug) => showPhoto(slug, { preview: true })}
               onSelectPhoto={goToPhoto}
+              previewOnly={scrubbing}
               viewer={viewer}
             />
           ) : null}
@@ -343,6 +347,8 @@ function PhotoViewerContent(
     onRequestClose: (event: Event) => void;
     onPreviewPhoto: (slug: string) => void;
     onSelectPhoto: (slug: string) => void;
+    /** Shows just the card-sized preview, while the filmstrip is scrubbed. */
+    previewOnly: boolean;
     viewer: PhotoViewerState;
   }>,
 ) {
@@ -362,7 +368,8 @@ function PhotoViewerContent(
   return () => {
     let { closing, onRequestClose, viewer } = handle.props;
     let { photo } = viewer;
-    let src = resizeShopifyImage(photo.url, VIEWER_IMAGE_WIDTH);
+    let src = getViewerImageUrl(photo.url);
+    let { previewOnly } = handle.props;
     let state = closing ? "closing" : "open";
     let homeHref = routes.jam.y2026.index.href();
     let closeLinkProps = {
@@ -473,29 +480,32 @@ function PhotoViewerContent(
                 </a>
               </div>
               <div
-                data-loading={loadedSrc === src ? undefined : ""}
+                data-loading={previewOnly || loadedSrc === src ? undefined : ""}
                 mix={viewerBodyStyle}
                 style={{
                   backgroundImage: `url("${resizeShopifyImage(photo.url, PLACEHOLDER_IMAGE_WIDTH)}")`,
                 }}
               >
-                <img
-                  key={photo.url}
-                  alt={
-                    photo.altText || `Remix Jam 2026 photo ${viewer.index + 1}`
-                  }
-                  draggable={false}
-                  height={photo.height}
-                  src={src}
-                  width={photo.width}
-                  mix={[
-                    on("load", (event) => markLoaded(event.currentTarget)),
-                    // Already cached, as preloaded neighbors usually are.
-                    ref((img) => {
-                      if (img.complete) markLoaded(img);
-                    }),
-                  ]}
-                />
+                {previewOnly ? null : (
+                  <img
+                    key={photo.url}
+                    alt={
+                      photo.altText ||
+                      `Remix Jam 2026 photo ${viewer.index + 1}`
+                    }
+                    draggable={false}
+                    height={photo.height}
+                    src={src}
+                    width={photo.width}
+                    mix={[
+                      on("load", (event) => markLoaded(event.currentTarget)),
+                      // Already cached, as preloaded neighbors usually are.
+                      ref((img) => {
+                        if (img.complete) markLoaded(img);
+                      }),
+                    ]}
+                  />
+                )}
               </div>
             </section>
           </div>

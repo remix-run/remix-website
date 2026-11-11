@@ -5,7 +5,6 @@ import { redirect } from "remix/response/redirect";
 import { createController } from "remix/router";
 
 import { getJam2026Schedule } from "../../../data/jam-schedule-2026.ts";
-import { getPhotos } from "../../../data/jam-storefront.ts";
 import { CACHE } from "../../../utils/cache-control.ts";
 import type { AppRenderer } from "../../../middleware/render.ts";
 import { routes } from "../../../routes.ts";
@@ -17,7 +16,11 @@ import {
 import { Jam2026NewsletterSignup } from "./public/newsletter-signup.tsx";
 import { Jam2026HomePage } from "./home-page.tsx";
 import { Jam2026ModalFrame } from "./modal-frame.tsx";
-import { findPhotoViewerState, getPhotoCards } from "./photo-lookup.ts";
+import {
+  findPhotoViewerState,
+  getJam2026Photos,
+  getPhotoCards,
+} from "./photo-lookup.ts";
 import { jam2026ModalConfig } from "./public/modal-contract.ts";
 import {
   getJam2026ThemePreference,
@@ -114,7 +117,7 @@ export async function renderJam2026Page({
   // them.
   let photos =
     photo !== undefined || !isModalFrameRequest
-      ? getPhotoCards(await getPhotos("remix-jam-2026"))
+      ? getPhotoCards(await getJam2026Photos())
       : [];
   let photoViewer =
     photo === undefined ? undefined : findPhotoViewerState(photos, photo);

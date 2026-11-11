@@ -1,9 +1,51 @@
 import * as s from "remix/data-schema";
 import { maxLength, minLength } from "remix/data-schema/checks";
 
+import { getPhotos } from "../../../data/jam-storefront.ts";
 import type { Photo, PhotoCard } from "./public/shopify-photo.ts";
 
 export { findPhotoViewerState } from "./public/shopify-photo.ts";
+
+// How long the photo list stays fresh. After that, the next request still
+// gets the cached list straight away while a fresh one loads behind it.
+const PHOTOS_FRESH_MS = 5 * 60 * 1000;
+
+let cachedPhotos: { photos: Photo[]; fetchedAt: number } | undefined;
+let photosRequest: Promise<Photo[]> | undefined;
+
+/**
+ * The Jam 2026 photos, cached in memory. Every viewer step renders from the
+ * whole list, and Shopify takes about 100ms to send it. An empty list (no
+ * photos, or a failed request) isn't cached, so it's retried next time.
+ */
+export async function getJam2026Photos() {
+  if (!cachedPhotos) return requestPhotos();
+  if (Date.now() - cachedPhotos.fetchedAt > PHOTOS_FRESH_MS) {
+    void requestPhotos();
+  }
+  return cachedPhotos.photos;
+}
+
+/** Forgets the cached photos, for tests that swap in their own. */
+export function clearJam2026PhotosCache() {
+  cachedPhotos = undefined;
+}
+
+// One request at a time, shared by everyone waiting on it. getPhotos never
+// rejects; it returns an empty list when Shopify fails.
+function requestPhotos() {
+  photosRequest ??= getPhotos("remix-jam-2026")
+    .then((photos) => {
+      if (photos.length > 0) {
+        cachedPhotos = { photos, fetchedAt: Date.now() };
+      }
+      return cachedPhotos?.photos ?? photos;
+    })
+    .finally(() => {
+      photosRequest = undefined;
+    });
+  return photosRequest;
+}
 
 // Filenames (and so slugs) are reduced to these characters when photos are
 // read, so they're safe in URLs and download headers as is.

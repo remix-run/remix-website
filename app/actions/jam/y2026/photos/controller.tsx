@@ -1,10 +1,13 @@
 import { createController } from "remix/router";
 
-import { getPhotos } from "../../../../data/jam-storefront.ts";
 import { routes } from "../../../../routes.ts";
 import { CACHE } from "../../../../utils/cache-control.ts";
 import { renderJam2026Page } from "../controller.tsx";
-import { getPhotoCards, parsePhotoSlug } from "../photo-lookup.ts";
+import {
+  getJam2026Photos,
+  getPhotoCards,
+  parsePhotoSlug,
+} from "../photo-lookup.ts";
 
 export default createController(routes.jam.y2026.photos, {
   actions: {
@@ -21,7 +24,7 @@ export default createController(routes.jam.y2026.photos, {
       let slug = parsePhotoSlug(params.photo);
       if (slug === null) return textResponse("Invalid photo", 400);
 
-      let photo = getPhotoCards(await getPhotos("remix-jam-2026")).find(
+      let photo = getPhotoCards(await getJam2026Photos()).find(
         (card) => card.slug === slug,
       );
       if (!photo) return textResponse("Photo not found", 404);

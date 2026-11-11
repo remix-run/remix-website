@@ -18,6 +18,7 @@ import {
   getJam2026DiscountCode,
   serializeJam2026DiscountCode,
 } from "./discount-code.ts";
+import { clearJam2026PhotosCache } from "./photo-lookup.ts";
 
 describe("Remix Jam 2026 routes", () => {
   it("renders the livestream before the schedule without ticket navigation or scattered photos", async () => {
@@ -318,6 +319,20 @@ describe("Remix Jam 2026 photo routes", () => {
     }
   });
 
+  it("asks Shopify for the photos once, not on every viewer step", async (t) => {
+    let storefront = mockStorefrontPhotos(t, filenames);
+    let router = createJam2026TestRouter();
+    let frameHeaders = { "x-remix-target": jam2026ModalConfig.frameName };
+
+    for (let photo of ["DSC01", "DSC02", "DSC03"]) {
+      let response = await router.fetch(photoUrl(photo, frameHeaders));
+      expect(response.status).toBe(200);
+      expect(await response.text()).toContain(`${photo}.jpg`);
+    }
+
+    expect(storefront.mock.callCount()).toBe(1);
+  });
+
   it("makes the page behind a photo link inert before anything hydrates", async (t) => {
     mockStorefrontPhotos(t, filenames);
 
@@ -494,8 +509,10 @@ function getCardFilenames(html: string) {
 function mockStorefrontPhotos(t: TestContext, filenames: string[]) {
   let originalToken = env.PUBLIC_STOREFRONT_API_TOKEN;
   env.PUBLIC_STOREFRONT_API_TOKEN = "test-storefront-token";
+  // Each test brings its own photos; the cache would keep another test's.
+  clearJam2026PhotosCache();
 
-  t.mock.method(
+  let storefront = t.mock.method(
     globalThis,
     "fetch",
     async (input: RequestInfo | URL, init?: RequestInit) => {
@@ -539,5 +556,7 @@ function mockStorefrontPhotos(t: TestContext, filenames: string[]) {
 
   t.after(() => {
     env.PUBLIC_STOREFRONT_API_TOKEN = originalToken;
+    clearJam2026PhotosCache();
   });
+  return storefront;
 }

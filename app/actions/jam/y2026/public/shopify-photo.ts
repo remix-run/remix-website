@@ -80,6 +80,24 @@ export function getGalleryCards() {
   return galleryCards;
 }
 
+// The photo viewer's full-size image width.
+const VIEWER_IMAGE_WIDTH = 1920;
+
+/** The URL of the photo at the size the viewer shows it. */
+export function getViewerImageUrl(url: string) {
+  return resizeShopifyImage(url, VIEWER_IMAGE_WIDTH);
+}
+
+let preloadedViewerImages = new Set<string>();
+
+/** Starts loading the photo at viewer size, once, so it's ready to open. */
+export function preloadViewerImage(url: string) {
+  let src = getViewerImageUrl(url);
+  if (preloadedViewerImages.has(src)) return;
+  preloadedViewerImages.add(src);
+  new Image().src = src;
+}
+
 export function resizeShopifyImage(url: string, width: number) {
   try {
     let resized = new URL(url);
