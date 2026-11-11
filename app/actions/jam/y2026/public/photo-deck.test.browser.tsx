@@ -12,7 +12,6 @@ let cards = Array.from({ length: 12 }, (_, index) => ({
   height: index === 1 ? 1200 : 800,
   filename: `DSC${index + 1}.jpg`,
   slug: `DSC${index + 1}`,
-  tilt: index - 2,
 }));
 
 describe("Jam2026PhotoDeck", () => {
@@ -29,6 +28,13 @@ describe("Jam2026PhotoDeck", () => {
     // Every card is centered on the first one, whatever its own shape.
     for (let item of items.slice(1)) {
       expect(Math.abs(getCenterX(item) - getCenterX(items[0]))).toBeLessThan(1);
+    }
+    // The pile is loose but straight: no card is turned.
+    for (let item of items) {
+      let { a, b } = new DOMMatrix(
+        getComputedStyle(item.firstElementChild!).transform,
+      );
+      expect(Math.atan2(b, a)).toBe(0);
     }
     // A visible label names what the stack does, and how many photos it holds.
     expect(getDealButton(result.container).textContent).toBe("View 12 photos");

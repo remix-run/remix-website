@@ -5,11 +5,10 @@ export type Photo = {
   height: number;
 };
 
-/** A photo with the filename, URL slug, and tilt its cards show. */
+/** A photo with the filename and URL slug its cards show. */
 export type PhotoCard = Photo & {
   filename: string;
   slug: string;
-  tilt: number;
 };
 
 /** The photo open in the viewer, its position, and its neighbors. */

@@ -35,12 +35,11 @@ const GATHER = { duration: 350, bounce: 0 };
 // The list grows and shrinks without bounce, so the page below doesn't wobble.
 const RESIZE_DURATION = { deal: 400, gather: 300 };
 // The stack's shape at rest and while hovered: how much of the livestream's
-// width it spreads across, how far apart its rows sit, and how much the edge
-// cards lean outward.
-const STACK_REST = { spread: 0.49, rowSpacing: 35, lean: 9.5 };
-const STACK_HOVER = { spread: 0.65, rowSpacing: 62, lean: 11 };
-// How far each stacked card's fixed jitter can move and turn it.
-const JITTER = { x: 50, y: 32, rotate: 11 };
+// width it spreads across, and how far apart its rows sit.
+const STACK_REST = { spread: 0.49, rowSpacing: 35 };
+const STACK_HOVER = { spread: 0.65, rowSpacing: 62 };
+// How far each stacked card's fixed jitter can move it.
+const JITTER = { x: 50, y: 32 };
 
 export let Jam2026PhotoDeck = clientEntry(
   import.meta.url,
@@ -56,7 +55,7 @@ export let Jam2026PhotoDeck = clientEntry(
       if (!list) return;
       let { top, bottom } = dealt
         ? { top: 0, bottom: 0 }
-        : getStackOverflow(list, handle.props.cards);
+        : getStackOverflow(list);
       list.style.setProperty("--stack-pad-top", `${top}px`);
       list.style.setProperty("--stack-pad-bottom", `${bottom}px`);
     };
@@ -196,7 +195,6 @@ export let Jam2026PhotoDeck = clientEntry(
                   ]}
                   style={{
                     "--photo-ratio": String(card.width / card.height),
-                    "--photo-tilt": `${card.tilt}deg`,
                     "--stack-z": String(cards.length - index),
                     "--deal-index": String(index),
                     ...(stacked && index < STACK_SIZE && getJitter(index)),
@@ -329,12 +327,8 @@ function scrollAlong(targetY: number, curve: number[], signal: AbortSignal) {
  * stack looks tossed together rather than laid out.
  */
 function getJitter(index: number) {
-  let { x, y, rotate } = getJitterValues(index);
-  return {
-    "--jitter-x": String(x),
-    "--jitter-y": String(y),
-    "--jitter-rotate": String(rotate),
-  };
+  let { x, y } = getJitterValues(index);
+  return { "--jitter-x": String(x), "--jitter-y": String(y) };
 }
 
 function getJitterValues(index: number) {
@@ -342,15 +336,15 @@ function getJitterValues(index: number) {
     let value = Math.sin((index + 1) * 12.9898 + seed * 78.233) * 43758.5453;
     return Math.round(((value - Math.floor(value)) * 2 - 1) * 100) / 100;
   };
-  return { x: noise(1), y: noise(2), rotate: noise(3) };
+  return { x: noise(1), y: noise(2) };
 }
 
 /**
  * How far the stacked cards reach above and below the row they're centered
  * in, at rest. Mirrors `stackedCardStyle` with the cards' layout sizes, which
- * transforms don't affect, so the hover fan and animations don't skew it.
+ * transforms don't affect, so the hover spread and animations don't skew it.
  */
-function getStackOverflow(list: HTMLElement, cards: PhotoCard[]) {
+function getStackOverflow(list: HTMLElement) {
   let columns = Number(getComputedStyle(list).getPropertyValue("--columns"));
   if (!columns) return { top: 0, bottom: 0 };
   let rows = Math.min(Math.ceil(STACK_SIZE / columns), 3);
@@ -360,36 +354,16 @@ function getStackOverflow(list: HTMLElement, cards: PhotoCard[]) {
   let bottom = 0;
 
   items.forEach((item, index) => {
-    let card = item.firstElementChild as HTMLElement;
-    let width = card.offsetWidth;
-    let height = card.offsetHeight;
-    let col = index % columns;
+    let height = (item.firstElementChild as HTMLElement).offsetHeight;
     let row = Math.min(Math.floor(index / columns), 2);
-    let side = (col - (columns - 1) / 2) / Math.max(1, (columns - 1) / 2);
     let level = (row - (rows - 1) / 2) / Math.max(1, (rows - 1) / 2);
-    let jitter = getJitterValues(index);
-    let angle =
-      ((cards[index].tilt +
-        side * STACK_REST.lean +
-        jitter.rotate * JITTER.rotate) *
-        Math.PI) /
-      180;
-    // Each card is centered in the row and turns about its bottom center.
-    let originY =
-      rowHeight / 2 +
-      height / 2 +
+    // Each card is centered in the row before the stack moves it.
+    let cardTop =
+      (rowHeight - height) / 2 +
       level * STACK_REST.rowSpacing +
-      jitter.y * JITTER.y;
-    for (let [x, y] of [
-      [-width / 2, -height],
-      [width / 2, -height],
-      [-width / 2, 0],
-      [width / 2, 0],
-    ]) {
-      let cornerY = originY + x * Math.sin(angle) + y * Math.cos(angle);
-      top = Math.max(top, -cornerY);
-      bottom = Math.max(bottom, cornerY - rowHeight);
-    }
+      getJitterValues(index).y * JITTER.y;
+    top = Math.max(top, -cardTop);
+    bottom = Math.max(bottom, cardTop + height - rowHeight);
   });
 
   return { top: Math.ceil(top), bottom: Math.ceil(bottom) };
@@ -472,15 +446,13 @@ let buriedCellStyle = css({
 });
 
 // States only change the --card-* offsets, so every transition interpolates
-// the same translate + rotate.
+// the same translate.
 let cardStyle = css({
   position: "relative",
   display: "flex",
   flexDirection: "column",
   gap: "8px",
-  transform:
-    "translate(var(--card-x, 0px), var(--card-y, 0px)) rotate(calc(var(--photo-tilt) + var(--card-rotate, 0deg)))",
-  transformOrigin: "50% 100%",
+  transform: "translate(var(--card-x, 0px), var(--card-y, 0px))",
   transition:
     "transform 300ms cubic-bezier(0.22, 1.5, 0.36, 1), box-shadow 300ms cubic-bezier(0.22, 1.5, 0.36, 1)",
   "@media (prefers-reduced-motion: reduce)": { transition: "none" },
@@ -489,8 +461,8 @@ let cardStyle = css({
 let liftedShadow =
   "0 2px 4px light-dark(rgb(8 40 69 / 0.08), rgb(0 0 0 / 0.24)), 0 8px 16px light-dark(rgb(8 40 69 / 0.07), rgb(0 0 0 / 0.28)), 0 20px 36px light-dark(rgb(8 40 69 / 0.08), rgb(0 0 0 / 0.32)), 0 40px 72px light-dark(rgb(8 40 69 / 0.1), rgb(0 0 0 / 0.38))";
 
-// The stack is a loose blob: each card leans toward the column it'll be dealt
-// to and its rows sit around the middle, so the deal reads as the blob
+// The stack is a loose pile: each card sits toward the column it'll be dealt
+// to and its rows sit around the middle, so the deal reads as the pile
 // spreading out, while a fixed jitter per card keeps it from looking like a
 // grid. Hovering spreads it further, toward the livestream's width.
 let stackedCardStyle = css({
@@ -507,6 +479,8 @@ let stackedCardStyle = css({
   // card within the livestream's width.
   "--stack-reach":
     "max(0px, (var(--livestream-width) - (100cqw - (var(--columns) - 1) * var(--column-gap)) / var(--columns)) / 2)",
+  // Solid, unlike a lone window, so the cards behind don't show through.
+  background: jamTheme.surfaceRaised,
   ...stackPose(STACK_REST),
   ":is(ul:has(> li:hover, > li > button:focus-visible)) > li > &":
     stackPose(STACK_HOVER),
@@ -523,15 +497,14 @@ function stackPose(pose: typeof STACK_REST) {
   return {
     "--card-x": `calc(var(--stack-side) * var(--stack-reach) * ${pose.spread} + var(--jitter-x, 0) * ${JITTER.x}px)`,
     "--card-y": `calc(var(--stack-level) * ${pose.rowSpacing}px + var(--jitter-y, 0) * ${JITTER.y}px)`,
-    "--card-rotate": `calc(var(--stack-side) * ${pose.lean}deg + var(--jitter-rotate, 0) * ${JITTER.rotate}deg)`,
   };
 }
 
-// The photo moments' hover nudge, applied on top of each card's own tilt.
+// A hovered card lifts off the grid.
 let dealtCardStyle = css({
-  ":is(li:hover) > &": { "--card-rotate": "2deg" },
+  ":is(li:hover) > &": { "--card-y": "-4px", boxShadow: liftedShadow },
   "@media (prefers-reduced-motion: reduce)": {
-    ":is(li:hover) > &": { "--card-rotate": "0deg", boxShadow: liftedShadow },
+    ":is(li:hover) > &": { "--card-y": "0px" },
   },
 });
 
@@ -598,7 +571,7 @@ let deckStyle = css({
   [breakpointMedia["2xl"]]: { maxWidth: "1600px" },
 });
 
-// Covers the whole card, under its minus button, and turns with it.
+// Covers the whole card, under its minus button.
 let cardLinkStyle = css({
   position: "absolute",
   inset: 0,

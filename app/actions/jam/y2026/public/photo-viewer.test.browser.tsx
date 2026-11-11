@@ -22,7 +22,6 @@ let photos: PhotoCard[] = ["DSC01", "DSC02", "DSC03"].map((slug) => ({
   url: `https://cdn.shopify.com/files/${slug}.jpg`,
   filename: `${slug}.jpg`,
   slug,
-  tilt: 1.5,
   width: 1200,
   height: 800,
 }));
@@ -171,7 +170,7 @@ describe("Jam2026PhotoViewerFrame", () => {
     let renderPage = (viewer?: PhotoViewerState) => (
       <div>
         <main id={jam2026ModalConfig.pageBackgroundId}>
-          <div style={{ width: "150px", transform: "rotate(2deg)" }}>
+          <div style={{ width: "150px" }}>
             <a href={routes.jam.y2026.photos.show.href({ photo: "DSC02" })}>
               View
             </a>
@@ -190,7 +189,7 @@ describe("Jam2026PhotoViewerFrame", () => {
       .querySelector("[role='dialog'] section")!
       .getAnimations() as Animation[];
     let [from] = (expand.effect as KeyframeEffect).getKeyframes();
-    expect(String(from.transform)).toMatch(/rotate\(2deg\) scale\([\d.]+\)/);
+    expect(String(from.transform)).toMatch(/^translate\(.+\) scale\([\d.]+\)$/);
     // The card's photo lifts out while it grows, and the card's frame fades
     // out rather than scaling along; both come back after.
     let cardImage = card.lastElementChild as HTMLElement;
@@ -217,7 +216,7 @@ describe("Jam2026PhotoViewerFrame", () => {
     let renderPage = (viewer?: PhotoViewerState) => (
       <div>
         <main id={jam2026ModalConfig.pageBackgroundId}>
-          <div style={{ width: "150px", transform: "rotate(2deg)" }}>
+          <div style={{ width: "150px" }}>
             <a href={routes.jam.y2026.photos.show.href({ photo: "DSC02" })}>
               View
             </a>
@@ -248,7 +247,7 @@ describe("Jam2026PhotoViewerFrame", () => {
     )!;
     let [from, to] = (shrink.effect as KeyframeEffect).getKeyframes();
     expect(from.transform).toBe(midway);
-    expect(String(to.transform)).toMatch(/rotate\(2deg\) scale\([\d.]+\)/);
+    expect(String(to.transform)).toMatch(/^translate\(.+\) scale\([\d.]+\)$/);
     // The cancelled open doesn't bring the card's photo back mid-close.
     await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
     let card = result.container.querySelector("main > div")!;
@@ -393,7 +392,7 @@ describe("Jam2026PhotoViewerFrame", () => {
 
   it("closes with Escape by shrinking into the viewed photo's card", async (t) => {
     let navigations = mockNavigation(t);
-    // Gallery cards: a tilted card holding its link and its image.
+    // Gallery cards: a card holding its link and its image.
     let renderPage = (viewer?: PhotoViewerState) => (
       <div>
         <main id={jam2026ModalConfig.pageBackgroundId}>
@@ -401,7 +400,7 @@ describe("Jam2026PhotoViewerFrame", () => {
             <div
               key={photo.slug}
               data-card={photo.slug}
-              style={{ width: "150px", transform: "rotate(-3deg)" }}
+              style={{ width: "150px" }}
             >
               <a
                 href={routes.jam.y2026.photos.show.href({ photo: photo.slug })}
@@ -435,7 +434,7 @@ describe("Jam2026PhotoViewerFrame", () => {
     expect(section.getAttribute("data-exit")).toBe("shrink");
     let [shrink] = section.getAnimations() as Animation[];
     let to = (shrink.effect as KeyframeEffect).getKeyframes().at(-1)!;
-    expect(String(to.transform)).toMatch(/rotate\(-3deg\) scale\([\d.]+\)/);
+    expect(String(to.transform)).toMatch(/^translate\(.+\) scale\([\d.]+\)$/);
     let cardImage = card.lastElementChild as HTMLElement;
     expect(cardImage.style.visibility).toBe("hidden");
     expect(card.getAnimations()).toHaveLength(1);

@@ -537,8 +537,8 @@ function playEntrance(section: HTMLElement, slug: string) {
 }
 
 /**
- * Animates the viewer's window between its place and a gallery card's size,
- * spot, and tilt: out of the card when opening, back into it when closing.
+ * Animates the viewer's window between its place and a gallery card's size
+ * and spot: out of the card when opening, back into it when closing.
  * The card and the viewer's photo share an aspect ratio, so a single scale
  * maps one photo onto the other. Only the photo should look like it travels:
  * scaled along with it, the window's frame and title bar would end up far
@@ -572,8 +572,7 @@ function animateWindowToCard(
   let cardOpacity = getComputedStyle(card).opacity;
   for (let move of windowMoves.get(section) ?? []) move.cancel();
 
-  // Box centers don't change with rotation, and offset sizes ignore it, so
-  // these hold for a tilted card.
+  // Offset sizes ignore transforms, so these hold for a lifted card.
   let cardBox = cardImage.getBoundingClientRect();
   let sectionBox = section.getBoundingClientRect();
   let bodyBox = body.getBoundingClientRect();
@@ -584,9 +583,7 @@ function animateWindowToCard(
   let dx = cardBox.left + cardBox.width / 2 - bodyCenter.x;
   let dy = cardBox.top + cardBox.height / 2 - bodyCenter.y;
   let scale = cardImage.offsetWidth / body.offsetWidth;
-  let { a, b } = new DOMMatrix(getComputedStyle(card).transform);
-  let angle = (Math.atan2(b, a) * 180) / Math.PI;
-  let atCard = `translate(${dx}px, ${dy}px) rotate(${angle}deg) scale(${scale})`;
+  let atCard = `translate(${dx}px, ${dy}px) scale(${scale})`;
 
   cardImage.style.visibility = "hidden";
   // Show the image the card already has, so the window is never blank while
@@ -658,8 +655,8 @@ function animateWindowToCard(
 
 /**
  * The photos around the open one, as small versions of the gallery's cards:
- * the open photo largest, straight, and in front, its neighbors smaller and
- * tilted toward the edges. Each card keeps its key, so stepping slides the
+ * the open photo largest and in front, its neighbors smaller and fainter
+ * toward the edges. Each card keeps its key, so stepping slides the
  * row along instead of redrawing it.
  */
 function PhotoTimeline(
@@ -723,7 +720,6 @@ function PhotoTimeline(
               "--card-ratio": String(item.width / item.height),
               "--card-scale": String(scale),
               "--card-opacity": String(TIMELINE_OPACITIES[distance]),
-              "--card-tilt": item.current ? "0deg" : `${item.tilt}deg`,
               zIndex: TIMELINE_SCALES.length - distance,
             }}
           >
@@ -913,7 +909,7 @@ let timelineStyle = css({
   listStyle: "none",
   margin: 0,
   padding: 0,
-  // Cards past the edges fade out; tilted corners may still rise above.
+  // Cards past the edges fade out.
   overflowX: "clip",
   maskImage:
     "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
@@ -944,13 +940,13 @@ let timelineCardStyle = css({
   borderRadius: "6px",
   pointerEvents: "auto",
   textDecoration: "none",
-  transform: "rotate(var(--card-tilt)) scale(var(--card-scale))",
+  transform: "scale(var(--card-scale))",
   transition:
     "transform 300ms cubic-bezier(0.22, 1.5, 0.36, 1), opacity 160ms ease",
-  // The gallery cards' hover nudge.
+  // The gallery cards' hover lift.
   ":is(li:hover) > &": {
     opacity: 1,
-    transform: "rotate(calc(var(--card-tilt) + 2deg)) scale(var(--card-scale))",
+    transform: "translateY(-3px) scale(var(--card-scale))",
   },
   "&:focus-visible": {
     opacity: 1,
@@ -959,9 +955,7 @@ let timelineCardStyle = css({
   },
   "@media (prefers-reduced-motion: reduce)": {
     transition: "none",
-    ":is(li:hover) > &": {
-      transform: "rotate(var(--card-tilt)) scale(var(--card-scale))",
-    },
+    ":is(li:hover) > &": { transform: "scale(var(--card-scale))" },
   },
 });
 

@@ -56,40 +56,13 @@ describe("Remix Jam 2026 routes", () => {
 
     let html = await renderJam2026Home();
 
-    expect(getPhotoTilts(html).size).toBe(12);
+    expect(getCardFilenames(html)).toHaveLength(12);
     expect(
       html.match(/src="https:\/\/cdn\.shopify\.com\/files\//g),
     ).toHaveLength(10);
     expect(html).toMatch(/<button[^>]*data-deal[^>]*>[\s\S]*?View 12 photos/);
     expect(html.indexOf('id="photos"')).toBeLessThan(html.indexOf("<iframe"));
     expect(html.indexOf("<iframe")).toBeLessThan(html.indexOf('id="schedule"'));
-  });
-
-  it("tilts each photo card by its filename, regardless of order", async (t) => {
-    let filenames = ["DSC01.jpg", "DSC02.jpg", "DSC03.jpg", "DSC04.jpg"];
-    mockStorefrontPhotos(t, filenames);
-
-    let tilts = getPhotoTilts(await renderJam2026Home());
-    filenames.reverse();
-    let reorderedTilts = getPhotoTilts(await renderJam2026Home());
-
-    expect([...tilts.keys()]).toEqual([
-      "DSC01.jpg",
-      "DSC02.jpg",
-      "DSC03.jpg",
-      "DSC04.jpg",
-    ]);
-    expect([...reorderedTilts.keys()]).toEqual([
-      "DSC04.jpg",
-      "DSC03.jpg",
-      "DSC02.jpg",
-      "DSC01.jpg",
-    ]);
-    for (let [filename, tilt] of tilts) {
-      expect(reorderedTilts.get(filename)).toBe(tilt);
-      expect(Math.abs(tilt)).toBeLessThanOrEqual(3);
-    }
-    expect(new Set(tilts.values()).size).toBeGreaterThan(1);
   });
 
   it("omits the photos section when there are no photos", async (t) => {
@@ -513,14 +486,8 @@ async function renderJam2026Home() {
   return response.text();
 }
 
-function getPhotoTilts(html: string) {
-  let tilts = new Map<string, number>();
-  for (let [, tilt, filename] of html.matchAll(
-    /--photo-tilt: (-?[\d.]+)deg[\s\S]*?>(DSC\d+\.jpg)</g,
-  )) {
-    tilts.set(filename, Number(tilt));
-  }
-  return tilts;
+function getCardFilenames(html: string) {
+  return [...html.matchAll(/>(DSC\d+\.jpg)</g)].map(([, filename]) => filename);
 }
 
 /** Serves `filenames` as the metaobject's photos, read at request time. */

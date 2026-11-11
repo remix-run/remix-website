@@ -5,8 +5,6 @@ import type { Photo, PhotoCard } from "./public/shopify-photo.ts";
 
 export { findPhotoViewerState } from "./public/shopify-photo.ts";
 
-const MAX_TILT_DEGREES = 3;
-
 // Filenames (and so slugs) are reduced to these characters when photos are
 // read, so they're safe in URLs and download headers as is.
 const SAFE_NAME = /^[A-Za-z0-9._-]+$/;
@@ -32,7 +30,6 @@ export function getPhotoCards(photos: Photo[]): PhotoCard[] {
       ...photo,
       filename,
       slug: filename.replace(/\.[^.]+$/, ""),
-      tilt: getPhotoTilt(filename),
     };
   });
 }
@@ -57,19 +54,4 @@ function getPhotoFilename(photo: Photo, index: number) {
     .replace(/[^A-Za-z0-9._-]+/g, "-")
     .replace(/^[-.]+|-+$/g, "");
   return SAFE_NAME.test(safe) ? safe : `PHOTO-${index + 1}.JPG`;
-}
-
-/**
- * Tilts each card by a hash of its filename, so a photo keeps its angle across
- * renders and reorderings without any client-side randomness.
- */
-function getPhotoTilt(filename: string) {
-  // FNV-1a, seeded so the spread can be reshuffled by changing the seed.
-  let hash = 0x811c9dc5;
-  for (let char of `remix-jam-2026:${filename}`) {
-    hash ^= char.codePointAt(0)!;
-    hash = Math.imul(hash, 0x01000193);
-  }
-  let unit = (hash >>> 0) / 0xffffffff;
-  return Math.round((unit * 2 - 1) * MAX_TILT_DEGREES * 10) / 10;
 }
