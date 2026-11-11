@@ -60,7 +60,7 @@ describe("Remix Jam 2026 routes", () => {
     expect(
       html.match(/src="https:\/\/cdn\.shopify\.com\/files\//g),
     ).toHaveLength(10);
-    expect(html).toContain('aria-label="Deal 12 photos"');
+    expect(html).toMatch(/<button[^>]*data-deal[^>]*>[\s\S]*?View 12 photos/);
     expect(html.indexOf('id="photos"')).toBeLessThan(html.indexOf("<iframe"));
     expect(html.indexOf("<iframe")).toBeLessThan(html.indexOf('id="schedule"'));
   });
@@ -339,7 +339,7 @@ describe("Remix Jam 2026 photo routes", () => {
       routes.jam.y2026.photos.download.href({ photo: "DSC02" }),
     );
     // Dealt behind the viewer: no stack to deal, and every card links in.
-    expect(html).not.toContain('aria-label="Deal 3 photos"');
+    expect(html).not.toContain("data-deal");
     for (let filename of filenames) {
       expect(html).toContain(`aria-label="View ${filename}"`);
     }

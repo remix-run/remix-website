@@ -30,6 +30,8 @@ describe("Jam2026PhotoDeck", () => {
     for (let item of items.slice(1)) {
       expect(Math.abs(getCenterX(item) - getCenterX(items[0]))).toBeLessThan(1);
     }
+    // A visible label names what the stack does, and how many photos it holds.
+    expect(getDealButton(result.container).textContent).toBe("View 12 photos");
     // Only the ten visible cards in the stack load their images.
     expect(result.container.querySelectorAll("img")).toHaveLength(10);
 
@@ -160,9 +162,7 @@ function getCenterX(item: HTMLElement) {
 }
 
 function queryDealButton(container: HTMLElement) {
-  return container.querySelector<HTMLButtonElement>(
-    'button[aria-label="Deal 12 photos"]',
-  );
+  return container.querySelector<HTMLButtonElement>("button[data-deal]");
 }
 
 function getDealButton(container: HTMLElement) {

@@ -15,6 +15,7 @@ import {
 
 import { focusTrap } from "../../../../ui/public/focus-trap.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
+import { theme } from "../../../../ui/public/theme.ts";
 import { routes } from "../../../../routes.ts";
 import { syncJam2026Head } from "./head-content.ts";
 import { jam2026ModalConfig } from "./modal-contract.ts";
@@ -33,7 +34,12 @@ import {
   jam2026ModalWindowStyle,
   restoreScrollPosition,
 } from "./modal.ts";
-import { resizeShopifyImage, type PhotoViewerState } from "./shopify-photo.ts";
+import {
+  findPhotoViewerState,
+  getGalleryCards,
+  resizeShopifyImage,
+  type PhotoViewerState,
+} from "./shopify-photo.ts";
 import { jamTheme } from "./theme.ts";
 
 type Jam2026PhotoViewerProps = {
@@ -62,17 +68,33 @@ export let Jam2026PhotoViewerFrame = clientEntry(
     // up when there's no card to shrink into.
     let exit: "shrink" | "roll" = "roll";
     let closeNavigationTimer: ReturnType<typeof setTimeout> | undefined;
+    // The photo just chosen (a card, a step, or the filmstrip), shown right
+    // away from the gallery's cards while its frame request is in flight.
+    let pendingSlug: string | undefined;
     let lastSlug = handle.props.viewer?.photo.slug;
     // Starts out matching the server-rendered head; synced as photos change.
     let headSyncedFilename = handle.props.viewer?.photo.filename;
     let modalEffects = createJam2026ModalEffects(handle, {
       getModalRoot: getDialog,
-      isActive: () => Boolean(handle.props.viewer) && !closing,
+      isActive: () => Boolean(getShownViewer()) && !closing,
       requestClose,
       // Back to the card of the photo being viewed, which may not be the one
       // that opened the viewer.
       getReturnFocus: getCurrentCard,
     });
+
+    // The pending photo when there is one, else the server's.
+    function getShownViewer() {
+      let { viewer } = handle.props;
+      if (!pendingSlug || pendingSlug === viewer?.photo.slug) return viewer;
+      return findPhotoViewerState(getGalleryCards(), pendingSlug) ?? viewer;
+    }
+
+    function showPhoto(slug: string) {
+      if (closing) return;
+      pendingSlug = slug;
+      handle.update();
+    }
 
     function getDialog() {
       return document.querySelector<HTMLElement>(
@@ -89,24 +111,30 @@ export let Jam2026PhotoViewerFrame = clientEntry(
 
     function requestClose(event?: Event) {
       event?.preventDefault();
-      if (closing || !handle.props.viewer) return;
+      if (closing || !getShownViewer()) return;
 
       closing = true;
       let reduceMotion = prefersReducedMotion();
       exit = !reduceMotion && getCurrentCard() ? "shrink" : "roll";
       handle.update();
 
-      let finish = (scrollX: number, scrollY: number, card?: HTMLElement) => {
+      let finish = (
+        scrollX: number,
+        scrollY: number,
+        restoreCard?: () => void,
+      ) => {
         void navigate(routes.jam.y2026.index.href(), {
           ...frameNavigation,
           history: "replace",
         }).finally(() => {
+          pendingSlug = undefined;
+          handle.update();
           restoreScrollPosition(scrollX, scrollY, handle.signal);
-          if (!card) {
+          if (!restoreCard) {
             revealCurrentCard();
             return;
           }
-          card.style.visibility = "";
+          restoreCard();
           // The usual focus return ran while the card was hidden mid-shrink,
           // when it couldn't take focus.
           getCurrentCard()?.focus({ preventScroll: true });
@@ -148,9 +176,10 @@ export let Jam2026PhotoViewerFrame = clientEntry(
           finish(scrollX, scrollY);
           return;
         }
-        shrink.finished.then(
-          () => finish(scrollX, scrollY, card),
-          () => finish(scrollX, scrollY, card),
+        let { restoreCard } = shrink;
+        shrink.animation.finished.then(
+          () => finish(scrollX, scrollY, restoreCard),
+          () => finish(scrollX, scrollY, restoreCard),
         );
       });
     }
@@ -171,12 +200,49 @@ export let Jam2026PhotoViewerFrame = clientEntry(
     }
 
     function step(event: KeyboardEvent, direction: "previous" | "next") {
-      let viewer = handle.props.viewer;
+      let viewer = getShownViewer();
       if (!viewer || closing) return;
       event.preventDefault();
-      void navigate(
-        routes.jam.y2026.photos.show.href({ photo: viewer[direction].slug }),
-        { ...frameNavigation, history: "replace" },
+      let slug = viewer[direction].slug;
+      showPhoto(slug);
+      // Like pressing that arrow in the title bar, which takes focus.
+      getDialog()
+        ?.querySelector<HTMLElement>(`a[data-step="${direction}"]`)
+        ?.focus({ preventScroll: true });
+      navigate(routes.jam.y2026.photos.show.href({ photo: slug }), {
+        ...frameNavigation,
+        history: "replace",
+        // A quicker next step cancels this one; the photo is already shown.
+      }).catch(() => {});
+    }
+
+    // Any link into the viewer (a gallery card, a step, a filmstrip card)
+    // shows its photo before the runtime's frame navigation comes back.
+    function showLinkedPhoto(event: MouseEvent) {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey) return;
+      if (event.shiftKey || event.altKey) return;
+      let link = (event.target as Element | null)?.closest?.("a");
+      if (link?.dataset.rmxTarget !== jam2026ModalConfig.frameName) return;
+      // Mid-close, the close's own navigation would undo the open.
+      if (closing) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+      let { href } = link;
+      let slug = new URL(href).pathname.match(
+        /^\/jam\/2026\/photos\/([^/]+)$/,
+      )?.[1];
+      if (!slug) return;
+      showPhoto(slug);
+      // Showing the photo re-renders the viewer's own links (the arrows now
+      // point one further) before the runtime reads them, so navigate to
+      // the one clicked here instead.
+      if (!getDialog()?.contains(link)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      navigate(href, { ...frameNavigation, history: "replace" }).catch(
+        () => {},
       );
     }
 
@@ -191,6 +257,10 @@ export let Jam2026PhotoViewerFrame = clientEntry(
         },
         { signal: handle.signal },
       );
+      document.addEventListener("click", showLinkedPhoto, {
+        capture: true,
+        signal: handle.signal,
+      });
     });
 
     handle.signal.addEventListener(
@@ -221,7 +291,13 @@ export let Jam2026PhotoViewerFrame = clientEntry(
     }
 
     return () => {
-      let { viewer } = handle.props;
+      if (pendingSlug === handle.props.viewer?.photo.slug) {
+        pendingSlug = undefined;
+      }
+      let viewer = getShownViewer();
+      // Opening ahead of the server: always animate, whatever the frame's
+      // last response said.
+      let openingAhead = Boolean(viewer) && !handle.props.viewer;
 
       if (!viewer) closing = false;
       if (viewer) lastSlug = viewer.photo.slug;
@@ -236,7 +312,9 @@ export let Jam2026PhotoViewerFrame = clientEntry(
         <div>
           {viewer ? (
             <PhotoViewerContent
-              animateEntrance={handle.props.animateEntrance ?? true}
+              animateEntrance={
+                openingAhead || (handle.props.animateEntrance ?? true)
+              }
               closing={closing}
               exit={exit}
               onRequestClose={requestClose}
@@ -263,10 +341,18 @@ function PhotoViewerContent(
   // fetches one with it), and adding the entrance then would replay it.
   let useEntranceMotion =
     handle.props.animateEntrance && !prefersReducedMotion();
+  // The full-size image that has finished loading, for the loading bar.
+  let loadedSrc: string | undefined;
+  let markLoaded = (img: HTMLImageElement) => {
+    if (loadedSrc === img.getAttribute("src")) return;
+    loadedSrc = img.getAttribute("src") ?? undefined;
+    handle.update();
+  };
 
   return () => {
     let { closing, onRequestClose, viewer } = handle.props;
     let { photo } = viewer;
+    let src = resizeShopifyImage(photo.url, VIEWER_IMAGE_WIDTH);
     let state = closing ? "closing" : "open";
     let homeHref = routes.jam.y2026.index.href();
     let closeLinkProps = {
@@ -377,6 +463,7 @@ function PhotoViewerContent(
                 </a>
               </div>
               <div
+                data-loading={loadedSrc === src ? undefined : ""}
                 mix={viewerBodyStyle}
                 style={{
                   backgroundImage: `url("${resizeShopifyImage(photo.url, PLACEHOLDER_IMAGE_WIDTH)}")`,
@@ -389,8 +476,15 @@ function PhotoViewerContent(
                   }
                   draggable={false}
                   height={photo.height}
-                  src={resizeShopifyImage(photo.url, VIEWER_IMAGE_WIDTH)}
+                  src={src}
                   width={photo.width}
+                  mix={[
+                    on("load", (event) => markLoaded(event.currentTarget)),
+                    // Already cached, as preloaded neighbors usually are.
+                    ref((img) => {
+                      if (img.complete) markLoaded(img);
+                    }),
+                  ]}
                 />
               </div>
             </section>
@@ -446,19 +540,37 @@ function playEntrance(section: HTMLElement, slug: string) {
  * Animates the viewer's window between its place and a gallery card's size,
  * spot, and tilt: out of the card when opening, back into it when closing.
  * The card and the viewer's photo share an aspect ratio, so a single scale
- * maps one onto the other. The card is hidden meanwhile, so the photo looks
- * lifted out of the grid rather than copied.
+ * maps one photo onto the other. Only the photo should look like it travels:
+ * scaled along with it, the window's frame and title bar would end up far
+ * smaller than the card's, so they cross-fade with the card's own instead.
+ * The card's photo stays hidden meanwhile, so the photo looks lifted out of
+ * the grid rather than copied.
  */
+// The window's moves still playing, so closing mid-open can take over.
+let windowMoves = new WeakMap<HTMLElement, Animation[]>();
+
 function animateWindowToCard(
   section: HTMLElement,
   card: HTMLElement,
   direction: "open" | "close",
 ) {
+  let titlebar = section.firstElementChild;
   let cardImage = card.lastElementChild;
   let body = section.lastElementChild;
-  if (!(cardImage instanceof HTMLElement) || !(body instanceof HTMLElement)) {
+  if (
+    !(titlebar instanceof HTMLElement) ||
+    !(cardImage instanceof HTMLElement) ||
+    !(body instanceof HTMLElement)
+  ) {
     return null;
   }
+
+  // Interrupting a move: start from wherever it got to, then cancel it so the
+  // window measures at its real place.
+  let { backgroundColor, boxShadow, transform } = getComputedStyle(section);
+  let titlebarOpacity = getComputedStyle(titlebar).opacity;
+  let cardOpacity = getComputedStyle(card).opacity;
+  for (let move of windowMoves.get(section) ?? []) move.cancel();
 
   // Box centers don't change with rotation, and offset sizes ignore it, so
   // these hold for a tilted card.
@@ -476,7 +588,7 @@ function animateWindowToCard(
   let angle = (Math.atan2(b, a) * 180) / Math.PI;
   let atCard = `translate(${dx}px, ${dy}px) rotate(${angle}deg) scale(${scale})`;
 
-  card.style.visibility = "hidden";
+  cardImage.style.visibility = "hidden";
   // Show the image the card already has, so the window is never blank while
   // the viewer's own images load.
   let cardSrc = cardImage.querySelector("img")?.currentSrc;
@@ -486,25 +598,62 @@ function animateWindowToCard(
   }
   section.style.transformOrigin = `${bodyCenter.x - sectionBox.left}px ${bodyCenter.y - sectionBox.top}px`;
 
+  let opening = direction === "open";
+  let duration = opening ? 220 : 160;
   let animation = section.animate(
-    direction === "open"
+    opening
       ? [{ transform: atCard }, { transform: "none" }]
-      : [{ transform: "none" }, { transform: atCard }],
-    direction === "open"
-      ? { ...spring({ duration: 220, bounce: 0.1 }) }
+      : [{ transform }, { transform: atCard }],
+    opening
+      ? { ...spring({ duration, bounce: 0.1 }) }
       : // Stays on the card until the closing navigation removes the window,
         // which also brings the card back.
-        { ...spring({ duration: 160, bounce: 0.05 }), fill: "forwards" },
+        { ...spring({ duration, bounce: 0.05 }), fill: "forwards" },
   );
-  if (direction === "open") {
+
+  // The frame being left fades out over the first half of the move; the one
+  // being reached fades in quickly ahead of the photo's arrival.
+  let windowChrome = [
+    { backgroundColor, boxShadow },
+    { backgroundColor: "transparent", boxShadow: "none" },
+  ];
+  let near: KeyframeAnimationOptions = {
+    duration: duration / 2,
+    easing: "ease-out",
+    fill: "both",
+  };
+  // Fading in waits a little, so the frame doesn't float far from the photo,
+  // and is done before the photo lands rather than finishing after it.
+  let far = { ...near, delay: duration * 0.2, duration: duration * 0.4 };
+  let fades = opening
+    ? [
+        section.animate([...windowChrome].reverse(), far),
+        titlebar.animate([{ opacity: 0 }, { opacity: 1 }], far),
+        card.animate([{ opacity: 1 }, { opacity: 0 }], near),
+      ]
+    : [
+        section.animate(windowChrome, near),
+        titlebar.animate([{ opacity: titlebarOpacity }, { opacity: 0 }], near),
+        card.animate([{ opacity: cardOpacity }, { opacity: 1 }], far),
+      ];
+  let moves = [animation, ...fades];
+  windowMoves.set(section, moves);
+
+  let restoreCard = () => {
+    cardImage.style.visibility = "";
+    for (let fade of fades) fade.cancel();
+  };
+  if (opening) {
     let reset = () => {
-      card.style.visibility = "";
+      // A close took over and puts things back itself.
+      if (windowMoves.get(section) !== moves) return;
+      restoreCard();
       section.style.transformOrigin = "";
       body.style.backgroundImage = placeholder;
     };
     animation.finished.then(reset, reset);
   }
-  return animation;
+  return { animation, restoreCard };
 }
 
 /**
@@ -622,6 +771,7 @@ function StepLink(
   return () => (
     <a
       aria-label={handle.props.label}
+      data-step={handle.props.direction}
       data-rmx-history="replace"
       data-rmx-reset-focus="manual"
       data-rmx-reset-scroll="manual"
@@ -669,6 +819,32 @@ let viewerBodyStyle = css({
   borderRadius: "0.25rem",
   margin: "0 8px 8px",
   overflow: "hidden",
+  position: "relative",
+  // A bar slides across the top while the full-size image loads, appearing
+  // only if that takes a moment.
+  "&[data-loading]::after": {
+    content: '""',
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "35%",
+    height: "3px",
+    borderRadius: theme.radius.full,
+    background: jamTheme.brandRed,
+    opacity: 0,
+    animation: "jam-2026-photo-loading 900ms ease-in-out 150ms infinite",
+  },
+  "@keyframes jam-2026-photo-loading": {
+    "0%": { opacity: 1, translate: "-100% 0" },
+    "100%": { opacity: 1, translate: "300% 0" },
+  },
+  "@media (prefers-reduced-motion: reduce)": {
+    "&[data-loading]::after": {
+      animation: "none",
+      opacity: 1,
+      width: "100%",
+    },
+  },
   "& img": {
     display: "block",
     height: "100%",

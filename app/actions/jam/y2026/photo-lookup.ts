@@ -1,14 +1,10 @@
 import * as s from "remix/data-schema";
 import { maxLength, minLength } from "remix/data-schema/checks";
 
-import type {
-  Photo,
-  PhotoCard,
-  PhotoViewerState,
-} from "./public/shopify-photo.ts";
+import type { Photo, PhotoCard } from "./public/shopify-photo.ts";
 
-// How many photos the viewer's filmstrip shows on each side of the open one.
-const TIMELINE_RADIUS = 4;
+export { findPhotoViewerState } from "./public/shopify-photo.ts";
+
 const MAX_TILT_DEGREES = 3;
 
 // Filenames (and so slugs) are reduced to these characters when photos are
@@ -39,35 +35,6 @@ export function getPhotoCards(photos: Photo[]): PhotoCard[] {
       tilt: getPhotoTilt(filename),
     };
   });
-}
-
-/** The photo with this slug and its neighbors, wrapping around the ends. */
-export function findPhotoViewerState(
-  cards: PhotoCard[],
-  slug: string,
-): PhotoViewerState | undefined {
-  let index = cards.findIndex((card) => card.slug === slug);
-  if (index === -1) return undefined;
-
-  let count = cards.length;
-  let at = (offset: number) =>
-    cards[(((index + offset) % count) + count) % count];
-  // Wraps around like stepping does, without repeating a photo when there
-  // are too few to fill both sides.
-  let radius = Math.min(TIMELINE_RADIUS, Math.floor((count - 1) / 2));
-  let timeline = [];
-  for (let offset = -radius; offset <= radius; offset++) {
-    timeline.push({ ...at(offset), current: offset === 0 });
-  }
-
-  return {
-    index,
-    count,
-    photo: cards[index],
-    previous: at(-1),
-    next: at(1),
-    timeline,
-  };
 }
 
 /**

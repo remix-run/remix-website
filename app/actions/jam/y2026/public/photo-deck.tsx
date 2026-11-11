@@ -6,7 +6,11 @@ import {
 } from "@remix-run/ui/animation";
 import { jamTheme } from "./theme.ts";
 import { jam2026ModalConfig } from "./modal-contract.ts";
-import { resizeShopifyImage, type PhotoCard } from "./shopify-photo.ts";
+import {
+  resizeShopifyImage,
+  setGalleryCards,
+  type PhotoCard,
+} from "./shopify-photo.ts";
 import {
   jam2026WindowSurfaceStyle,
   jam2026WindowTitleStyle,
@@ -86,7 +90,7 @@ export let Jam2026PhotoDeck = clientEntry(
           return;
         }
         list
-          .querySelector<HTMLElement>('button[aria-label^="Deal"]')
+          .querySelector<HTMLElement>("button[data-deal]")
           ?.focus({ preventScroll: true });
         // Any card can gather, even far down the grid, so follow the cards
         // back up to the stack, centered in the viewport.
@@ -124,6 +128,7 @@ export let Jam2026PhotoDeck = clientEntry(
 
     return () => {
       let { cards } = handle.props;
+      setGalleryCards(cards);
       let animate = !prefersReducedMotion();
 
       return (
@@ -265,11 +270,15 @@ export let Jam2026PhotoDeck = clientEntry(
                     </div>
                   </div>
                   {stacked && index === 0 ? (
+                    // A label over the stack so it reads as something to press,
+                    // not decoration, and a focus target for the keyboard.
                     <button
-                      aria-label={`Deal ${cards.length} photos`}
-                      mix={dealButtonStyle}
+                      data-deal
+                      mix={[jam2026WindowSurfaceStyle, dealButtonStyle]}
                       type="button"
-                    />
+                    >
+                      View {cards.length} photos
+                    </button>
                   ) : null}
                 </li>
               );
@@ -540,21 +549,38 @@ let imageFrameStyle = css({
   },
 });
 
+// Centered over the stack. It changes with the stack's own hover and focus
+// (the same trigger that fans the cards), not on its own.
 let dealButtonStyle = css({
   appearance: "none",
   position: "absolute",
-  inset: 0,
+  top: "50%",
+  left: "50%",
   zIndex: 1,
+  translate: "-50% -50%",
   border: 0,
-  borderRadius: "0.5rem",
-  background: "transparent",
+  borderRadius: "8px",
+  padding: "14px 20px",
+  color: jamTheme.ink,
   cursor: "pointer",
+  fontFamily: theme.fontFamily.mono,
+  fontSize: "13px",
+  fontWeight: theme.fontWeight.bold,
+  letterSpacing: "0.06em",
+  lineHeight: 1,
   outline: "none",
-  padding: 0,
+  textTransform: "uppercase",
+  whiteSpace: "nowrap",
+  transition: "background-color 200ms ease",
+  // Turns solid, so it stands out over the fanned-out cards.
+  ":is(ul:has(> li:hover, > li > button:focus-visible)) &": {
+    background: jamTheme.surfaceRaised,
+  },
   "&:focus-visible": {
     outline: `2px solid ${jamTheme.brandRed}`,
-    outlineOffset: "4px",
+    outlineOffset: "3px",
   },
+  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
 });
 
 // Sized to the grid.
