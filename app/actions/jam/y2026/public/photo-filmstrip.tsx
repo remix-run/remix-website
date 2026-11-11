@@ -10,6 +10,7 @@ import { jam2026ModalConfig } from "./modal-contract.ts";
 import { photoGallery } from "./photo-gallery.ts";
 import { photoViewer, selectOnClick } from "./photo-viewer-controller.ts";
 import { PhotoViewerSessionProvider } from "./photo-viewer-session.ts";
+import { ScrollGlide } from "./scroll-animation.ts";
 import { resizeShopifyImage, type PhotoViewerState } from "./shopify-photo.ts";
 import { jamTheme } from "./theme.ts";
 import {
@@ -61,53 +62,35 @@ export function PhotoTimeline(
     if (photoGallery.cards.length > 0) handle.update();
   });
 
-  let stopGlide = () => {
-    if (motion.kind !== "gliding") return;
-    cancelAnimationFrame(motion.frame);
-    motion = { kind: "idle" };
-    if (row) row.dataset.snap = "";
-  };
+  // Glides the row to a photo chosen some other way, so holding an arrow
+  // key carries the row along at the photos' pace. Snapping is off meanwhile,
+  // since the browser would snap each frame's position, and comes back once
+  // the row lands.
+  let glide = new ScrollGlide(
+    {
+      get: () => row?.scrollLeft ?? 0,
+      set: (position) => {
+        if (row) row.scrollLeft = position;
+      },
+    },
+    GLIDE_STIFFNESS,
+    () => {
+      motion = { kind: "idle" };
+      if (row) row.dataset.snap = "";
+    },
+  );
 
-  // Glides the row on a spring that keeps its speed when the target moves, so
-  // holding an arrow key carries the row along at the photos' pace. A native
-  // smooth scroll restarts from rest at every key repeat, and barely moves
-  // until the keys stop. Snapping is off meanwhile, since the browser would
-  // snap each frame's position, and comes back once the row lands.
   let glideTo = (target: number) => {
     if (!row) return;
-    if (motion.kind === "gliding") {
-      motion.target = target;
-      return;
+    if (motion.kind !== "gliding") {
+      if (Math.abs(row.scrollLeft - target) < 1) return;
+      delete row.dataset.snap;
+      motion = { kind: "gliding" };
     }
-    if (Math.abs(row.scrollLeft - target) < 1) return;
-    delete row.dataset.snap;
-    let glide: RowGlide = {
-      kind: "gliding",
-      x: row.scrollLeft,
-      velocity: 0,
-      target,
-      time: performance.now(),
-      frame: 0,
-    };
-    motion = glide;
-    let step = (now: number) => {
-      if (motion !== glide || !row) return;
-      let elapsed = Math.min(0.05, (now - glide.time) / 1000);
-      glide.time = now;
-      // A critically damped spring: as quick as it can be without overshoot.
-      let acceleration =
-        GLIDE_STIFFNESS * (glide.target - glide.x) -
-        2 * Math.sqrt(GLIDE_STIFFNESS) * glide.velocity;
-      glide.velocity += acceleration * elapsed;
-      glide.x += glide.velocity * elapsed;
-      let landed =
-        Math.abs(glide.target - glide.x) < 0.5 && Math.abs(glide.velocity) < 20;
-      row.scrollLeft = landed ? glide.target : glide.x;
-      if (landed) stopGlide();
-      else glide.frame = requestAnimationFrame(step);
-    };
-    glide.frame = requestAnimationFrame(step);
+    glide.to(target);
   };
+
+  let stopGlide = () => glide.stop();
 
   handle.signal.addEventListener("abort", () => {
     clearTimeout(settleTimer);
@@ -282,20 +265,11 @@ export function PhotoTimeline(
   };
 }
 
-type RowGlide = {
-  kind: "gliding";
-  x: number;
-  velocity: number;
-  target: number;
-  time: number;
-  frame: number;
-};
-
 type RowMotion =
   | { kind: "idle" }
   | { kind: "reader"; scrubbed: boolean }
   | { kind: "jumping" }
-  | RowGlide;
+  | { kind: "gliding" };
 
 // A native horizontal scroller: momentum, rubber-banding, and snapping come
 // from the browser, and half its width of padding on each end lets the first

@@ -7,6 +7,7 @@ import {
 import { jamTheme } from "./theme.ts";
 import { jam2026ModalConfig } from "./modal-contract.ts";
 import { photoGallery } from "./photo-gallery.ts";
+import { pageScrollY, scrollAlongCurve } from "./scroll-animation.ts";
 import { photoViewer } from "./photo-viewer-controller.ts";
 import {
   preloadViewerImage,
@@ -101,8 +102,10 @@ export let Jam2026PhotoDeck = clientEntry(
           list.getBoundingClientRect().top +
           top.offsetTop -
           (window.innerHeight - top.offsetHeight) / 2;
+        // On the list's own spring, not a native smooth scroll, which gets
+        // cut short as the list shrinks under it.
         if (reduceMotion) window.scrollTo(0, targetY);
-        else scrollAlong(targetY, [...resize], handle.signal);
+        else scrollAlongCurve(pageScrollY, targetY, [...resize], handle.signal);
       });
     };
     let deal = () => setDealt(true);
@@ -331,40 +334,6 @@ export let Jam2026PhotoDeck = clientEntry(
     };
   },
 );
-
-/**
- * Scrolls the window along a spring curve, frame by frame. A native smooth
- * scroll gets cut short here, because the list shrinks under it at the same
- * time.
- */
-function scrollAlong(targetY: number, curve: number[], signal: AbortSignal) {
-  let startY = window.scrollY;
-  let start = performance.now();
-  let stop = new AbortController();
-  let frame = 0;
-  let cancel = () => {
-    stop.abort();
-    cancelAnimationFrame(frame);
-  };
-  // Let the reader take the scroll back at any point.
-  for (let type of ["wheel", "touchstart", "keydown"]) {
-    window.addEventListener(type, cancel, { once: true, signal: stop.signal });
-  }
-  signal.addEventListener("abort", cancel, { signal: stop.signal });
-
-  let step = (now: number) => {
-    // A frame's timestamp can precede `start`, so clamp at 0 as well: a
-    // negative index would scroll to NaN, which jumps to the top of the page.
-    let index = Math.max(
-      0,
-      Math.min(curve.length - 1, Math.round((now - start) / (1000 / 60))),
-    );
-    window.scrollTo(0, startY + (targetY - startY) * curve[index]);
-    if (index < curve.length - 1) frame = requestAnimationFrame(step);
-    else stop.abort();
-  };
-  frame = requestAnimationFrame(step);
-}
 
 /**
  * A fixed nudge for each stacked card, from -1 to 1 on each axis, so the
