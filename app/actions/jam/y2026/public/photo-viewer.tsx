@@ -8,14 +8,13 @@ import {
 } from "remix/component";
 import {
   animateEntrance,
-  animateLayout,
   prefersReducedMotion,
   spring,
 } from "@remix-run/ui/animation";
 
 import { focusTrap } from "../../../../ui/public/focus-trap.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
-import { theme } from "../../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 import { routes } from "../../../../routes.ts";
 import { syncJam2026Head } from "./head-content.ts";
 import { jam2026ModalConfig } from "./modal-contract.ts";
@@ -37,6 +36,7 @@ import {
 import {
   findPhotoViewerState,
   getGalleryCards,
+  onGalleryCardsChange,
   resizeShopifyImage,
   type PhotoViewerState,
 } from "./shopify-photo.ts";
@@ -123,6 +123,8 @@ export let Jam2026PhotoViewerFrame = clientEntry(
         scrollY: number,
         restoreCard?: () => void,
       ) => {
+        // The viewer went away some other way while its window shrank.
+        if (handle.signal.aborted) return;
         void navigate(routes.jam.y2026.index.href(), {
           ...frameNavigation,
           history: "replace",
@@ -199,21 +201,26 @@ export let Jam2026PhotoViewerFrame = clientEntry(
       });
     }
 
-    function step(event: KeyboardEvent, direction: "previous" | "next") {
-      let viewer = getShownViewer();
-      if (!viewer || closing) return;
-      event.preventDefault();
-      let slug = viewer[direction].slug;
+    // Shows the photo right away, then fetches the server's copy.
+    function goToPhoto(slug: string) {
+      if (closing) return;
       showPhoto(slug);
-      // Like pressing that arrow in the title bar, which takes focus.
-      getDialog()
-        ?.querySelector<HTMLElement>(`a[data-step="${direction}"]`)
-        ?.focus({ preventScroll: true });
       navigate(routes.jam.y2026.photos.show.href({ photo: slug }), {
         ...frameNavigation,
         history: "replace",
         // A quicker next step cancels this one; the photo is already shown.
       }).catch(() => {});
+    }
+
+    function step(event: KeyboardEvent, direction: "previous" | "next") {
+      let viewer = getShownViewer();
+      if (!viewer || closing) return;
+      event.preventDefault();
+      // Like pressing that arrow in the title bar, which takes focus.
+      getDialog()
+        ?.querySelector<HTMLElement>(`a[data-step="${direction}"]`)
+        ?.focus({ preventScroll: true });
+      goToPhoto(viewer[direction].slug);
     }
 
     // Any link into the viewer (a gallery card, a step, a filmstrip card)
@@ -229,21 +236,20 @@ export let Jam2026PhotoViewerFrame = clientEntry(
         event.stopPropagation();
         return;
       }
-      let { href } = link;
-      let slug = new URL(href).pathname.match(
+      let slug = new URL(link.href).pathname.match(
         /^\/jam\/2026\/photos\/([^/]+)$/,
       )?.[1];
       if (!slug) return;
-      showPhoto(slug);
       // Showing the photo re-renders the viewer's own links (the arrows now
-      // point one further) before the runtime reads them, so navigate to
-      // the one clicked here instead.
-      if (!getDialog()?.contains(link)) return;
-      event.preventDefault();
-      event.stopPropagation();
-      navigate(href, { ...frameNavigation, history: "replace" }).catch(
-        () => {},
-      );
+      // point one further) before the runtime reads them, so the viewer
+      // navigates to the one clicked itself.
+      if (getDialog()?.contains(link)) {
+        event.preventDefault();
+        event.stopPropagation();
+        goToPhoto(slug);
+      } else {
+        showPhoto(slug);
+      }
     }
 
     handle.queueTask(() => {
@@ -318,6 +324,8 @@ export let Jam2026PhotoViewerFrame = clientEntry(
               closing={closing}
               exit={exit}
               onRequestClose={requestClose}
+              onPreviewPhoto={showPhoto}
+              onSelectPhoto={goToPhoto}
               viewer={viewer}
             />
           ) : null}
@@ -333,6 +341,8 @@ function PhotoViewerContent(
     closing: boolean;
     exit: "shrink" | "roll";
     onRequestClose: (event: Event) => void;
+    onPreviewPhoto: (slug: string) => void;
+    onSelectPhoto: (slug: string) => void;
     viewer: PhotoViewerState;
   }>,
 ) {
@@ -491,6 +501,8 @@ function PhotoViewerContent(
           </div>
           <PhotoTimeline
             closing={closing}
+            onPreview={handle.props.onPreviewPhoto}
+            onSelect={handle.props.onSelectPhoto}
             useEntranceMotion={useEntranceMotion}
             viewer={viewer}
           />
@@ -500,12 +512,12 @@ function PhotoViewerContent(
   };
 }
 
-// Each card's size and opacity by its distance from the open photo.
-const TIMELINE_SCALES = [1, 0.74, 0.6, 0.5, 0.42];
-const TIMELINE_OPACITIES = [1, 0.92, 0.8, 0.66, 0.5];
 // Matches the row's gap and the cards' horizontal padding.
 const TIMELINE_GAP = 6;
 const TIMELINE_CARD_PADDING = 8;
+// How long the row must sit still before a scroll counts as settled, where
+// the browser can't say so itself.
+const TIMELINE_SETTLE_DELAY = 150;
 
 function findGalleryCardLink(slug: string) {
   let href = routes.jam.y2026.photos.show.href({ photo: slug });
@@ -654,52 +666,131 @@ function animateWindowToCard(
 }
 
 /**
- * The photos around the open one, as small versions of the gallery's cards:
- * the open photo largest and in front, its neighbors smaller and fainter
- * toward the edges. Each card keeps its key, so stepping slides the
- * row along instead of redrawing it.
+ * Every photo as a small card, in a row that scrolls like a native
+ * filmstrip: it snaps each card to the middle, and the card there grows and
+ * opens above as the row passes it. Once the row settles, that photo loads
+ * for real. Stepping some other way (an arrow, a click) scrolls the row along
+ * to match.
  */
 function PhotoTimeline(
   handle: Handle<{
     closing: boolean;
+    /** Shows a photo without fetching it, for the ones the row passes. */
+    onPreview: (slug: string) => void;
+    onSelect: (slug: string) => void;
     useEntranceMotion: boolean;
     viewer: PhotoViewerState;
   }>,
 ) {
-  return () => {
-    let { timeline } = handle.props.viewer;
-    let currentPosition = timeline.findIndex((item) => item.current);
-    let animate = !prefersReducedMotion();
-    let cards = timeline.map((item, position) => {
-      let distance = Math.min(
-        Math.abs(position - currentPosition),
-        TIMELINE_SCALES.length - 1,
-      );
-      return { item, distance, scale: TIMELINE_SCALES[distance] };
-    });
+  let row: HTMLOListElement | undefined;
+  // The reader is scrolling the row, so it shouldn't be scrolled for them.
+  let readerScrolling = false;
+  // The row is scrolling itself to a photo chosen some other way, so the
+  // photos it passes shouldn't open.
+  let scrollingToPhoto = false;
+  // Photos opened while scrolling, which the settle still has to fetch.
+  let scrubbed = false;
+  let settleTimer: ReturnType<typeof setTimeout> | undefined;
+  // The server renders the photos near the open one; the whole gallery
+  // takes over once it's in the page, registered by the photo deck.
+  let useGallery = false;
+  let shownPhotos: unknown;
 
-    // Shift the row so the open photo's card sits dead center, however wide
-    // its neighbors are. A card's width is its image (a multiple of the card
-    // height) plus padding, all scaled; the shift is half the difference
-    // between what's to the right and to the left of it.
-    let heightShift = 0;
-    let pixelShift = 0;
-    for (let [position, { item, scale }] of cards.entries()) {
-      if (position === currentPosition) continue;
-      let side = position > currentPosition ? 1 : -1;
-      heightShift += (side * (item.width / item.height) * scale) / 2;
-      pixelShift += (side * (TIMELINE_CARD_PADDING * scale + TIMELINE_GAP)) / 2;
+  handle.queueTask(() => {
+    useGallery = true;
+    onGalleryCardsChange(() => handle.update(), handle.signal);
+    if (getGalleryCards().length > 0) handle.update();
+  });
+  handle.signal.addEventListener("abort", () => clearTimeout(settleTimer));
+
+  let getCurrentSlug = () => handle.props.viewer.photo.slug;
+
+  let getCenteredSlug = () => {
+    if (!row) return undefined;
+    let middle = row.scrollLeft + row.clientWidth / 2;
+    let nearest: HTMLElement | undefined;
+    let nearestDistance = Infinity;
+    for (let item of row.children as HTMLCollectionOf<HTMLElement>) {
+      let distance = Math.abs(item.offsetLeft + item.offsetWidth / 2 - middle);
+      if (distance < nearestDistance) {
+        nearest = item;
+        nearestDistance = distance;
+      }
     }
+    return nearest?.dataset.slug;
+  };
+
+  let scrollToPhoto = (slug: string, behavior: ScrollBehavior) => {
+    let item = row?.querySelector<HTMLElement>(
+      `li[data-slug="${CSS.escape(slug)}"]`,
+    );
+    if (!row || !item) return;
+    let left = item.offsetLeft + item.offsetWidth / 2 - row.clientWidth / 2;
+    if (Math.abs(row.scrollLeft - left) < 1) return;
+    scrollingToPhoto = true;
+    row.scrollTo({ left, behavior });
+  };
+
+  let settle = () => {
+    clearTimeout(settleTimer);
+    if (scrollingToPhoto) {
+      scrollingToPhoto = false;
+      return;
+    }
+    readerScrolling = false;
+    let slug = getCenteredSlug();
+    if (slug && (scrubbed || slug !== getCurrentSlug())) {
+      scrubbed = false;
+      handle.props.onSelect(slug);
+    }
+  };
+
+  let onScroll = () => {
+    clearTimeout(settleTimer);
+    settleTimer = setTimeout(settle, TIMELINE_SETTLE_DELAY);
+    if (scrollingToPhoto) return;
+    readerScrolling = true;
+    let slug = getCenteredSlug();
+    if (slug && slug !== getCurrentSlug()) {
+      scrubbed = true;
+      handle.props.onPreview(slug);
+    }
+  };
+
+  return () => {
+    let { viewer } = handle.props;
+    let gallery = useGallery ? getGalleryCards() : [];
+    let photos = gallery.length > 0 ? gallery : viewer.timeline;
+    let current = viewer.photo.slug;
+
+    // Keep the open photo in the middle: straight there when the row's
+    // photos are new, gliding after, unless the reader is the one scrolling.
+    let newPhotos = photos !== shownPhotos;
+    shownPhotos = photos;
+    handle.queueTask(() => {
+      if (readerScrolling || handle.props.closing) return;
+      let instant = newPhotos || prefersReducedMotion();
+      scrollToPhoto(current, instant ? "instant" : "smooth");
+    });
 
     return (
       <ol
         aria-label="Nearby photos"
         data-state={handle.props.closing ? "closing" : "open"}
-        style={{
-          translate: `calc(var(--timeline-card-height) * ${heightShift.toFixed(4)} + ${pixelShift.toFixed(2)}px) 0`,
-        }}
         mix={[
           timelineStyle,
+          ref((element) => {
+            row = element;
+          }),
+          on("scroll", onScroll),
+          on("scrollend", settle),
+          // A touch or wheel takes over from a scroll to a chosen photo.
+          on("pointerdown", () => {
+            scrollingToPhoto = false;
+          }),
+          on("wheel", () => {
+            scrollingToPhoto = false;
+          }),
           handle.props.useEntranceMotion
             ? animateEntrance({
                 opacity: 0,
@@ -709,27 +800,21 @@ function PhotoTimeline(
             : null,
         ]}
       >
-        {cards.map(({ item, distance, scale }) => (
+        {photos.map((item) => (
           <li
             key={item.slug}
-            mix={[
-              animateLayout(animate && { size: false, ...spring("snappy") }),
-              timelineItemStyle,
-            ]}
-            style={{
-              "--card-ratio": String(item.width / item.height),
-              "--card-scale": String(scale),
-              "--card-opacity": String(TIMELINE_OPACITIES[distance]),
-              zIndex: TIMELINE_SCALES.length - distance,
-            }}
+            data-slug={item.slug}
+            mix={timelineItemStyle}
+            style={{ "--card-ratio": String(item.width / item.height) }}
           >
             <a
-              aria-current={item.current ? "true" : undefined}
+              aria-current={item.slug === current ? "true" : undefined}
               aria-label={`View ${item.filename}`}
               data-rmx-history="replace"
               data-rmx-reset-focus="manual"
               data-rmx-reset-scroll="manual"
               data-rmx-target={jam2026ModalConfig.frameName}
+              draggable={false}
               href={routes.jam.y2026.photos.show.href({ photo: item.slug })}
               mix={[jam2026WindowSurfaceStyle, timelineCardStyle]}
             >
@@ -745,6 +830,7 @@ function PhotoTimeline(
                   decoding="async"
                   draggable={false}
                   height={item.height}
+                  loading="lazy"
                   src={resizeShopifyImage(item.url, TIMELINE_IMAGE_WIDTH)}
                   width={item.width}
                 />
@@ -788,11 +874,16 @@ function StepLink(
   );
 }
 
-// Sized to the photo at the shared photo height, up to the window's widest.
+// Sized to the photo: on phones as large as the space above the cards allows,
+// and wider up at the shared photo height, up to the window's widest. The
+// 40px is the title bar and the window's bottom edge; 16px its side edges.
 let viewerWindowStyle = css({
   position: "relative",
-  width:
-    "min(100%, 1500px, calc(var(--photo-height) * var(--photo-ratio) + 16px))",
+  width: "min(100cqw, (100cqh - 40px) * var(--photo-ratio) + 16px)",
+  [breakpointMedia.sm]: {
+    width:
+      "min(100%, 1500px, calc(var(--photo-height) * var(--photo-ratio) + 16px))",
+  },
 });
 
 let viewerTitleStyle = css({
@@ -850,49 +941,53 @@ let viewerBodyStyle = css({
   },
 });
 
-// The row of cards takes a fixed band at the bottom of the screen, so it stays
-// put whether the open photo is landscape or portrait.
 let viewerScrimStyle = css({
   "--timeline-height": "104px",
   "--timeline-card-height": "56px",
-  // Room left over below the cards (and as much above the window), so the
-  // cards don't hug the bottom of the screen.
-  "--viewer-breathing-room": "24px",
-  // The tallest a photo gets. Fixed per screen, not per photo, so the cards
-  // under it stay put. The subtraction covers the scrim's padding, the
-  // breathing room, the gap and band for the cards, and the window's title
-  // bar and bottom edge.
-  "--photo-max-height":
-    "min(1000px, 100svh - 32px - var(--viewer-breathing-room) - 12px - var(--timeline-height) - 40px)",
-  // Every photo is as tall as a 3:2 landscape shot is here, so portrait
-  // photos match landscape ones instead of standing taller or shorter. On
-  // narrow screens that's set by the width, not the height.
-  "--photo-height":
-    "min(var(--photo-max-height), (min(100vw - 32px, 1500px) - 16px) / 1.5)",
   alignItems: "stretch",
   flexDirection: "column",
-  "@media (min-width: 640px)": {
+  // On phones the cards sit at the bottom of the screen, and the photo takes
+  // whatever room is left above them.
+  paddingBottom: "max(8px, env(safe-area-inset-bottom))",
+  [breakpointMedia.sm]: {
     "--timeline-height": "160px",
     "--timeline-card-height": "100px",
+    // Room left over below the cards (and as much above the window), so the
+    // cards don't hug the bottom of the screen.
     "--viewer-breathing-room": "64px",
+    // The tallest a photo gets. Fixed per screen, not per photo, so the
+    // cards under it stay put. The subtraction covers the scrim's padding,
+    // the breathing room, the gap and band for the cards, and the window's
+    // title bar and bottom edge.
+    "--photo-max-height":
+      "min(1000px, 100svh - 32px - var(--viewer-breathing-room) - 12px - var(--timeline-height) - 40px)",
+    // Every photo is as tall as a 3:2 landscape shot is here, so portrait
+    // photos match landscape ones instead of standing taller or shorter.
+    "--photo-height":
+      "min(var(--photo-max-height), (min(100vw - 32px, 1500px) - 16px) / 1.5)",
+    paddingBottom: "16px",
   },
 });
 
-// A fixed height, centered on screen: the photo area, the gap, and the cards.
 let viewerStageStyle = css({
   display: "flex",
-  flex: "0 0 auto",
-  height: "calc(var(--photo-height) + 40px + 12px + var(--timeline-height))",
+  flex: "1 1 auto",
   flexDirection: "column",
   gap: "12px",
   minHeight: 0,
   outline: "none",
   // Empty space falls through to the backdrop, which closes the viewer.
   pointerEvents: "none",
+  [breakpointMedia.sm]: {
+    flex: "0 0 auto",
+    height: "calc(var(--photo-height) + 40px + 12px + var(--timeline-height))",
+  },
 });
 
 let viewerWindowAreaStyle = css({
   alignItems: "center",
+  // The window sizes itself to this space (see viewerWindowStyle).
+  containerType: "size",
   display: "flex",
   flex: "1 1 auto",
   justifyContent: "center",
@@ -900,62 +995,81 @@ let viewerWindowAreaStyle = css({
   "& > *": { pointerEvents: "auto" },
 });
 
+// A native horizontal scroller: momentum, rubber-banding, and snapping come
+// from the browser. Half its width of padding on each end lets the first and
+// last cards reach the middle.
 let timelineStyle = css({
   alignItems: "center",
   display: "flex",
   flex: "0 0 var(--timeline-height)",
   gap: `${TIMELINE_GAP}px`,
-  justifyContent: "center",
   listStyle: "none",
   margin: 0,
-  padding: 0,
+  paddingBlock: 0,
+  paddingInline: "50%",
+  position: "relative",
+  overflowX: "auto",
+  overflowY: "hidden",
+  overscrollBehaviorX: "contain",
+  scrollSnapType: "x mandatory",
+  scrollbarWidth: "none",
+  "&::-webkit-scrollbar": { display: "none" },
   // Cards past the edges fade out.
-  overflowX: "clip",
   maskImage:
     "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
+  // Scrollable from anywhere along it, gaps included.
+  pointerEvents: "auto",
+  userSelect: "none",
   transition: "opacity 160ms ease-out",
   "&[data-state='closing']": { opacity: 0 },
   "@media (prefers-reduced-motion: reduce)": { transition: "none" },
 });
 
-// Takes the card's scaled width, so the row spaces cards by how big they look.
 let timelineItemStyle = css({
-  alignItems: "center",
   display: "flex",
   flex: "0 0 auto",
-  justifyContent: "center",
-  position: "relative",
-  width: `calc((var(--timeline-card-height) * var(--card-ratio) + ${TIMELINE_CARD_PADDING}px) * var(--card-scale))`,
+  scrollSnapAlign: "center",
 });
 
+// Full size and opaque in the middle of the row, smaller and fainter toward
+// its ends, following the scroll. Without scroll-driven animations, only the
+// open photo's card stands out.
 let timelineCardStyle = css({
   color: jamTheme.ink,
   display: "flex",
   flex: "0 0 auto",
   flexDirection: "column",
   gap: "3px",
-  opacity: "var(--card-opacity)",
+  opacity: 0.8,
   outline: "none",
   padding: `${TIMELINE_CARD_PADDING / 2}px`,
   borderRadius: "6px",
-  pointerEvents: "auto",
   textDecoration: "none",
-  transform: "scale(var(--card-scale))",
-  transition:
-    "transform 300ms cubic-bezier(0.22, 1.5, 0.36, 1), opacity 160ms ease",
-  // The gallery cards' hover lift.
-  ":is(li:hover) > &": {
-    opacity: 1,
-    transform: "translateY(-3px) scale(var(--card-scale))",
+  transform: "scale(0.85)",
+  transition: "translate 300ms cubic-bezier(0.22, 1.5, 0.36, 1)",
+  "&[aria-current]": { opacity: 1, transform: "none" },
+  "@supports (animation-timeline: view())": {
+    animationName: "jam-2026-filmstrip-focus",
+    animationDuration: "auto",
+    animationTimingFunction: "linear",
+    animationFillMode: "both",
+    animationTimeline: "view(inline)",
+    // Full size only right at the middle, shrinking over about two cards.
+    animationRange: "cover calc(50% - 180px) cover calc(50% + 180px)",
   },
+  "@keyframes jam-2026-filmstrip-focus": {
+    "0%, 100%": { opacity: 0.6, transform: "scale(0.78)" },
+    "50%": { opacity: 1, transform: "none" },
+  },
+  // The gallery cards' hover lift.
+  ":is(li:hover) > &": { translate: "0 -3px" },
   "&:focus-visible": {
-    opacity: 1,
     outline: `2px solid ${jamTheme.brandRed}`,
     outlineOffset: "2px",
   },
   "@media (prefers-reduced-motion: reduce)": {
     transition: "none",
-    ":is(li:hover) > &": { transform: "scale(var(--card-scale))" },
+    ":is(li:hover) > &": { translate: "none" },
   },
 });
 

@@ -58,8 +58,22 @@ export function findPhotoViewerState(
 // photo the moment it's chosen instead of waiting for the server's copy.
 let galleryCards: PhotoCard[] = [];
 
+let galleryListeners = new Set<() => void>();
+
 export function setGalleryCards(cards: PhotoCard[]) {
+  // A browser registry: on the server it would outlive the request.
+  if (typeof document === "undefined" || cards === galleryCards) return;
   galleryCards = cards;
+  for (let listener of galleryListeners) listener();
+}
+
+/** Calls back whenever the gallery's cards change, until the signal aborts. */
+export function onGalleryCardsChange(
+  listener: () => void,
+  signal: AbortSignal,
+) {
+  galleryListeners.add(listener);
+  signal.addEventListener("abort", () => galleryListeners.delete(listener));
 }
 
 export function getGalleryCards() {

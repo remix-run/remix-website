@@ -330,6 +330,42 @@ describe("Jam2026PhotoViewerFrame", () => {
     ]);
   });
 
+  it("opens the photos the filmstrip scrolls past, fetching where it stops", async (t) => {
+    let navigations = mockNavigation(t);
+    setGalleryCards(photos);
+    t.after(() => setGalleryCards([]));
+    let result = render(
+      <Jam2026PhotoViewerFrame animateEntrance={false} viewer={viewerAt(0)} />,
+    );
+    t.after(result.cleanup);
+    await nextFrame(result);
+    await nextFrame(result);
+    let row = result.container.querySelector<HTMLElement>(
+      "[aria-label='Nearby photos']",
+    )!;
+    // Every photo in the gallery, with the open one in the middle.
+    expect(row.children).toHaveLength(photos.length);
+    let centerOf = (slug: string) => {
+      let item = row.querySelector<HTMLElement>(`[data-slug='${slug}']`)!;
+      return item.offsetLeft + item.offsetWidth / 2 - row.clientWidth / 2;
+    };
+    expect(Math.abs(row.scrollLeft - centerOf("DSC01"))).toBeLessThan(1);
+    // Let the row's own scroll to the open photo finish.
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    // The reader scrolls to the third photo: it opens on the way, and is
+    // fetched once the row stops.
+    row.scrollLeft = centerOf("DSC03");
+    await waitFor(() => navigations.length > 0);
+
+    expect(
+      result.container.querySelector("#photo-viewer-title")?.textContent,
+    ).toBe("DSC03.jpg");
+    expect(navigations).toEqual([
+      routes.jam.y2026.photos.show.href({ photo: "DSC03" }),
+    ]);
+  });
+
   it("opens as soon as a photo link is clicked", async (t) => {
     setGalleryCards(photos);
     t.after(() => setGalleryCards([]));
@@ -464,6 +500,14 @@ function getLink(container: HTMLElement, label: string) {
 
 function pressKey(key: string) {
   document.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key }));
+}
+
+// Polls until the check passes or the time runs out.
+async function waitFor(check: () => boolean, timeout = 2000) {
+  let deadline = Date.now() + timeout;
+  while (!check() && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 20));
+  }
 }
 
 async function nextFrame(result: ReturnType<typeof render>) {
