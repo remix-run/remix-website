@@ -26,10 +26,7 @@ import {
   type PhotoViewerSession,
   type ViewerPhase,
 } from "./photo-viewer-session.ts";
-import {
-  animateWindowToCard,
-  playEntrance,
-} from "./photo-window-transition.ts";
+import { WindowTransitions } from "./photo-window-transition.ts";
 import {
   createJam2026ModalEffects,
   jam2026ModalBackdropStyle,
@@ -77,6 +74,7 @@ export let Jam2026PhotoViewerFrame = clientEntry(
       getReturnFocus: getCurrentCard,
     });
 
+    let windowTransitions = new WindowTransitions();
     let session: PhotoViewerSession = {
       get phase() {
         return phase;
@@ -85,6 +83,7 @@ export let Jam2026PhotoViewerFrame = clientEntry(
         return photoViewer.pending?.preview ?? false;
       },
       requestClose,
+      windowTransitions,
     };
 
     photoViewer.addEventListener("change", () => handle.update(), {
@@ -180,7 +179,7 @@ export let Jam2026PhotoViewerFrame = clientEntry(
         }
         let { scrollX, scrollY } = window;
 
-        let shrink = animateWindowToCard(section, card, "close");
+        let shrink = windowTransitions.animateToCard(section, card, "close");
         if (!shrink) {
           finish(scrollX, scrollY);
           return;
@@ -367,7 +366,12 @@ function PhotoViewerContent(
                 jam2026ModalWindowStyle,
                 viewerWindowStyle,
                 useEntranceMotion
-                  ? ref((section) => playEntrance(section, photo.slug))
+                  ? ref((section) =>
+                      session.windowTransitions.playEntrance(
+                        section,
+                        photo.slug,
+                      ),
+                    )
                   : null,
               ]}
               style={{

@@ -1,5 +1,7 @@
 import type { Handle, RemixNode } from "remix/component";
 
+import type { WindowTransitions } from "./photo-window-transition.ts";
+
 // How the viewer is doing, beyond which photo it shows: open, or closing and
 // leaving the way it chose.
 export type ViewerPhase =
@@ -12,6 +14,8 @@ export type PhotoViewerSession = {
   /** Shows just the card-sized preview, while the filmstrip is scrubbed. */
   readonly previewOnly: boolean;
   requestClose(event?: Event): void;
+  /** The window's moves to and from the gallery's cards. */
+  readonly windowTransitions: WindowTransitions;
 };
 
 // Hands the frame's session to the viewer's parts. A plain component, since
