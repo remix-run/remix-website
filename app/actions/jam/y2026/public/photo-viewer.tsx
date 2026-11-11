@@ -518,6 +518,9 @@ const TIMELINE_CARD_PADDING = 8;
 // How long the row must sit still before a scroll counts as settled, where
 // the browser can't say so itself.
 const TIMELINE_SETTLE_DELAY = 150;
+// How stiff the row's glide to a chosen photo is: (2π / 300ms)², a spring
+// that settles in about a third of a second.
+const GLIDE_STIFFNESS = ((2 * Math.PI) / 0.3) ** 2;
 
 function findGalleryCardLink(slug: string) {
   let href = routes.jam.y2026.photos.show.href({ photo: slug });
@@ -685,9 +688,19 @@ function PhotoTimeline(
   let row: HTMLOListElement | undefined;
   // The reader is scrolling the row, so it shouldn't be scrolled for them.
   let readerScrolling = false;
-  // The row is scrolling itself to a photo chosen some other way, so the
-  // photos it passes shouldn't open.
+  // The row is jumping to a photo chosen some other way, so the photo it
+  // lands on shouldn't open again.
   let scrollingToPhoto = false;
+  // The row gliding to a photo chosen some other way (see glideTo).
+  let glide:
+    | {
+        x: number;
+        velocity: number;
+        target: number;
+        time: number;
+        frame: number;
+      }
+    | undefined;
   // Photos opened while scrolling, which the settle still has to fetch.
   let scrubbed = false;
   let settleTimer: ReturnType<typeof setTimeout> | undefined;
@@ -701,7 +714,10 @@ function PhotoTimeline(
     onGalleryCardsChange(() => handle.update(), handle.signal);
     if (getGalleryCards().length > 0) handle.update();
   });
-  handle.signal.addEventListener("abort", () => clearTimeout(settleTimer));
+  handle.signal.addEventListener("abort", () => {
+    clearTimeout(settleTimer);
+    stopGlide();
+  });
 
   let getCurrentSlug = () => handle.props.viewer.photo.slug;
 
@@ -720,19 +736,72 @@ function PhotoTimeline(
     return nearest?.dataset.slug;
   };
 
-  let scrollToPhoto = (slug: string, behavior: ScrollBehavior) => {
+  let scrollToPhoto = (slug: string, behavior: "instant" | "glide") => {
     let item = row?.querySelector<HTMLElement>(
       `li[data-slug="${CSS.escape(slug)}"]`,
     );
     if (!row || !item) return;
     let left = item.offsetLeft + item.offsetWidth / 2 - row.clientWidth / 2;
+    if (behavior === "glide") {
+      glideTo(left);
+      return;
+    }
+    stopGlide();
     if (Math.abs(row.scrollLeft - left) < 1) return;
     scrollingToPhoto = true;
-    row.scrollTo({ left, behavior });
+    row.scrollTo({ left, behavior: "instant" });
+  };
+
+  // Glides the row on a spring that keeps its speed when the target moves, so
+  // holding an arrow key carries the row along at the photos' pace. A native
+  // smooth scroll restarts from rest at every key repeat, and barely moves
+  // until the keys stop. Snapping is off meanwhile, since the browser would
+  // snap each frame's position, and comes back once the row lands.
+  let glideTo = (target: number) => {
+    if (!row) return;
+    if (glide) {
+      glide.target = target;
+      return;
+    }
+    if (Math.abs(row.scrollLeft - target) < 1) return;
+    delete row.dataset.snap;
+    let state = {
+      x: row.scrollLeft,
+      velocity: 0,
+      target,
+      time: performance.now(),
+      frame: 0,
+    };
+    glide = state;
+    let step = (now: number) => {
+      if (glide !== state || !row) return;
+      let elapsed = Math.min(0.05, (now - state.time) / 1000);
+      state.time = now;
+      // A critically damped spring: as quick as it can be without overshoot.
+      let acceleration =
+        GLIDE_STIFFNESS * (state.target - state.x) -
+        2 * Math.sqrt(GLIDE_STIFFNESS) * state.velocity;
+      state.velocity += acceleration * elapsed;
+      state.x += state.velocity * elapsed;
+      let landed =
+        Math.abs(state.target - state.x) < 0.5 && Math.abs(state.velocity) < 20;
+      row.scrollLeft = landed ? state.target : state.x;
+      if (landed) stopGlide();
+      else state.frame = requestAnimationFrame(step);
+    };
+    state.frame = requestAnimationFrame(step);
+  };
+
+  let stopGlide = () => {
+    if (!glide) return;
+    cancelAnimationFrame(glide.frame);
+    glide = undefined;
+    if (row) row.dataset.snap = "";
   };
 
   let settle = () => {
     clearTimeout(settleTimer);
+    if (glide) return;
     if (scrollingToPhoto) {
       scrollingToPhoto = false;
       return;
@@ -746,6 +815,7 @@ function PhotoTimeline(
   };
 
   let onScroll = () => {
+    if (glide) return;
     clearTimeout(settleTimer);
     settleTimer = setTimeout(settle, TIMELINE_SETTLE_DELAY);
     if (scrollingToPhoto) return;
@@ -768,9 +838,20 @@ function PhotoTimeline(
     let newPhotos = photos !== shownPhotos;
     shownPhotos = photos;
     handle.queueTask(() => {
+      if (!row) return;
+      // The row becomes a scroller here, already on the open photo, and only
+      // then starts snapping and shows (see timelineStyle): a browser
+      // re-snaps to the card it last snapped to when the layout changes,
+      // which would otherwise be the first one.
+      if (!("scroller" in row.dataset)) {
+        row.dataset.scroller = "";
+        scrollToPhoto(current, "instant");
+        row.dataset.snap = "";
+        return;
+      }
       if (readerScrolling || handle.props.closing) return;
       let instant = newPhotos || prefersReducedMotion();
-      scrollToPhoto(current, instant ? "instant" : "smooth");
+      scrollToPhoto(current, instant ? "instant" : "glide");
     });
 
     return (
@@ -787,9 +868,11 @@ function PhotoTimeline(
           // A touch or wheel takes over from a scroll to a chosen photo.
           on("pointerdown", () => {
             scrollingToPhoto = false;
+            stopGlide();
           }),
           on("wheel", () => {
             scrollingToPhoto = false;
+            stopGlide();
           }),
           handle.props.useEntranceMotion
             ? animateEntrance({
@@ -996,22 +1079,31 @@ let viewerWindowAreaStyle = css({
 });
 
 // A native horizontal scroller: momentum, rubber-banding, and snapping come
-// from the browser. Half its width of padding on each end lets the first and
-// last cards reach the middle.
+// from the browser, and half its width of padding on each end lets the first
+// and last cards reach the middle. A scroller can't start scrolled to the open
+// photo without script, so until the viewer hydrates and positions it, the
+// row stays hidden, then fades in already in place. Without script, it's a
+// plain row of the photos around the open one, centered.
 let timelineStyle = css({
   alignItems: "center",
   display: "flex",
   flex: "0 0 var(--timeline-height)",
   gap: `${TIMELINE_GAP}px`,
+  justifyContent: "center",
   listStyle: "none",
   margin: 0,
-  paddingBlock: 0,
-  paddingInline: "50%",
+  padding: 0,
   position: "relative",
-  overflowX: "auto",
+  overflowX: "clip",
   overflowY: "hidden",
-  overscrollBehaviorX: "contain",
-  scrollSnapType: "x mandatory",
+  "&[data-scroller]": {
+    justifyContent: "normal",
+    overflowX: "auto",
+    overscrollBehaviorX: "contain",
+    paddingInline: "50%",
+  },
+  "&[data-snap]": { scrollSnapType: "x mandatory" },
+  "@media (scripting: enabled)": { "&:not([data-scroller])": { opacity: 0 } },
   scrollbarWidth: "none",
   "&::-webkit-scrollbar": { display: "none" },
   // Cards past the edges fade out.
@@ -1032,8 +1124,8 @@ let timelineItemStyle = css({
 });
 
 // Full size and opaque in the middle of the row, smaller and fainter toward
-// its ends, following the scroll. Without scroll-driven animations, only the
-// open photo's card stands out.
+// its ends, following the scroll. Without scroll-driven animations, or before
+// the row scrolls, only the open photo's card stands out.
 let timelineCardStyle = css({
   color: jamTheme.ink,
   display: "flex",
@@ -1048,14 +1140,18 @@ let timelineCardStyle = css({
   transform: "scale(0.85)",
   transition: "translate 300ms cubic-bezier(0.22, 1.5, 0.36, 1)",
   "&[aria-current]": { opacity: 1, transform: "none" },
+  // Once the row scrolls (see timelineStyle); before that there's no scroll
+  // for the animation to follow.
   "@supports (animation-timeline: view())": {
-    animationName: "jam-2026-filmstrip-focus",
-    animationDuration: "auto",
-    animationTimingFunction: "linear",
-    animationFillMode: "both",
-    animationTimeline: "view(inline)",
-    // Full size only right at the middle, shrinking over about two cards.
-    animationRange: "cover calc(50% - 180px) cover calc(50% + 180px)",
+    ":is(ol[data-scroller]) > li > &": {
+      animationName: "jam-2026-filmstrip-focus",
+      animationDuration: "auto",
+      animationTimingFunction: "linear",
+      animationFillMode: "both",
+      animationTimeline: "view(inline)",
+      // Full size only right at the middle, shrinking over about two cards.
+      animationRange: "cover calc(50% - 180px) cover calc(50% + 180px)",
+    },
   },
   "@keyframes jam-2026-filmstrip-focus": {
     "0%, 100%": { opacity: 0.6, transform: "scale(0.78)" },

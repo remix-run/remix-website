@@ -156,13 +156,17 @@ describe("Jam2026PhotoViewerFrame", () => {
       "DSC02.jpg",
     );
     // The scrim, the photo's window, and the row of cards each have an
-    // entrance; none of them should play.
+    // entrance; none of them should play. (The row's fade in once it's
+    // positioned is a CSS transition from its first render, not an entrance.)
     for (let element of [
       dialog.parentElement!,
       dialog.querySelector("section")!,
       dialog.querySelector("ol")!,
     ]) {
-      expect(element.getAnimations()).toHaveLength(0);
+      let entrances = element
+        .getAnimations()
+        .filter((animation) => !(animation instanceof CSSTransition));
+      expect(entrances).toHaveLength(0);
     }
   });
 
