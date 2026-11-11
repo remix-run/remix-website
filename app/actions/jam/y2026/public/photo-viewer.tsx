@@ -18,6 +18,7 @@ import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 import { routes } from "../../../../routes.ts";
 import { syncJam2026Head } from "./head-content.ts";
 import { jam2026ModalConfig } from "./modal-contract.ts";
+import { photoGallery } from "./photo-gallery.ts";
 import {
   jam2026WindowSurfaceStyle,
   jam2026WindowTitleStyle,
@@ -35,10 +36,8 @@ import {
 } from "./modal.ts";
 import {
   findPhotoViewerState,
-  getGalleryCards,
   getViewerImageUrl,
   preloadViewerImage,
-  onGalleryCardsChange,
   resizeShopifyImage,
   type PhotoViewerState,
 } from "./shopify-photo.ts";
@@ -90,7 +89,7 @@ export let Jam2026PhotoViewerFrame = clientEntry(
     function getShownViewer() {
       let { viewer } = handle.props;
       if (!pendingSlug || pendingSlug === viewer?.photo.slug) return viewer;
-      return findPhotoViewerState(getGalleryCards(), pendingSlug) ?? viewer;
+      return findPhotoViewerState(photoGallery.cards, pendingSlug) ?? viewer;
     }
 
     // Shows a photo ahead of the server. A preview, for the photos the
@@ -710,8 +709,10 @@ function PhotoTimeline(
 
   handle.queueTask(() => {
     useGallery = true;
-    onGalleryCardsChange(() => handle.update(), handle.signal);
-    if (getGalleryCards().length > 0) handle.update();
+    photoGallery.addEventListener("change", () => handle.update(), {
+      signal: handle.signal,
+    });
+    if (photoGallery.cards.length > 0) handle.update();
   });
   handle.signal.addEventListener("abort", () => {
     clearTimeout(settleTimer);
@@ -836,7 +837,7 @@ function PhotoTimeline(
 
   return () => {
     let { viewer } = handle.props;
-    let gallery = useGallery ? getGalleryCards() : [];
+    let gallery = useGallery ? photoGallery.cards : [];
     let photos = gallery.length > 0 ? gallery : viewer.timeline;
     let current = viewer.photo.slug;
 

@@ -9,13 +9,10 @@ import {
 import { on } from "remix/component";
 import { render } from "remix/component/test";
 
+import { photoGallery } from "./photo-gallery.ts";
 import { Jam2026PhotoViewerFrame } from "./photo-viewer.tsx";
 import { jam2026ModalConfig } from "./modal-contract.ts";
-import {
-  setGalleryCards,
-  type PhotoViewerState,
-  type PhotoCard,
-} from "./shopify-photo.ts";
+import { type PhotoViewerState, type PhotoCard } from "./shopify-photo.ts";
 import { routes } from "../../../../routes.ts";
 
 let photos: PhotoCard[] = ["DSC01", "DSC02", "DSC03"].map((slug) => ({
@@ -281,8 +278,8 @@ describe("Jam2026PhotoViewerFrame", () => {
 
   it("shows the next photo as soon as an arrow key is pressed", async (t) => {
     let navigations = mockNavigation(t);
-    setGalleryCards(photos);
-    t.after(() => setGalleryCards([]));
+    photoGallery.set(photos);
+    t.after(() => photoGallery.set([]));
     let result = render(
       <Jam2026PhotoViewerFrame animateEntrance={false} viewer={viewerAt(0)} />,
     );
@@ -311,8 +308,8 @@ describe("Jam2026PhotoViewerFrame", () => {
 
   it("steps one photo per click on the next arrow", async (t) => {
     let navigations = mockNavigation(t);
-    setGalleryCards(photos);
-    t.after(() => setGalleryCards([]));
+    photoGallery.set(photos);
+    t.after(() => photoGallery.set([]));
     let result = render(
       <Jam2026PhotoViewerFrame animateEntrance={false} viewer={viewerAt(0)} />,
     );
@@ -336,8 +333,8 @@ describe("Jam2026PhotoViewerFrame", () => {
 
   it("opens the photos the filmstrip scrolls past, fetching where it stops", async (t) => {
     let navigations = mockNavigation(t);
-    setGalleryCards(photos);
-    t.after(() => setGalleryCards([]));
+    photoGallery.set(photos);
+    t.after(() => photoGallery.set([]));
     let result = render(
       <Jam2026PhotoViewerFrame animateEntrance={false} viewer={viewerAt(0)} />,
     );
@@ -371,8 +368,8 @@ describe("Jam2026PhotoViewerFrame", () => {
   });
 
   it("opens as soon as a photo link is clicked", async (t) => {
-    setGalleryCards(photos);
-    t.after(() => setGalleryCards([]));
+    photoGallery.set(photos);
+    t.after(() => photoGallery.set([]));
     let result = render(
       <div>
         <a

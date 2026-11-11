@@ -6,10 +6,10 @@ import {
 } from "@remix-run/ui/animation";
 import { jamTheme } from "./theme.ts";
 import { jam2026ModalConfig } from "./modal-contract.ts";
+import { photoGallery } from "./photo-gallery.ts";
 import {
   preloadViewerImage,
   resizeShopifyImage,
-  setGalleryCards,
   type PhotoCard,
 } from "./shopify-photo.ts";
 import {
@@ -150,7 +150,7 @@ export let Jam2026PhotoDeck = clientEntry(
 
     return () => {
       let { cards } = handle.props;
-      setGalleryCards(cards);
+      handle.queueTask(() => photoGallery.set(cards));
       let animate = !prefersReducedMotion();
 
       return (

@@ -27,7 +27,7 @@ const TIMELINE_RADIUS = 4;
 
 /** The photo with this slug and its neighbors, wrapping around the ends. */
 export function findPhotoViewerState(
-  cards: PhotoCard[],
+  cards: readonly PhotoCard[],
   slug: string,
 ): PhotoViewerState | undefined {
   let index = cards.findIndex((card) => card.slug === slug);
@@ -52,32 +52,6 @@ export function findPhotoViewerState(
     next: at(1),
     timeline,
   };
-}
-
-// The gallery's cards, registered by the photo deck, so the viewer can show a
-// photo the moment it's chosen instead of waiting for the server's copy.
-let galleryCards: PhotoCard[] = [];
-
-let galleryListeners = new Set<() => void>();
-
-export function setGalleryCards(cards: PhotoCard[]) {
-  // A browser registry: on the server it would outlive the request.
-  if (typeof document === "undefined" || cards === galleryCards) return;
-  galleryCards = cards;
-  for (let listener of galleryListeners) listener();
-}
-
-/** Calls back whenever the gallery's cards change, until the signal aborts. */
-export function onGalleryCardsChange(
-  listener: () => void,
-  signal: AbortSignal,
-) {
-  galleryListeners.add(listener);
-  signal.addEventListener("abort", () => galleryListeners.delete(listener));
-}
-
-export function getGalleryCards() {
-  return galleryCards;
 }
 
 // The photo viewer's full-size image width.
