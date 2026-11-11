@@ -696,23 +696,12 @@ function PhotoTimeline(
   }>,
 ) {
   let row: HTMLOListElement | undefined;
-  // The reader is scrolling the row, so it shouldn't be scrolled for them.
-  let readerScrolling = false;
-  // The row is jumping to a photo chosen some other way, so the photo it
-  // lands on shouldn't open again.
-  let scrollingToPhoto = false;
-  // The row gliding to a photo chosen some other way (see glideTo).
-  let glide:
-    | {
-        x: number;
-        velocity: number;
-        target: number;
-        time: number;
-        frame: number;
-      }
-    | undefined;
-  // Photos opened while scrolling, which the settle still has to fetch.
-  let scrubbed = false;
+  // What the row is doing. `reader`: the reader is scrolling it, so it isn't
+  // scrolled for them; `scrubbed` once it has opened a photo the settle still
+  // has to fetch. `jumping`: it's jumping to a photo chosen some other way,
+  // which shouldn't open again when it lands. `gliding`: it's gliding to one
+  // (see glideTo).
+  let motion: RowMotion = { kind: "idle" };
   let settleTimer: ReturnType<typeof setTimeout> | undefined;
   // The server renders the photos near the open one; the whole gallery
   // takes over once it's in the page, registered by the photo deck.
@@ -758,7 +747,7 @@ function PhotoTimeline(
     }
     stopGlide();
     if (Math.abs(row.scrollLeft - left) < 1) return;
-    scrollingToPhoto = true;
+    motion = { kind: "jumping" };
     row.scrollTo({ left, behavior: "instant" });
   };
 
@@ -769,72 +758,80 @@ function PhotoTimeline(
   // snap each frame's position, and comes back once the row lands.
   let glideTo = (target: number) => {
     if (!row) return;
-    if (glide) {
-      glide.target = target;
+    if (motion.kind === "gliding") {
+      motion.target = target;
       return;
     }
     if (Math.abs(row.scrollLeft - target) < 1) return;
     delete row.dataset.snap;
-    let state = {
+    let glide: RowGlide = {
+      kind: "gliding",
       x: row.scrollLeft,
       velocity: 0,
       target,
       time: performance.now(),
       frame: 0,
     };
-    glide = state;
+    motion = glide;
     let step = (now: number) => {
-      if (glide !== state || !row) return;
-      let elapsed = Math.min(0.05, (now - state.time) / 1000);
-      state.time = now;
+      if (motion !== glide || !row) return;
+      let elapsed = Math.min(0.05, (now - glide.time) / 1000);
+      glide.time = now;
       // A critically damped spring: as quick as it can be without overshoot.
       let acceleration =
-        GLIDE_STIFFNESS * (state.target - state.x) -
-        2 * Math.sqrt(GLIDE_STIFFNESS) * state.velocity;
-      state.velocity += acceleration * elapsed;
-      state.x += state.velocity * elapsed;
+        GLIDE_STIFFNESS * (glide.target - glide.x) -
+        2 * Math.sqrt(GLIDE_STIFFNESS) * glide.velocity;
+      glide.velocity += acceleration * elapsed;
+      glide.x += glide.velocity * elapsed;
       let landed =
-        Math.abs(state.target - state.x) < 0.5 && Math.abs(state.velocity) < 20;
-      row.scrollLeft = landed ? state.target : state.x;
+        Math.abs(glide.target - glide.x) < 0.5 && Math.abs(glide.velocity) < 20;
+      row.scrollLeft = landed ? glide.target : glide.x;
       if (landed) stopGlide();
-      else state.frame = requestAnimationFrame(step);
+      else glide.frame = requestAnimationFrame(step);
     };
-    state.frame = requestAnimationFrame(step);
+    glide.frame = requestAnimationFrame(step);
   };
 
   let stopGlide = () => {
-    if (!glide) return;
-    cancelAnimationFrame(glide.frame);
-    glide = undefined;
+    if (motion.kind !== "gliding") return;
+    cancelAnimationFrame(motion.frame);
+    motion = { kind: "idle" };
     if (row) row.dataset.snap = "";
+  };
+
+  // A touch or wheel takes over from a scroll to a chosen photo.
+  let takeOver = () => {
+    if (motion.kind === "jumping") motion = { kind: "idle" };
+    stopGlide();
   };
 
   let settle = () => {
     clearTimeout(settleTimer);
-    if (glide) return;
-    if (scrollingToPhoto) {
-      scrollingToPhoto = false;
+    if (motion.kind === "gliding") return;
+    if (motion.kind === "jumping") {
+      motion = { kind: "idle" };
       return;
     }
-    readerScrolling = false;
+    let scrubbed = motion.kind === "reader" && motion.scrubbed;
+    motion = { kind: "idle" };
     let slug = getCenteredSlug();
     if (slug && (scrubbed || slug !== getCurrentSlug())) {
-      scrubbed = false;
       handle.props.onSelect(slug);
     }
   };
 
   let onScroll = () => {
-    if (glide) return;
+    if (motion.kind === "gliding") return;
     clearTimeout(settleTimer);
     settleTimer = setTimeout(settle, TIMELINE_SETTLE_DELAY);
-    if (scrollingToPhoto) return;
-    readerScrolling = true;
+    if (motion.kind === "jumping") return;
+    let scrubbed = motion.kind === "reader" && motion.scrubbed;
     let slug = getCenteredSlug();
     if (slug && slug !== getCurrentSlug()) {
       scrubbed = true;
       handle.props.onPreview(slug);
     }
+    motion = { kind: "reader", scrubbed };
   };
 
   return () => {
@@ -859,7 +856,7 @@ function PhotoTimeline(
         row.dataset.snap = "";
         return;
       }
-      if (readerScrolling || handle.props.closing) return;
+      if (motion.kind === "reader" || handle.props.closing) return;
       let instant = newPhotos || prefersReducedMotion();
       scrollToPhoto(current, instant ? "instant" : "glide");
     });
@@ -875,15 +872,8 @@ function PhotoTimeline(
           }),
           on("scroll", onScroll),
           on("scrollend", settle),
-          // A touch or wheel takes over from a scroll to a chosen photo.
-          on("pointerdown", () => {
-            scrollingToPhoto = false;
-            stopGlide();
-          }),
-          on("wheel", () => {
-            scrollingToPhoto = false;
-            stopGlide();
-          }),
+          on("pointerdown", takeOver),
+          on("wheel", takeOver),
           handle.props.useEntranceMotion
             ? animateEntrance({
                 opacity: 0,
@@ -935,6 +925,21 @@ function PhotoTimeline(
     );
   };
 }
+
+type RowGlide = {
+  kind: "gliding";
+  x: number;
+  velocity: number;
+  target: number;
+  time: number;
+  frame: number;
+};
+
+type RowMotion =
+  | { kind: "idle" }
+  | { kind: "reader"; scrubbed: boolean }
+  | { kind: "jumping" }
+  | RowGlide;
 
 function StepLink(
   handle: Handle<{
