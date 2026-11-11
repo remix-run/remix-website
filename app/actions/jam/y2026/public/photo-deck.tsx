@@ -7,6 +7,7 @@ import {
 import { jamTheme } from "./theme.ts";
 import { jam2026ModalConfig } from "./modal-contract.ts";
 import { photoGallery } from "./photo-gallery.ts";
+import { photoViewer } from "./photo-viewer-controller.ts";
 import {
   preloadViewerImage,
   resizeShopifyImage,
@@ -127,6 +128,15 @@ export let Jam2026PhotoDeck = clientEntry(
       ),
     ];
     handle.signal.addEventListener("abort", () => clearTimeout(preloadTimer));
+
+    // The card is a real link the frame runtime follows; the viewer shows its
+    // photo before that navigation comes back. While the viewer closes, the
+    // close's navigation would undo the open, so the click waits it out.
+    let openPhoto = (event: MouseEvent, slug: string) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey) return;
+      if (event.shiftKey || event.altKey) return;
+      if (!photoViewer.show(slug)) event.preventDefault();
+    };
     let gather = () => setDealt(false);
 
     // Escape gathers the dealt photos from anywhere on the page, unless a
@@ -239,7 +249,18 @@ export let Jam2026PhotoDeck = clientEntry(
                         href={routes.jam.y2026.photos.show.href({
                           photo: card.slug,
                         })}
-                        mix={[cardLinkStyle, ...preloadOnIntent(card)]}
+                        mix={[
+                          cardLinkStyle,
+                          ...preloadOnIntent(card),
+                          // The viewer grows out of this card, shrinks back
+                          // into it, and returns focus to it.
+                          ref((link, signal) =>
+                            photoViewer.registerCard(card.slug, link, signal),
+                          ),
+                          on<HTMLAnchorElement, "click">("click", (event) =>
+                            openPhoto(event, card.slug),
+                          ),
+                        ]}
                       />
                     )}
                     <div mix={cardTitleBarStyle}>

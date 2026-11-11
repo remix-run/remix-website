@@ -3,6 +3,7 @@ import { describe, it } from "remix/test";
 import { render } from "remix/component/test";
 
 import { Jam2026PhotoDeck } from "./photo-deck.tsx";
+import { photoViewer } from "./photo-viewer-controller.ts";
 import { jam2026ModalConfig } from "./modal-contract.ts";
 import { routes } from "../../../../routes.ts";
 
@@ -73,6 +74,50 @@ describe("Jam2026PhotoDeck", () => {
     expect(links[0].getAttribute("data-rmx-target")).toBe(
       jam2026ModalConfig.frameName,
     );
+  });
+
+  it("opens a card's photo in the viewer straight away", async (t) => {
+    let result = render(<Jam2026PhotoDeck cards={cards} initiallyDealt />);
+    t.after(result.cleanup);
+    t.after(() => {
+      photoViewer.clear();
+      photoViewer.setClosing(false);
+    });
+    await result.act(() => {});
+    let link = result.container.querySelector<HTMLAnchorElement>(
+      'a[aria-label="View DSC3.jpg"]',
+    )!;
+    // The viewer grows out of, shrinks into, and refocuses this link.
+    expect(photoViewer.getCard("DSC3") === link).toBe(true);
+
+    // Whether the deck let the last click through to the frame runtime,
+    // which isn't running here; the page stays in place either way.
+    let followed = false;
+    let holdPage = (event: Event) => {
+      followed = !event.defaultPrevented;
+      event.preventDefault();
+    };
+    window.addEventListener("click", holdPage);
+    t.after(() => window.removeEventListener("click", holdPage));
+    let click = (init?: MouseEventInit) => {
+      link.dispatchEvent(
+        new MouseEvent("click", { bubbles: true, cancelable: true, ...init }),
+      );
+      return followed;
+    };
+
+    // A new-tab click is left to the browser.
+    click({ metaKey: true });
+    expect(photoViewer.pending).toBe(undefined);
+
+    expect(click()).toBe(true);
+    expect(photoViewer.pending).toEqual({ slug: "DSC3", preview: false });
+
+    // While the viewer closes, the click waits rather than racing it.
+    photoViewer.clear();
+    photoViewer.setClosing(true);
+    expect(click()).toBe(false);
+    expect(photoViewer.pending).toBe(undefined);
   });
 
   it("leaves Escape to an open modal instead of gathering", async (t) => {

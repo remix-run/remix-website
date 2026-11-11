@@ -23,7 +23,7 @@ type Jam2026ModalEffectsOptions = {
  * `focusTrap` mixin.
  */
 export function createJam2026ModalEffects(
-  handle: Handle<unknown>,
+  handle: Pick<Handle, "frame" | "frames" | "queueTask" | "signal">,
   options: Jam2026ModalEffectsOptions,
 ) {
   let modalEffectsOpen = false;

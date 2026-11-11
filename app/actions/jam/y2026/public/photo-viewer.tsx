@@ -5,6 +5,7 @@ import {
   on,
   ref,
   type Handle,
+  type RemixNode,
 } from "remix/component";
 import {
   animateEntrance,
@@ -19,6 +20,11 @@ import { routes } from "../../../../routes.ts";
 import { syncJam2026Head } from "./head-content.ts";
 import { jam2026ModalConfig } from "./modal-contract.ts";
 import { photoGallery } from "./photo-gallery.ts";
+import {
+  photoViewer,
+  photoViewerFrameNavigation,
+  selectOnClick,
+} from "./photo-viewer-controller.ts";
 import {
   jam2026WindowSurfaceStyle,
   jam2026WindowTitleStyle,
@@ -54,51 +60,57 @@ type Jam2026PhotoViewerProps = {
 const PLACEHOLDER_IMAGE_WIDTH = 480;
 const TIMELINE_IMAGE_WIDTH = 200;
 
-let frameNavigation = {
-  target: jam2026ModalConfig.frameName,
-  resetScroll: "manual",
-  resetFocus: "manual",
-} as const;
+// How the viewer is doing, beyond which photo it shows: open, or closing and
+// leaving the way it chose.
+type ViewerPhase =
+  | { kind: "open" }
+  | { kind: "closing"; exit: "shrink" | "roll" };
+
+/** What the viewer's parts read from and ask of the frame that owns it. */
+type PhotoViewerSession = {
+  readonly phase: ViewerPhase;
+  /** Shows just the card-sized preview, while the filmstrip is scrubbed. */
+  readonly previewOnly: boolean;
+  requestClose(event?: Event): void;
+};
 
 export let Jam2026PhotoViewerFrame = clientEntry(
   import.meta.url,
   function Jam2026PhotoViewerFrame(handle: Handle<Jam2026PhotoViewerProps>) {
-    let closing = false;
-    // How the window leaves: shrinking back into the photo's card, or rolling
-    // up when there's no card to shrink into.
-    let exit: "shrink" | "roll" = "roll";
+    let phase: ViewerPhase = { kind: "open" };
     let closeNavigationTimer: ReturnType<typeof setTimeout> | undefined;
-    // The photo just chosen (a card, a step, or the filmstrip), shown right
-    // away from the gallery's cards while its frame request is in flight.
-    let pendingSlug: string | undefined;
-    // The filmstrip is being scrubbed past the shown photo (see showPhoto).
-    let scrubbing = false;
     let lastSlug = handle.props.viewer?.photo.slug;
     // Starts out matching the server-rendered head; synced as photos change.
     let headSyncedFilename = handle.props.viewer?.photo.filename;
     let modalEffects = createJam2026ModalEffects(handle, {
       getModalRoot: getDialog,
-      isActive: () => Boolean(getShownViewer()) && !closing,
+      isActive: () => Boolean(getShownViewer()) && phase.kind === "open",
       requestClose,
       // Back to the card of the photo being viewed, which may not be the one
       // that opened the viewer.
       getReturnFocus: getCurrentCard,
     });
 
+    let session: PhotoViewerSession = {
+      get phase() {
+        return phase;
+      },
+      get previewOnly() {
+        return photoViewer.pending?.preview ?? false;
+      },
+      requestClose,
+    };
+
+    photoViewer.addEventListener("change", () => handle.update(), {
+      signal: handle.signal,
+    });
+
     // The pending photo when there is one, else the server's.
     function getShownViewer() {
       let { viewer } = handle.props;
-      if (!pendingSlug || pendingSlug === viewer?.photo.slug) return viewer;
-      return findPhotoViewerState(photoGallery.cards, pendingSlug) ?? viewer;
-    }
-
-    // Shows a photo ahead of the server. A preview, for the photos the
-    // filmstrip passes while it's scrubbed, skips the full-size images.
-    function showPhoto(slug: string, { preview = false } = {}) {
-      if (closing) return;
-      pendingSlug = slug;
-      scrubbing = preview;
-      handle.update();
+      let pending = photoViewer.pending;
+      if (!pending || pending.slug === viewer?.photo.slug) return viewer;
+      return findPhotoViewerState(photoGallery.cards, pending.slug) ?? viewer;
     }
 
     function getDialog() {
@@ -110,17 +122,19 @@ export let Jam2026PhotoViewerFrame = clientEntry(
     // The link covering the current photo's card in the gallery, which is
     // where focus returns and what the window grows from and shrinks into.
     function getCurrentCard() {
-      if (!lastSlug) return null;
-      return findGalleryCardLink(lastSlug);
+      return lastSlug ? photoViewer.getCard(lastSlug) : null;
     }
 
     function requestClose(event?: Event) {
       event?.preventDefault();
-      if (closing || !getShownViewer()) return;
+      if (phase.kind === "closing" || !getShownViewer()) return;
 
-      closing = true;
       let reduceMotion = prefersReducedMotion();
-      exit = !reduceMotion && getCurrentCard() ? "shrink" : "roll";
+      phase = {
+        kind: "closing",
+        exit: !reduceMotion && getCurrentCard() ? "shrink" : "roll",
+      };
+      photoViewer.setClosing(true);
       handle.update();
 
       let finish = (
@@ -131,10 +145,12 @@ export let Jam2026PhotoViewerFrame = clientEntry(
         // The viewer went away some other way while its window shrank.
         if (handle.signal.aborted) return;
         void navigate(routes.jam.y2026.index.href(), {
-          ...frameNavigation,
+          ...photoViewerFrameNavigation,
           history: "replace",
         }).finally(() => {
-          pendingSlug = undefined;
+          phase = { kind: "open" };
+          photoViewer.setClosing(false);
+          photoViewer.clear();
           handle.update();
           restoreScrollPosition(scrollX, scrollY, handle.signal);
           if (!restoreCard) {
@@ -148,7 +164,7 @@ export let Jam2026PhotoViewerFrame = clientEntry(
         });
       };
 
-      if (exit === "roll") {
+      if (phase.exit === "roll") {
         let { scrollX, scrollY } = window;
         closeNavigationTimer = setTimeout(
           () => {
@@ -206,55 +222,15 @@ export let Jam2026PhotoViewerFrame = clientEntry(
       });
     }
 
-    // Shows the photo right away, then fetches the server's copy.
-    function goToPhoto(slug: string) {
-      if (closing) return;
-      showPhoto(slug);
-      navigate(routes.jam.y2026.photos.show.href({ photo: slug }), {
-        ...frameNavigation,
-        history: "replace",
-        // A quicker next step cancels this one; the photo is already shown.
-      }).catch(() => {});
-    }
-
     function step(event: KeyboardEvent, direction: "previous" | "next") {
       let viewer = getShownViewer();
-      if (!viewer || closing) return;
+      if (!viewer || phase.kind === "closing") return;
       event.preventDefault();
       // Like pressing that arrow in the title bar, which takes focus.
       getDialog()
         ?.querySelector<HTMLElement>(`a[data-step="${direction}"]`)
         ?.focus({ preventScroll: true });
-      goToPhoto(viewer[direction].slug);
-    }
-
-    // Any link into the viewer (a gallery card, a step, a filmstrip card)
-    // shows its photo before the runtime's frame navigation comes back.
-    function showLinkedPhoto(event: MouseEvent) {
-      if (event.button !== 0 || event.metaKey || event.ctrlKey) return;
-      if (event.shiftKey || event.altKey) return;
-      let link = (event.target as Element | null)?.closest?.("a");
-      if (link?.dataset.rmxTarget !== jam2026ModalConfig.frameName) return;
-      // Mid-close, the close's own navigation would undo the open.
-      if (closing) {
-        event.preventDefault();
-        event.stopPropagation();
-        return;
-      }
-      let slug = new URL(link.href).pathname.match(
-        /^\/jam\/2026\/photos\/([^/]+)$/,
-      )?.[1];
-      if (!slug) return;
-      // Showing the photo re-renders the viewer's own links (the arrows now
-      // point one further) before the runtime reads them, so the viewer
-      // navigates to the one clicked itself.
-      if (getDialog()?.contains(link)) {
-        event.preventDefault();
-        event.stopPropagation();
-        goToPhoto(slug);
-      } else {
-        showPhoto(slug);
-      }
+      photoViewer.select(viewer[direction].slug);
     }
 
     handle.queueTask(() => {
@@ -268,16 +244,16 @@ export let Jam2026PhotoViewerFrame = clientEntry(
         },
         { signal: handle.signal },
       );
-      document.addEventListener("click", showLinkedPhoto, {
-        capture: true,
-        signal: handle.signal,
-      });
     });
 
     handle.signal.addEventListener(
       "abort",
       () => {
         if (closeNavigationTimer) clearTimeout(closeNavigationTimer);
+        // The controller outlives this viewer; don't leave it refusing photos
+        // or holding one for the next viewer.
+        photoViewer.setClosing(false);
+        photoViewer.clear();
       },
       { once: true },
     );
@@ -299,38 +275,32 @@ export let Jam2026PhotoViewerFrame = clientEntry(
     }
 
     return () => {
-      if (pendingSlug === handle.props.viewer?.photo.slug) {
-        pendingSlug = undefined;
-      }
+      if (handle.props.viewer)
+        photoViewer.settle(handle.props.viewer.photo.slug);
       let viewer = getShownViewer();
       // Opening ahead of the server: always animate, whatever the frame's
       // last response said.
       let openingAhead = Boolean(viewer) && !handle.props.viewer;
 
-      if (!viewer) closing = false;
       if (viewer) lastSlug = viewer.photo.slug;
 
       modalEffects.queueStateSync();
       queueHeadSync(viewer?.photo.filename);
-      if (viewer && !scrubbing) queueNeighborPreload(viewer);
+      if (viewer && !photoViewer.pending?.preview) queueNeighborPreload(viewer);
 
       // The frame runtime needs a stable child when toggling between empty
       // frame content and the hydrated viewer.
       return (
         <div>
           {viewer ? (
-            <PhotoViewerContent
-              animateEntrance={
-                openingAhead || (handle.props.animateEntrance ?? true)
-              }
-              closing={closing}
-              exit={exit}
-              onRequestClose={requestClose}
-              onPreviewPhoto={(slug) => showPhoto(slug, { preview: true })}
-              onSelectPhoto={goToPhoto}
-              previewOnly={scrubbing}
-              viewer={viewer}
-            />
+            <PhotoViewerSessionProvider session={session}>
+              <PhotoViewerContent
+                animateEntrance={
+                  openingAhead || (handle.props.animateEntrance ?? true)
+                }
+                viewer={viewer}
+              />
+            </PhotoViewerSessionProvider>
           ) : null}
         </div>
       );
@@ -338,19 +308,23 @@ export let Jam2026PhotoViewerFrame = clientEntry(
   },
 );
 
-function PhotoViewerContent(
-  handle: Handle<{
-    animateEntrance: boolean;
-    closing: boolean;
-    exit: "shrink" | "roll";
-    onRequestClose: (event: Event) => void;
-    onPreviewPhoto: (slug: string) => void;
-    onSelectPhoto: (slug: string) => void;
-    /** Shows just the card-sized preview, while the filmstrip is scrubbed. */
-    previewOnly: boolean;
-    viewer: PhotoViewerState;
-  }>,
+// Hands the frame's session to the viewer's parts. A plain component, since
+// a client entry can be wrapped (by hot reloading, at least), which makes it
+// an unreliable context key.
+function PhotoViewerSessionProvider(
+  handle: Handle<
+    { children: RemixNode; session: PhotoViewerSession },
+    PhotoViewerSession
+  >,
 ) {
+  handle.context.set(handle.props.session);
+  return () => handle.props.children;
+}
+
+function PhotoViewerContent(
+  handle: Handle<{ animateEntrance: boolean; viewer: PhotoViewerState }>,
+) {
+  let session = handle.context.get(PhotoViewerSessionProvider);
   // Decided once, when the viewer appears. Later frame responses can differ
   // (a server-rendered viewer arrives without entrance motion, while stepping
   // fetches one with it), and adding the entrance then would replay it.
@@ -365,10 +339,11 @@ function PhotoViewerContent(
   };
 
   return () => {
-    let { closing, onRequestClose, viewer } = handle.props;
+    let { viewer } = handle.props;
     let { photo } = viewer;
     let src = getViewerImageUrl(photo.url);
-    let { previewOnly } = handle.props;
+    let { phase, previewOnly } = session;
+    let closing = phase.kind === "closing";
     let state = closing ? "closing" : "open";
     let homeHref = routes.jam.y2026.index.href();
     let closeLinkProps = {
@@ -399,7 +374,7 @@ function PhotoViewerContent(
           tabIndex={-1}
           mix={[
             jam2026ModalBackdropStyle,
-            on("click", (event) => onRequestClose(event)),
+            on("click", (event) => session.requestClose(event)),
           ]}
         />
         {/* The dialog spans the photo's window and the cards under it, so the
@@ -413,7 +388,7 @@ function PhotoViewerContent(
         >
           <div mix={viewerWindowAreaStyle}>
             <section
-              data-exit={handle.props.exit}
+              data-exit={phase.kind === "closing" ? phase.exit : undefined}
               data-state={state}
               mix={[
                 jam2026ModalWindowStyle,
@@ -432,7 +407,7 @@ function PhotoViewerContent(
                   aria-label="Close photo"
                   mix={[
                     jam2026ModalTitlebarButtonStyle,
-                    on("click", (event) => onRequestClose(event)),
+                    on("click", (event) => session.requestClose(event)),
                   ]}
                 >
                   <Icon
@@ -509,9 +484,6 @@ function PhotoViewerContent(
             </section>
           </div>
           <PhotoTimeline
-            closing={closing}
-            onPreview={handle.props.onPreviewPhoto}
-            onSelect={handle.props.onSelectPhoto}
             useEntranceMotion={useEntranceMotion}
             viewer={viewer}
           />
@@ -531,22 +503,13 @@ const TIMELINE_SETTLE_DELAY = 150;
 // that settles in about a third of a second.
 const GLIDE_STIFFNESS = ((2 * Math.PI) / 0.3) ** 2;
 
-function findGalleryCardLink(slug: string) {
-  let href = routes.jam.y2026.photos.show.href({ photo: slug });
-  return (
-    document
-      .getElementById(jam2026ModalConfig.pageBackgroundId)
-      ?.querySelector<HTMLElement>(`a[href="${href}"]`) ?? null
-  );
-}
-
 /**
  * Grows the viewer out of the gallery card that opened it. Without that card
  * on screen (opened another way), the window rolls down instead, like the
  * tickets modal.
  */
 function playEntrance(section: HTMLElement, slug: string) {
-  let card = findGalleryCardLink(slug)?.parentElement;
+  let card = photoViewer.getCard(slug)?.parentElement;
   let box = card?.getBoundingClientRect();
   let onScreen = box && box.bottom > 0 && box.top < window.innerHeight;
   if (card && onScreen && animateWindowToCard(section, card, "open")) return;
@@ -685,15 +648,10 @@ function animateWindowToCard(
  * to match.
  */
 function PhotoTimeline(
-  handle: Handle<{
-    closing: boolean;
-    /** Shows a photo without fetching it, for the ones the row passes. */
-    onPreview: (slug: string) => void;
-    onSelect: (slug: string) => void;
-    useEntranceMotion: boolean;
-    viewer: PhotoViewerState;
-  }>,
+  handle: Handle<{ useEntranceMotion: boolean; viewer: PhotoViewerState }>,
 ) {
+  let session = handle.context.get(PhotoViewerSessionProvider);
+  let isClosing = () => session.phase.kind === "closing";
   let row: HTMLOListElement | undefined;
   // What the row is doing. `reader`: the reader is scrolling it, so it isn't
   // scrolled for them; `scrubbed` once it has opened a photo the settle still
@@ -817,7 +775,7 @@ function PhotoTimeline(
     motion = { kind: "idle" };
     let slug = getCenteredSlug();
     if (slug && (scrubbed || slug !== getCurrentSlug())) {
-      handle.props.onSelect(slug);
+      photoViewer.select(slug);
     }
   };
 
@@ -830,7 +788,8 @@ function PhotoTimeline(
     let slug = getCenteredSlug();
     if (slug && slug !== getCurrentSlug()) {
       scrubbed = true;
-      handle.props.onPreview(slug);
+      // Shown without fetching, for the photos the row passes.
+      photoViewer.show(slug, { preview: true });
     }
     motion = { kind: "reader", scrubbed };
   };
@@ -857,7 +816,7 @@ function PhotoTimeline(
         row.dataset.snap = "";
         return;
       }
-      if (motion.kind === "reader" || handle.props.closing) return;
+      if (motion.kind === "reader" || isClosing()) return;
       let instant = newPhotos || prefersReducedMotion();
       scrollToPhoto(current, instant ? "instant" : "glide");
     });
@@ -865,7 +824,7 @@ function PhotoTimeline(
     return (
       <ol
         aria-label="Nearby photos"
-        data-state={handle.props.closing ? "closing" : "open"}
+        data-state={isClosing() ? "closing" : "open"}
         mix={[
           timelineStyle,
           ref((element) => {
@@ -900,7 +859,14 @@ function PhotoTimeline(
               data-rmx-target={jam2026ModalConfig.frameName}
               draggable={false}
               href={routes.jam.y2026.photos.show.href({ photo: item.slug })}
-              mix={[jam2026WindowSurfaceStyle, timelineCardStyle]}
+              mix={[
+                jam2026WindowSurfaceStyle,
+                timelineCardStyle,
+                on<HTMLAnchorElement, "click">(
+                  "click",
+                  selectOnClick(() => item.slug),
+                ),
+              ]}
             >
               <span
                 aria-hidden="true"
@@ -958,7 +924,13 @@ function StepLink(
       data-rmx-reset-scroll="manual"
       data-rmx-target={jam2026ModalConfig.frameName}
       href={routes.jam.y2026.photos.show.href({ photo: handle.props.slug })}
-      mix={jam2026ModalTitlebarButtonStyle}
+      mix={[
+        jam2026ModalTitlebarButtonStyle,
+        on<HTMLAnchorElement, "click">(
+          "click",
+          selectOnClick(() => handle.props.slug),
+        ),
+      ]}
     >
       <Icon
         name="chevron-r"

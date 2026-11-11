@@ -6,10 +6,11 @@ import {
   it,
   type TestContext,
 } from "remix/test";
-import { on } from "remix/component";
+import { ref } from "remix/component";
 import { render } from "remix/component/test";
 
 import { photoGallery } from "./photo-gallery.ts";
+import { photoViewer } from "./photo-viewer-controller.ts";
 import { Jam2026PhotoViewerFrame } from "./photo-viewer.tsx";
 import { jam2026ModalConfig } from "./modal-contract.ts";
 import { type PhotoViewerState, type PhotoCard } from "./shopify-photo.ts";
@@ -52,6 +53,9 @@ describe("Jam2026PhotoViewerFrame", () => {
     document.head.innerHTML = originalHead;
     document.documentElement.style.overflow = originalOverflow;
     document.documentElement.style.scrollbarGutter = originalScrollbarGutter;
+    // The controller is shared across viewers, as it is across the page.
+    photoViewer.clear();
+    photoViewer.setClosing(false);
   });
 
   it("shows the photo as a modal with frame-targeted controls", async (t) => {
@@ -172,7 +176,10 @@ describe("Jam2026PhotoViewerFrame", () => {
       <div>
         <main id={jam2026ModalConfig.pageBackgroundId}>
           <div style={{ width: "150px" }}>
-            <a href={routes.jam.y2026.photos.show.href({ photo: "DSC02" })}>
+            <a
+              href={routes.jam.y2026.photos.show.href({ photo: "DSC02" })}
+              mix={registerCard("DSC02")}
+            >
               View
             </a>
             <div style={{ width: "150px", height: "100px" }} />
@@ -218,7 +225,10 @@ describe("Jam2026PhotoViewerFrame", () => {
       <div>
         <main id={jam2026ModalConfig.pageBackgroundId}>
           <div style={{ width: "150px" }}>
-            <a href={routes.jam.y2026.photos.show.href({ photo: "DSC02" })}>
+            <a
+              href={routes.jam.y2026.photos.show.href({ photo: "DSC02" })}
+              mix={registerCard("DSC02")}
+            >
               View
             </a>
             <div style={{ width: "150px", height: "100px" }} />
@@ -367,27 +377,16 @@ describe("Jam2026PhotoViewerFrame", () => {
     ]);
   });
 
-  it("opens as soon as a photo link is clicked", async (t) => {
+  it("opens as soon as a photo is chosen, ahead of the server", async (t) => {
     photoGallery.set(photos);
     t.after(() => photoGallery.set([]));
-    let result = render(
-      <div>
-        <a
-          data-rmx-target={jam2026ModalConfig.frameName}
-          href={routes.jam.y2026.photos.show.href({ photo: "DSC02" })}
-          // The frame runtime isn't running here; keep the page in place.
-          mix={on("click", (event) => event.preventDefault())}
-        >
-          Card
-        </a>
-        <Jam2026PhotoViewerFrame animateEntrance={false} />
-      </div>,
-    );
+    let result = render(<Jam2026PhotoViewerFrame animateEntrance={false} />);
     t.after(result.cleanup);
     await result.act(() => {});
     expect(result.container.querySelector("[role='dialog']")).toBe(null);
 
-    await result.act(() => result.container.querySelector("a")!.click());
+    // What a gallery card's click does.
+    await result.act(() => photoViewer.show("DSC02"));
 
     expect(
       result.container.querySelector("#photo-viewer-title")?.textContent,
@@ -441,6 +440,7 @@ describe("Jam2026PhotoViewerFrame", () => {
             >
               <a
                 href={routes.jam.y2026.photos.show.href({ photo: photo.slug })}
+                mix={registerCard(photo.slug)}
               >
                 {photo.filename}
               </a>
@@ -490,6 +490,13 @@ describe("Jam2026PhotoViewerFrame", () => {
     expect(document.activeElement?.textContent).toBe("DSC03.jpg");
   });
 });
+
+// A stand-in gallery card's link, registered as the photo deck's cards are.
+function registerCard(slug: string) {
+  return ref<HTMLAnchorElement>((link, signal) =>
+    photoViewer.registerCard(slug, link, signal),
+  );
+}
 
 function getLink(container: HTMLElement, label: string) {
   let link = container.querySelector<HTMLAnchorElement>(
