@@ -1,11 +1,4 @@
-import {
-  clientEntry,
-  css,
-  navigate,
-  on,
-  ref,
-  type Handle,
-} from "remix/component";
+import { clientEntry, css, on, ref, type Handle } from "remix/component";
 import { animateEntrance, prefersReducedMotion } from "@remix-run/ui/animation";
 
 import { focusTrap } from "../../../../ui/public/focus-trap.ts";
@@ -16,19 +9,14 @@ import { syncJam2026Head } from "./head-content.ts";
 import { jam2026ModalConfig } from "./modal-contract.ts";
 import { PhotoTimeline } from "./photo-filmstrip.tsx";
 import { photoGallery } from "./photo-gallery.ts";
-import {
-  photoViewer,
-  photoViewerFrameNavigation,
-  selectOnClick,
-} from "./photo-viewer-controller.ts";
+import { photoViewer, selectOnClick } from "./photo-viewer-controller.ts";
 import {
   PhotoViewerSessionProvider,
   type PhotoViewerSession,
-  type ViewerPhase,
 } from "./photo-viewer-session.ts";
 import { WindowTransitions } from "./photo-window-transition.ts";
 import {
-  createJam2026ModalEffects,
+  createJam2026Modal,
   jam2026ModalBackdropStyle,
   jam2026ModalScrimStyle,
   jam2026ModalTitleStyle,
@@ -36,7 +24,8 @@ import {
   jam2026ModalTitlebarIconStyle,
   jam2026ModalTitlebarStyle,
   jam2026ModalWindowStyle,
-  restoreScrollPosition,
+  rollUp,
+  type Jam2026ModalDeparture,
 } from "./modal.ts";
 import {
   findPhotoViewerState,
@@ -60,29 +49,40 @@ const PLACEHOLDER_IMAGE_WIDTH = 480;
 export let Jam2026PhotoViewerFrame = clientEntry(
   import.meta.url,
   function Jam2026PhotoViewerFrame(handle: Handle<Jam2026PhotoViewerProps>) {
-    let phase: ViewerPhase = { kind: "open" };
-    let closeNavigationTimer: ReturnType<typeof setTimeout> | undefined;
     let lastSlug = handle.props.viewer?.photo.slug;
     // Starts out matching the server-rendered head; synced as photos change.
     let headSyncedFilename = handle.props.viewer?.photo.filename;
-    let modalEffects = createJam2026ModalEffects(handle, {
+    let windowTransitions = new WindowTransitions();
+    let modal = createJam2026Modal(handle, {
       getModalRoot: getDialog,
-      isActive: () => Boolean(getShownViewer()) && phase.kind === "open",
-      requestClose,
+      hasContent: () => Boolean(getShownViewer()),
       // Back to the card of the photo being viewed, which may not be the one
       // that opened the viewer.
       getReturnFocus: getCurrentCard,
+      chooseExit: () =>
+        !prefersReducedMotion() && getCurrentCard() ? "shrink" : "roll",
+      leave: (exit) =>
+        exit === "shrink"
+          ? shrinkIntoCard()
+          : rollUp(handle.signal).then((departure) => ({
+              ...departure,
+              afterClose: revealCurrentCard,
+            })),
+      // Photos chosen meanwhile would be undone by the closing navigation.
+      onCloseStart: () => photoViewer.setClosing(true),
+      onClosed: () => {
+        photoViewer.setClosing(false);
+        photoViewer.clear();
+      },
     });
-
-    let windowTransitions = new WindowTransitions();
     let session: PhotoViewerSession = {
       get phase() {
-        return phase;
+        return modal.phase;
       },
       get previewOnly() {
         return photoViewer.pending?.preview ?? false;
       },
-      requestClose,
+      requestClose: modal.requestClose,
       windowTransitions,
     };
 
@@ -110,85 +110,49 @@ export let Jam2026PhotoViewerFrame = clientEntry(
       return lastSlug ? photoViewer.getCard(lastSlug) : null;
     }
 
-    function requestClose(event?: Event) {
-      event?.preventDefault();
-      if (phase.kind === "closing" || !getShownViewer()) return;
+    // Shrinks the window into the photo's card, which then takes focus. Without
+    // a window or card to shrink, the card is just brought on screen.
+    function shrinkIntoCard() {
+      return new Promise<Jam2026ModalDeparture>((resolve) => {
+        let reveal = (scrollX: number, scrollY: number) =>
+          resolve({ scrollX, scrollY, afterClose: revealCurrentCard });
 
-      let reduceMotion = prefersReducedMotion();
-      phase = {
-        kind: "closing",
-        exit: !reduceMotion && getCurrentCard() ? "shrink" : "roll",
-      };
-      photoViewer.setClosing(true);
-      handle.update();
-
-      let finish = (
-        scrollX: number,
-        scrollY: number,
-        restoreCard?: () => void,
-      ) => {
-        // The viewer went away some other way while its window shrank.
-        if (handle.signal.aborted) return;
-        void navigate(routes.jam.y2026.index.href(), {
-          ...photoViewerFrameNavigation,
-          history: "replace",
-        }).finally(() => {
-          phase = { kind: "open" };
-          photoViewer.setClosing(false);
-          photoViewer.clear();
-          handle.update();
-          restoreScrollPosition(scrollX, scrollY, handle.signal);
-          if (!restoreCard) {
-            revealCurrentCard();
+        // Next frame, once closing has unlocked the page's scroll (which puts
+        // it back where it was), so scrolling to the card sticks.
+        window.requestAnimationFrame(() => {
+          let section = getDialog()?.querySelector("section");
+          let card = getCurrentCard()?.parentElement;
+          if (handle.signal.aborted || !section || !card) {
+            reveal(window.scrollX, window.scrollY);
             return;
           }
-          restoreCard();
-          // The usual focus return ran while the card was hidden mid-shrink,
-          // when it couldn't take focus.
-          getCurrentCard()?.focus({ preventScroll: true });
+
+          // Stepping can leave the photo's card far from where the viewer
+          // opened; bring it on screen behind the scrim to shrink into.
+          let box = card.getBoundingClientRect();
+          if (box.bottom < 0 || box.top > window.innerHeight) {
+            card.scrollIntoView({ block: "center", behavior: "instant" });
+          }
+          let { scrollX, scrollY } = window;
+
+          let shrink = windowTransitions.animateToCard(section, card, "close");
+          if (!shrink) {
+            reveal(scrollX, scrollY);
+            return;
+          }
+          let landed = () =>
+            resolve({
+              scrollX,
+              scrollY,
+              afterClose: () => {
+                shrink.restoreCard();
+                // The usual focus return ran while the card was hidden
+                // mid-shrink, when it couldn't take focus.
+                getCurrentCard()?.focus({ preventScroll: true });
+              },
+            });
+          shrink.animation.finished.then(landed, landed);
         });
-      };
-
-      if (phase.exit === "roll") {
-        let { scrollX, scrollY } = window;
-        closeNavigationTimer = setTimeout(
-          () => {
-            closeNavigationTimer = undefined;
-            finish(scrollX, scrollY);
-          },
-          reduceMotion ? 0 : 220,
-        );
-        return;
-      }
-
-      // Next frame, once closing has unlocked the page's scroll (which puts
-      // it back where it was), so scrolling to the card sticks.
-      window.requestAnimationFrame(() => {
-        let section = getDialog()?.querySelector("section");
-        let card = getCurrentCard()?.parentElement;
-        if (handle.signal.aborted || !section || !card) {
-          finish(window.scrollX, window.scrollY);
-          return;
-        }
-
-        // Stepping can leave the photo's card far from where the viewer
-        // opened; bring it on screen behind the scrim to shrink into.
-        let box = card.getBoundingClientRect();
-        if (box.bottom < 0 || box.top > window.innerHeight) {
-          card.scrollIntoView({ block: "center", behavior: "instant" });
-        }
-        let { scrollX, scrollY } = window;
-
-        let shrink = windowTransitions.animateToCard(section, card, "close");
-        if (!shrink) {
-          finish(scrollX, scrollY);
-          return;
-        }
-        let { restoreCard } = shrink;
-        shrink.animation.finished.then(
-          () => finish(scrollX, scrollY, restoreCard),
-          () => finish(scrollX, scrollY, restoreCard),
-        );
       });
     }
 
@@ -209,7 +173,7 @@ export let Jam2026PhotoViewerFrame = clientEntry(
 
     function step(event: KeyboardEvent, direction: "previous" | "next") {
       let viewer = getShownViewer();
-      if (!viewer || phase.kind === "closing") return;
+      if (!viewer || modal.phase.kind === "closing") return;
       event.preventDefault();
       // Like pressing that arrow in the title bar, which takes focus.
       getDialog()
@@ -234,7 +198,6 @@ export let Jam2026PhotoViewerFrame = clientEntry(
     handle.signal.addEventListener(
       "abort",
       () => {
-        if (closeNavigationTimer) clearTimeout(closeNavigationTimer);
         // The controller outlives this viewer; don't leave it refusing photos
         // or holding one for the next viewer.
         photoViewer.setClosing(false);
@@ -269,7 +232,7 @@ export let Jam2026PhotoViewerFrame = clientEntry(
 
       if (viewer) lastSlug = viewer.photo.slug;
 
-      modalEffects.queueStateSync();
+      modal.queueStateSync();
       queueHeadSync(viewer?.photo.filename);
       if (viewer && !photoViewer.pending?.preview) queueNeighborPreload(viewer);
 

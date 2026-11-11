@@ -3,8 +3,8 @@ import { navigate, TypedEventTarget } from "remix/component";
 import { routes } from "../../../../routes.ts";
 import { jam2026ModalConfig } from "./modal-contract.ts";
 
-/** How the viewer's own navigations target the modal frame. */
-export const photoViewerFrameNavigation = {
+// How the viewer's navigations target the modal frame.
+const frameNavigation = {
   target: jam2026ModalConfig.frameName,
   resetScroll: "manual",
   resetFocus: "manual",
@@ -47,7 +47,7 @@ class PhotoViewerController extends TypedEventTarget<{ change: Event }> {
   select(slug: string) {
     if (!this.show(slug)) return;
     navigate(routes.jam.y2026.photos.show.href({ photo: slug }), {
-      ...photoViewerFrameNavigation,
+      ...frameNavigation,
       history: "replace",
       // A quicker step cancels this one; the photo is already shown.
     }).catch(() => {});

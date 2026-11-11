@@ -1,16 +1,11 @@
 import type { Handle, RemixNode } from "remix/component";
 
+import type { Jam2026ModalPhase } from "./modal.ts";
 import type { WindowTransitions } from "./photo-window-transition.ts";
-
-// How the viewer is doing, beyond which photo it shows: open, or closing and
-// leaving the way it chose.
-export type ViewerPhase =
-  | { kind: "open" }
-  | { kind: "closing"; exit: "shrink" | "roll" };
 
 /** What the viewer's parts read from and ask of the frame that owns it. */
 export type PhotoViewerSession = {
-  readonly phase: ViewerPhase;
+  readonly phase: Jam2026ModalPhase;
   /** Shows just the card-sized preview, while the filmstrip is scrubbed. */
   readonly previewOnly: boolean;
   requestClose(event?: Event): void;

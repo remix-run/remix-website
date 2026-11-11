@@ -1,5 +1,5 @@
-import { css, type Handle } from "remix/component";
-import { spring } from "@remix-run/ui/animation";
+import { css, navigate, type Handle } from "remix/component";
+import { prefersReducedMotion, spring } from "@remix-run/ui/animation";
 
 import { jam2026ModalConfig } from "./modal-contract.ts";
 import { jamTheme } from "./theme.ts";
@@ -8,11 +8,125 @@ import { lockScroll } from "../../../../ui/public/scroll-lock.ts";
 import { theme } from "../../../../ui/public/theme.ts";
 import { routes } from "../../../../routes.ts";
 
-type Jam2026ModalEffectsOptions = {
+/** How a modal leaves: rolling up, or shrinking into what opened it. */
+export type Jam2026ModalExit = "roll" | "shrink";
+
+export type Jam2026ModalPhase =
+  | { kind: "open" }
+  | { kind: "closing"; exit: Jam2026ModalExit };
+
+/**
+ * Where the page goes back to once a modal has left, and anything left to do
+ * then.
+ */
+export type Jam2026ModalDeparture = {
+  scrollX: number;
+  scrollY: number;
+  afterClose?: () => void;
+};
+
+type Jam2026ModalOptions = {
+  getModalRoot: () => HTMLElement | null;
+  /** Whether there's a modal to show (the frame renders it). */
+  hasContent: () => boolean;
+  /** Where focus goes when the modal closes; defaults to the opener. */
+  getReturnFocus?: () => HTMLElement | null;
+  /** How the modal leaves this time; it rolls up by default. */
+  chooseExit?: () => Jam2026ModalExit;
+  /**
+   * Plays the modal's way out, resolving once its closing navigation can
+   * run. By default it waits out the roll-up (see rollUp).
+   */
+  leave?: (exit: Jam2026ModalExit) => Promise<Jam2026ModalDeparture>;
+  onCloseStart?: () => void;
+  /** Runs once the closing navigation is done, or has failed. */
+  onClosed?: () => void;
+};
+
+type Jam2026ModalHandle = Pick<
+  Handle,
+  "frame" | "frames" | "queueTask" | "signal" | "update"
+>;
+
+/**
+ * A Jam 2026 modal in the shared modal frame: open, or closing on its way out
+ * (a roll-up or a custom exit), then a replacing navigation back to the Jam
+ * page. Also runs the modal's page-level effects (see createModalEffects).
+ */
+export function createJam2026Modal(
+  handle: Jam2026ModalHandle,
+  options: Jam2026ModalOptions,
+) {
+  let phase: Jam2026ModalPhase = { kind: "open" };
+  let effects = createModalEffects(handle, {
+    getModalRoot: options.getModalRoot,
+    isActive: () => options.hasContent() && phase.kind === "open",
+    requestClose,
+    getReturnFocus: options.getReturnFocus,
+  });
+
+  function requestClose(event?: Event) {
+    event?.preventDefault();
+    if (phase.kind === "closing" || !options.hasContent()) return;
+
+    let exit = options.chooseExit?.() ?? "roll";
+    phase = { kind: "closing", exit };
+    options.onCloseStart?.();
+    handle.update();
+
+    let leaving = options.leave?.(exit) ?? rollUp(handle.signal);
+    void leaving.then((departure) => {
+      // The modal went away some other way while it was leaving.
+      if (handle.signal.aborted) return;
+      return navigate(routes.jam.y2026.index.href(), {
+        target: jam2026ModalConfig.frameName,
+        history: "replace",
+        resetScroll: "manual",
+        resetFocus: "manual",
+      }).finally(() => {
+        phase = { kind: "open" };
+        options.onClosed?.();
+        handle.update();
+        restoreScrollPosition(
+          departure.scrollX,
+          departure.scrollY,
+          handle.signal,
+        );
+        departure.afterClose?.();
+      });
+    });
+  }
+
+  return {
+    get phase() {
+      return phase;
+    },
+    requestClose,
+    queueStateSync: effects.queueStateSync,
+  };
+}
+
+/**
+ * Waits out a modal's roll-up (instant with reduced motion), keeping the
+ * page's scroll position from when it started.
+ */
+export function rollUp(signal: AbortSignal) {
+  let { scrollX, scrollY } = window;
+  return new Promise<Jam2026ModalDeparture>((resolve) => {
+    let timer = setTimeout(
+      () => resolve({ scrollX, scrollY }),
+      prefersReducedMotion() ? 0 : 220,
+    );
+    signal.addEventListener("abort", () => clearTimeout(timer), {
+      once: true,
+    });
+  });
+}
+
+type ModalEffectsOptions = {
   getModalRoot: () => HTMLElement | null;
   isActive: () => boolean;
   requestClose: () => void;
-  /** Where focus goes when the modal closes; defaults to the opener. */
   getReturnFocus?: () => HTMLElement | null;
 };
 
@@ -22,9 +136,9 @@ type Jam2026ModalEffectsOptions = {
  * entry owned by the modal frame. The dialog itself traps focus with the
  * `focusTrap` mixin.
  */
-export function createJam2026ModalEffects(
-  handle: Pick<Handle, "frame" | "frames" | "queueTask" | "signal">,
-  options: Jam2026ModalEffectsOptions,
+function createModalEffects(
+  handle: Jam2026ModalHandle,
+  options: ModalEffectsOptions,
 ) {
   let modalEffectsOpen = false;
   let previousFocus: HTMLElement | null = null;

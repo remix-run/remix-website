@@ -1,4 +1,4 @@
-import { clientEntry, css, navigate, on, type Handle } from "remix/component";
+import { clientEntry, css, on, type Handle } from "remix/component";
 import {
   animateEntrance,
   prefersReducedMotion,
@@ -14,7 +14,7 @@ import { remixJam2026Ticket } from "./ticket-data.ts";
 import { jamTheme } from "./theme.ts";
 import { jam2026ModalConfig } from "./modal-contract.ts";
 import {
-  createJam2026ModalEffects,
+  createJam2026Modal,
   jam2026ModalBackdropStyle,
   jam2026ModalScrimStyle,
   jam2026ModalTitleStyle,
@@ -22,7 +22,6 @@ import {
   jam2026ModalTitlebarIconStyle,
   jam2026ModalTitlebarStyle,
   jam2026ModalWindowStyle,
-  restoreScrollPosition,
 } from "./modal.ts";
 import { routes } from "../../../../routes.ts";
 
@@ -50,15 +49,12 @@ let usdFormatter = new Intl.NumberFormat("en-US", {
 export let Jam2026TicketsModalFrame = clientEntry(
   import.meta.url,
   function Jam2026TicketsModalFrame(handle: Handle<Jam2026TicketsModalProps>) {
-    let modalClosing = false;
-    let closeNavigationTimer: ReturnType<typeof setTimeout> | undefined;
-    let modalEffects = createJam2026ModalEffects(handle, {
+    let modal = createJam2026Modal(handle, {
       getModalRoot: () =>
         document.querySelector<HTMLElement>(
           "[role='dialog'][aria-labelledby='tickets-modal-title']",
         ),
-      isActive: () => isOpen() && !modalClosing,
-      requestClose,
+      hasContent: isOpen,
     });
     // Starts out matching the server-rendered head; synced when this modal
     // opens or closes. The photo viewer shares the frame and owns the head
@@ -68,38 +64,6 @@ export let Jam2026TicketsModalFrame = clientEntry(
     function isOpen() {
       return Boolean(handle.props.open);
     }
-
-    function requestClose(event?: Event) {
-      event?.preventDefault();
-      if (modalClosing || !isOpen()) return;
-
-      modalClosing = true;
-      let scrollX = window.scrollX;
-      let scrollY = window.scrollY;
-      handle.update();
-
-      let navigationDelay = prefersReducedMotion() ? 0 : 220;
-
-      closeNavigationTimer = setTimeout(() => {
-        closeNavigationTimer = undefined;
-        void navigate(routes.jam.y2026.index.href(), {
-          target: jam2026ModalConfig.frameName,
-          history: "replace",
-          resetScroll: "manual",
-          resetFocus: "manual",
-        }).finally(() => {
-          restoreScrollPosition(scrollX, scrollY, handle.signal);
-        });
-      }, navigationDelay);
-    }
-
-    handle.signal.addEventListener(
-      "abort",
-      () => {
-        if (closeNavigationTimer) clearTimeout(closeNavigationTimer);
-      },
-      { once: true },
-    );
 
     function queueHeadSync(open: boolean) {
       if (headSyncedOpen === open) return;
@@ -111,9 +75,7 @@ export let Jam2026TicketsModalFrame = clientEntry(
     return () => {
       let open = isOpen();
 
-      if (!open) modalClosing = false;
-
-      modalEffects.queueStateSync();
+      modal.queueStateSync();
       queueHeadSync(open);
 
       // The frame runtime needs a stable child when toggling between empty
@@ -123,8 +85,8 @@ export let Jam2026TicketsModalFrame = clientEntry(
           {open ? (
             <Jam2026TicketsModalContent
               animateEntrance={handle.props.animateEntrance ?? true}
-              closing={modalClosing}
-              onRequestClose={requestClose}
+              closing={modal.phase.kind === "closing"}
+              onRequestClose={modal.requestClose}
               ticketCheckout={handle.props.ticketCheckout}
             />
           ) : null}
