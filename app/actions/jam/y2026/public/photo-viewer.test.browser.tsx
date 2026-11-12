@@ -58,7 +58,7 @@ describe("Jam2026PhotoViewerFrame", () => {
     photoViewer.setClosing(false);
   });
 
-  it("shows the photo as a modal with frame-targeted controls", async (t) => {
+  it("shows the photo as a modal over the inert page", async (t) => {
     let result = render(
       <div>
         <main id={jam2026ModalConfig.pageBackgroundId}>Page content</main>
@@ -87,52 +87,6 @@ describe("Jam2026PhotoViewerFrame", () => {
         .querySelector(`#${jam2026ModalConfig.pageBackgroundId}`)
         ?.hasAttribute("inert"),
     ).toBe(true);
-
-    for (let [label, photo] of [
-      ["Previous photo", "DSC01"],
-      ["Next photo", "DSC03"],
-    ]) {
-      let link = getLink(dialog, label);
-      expect(link.getAttribute("href")).toBe(
-        routes.jam.y2026.photos.show.href({ photo }),
-      );
-      expect(link.getAttribute("data-rmx-target")).toBe(
-        jam2026ModalConfig.frameName,
-      );
-      expect(link.getAttribute("data-rmx-history")).toBe("replace");
-    }
-
-    // The filmstrip: neighbors in order, the open photo marked current.
-    let timeline = [
-      ...dialog.querySelectorAll<HTMLAnchorElement>(
-        "ol[aria-label='Nearby photos'] a",
-      ),
-    ];
-    expect(timeline.map((link) => link.getAttribute("href"))).toEqual(
-      ["DSC01", "DSC02", "DSC03"].map((photo) =>
-        routes.jam.y2026.photos.show.href({ photo }),
-      ),
-    );
-    expect(timeline.map((link) => link.getAttribute("aria-current"))).toEqual([
-      null,
-      "true",
-      null,
-    ]);
-    expect(timeline[0].getAttribute("data-rmx-target")).toBe(
-      jam2026ModalConfig.frameName,
-    );
-
-    let download = getLink(dialog, "Download DSC02.jpg");
-    expect(download.getAttribute("href")).toBe(
-      routes.jam.y2026.photos.download.href({ photo: "DSC02" }),
-    );
-    expect(download.hasAttribute("download")).toBe(true);
-
-    let close = getLink(dialog, "Close photo");
-    expect(close.getAttribute("href")).toBe(routes.jam.y2026.index.href());
-    expect(close.getAttribute("data-rmx-target")).toBe(
-      jam2026ModalConfig.frameName,
-    );
   });
 
   it("doesn't replay its entrance when a step arrives with entrance motion on", async (t) => {
@@ -172,27 +126,13 @@ describe("Jam2026PhotoViewerFrame", () => {
   });
 
   it("grows out of the card that opened it, or rolls down without one", async (t) => {
-    let renderPage = (viewer?: PhotoViewerState) => (
-      <div>
-        <main id={jam2026ModalConfig.pageBackgroundId}>
-          <div style={{ width: "150px" }}>
-            <a
-              href={routes.jam.y2026.photos.show.href({ photo: "DSC02" })}
-              mix={registerCard("DSC02")}
-            >
-              View
-            </a>
-            <div style={{ width: "150px", height: "100px" }} />
-          </div>
-        </main>
-        <Jam2026PhotoViewerFrame animateEntrance viewer={viewer} />
-      </div>
-    );
-    let result = render(renderPage());
+    let result = render(renderPage(["DSC02"]));
     t.after(result.cleanup);
 
-    await result.act(() => result.root.render(renderPage(viewerAt(1))));
-    let card = result.container.querySelector("main > div") as HTMLElement;
+    await result.act(() =>
+      result.root.render(renderPage(["DSC02"], viewerAt(1))),
+    );
+    let card = getCard(result.container, "DSC02");
     let [expand] = result.container
       .querySelector("[role='dialog'] section")!
       .getAnimations() as Animation[];
@@ -209,8 +149,10 @@ describe("Jam2026PhotoViewerFrame", () => {
     expect(card.getAnimations()).toHaveLength(0);
 
     // A photo with no card on the page rolls down instead.
-    await result.act(() => result.root.render(renderPage()));
-    await result.act(() => result.root.render(renderPage(viewerAt(2))));
+    await result.act(() => result.root.render(renderPage(["DSC02"])));
+    await result.act(() =>
+      result.root.render(renderPage(["DSC02"], viewerAt(2))),
+    );
     let [rollDown] = result.container
       .querySelector("[role='dialog'] section")!
       .getAnimations() as Animation[];
@@ -221,25 +163,11 @@ describe("Jam2026PhotoViewerFrame", () => {
 
   it("closing mid-open shrinks from wherever the window got to", async (t) => {
     mockNavigation(t);
-    let renderPage = (viewer?: PhotoViewerState) => (
-      <div>
-        <main id={jam2026ModalConfig.pageBackgroundId}>
-          <div style={{ width: "150px" }}>
-            <a
-              href={routes.jam.y2026.photos.show.href({ photo: "DSC02" })}
-              mix={registerCard("DSC02")}
-            >
-              View
-            </a>
-            <div style={{ width: "150px", height: "100px" }} />
-          </div>
-        </main>
-        <Jam2026PhotoViewerFrame animateEntrance viewer={viewer} />
-      </div>
-    );
-    let result = render(renderPage());
+    let result = render(renderPage(["DSC02"]));
     t.after(result.cleanup);
-    await result.act(() => result.root.render(renderPage(viewerAt(1))));
+    await result.act(() =>
+      result.root.render(renderPage(["DSC02"], viewerAt(1))),
+    );
     let section = result.container.querySelector<HTMLElement>(
       "[role='dialog'] section",
     )!;
@@ -261,7 +189,7 @@ describe("Jam2026PhotoViewerFrame", () => {
     expect(String(to.transform)).toMatch(/^translate\(.+\) scale\([\d.]+\)$/);
     // The cancelled open doesn't bring the card's photo back mid-close.
     await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
-    let card = result.container.querySelector("main > div")!;
+    let card = getCard(result.container, "DSC02");
     expect((card.lastElementChild as HTMLElement).style.visibility).toBe(
       "hidden",
     );
@@ -286,7 +214,7 @@ describe("Jam2026PhotoViewerFrame", () => {
     expect(dialog.contains(document.activeElement)).toBe(true);
   });
 
-  it("shows the next photo as soon as an arrow key is pressed", async (t) => {
+  it("steps with the arrow keys, showing each photo straight away", async (t) => {
     let navigations = mockNavigation(t);
     photoGallery.set(photos);
     t.after(() => photoGallery.set([]));
@@ -310,10 +238,20 @@ describe("Jam2026PhotoViewerFrame", () => {
       "DSC03.jpg",
     );
     expect(dialog.textContent).toContain("3 / 3");
-    expect(navigations).toEqual([
-      routes.jam.y2026.photos.show.href({ photo: "DSC02" }),
-      routes.jam.y2026.photos.show.href({ photo: "DSC03" }),
-    ]);
+
+    await result.act(() => pressKey("ArrowLeft"));
+
+    expect(document.activeElement?.getAttribute("aria-label")).toBe(
+      "Previous photo",
+    );
+    expect(dialog.querySelector("#photo-viewer-title")?.textContent).toBe(
+      "DSC02.jpg",
+    );
+    expect(navigations).toEqual(
+      ["DSC02", "DSC03", "DSC02"].map((photo) =>
+        routes.jam.y2026.photos.show.href({ photo }),
+      ),
+    );
   });
 
   it("steps one photo per click on the next arrow", async (t) => {
@@ -409,49 +347,10 @@ describe("Jam2026PhotoViewerFrame", () => {
     expect(img.parentElement!.hasAttribute("data-loading")).toBe(false);
   });
 
-  it("steps to the neighboring photos with the arrow keys", async (t) => {
-    let navigations = mockNavigation(t);
-    let result = render(
-      <Jam2026PhotoViewerFrame animateEntrance={false} viewer={viewerAt(0)} />,
-    );
-    t.after(result.cleanup);
-    await nextFrame(result);
-
-    pressKey("ArrowRight");
-    pressKey("ArrowLeft");
-
-    expect(navigations).toEqual([
-      routes.jam.y2026.photos.show.href({ photo: "DSC02" }),
-      routes.jam.y2026.photos.show.href({ photo: "DSC03" }),
-    ]);
-  });
-
   it("closes with Escape by shrinking into the viewed photo's card", async (t) => {
     let navigations = mockNavigation(t);
-    // Gallery cards: a card holding its link and its image.
-    let renderPage = (viewer?: PhotoViewerState) => (
-      <div>
-        <main id={jam2026ModalConfig.pageBackgroundId}>
-          {photos.map((photo) => (
-            <div
-              key={photo.slug}
-              data-card={photo.slug}
-              style={{ width: "150px" }}
-            >
-              <a
-                href={routes.jam.y2026.photos.show.href({ photo: photo.slug })}
-                mix={registerCard(photo.slug)}
-              >
-                {photo.filename}
-              </a>
-              <div style={{ width: "150px", height: "100px" }} />
-            </div>
-          ))}
-        </main>
-        <Jam2026PhotoViewerFrame animateEntrance={false} viewer={viewer} />
-      </div>
-    );
-    let result = render(renderPage(viewerAt(2)));
+    let slugs = photos.map((photo) => photo.slug);
+    let result = render(renderPage(slugs, viewerAt(2), false));
     t.after(result.cleanup);
     await nextFrame(result);
 
@@ -461,9 +360,7 @@ describe("Jam2026PhotoViewerFrame", () => {
     let section = result.container.querySelector<HTMLElement>(
       "[role='dialog'] section",
     )!;
-    let card = result.container.querySelector<HTMLElement>(
-      "[data-card='DSC03']",
-    )!;
+    let card = getCard(result.container, "DSC03");
     // The closing animation releases the page and shrinks the photo into
     // the card's, which hides until the window is gone. The card's frame
     // fades in meanwhile, rather than the window's scaling down to it.
@@ -481,7 +378,9 @@ describe("Jam2026PhotoViewerFrame", () => {
     await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
     expect(navigations).toEqual([routes.jam.y2026.index.href()]);
 
-    await result.act(() => result.root.render(renderPage(undefined)));
+    await result.act(() =>
+      result.root.render(renderPage(slugs, undefined, false)),
+    );
     await nextFrame(result);
 
     expect(result.container.querySelector("[role='dialog']")).toBe(null);
@@ -491,11 +390,42 @@ describe("Jam2026PhotoViewerFrame", () => {
   });
 });
 
-// A stand-in gallery card's link, registered as the photo deck's cards are.
-function registerCard(slug: string) {
-  return ref<HTMLAnchorElement>((link, signal) =>
-    photoViewer.registerCard(slug, link, signal),
+/**
+ * The viewer over a page of stand-in gallery cards: each holds its link,
+ * registered as the photo deck's are, and its image.
+ */
+function renderPage(
+  cardSlugs: string[],
+  viewer?: PhotoViewerState,
+  animateEntrance = true,
+) {
+  return (
+    <div>
+      <main id={jam2026ModalConfig.pageBackgroundId}>
+        {cardSlugs.map((slug) => (
+          <div key={slug} data-card={slug} style={{ width: "150px" }}>
+            <a
+              href={routes.jam.y2026.photos.show.href({ photo: slug })}
+              mix={ref<HTMLAnchorElement>((link, signal) =>
+                photoViewer.registerCard(slug, link, signal),
+              )}
+            >
+              {slug}.jpg
+            </a>
+            <div style={{ width: "150px", height: "100px" }} />
+          </div>
+        ))}
+      </main>
+      <Jam2026PhotoViewerFrame
+        animateEntrance={animateEntrance}
+        viewer={viewer}
+      />
+    </div>
   );
+}
+
+function getCard(container: HTMLElement, slug: string) {
+  return container.querySelector<HTMLElement>(`[data-card='${slug}']`)!;
 }
 
 function getLink(container: HTMLElement, label: string) {

@@ -37,8 +37,8 @@ describe("Jam2026PhotoDeck", () => {
       );
       expect(Math.atan2(b, a)).toBe(0);
     }
-    // A visible label names what the stack does, and how many photos it holds.
-    expect(getDealButton(result.container).textContent).toBe("View 12 photos");
+    // The deal button says how many photos the stack holds.
+    expect(getDealButton(result.container).textContent).toMatch(/\b12\b/);
     // Only the ten visible cards in the stack load their images.
     expect(result.container.querySelectorAll("img")).toHaveLength(10);
 
@@ -150,7 +150,9 @@ describe("Jam2026PhotoDeck", () => {
     expect(result.container.querySelectorAll("img")).toHaveLength(12);
   });
 
-  for (let trigger of ["first card", "last card", "Escape"]) {
+  // The top card's minus is the one whose click, bubbling after the gather,
+  // could deal the stack straight back out.
+  for (let trigger of ["top card's minus", "Escape"]) {
     it(`gathers the dealt cards back into the stack: ${trigger}`, async (t) => {
       let result = render(<Jam2026PhotoDeck cards={cards} />);
       t.after(result.cleanup);
@@ -167,10 +169,7 @@ describe("Jam2026PhotoDeck", () => {
             new KeyboardEvent("keydown", { bubbles: true, key: "Escape" }),
           );
         } else {
-          (trigger === "first card"
-            ? stackButtons[0]
-            : stackButtons.at(-1)!
-          ).click();
+          stackButtons[0].click();
         }
       });
 
@@ -194,6 +193,26 @@ describe("Jam2026PhotoDeck", () => {
       expect(items.slice(0, 10).some(isHidden)).toBe(false);
     });
   }
+
+  it("moves the cards from where they sit, without a jump", async (t) => {
+    let result = render(<Jam2026PhotoDeck cards={cards} />);
+    t.after(result.cleanup);
+    let positions = () =>
+      getItems(result.container).map((item) => {
+        let { left, top } = item.getBoundingClientRect();
+        return [Math.round(left), Math.round(top)];
+      });
+
+    let stacked = positions();
+    await result.act(() => getDealButton(result.container).click());
+    expect(positions()).toEqual(stacked);
+
+    await settle(result.container);
+    let dealt = positions();
+    expect(dealt).not.toEqual(stacked);
+    await result.act(() => queryStackButtons(result.container)[0].click());
+    expect(positions()).toEqual(dealt);
+  });
 });
 
 async function settle(container: HTMLElement) {

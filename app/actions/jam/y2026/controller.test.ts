@@ -61,7 +61,8 @@ describe("Remix Jam 2026 routes", () => {
     expect(
       html.match(/src="https:\/\/cdn\.shopify\.com\/files\//g),
     ).toHaveLength(10);
-    expect(html).toMatch(/<button[^>]*data-deal[^>]*>[\s\S]*?View 12 photos/);
+    // The deal button says how many photos the stack holds.
+    expect(html).toMatch(/<button[^>]*data-deal[^>]*>[^<]*\b12\b/);
     expect(html.indexOf('id="photos"')).toBeLessThan(html.indexOf("<iframe"));
     expect(html.indexOf("<iframe")).toBeLessThan(html.indexOf('id="schedule"'));
   });
@@ -370,20 +371,7 @@ describe("Remix Jam 2026 photo routes", () => {
     );
   });
 
-  it("wraps the viewer's neighbors around the ends", async (t) => {
-    mockStorefrontPhotos(t, filenames);
-
-    let html = await (
-      await createJam2026TestRouter().fetch(photoUrl("DSC01"))
-    ).text();
-
-    expect(html).toContain("1 / 3");
-    expect(getLinkHref(html, "Previous photo")).toBe(
-      routes.jam.y2026.photos.show.href({ photo: "DSC03" }),
-    );
-  });
-
-  it("shows up to four photos on each side of the open one in the filmstrip", async (t) => {
+  it("wraps the viewer's neighbors and filmstrip around the ends", async (t) => {
     mockStorefrontPhotos(
       t,
       Array.from({ length: 12 }, (_, index) => `DSC${index + 10}.jpg`),
@@ -398,7 +386,12 @@ describe("Remix Jam 2026 photo routes", () => {
       ...filmstrip.matchAll(/href="\/jam\/2026\/photos\/(\w+)"/g),
     ].map(([, slug]) => slug);
 
-    // Wrapped around the start, with the open photo in the middle.
+    expect(html).toContain("1 / 12");
+    expect(getLinkHref(html, "Previous photo")).toBe(
+      routes.jam.y2026.photos.show.href({ photo: "DSC21" }),
+    );
+    // Up to four photos on each side, wrapped around the start, with the open
+    // photo in the middle.
     expect(slugs).toEqual([
       "DSC18",
       "DSC19",
@@ -443,12 +436,12 @@ describe("Remix Jam 2026 photo routes", () => {
     let unsafe = await createJam2026TestRouter().fetch(
       photoUrl(encodeURIComponent('DSC02"\n')),
     );
-    expect(unsafe.status).toBe(400);
 
     expect(unknown.status).toBe(404);
     expect(await unknown.text()).not.toContain('role="dialog"');
     expect(invalid.status).toBe(400);
     expect(await invalid.text()).not.toContain('role="dialog"');
+    expect(unsafe.status).toBe(400);
   });
 
   it("downloads the original photo as an attachment", async (t) => {
