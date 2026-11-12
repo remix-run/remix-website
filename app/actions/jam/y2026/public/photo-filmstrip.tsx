@@ -18,17 +18,6 @@ import {
   jam2026WindowTitleStyle,
 } from "./window-styles.ts";
 
-const TIMELINE_IMAGE_WIDTH = 200;
-// Matches the row's gap and the cards' horizontal padding.
-const TIMELINE_GAP = 6;
-const TIMELINE_CARD_PADDING = 8;
-// How long the row must sit still before a scroll counts as settled, where
-// the browser can't say so itself.
-const TIMELINE_SETTLE_DELAY = 150;
-// How stiff the row's glide to a chosen photo is: (2π / 300ms)², a spring
-// that settles in about a third of a second.
-const GLIDE_STIFFNESS = ((2 * Math.PI) / 0.3) ** 2;
-
 /**
  * Every photo as a small card, in a row that scrolls like a native
  * filmstrip: it snaps each card to the middle, and the card there grows and
@@ -40,13 +29,12 @@ export function PhotoTimeline(
   handle: Handle<{ useEntranceMotion: boolean; viewer: PhotoViewerState }>,
 ) {
   let session = handle.context.get(PhotoViewerSessionProvider);
-  let isClosing = () => session.phase.kind === "closing";
   let row: HTMLOListElement | undefined;
   // What the row is doing. `reader`: the reader is scrolling it, so it isn't
   // scrolled for them; `scrubbed` once it has opened a photo the settle still
   // has to fetch. `jumping`: it's jumping to a photo chosen some other way,
   // which shouldn't open again when it lands. `gliding`: it's gliding to one
-  // (see glideTo).
+  // (see glide).
   let motion: RowMotion = { kind: "idle" };
   let settleTimer: ReturnType<typeof setTimeout> | undefined;
   // The server renders the photos near the open one; the whole gallery
@@ -65,7 +53,8 @@ export function PhotoTimeline(
   // Glides the row to a photo chosen some other way, so holding an arrow
   // key carries the row along at the photos' pace. Snapping is off meanwhile,
   // since the browser would snap each frame's position, and comes back once
-  // the row lands.
+  // the row lands. (2π / 300ms)² is a spring that settles in about a third of
+  // a second.
   let glide = new ScrollGlide(
     {
       get: () => row?.scrollLeft ?? 0,
@@ -73,31 +62,17 @@ export function PhotoTimeline(
         if (row) row.scrollLeft = position;
       },
     },
-    GLIDE_STIFFNESS,
+    ((2 * Math.PI) / 0.3) ** 2,
     () => {
       motion = { kind: "idle" };
       if (row) row.dataset.snap = "";
     },
   );
 
-  let glideTo = (target: number) => {
-    if (!row) return;
-    if (motion.kind !== "gliding") {
-      if (Math.abs(row.scrollLeft - target) < 1) return;
-      delete row.dataset.snap;
-      motion = { kind: "gliding" };
-    }
-    glide.to(target);
-  };
-
-  let stopGlide = () => glide.stop();
-
   handle.signal.addEventListener("abort", () => {
     clearTimeout(settleTimer);
-    stopGlide();
+    glide.stop();
   });
-
-  let getCurrentSlug = () => handle.props.viewer.photo.slug;
 
   let getCenteredSlug = () => {
     if (!row) return undefined;
@@ -121,10 +96,15 @@ export function PhotoTimeline(
     if (!row || !item) return;
     let left = item.offsetLeft + item.offsetWidth / 2 - row.clientWidth / 2;
     if (behavior === "glide") {
-      glideTo(left);
+      if (motion.kind !== "gliding") {
+        if (Math.abs(row.scrollLeft - left) < 1) return;
+        delete row.dataset.snap;
+        motion = { kind: "gliding" };
+      }
+      glide.to(left);
       return;
     }
-    stopGlide();
+    glide.stop();
     if (Math.abs(row.scrollLeft - left) < 1) return;
     motion = { kind: "jumping" };
     row.scrollTo({ left, behavior: "instant" });
@@ -133,7 +113,7 @@ export function PhotoTimeline(
   // A touch or wheel takes over from a scroll to a chosen photo.
   let takeOver = () => {
     if (motion.kind === "jumping") motion = { kind: "idle" };
-    stopGlide();
+    glide.stop();
   };
 
   let settle = () => {
@@ -146,7 +126,7 @@ export function PhotoTimeline(
     let scrubbed = motion.kind === "reader" && motion.scrubbed;
     motion = { kind: "idle" };
     let slug = getCenteredSlug();
-    if (slug && (scrubbed || slug !== getCurrentSlug())) {
+    if (slug && (scrubbed || slug !== handle.props.viewer.photo.slug)) {
       photoViewer.select(slug);
     }
   };
@@ -154,11 +134,13 @@ export function PhotoTimeline(
   let onScroll = () => {
     if (motion.kind === "gliding") return;
     clearTimeout(settleTimer);
-    settleTimer = setTimeout(settle, TIMELINE_SETTLE_DELAY);
+    // Where the browser can't say a scroll has settled itself (scrollend),
+    // the row sitting still for a moment counts.
+    settleTimer = setTimeout(settle, 150);
     if (motion.kind === "jumping") return;
     let scrubbed = motion.kind === "reader" && motion.scrubbed;
     let slug = getCenteredSlug();
-    if (slug && slug !== getCurrentSlug()) {
+    if (slug && slug !== handle.props.viewer.photo.slug) {
       scrubbed = true;
       // Shown without fetching, for the photos the row passes.
       photoViewer.show(slug, { preview: true });
@@ -188,7 +170,7 @@ export function PhotoTimeline(
         row.dataset.snap = "";
         return;
       }
-      if (motion.kind === "reader" || isClosing()) return;
+      if (motion.kind === "reader" || session.phase.kind === "closing") return;
       let instant = newPhotos || prefersReducedMotion();
       scrollToPhoto(current, instant ? "instant" : "glide");
     });
@@ -196,7 +178,7 @@ export function PhotoTimeline(
     return (
       <ol
         aria-label="Nearby photos"
-        data-state={isClosing() ? "closing" : "open"}
+        data-state={session.phase.kind}
         mix={[
           timelineStyle,
           ref((element) => {
@@ -253,7 +235,7 @@ export function PhotoTimeline(
                   draggable={false}
                   height={item.height}
                   loading="lazy"
-                  src={resizeShopifyImage(item.url, TIMELINE_IMAGE_WIDTH)}
+                  src={resizeShopifyImage(item.url, 200)}
                   width={item.width}
                 />
               </span>
@@ -281,7 +263,7 @@ let timelineStyle = css({
   alignItems: "center",
   display: "flex",
   flex: "0 0 var(--timeline-height)",
-  gap: `${TIMELINE_GAP}px`,
+  gap: "6px",
   justifyContent: "center",
   listStyle: "none",
   margin: 0,
@@ -327,7 +309,7 @@ let timelineCardStyle = css({
   gap: "3px",
   opacity: 0.8,
   outline: "none",
-  padding: `${TIMELINE_CARD_PADDING / 2}px`,
+  padding: "4px",
   borderRadius: "6px",
   textDecoration: "none",
   transform: "scale(0.85)",

@@ -9,7 +9,7 @@ import { theme } from "../../../../ui/public/theme.ts";
 import { routes } from "../../../../routes.ts";
 
 /** How a modal leaves: rolling up, or shrinking into what opened it. */
-export type Jam2026ModalExit = "roll" | "shrink";
+type Jam2026ModalExit = "roll" | "shrink";
 
 export type Jam2026ModalPhase =
   | { kind: "open" }
@@ -58,7 +58,7 @@ export function createJam2026Modal(
   options: Jam2026ModalOptions,
 ) {
   let phase: Jam2026ModalPhase = { kind: "open" };
-  let effects = createModalEffects(handle, {
+  let queueStateSync = createModalEffects(handle, {
     getModalRoot: options.getModalRoot,
     isActive: () => options.hasContent() && phase.kind === "open",
     requestClose,
@@ -102,7 +102,7 @@ export function createJam2026Modal(
       return phase;
     },
     requestClose,
-    queueStateSync: effects.queueStateSync,
+    queueStateSync,
   };
 }
 
@@ -162,16 +162,6 @@ function createModalEffects(
     }
   }
 
-  function focusFirstModalControl(root: HTMLElement) {
-    let focusableElements = getFocusableElementsWithin(root);
-    if (focusableElements.length > 0) {
-      focusableElements[0].focus({ preventScroll: true });
-      return;
-    }
-
-    root.focus({ preventScroll: true });
-  }
-
   function restorePageState() {
     unlockScroll();
     unlockScroll = () => {};
@@ -203,8 +193,7 @@ function createModalEffects(
       previousFocus = active instanceof HTMLElement ? active : null;
     }
 
-    let scrollX = window.scrollX;
-    let scrollY = window.scrollY;
+    let { scrollX, scrollY } = window;
     unlockScroll();
     unlockScroll = lockScroll();
     setBackgroundInert(true);
@@ -213,7 +202,8 @@ function createModalEffects(
     window.requestAnimationFrame(() => {
       if (handle.signal.aborted) return;
 
-      focusFirstModalControl(modal);
+      let first = getFocusableElementsWithin(modal)[0] ?? modal;
+      first.focus({ preventScroll: true });
       restoreScrollPosition(scrollX, scrollY, handle.signal);
     });
   }
@@ -248,21 +238,13 @@ function createModalEffects(
       { signal: handle.signal },
     );
 
-    handle.signal.addEventListener(
-      "abort",
-      () => {
-        restorePageState();
-      },
-      { once: true },
-    );
+    handle.signal.addEventListener("abort", restorePageState, { once: true });
   });
 
-  return {
-    queueStateSync,
-  };
+  return queueStateSync;
 }
 
-export function restoreScrollPosition(
+function restoreScrollPosition(
   scrollX: number,
   scrollY: number,
   signal?: AbortSignal,
@@ -300,24 +282,18 @@ function syncModalNavigationEntry() {
     src: new URL(pathname + search, window.location.href).href,
     target: jam2026ModalConfig.frameName,
   };
-  let currentState = navigation.currentEntry.getState();
-
+  let current = navigation.currentEntry.getState() as
+    | Record<string, unknown>
+    | null
+    | undefined;
   if (
-    isRecord(currentState) &&
-    currentState.$rmx === state.$rmx &&
-    currentState.resetScroll === state.resetScroll &&
-    currentState.resetFocus === state.resetFocus &&
-    currentState.src === state.src &&
-    currentState.target === state.target
+    current &&
+    Object.entries(state).every(([key, value]) => current[key] === value)
   ) {
     return;
   }
 
   navigation.updateCurrentEntry({ state });
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
 }
 
 export let jam2026ModalScrimStyle = css({

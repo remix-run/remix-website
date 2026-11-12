@@ -80,14 +80,14 @@ export class WindowTransitions {
     cardImage.style.visibility = "hidden";
     // Show the image the card already has, so the window is never blank while
     // the viewer's own images load.
+    let opening = direction === "open";
     let cardSrc = cardImage.querySelector("img")?.currentSrc;
     let placeholder = body.style.backgroundImage;
-    if (direction === "open" && cardSrc) {
+    if (opening && cardSrc) {
       body.style.backgroundImage = `url("${cardSrc}")`;
     }
     section.style.transformOrigin = `${bodyCenter.x - sectionBox.left}px ${bodyCenter.y - sectionBox.top}px`;
 
-    let opening = direction === "open";
     let duration = opening ? 220 : 160;
     let animation = section.animate(
       opening

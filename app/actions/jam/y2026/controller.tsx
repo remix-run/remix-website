@@ -16,11 +16,8 @@ import {
 import { Jam2026NewsletterSignup } from "./public/newsletter-signup.tsx";
 import { Jam2026HomePage } from "./home-page.tsx";
 import { Jam2026ModalFrame } from "./modal-frame.tsx";
-import {
-  findPhotoViewerState,
-  getJam2026Photos,
-  getPhotoCards,
-} from "./photo-lookup.ts";
+import { getJam2026Photos, getPhotoCards } from "./photo-lookup.ts";
+import { findPhotoViewerState } from "./public/shopify-photo.ts";
 import { jam2026ModalConfig } from "./public/modal-contract.ts";
 import {
   getJam2026ThemePreference,

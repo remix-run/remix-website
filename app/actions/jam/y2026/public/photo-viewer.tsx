@@ -42,10 +42,6 @@ type Jam2026PhotoViewerProps = {
   viewer?: PhotoViewerState;
 };
 
-// The grid's thumbnail size, likely already cached, shown while the full
-// image loads.
-const PLACEHOLDER_IMAGE_WIDTH = 480;
-
 export let Jam2026PhotoViewerFrame = clientEntry(
   import.meta.url,
   function Jam2026PhotoViewerFrame(handle: Handle<Jam2026PhotoViewerProps>) {
@@ -206,25 +202,8 @@ export let Jam2026PhotoViewerFrame = clientEntry(
       { once: true },
     );
 
-    function queueHeadSync(filename: string | undefined) {
-      if (headSyncedFilename === filename) return;
-      headSyncedFilename = filename;
-
-      handle.queueTask(() => syncJam2026Head({ photo: filename }));
-    }
-
-    // Warm the neighbors so stepping doesn't flash an empty frame.
-    function queueNeighborPreload(viewer: PhotoViewerState) {
-      handle.queueTask(() => {
-        for (let neighbor of [viewer.previous, viewer.next]) {
-          preloadViewerImage(neighbor.url);
-        }
-      });
-    }
-
     return () => {
-      if (handle.props.viewer)
-        photoViewer.settle(handle.props.viewer.photo.slug);
+      photoViewer.settle(handle.props.viewer?.photo.slug);
       let viewer = getShownViewer();
       // Opening ahead of the server: always animate, whatever the frame's
       // last response said.
@@ -233,8 +212,18 @@ export let Jam2026PhotoViewerFrame = clientEntry(
       if (viewer) lastSlug = viewer.photo.slug;
 
       modal.queueStateSync();
-      queueHeadSync(viewer?.photo.filename);
-      if (viewer && !photoViewer.pending?.preview) queueNeighborPreload(viewer);
+      let filename = viewer?.photo.filename;
+      if (filename !== headSyncedFilename) {
+        headSyncedFilename = filename;
+        handle.queueTask(() => syncJam2026Head({ photo: filename }));
+      }
+      if (viewer && !photoViewer.pending?.preview) {
+        // Warm the neighbors so stepping doesn't flash an empty frame.
+        handle.queueTask(() => {
+          preloadViewerImage(viewer.previous.url);
+          preloadViewerImage(viewer.next.url);
+        });
+      }
 
       // The frame runtime needs a stable child when toggling between empty
       // frame content and the hydrated viewer.
@@ -280,9 +269,8 @@ function PhotoViewerContent(
     let { phase, previewOnly } = session;
     let closing = phase.kind === "closing";
     let state = closing ? "closing" : "open";
-    let homeHref = routes.jam.y2026.index.href();
     let closeLinkProps = {
-      href: homeHref,
+      href: routes.jam.y2026.index.href(),
       "data-rmx-target": jam2026ModalConfig.frameName,
       "data-rmx-reset-scroll": "manual",
       "data-rmx-history": "replace",
@@ -397,7 +385,9 @@ function PhotoViewerContent(
                 data-loading={previewOnly || loadedSrc === src ? undefined : ""}
                 mix={viewerBodyStyle}
                 style={{
-                  backgroundImage: `url("${resizeShopifyImage(photo.url, PLACEHOLDER_IMAGE_WIDTH)}")`,
+                  // The grid's thumbnail, likely already cached, while the
+                  // full image loads.
+                  backgroundImage: `url("${resizeShopifyImage(photo.url, 480)}")`,
                 }}
               >
                 {previewOnly ? null : (

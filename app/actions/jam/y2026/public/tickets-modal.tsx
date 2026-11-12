@@ -65,18 +65,14 @@ export let Jam2026TicketsModalFrame = clientEntry(
       return Boolean(handle.props.open);
     }
 
-    function queueHeadSync(open: boolean) {
-      if (headSyncedOpen === open) return;
-      headSyncedOpen = open;
-
-      handle.queueTask(() => syncJam2026Head({ ticketsModalOpen: open }));
-    }
-
     return () => {
       let open = isOpen();
 
       modal.queueStateSync();
-      queueHeadSync(open);
+      if (headSyncedOpen !== open) {
+        headSyncedOpen = open;
+        handle.queueTask(() => syncJam2026Head({ ticketsModalOpen: open }));
+      }
 
       // The frame runtime needs a stable child when toggling between empty
       // frame content and the hydrated modal.

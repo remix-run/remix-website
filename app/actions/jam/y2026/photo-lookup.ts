@@ -4,12 +4,6 @@ import { maxLength, minLength } from "remix/data-schema/checks";
 import { getPhotos } from "../../../data/jam-storefront.ts";
 import type { Photo, PhotoCard } from "./public/shopify-photo.ts";
 
-export { findPhotoViewerState } from "./public/shopify-photo.ts";
-
-// How long the photo list stays fresh. After that, the next request still
-// gets the cached list straight away while a fresh one loads behind it.
-const PHOTOS_FRESH_MS = 5 * 60 * 1000;
-
 let cachedPhotos: { photos: Photo[]; fetchedAt: number } | undefined;
 let photosRequest: Promise<Photo[]> | undefined;
 
@@ -20,7 +14,9 @@ let photosRequest: Promise<Photo[]> | undefined;
  */
 export async function getJam2026Photos() {
   if (!cachedPhotos) return requestPhotos();
-  if (Date.now() - cachedPhotos.fetchedAt > PHOTOS_FRESH_MS) {
+  // Fresh for five minutes. After that, the next request still gets the
+  // cached list straight away while a fresh one loads behind it.
+  if (Date.now() - cachedPhotos.fetchedAt > 5 * 60 * 1000) {
     void requestPhotos();
   }
   return cachedPhotos.photos;

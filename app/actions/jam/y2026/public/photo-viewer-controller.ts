@@ -3,18 +3,11 @@ import { navigate, TypedEventTarget } from "remix/component";
 import { routes } from "../../../../routes.ts";
 import { jam2026ModalConfig } from "./modal-contract.ts";
 
-// How the viewer's navigations target the modal frame.
-const frameNavigation = {
-  target: jam2026ModalConfig.frameName,
-  resetScroll: "manual",
-  resetFocus: "manual",
-} as const;
-
 /**
  * A photo the viewer shows before the server's copy arrives. `preview` while
  * the filmstrip is scrubbed past it, when the viewer skips full-size images.
  */
-export type PendingPhoto = { slug: string; preview: boolean };
+type PendingPhoto = { slug: string; preview: boolean };
 
 /**
  * The photo viewer's state outside any one component: the photo it shows
@@ -47,14 +40,16 @@ class PhotoViewerController extends TypedEventTarget<{ change: Event }> {
   select(slug: string) {
     if (!this.show(slug)) return;
     navigate(routes.jam.y2026.photos.show.href({ photo: slug }), {
-      ...frameNavigation,
+      target: jam2026ModalConfig.frameName,
       history: "replace",
+      resetScroll: "manual",
+      resetFocus: "manual",
       // A quicker step cancels this one; the photo is already shown.
     }).catch(() => {});
   }
 
   /** Drops the pending photo once the server's copy of it has arrived. */
-  settle(slug: string) {
+  settle(slug: string | undefined) {
     if (this.#pending?.slug === slug) this.#pending = undefined;
   }
 
@@ -94,9 +89,19 @@ export let photoViewer = new PhotoViewerController();
  */
 export function selectOnClick(getSlug: () => string) {
   return (event: MouseEvent) => {
-    if (event.button !== 0 || event.metaKey || event.ctrlKey) return;
-    if (event.shiftKey || event.altKey) return;
+    if (!isPlainClick(event)) return;
     event.preventDefault();
     photoViewer.select(getSlug());
   };
+}
+
+/** A left click without modifier keys, which opens a link in place. */
+export function isPlainClick(event: MouseEvent) {
+  return (
+    event.button === 0 &&
+    !event.metaKey &&
+    !event.ctrlKey &&
+    !event.shiftKey &&
+    !event.altKey
+  );
 }

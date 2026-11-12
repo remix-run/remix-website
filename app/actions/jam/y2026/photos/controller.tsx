@@ -22,17 +22,17 @@ export default createController(routes.jam.y2026.photos, {
 
     async download({ params, request }) {
       let slug = parsePhotoSlug(params.photo);
-      if (slug === null) return textResponse("Invalid photo", 400);
+      if (slug === null) return new Response("Invalid photo", { status: 400 });
 
       let photo = getPhotoCards(await getJam2026Photos()).find(
         (card) => card.slug === slug,
       );
-      if (!photo) return textResponse("Photo not found", 404);
+      if (!photo) return new Response("Photo not found", { status: 404 });
 
       // The original upload, at full resolution.
       let upstream = await fetch(photo.url, { signal: request.signal });
       if (!upstream.ok || !upstream.body) {
-        return textResponse("Unable to download photo", 502);
+        return new Response("Unable to download photo", { status: 502 });
       }
 
       return new Response(upstream.body, {
@@ -46,10 +46,3 @@ export default createController(routes.jam.y2026.photos, {
     },
   },
 });
-
-function textResponse(body: string, status: number) {
-  return new Response(body, {
-    status,
-    headers: { "Content-Type": "text/plain; charset=utf-8" },
-  });
-}

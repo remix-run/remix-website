@@ -4,7 +4,7 @@ import { jamTheme } from "./theme.ts";
 import { jam2026ModalConfig } from "./modal-contract.ts";
 import { photoGallery } from "./photo-gallery.ts";
 import { pageScrollY, scrollAlongCurve } from "./scroll-animation.ts";
-import { photoViewer } from "./photo-viewer-controller.ts";
+import { isPlainClick, photoViewer } from "./photo-viewer-controller.ts";
 import {
   preloadViewerImage,
   resizeShopifyImage,
@@ -24,15 +24,12 @@ type Jam2026PhotoDeckProps = {
   initiallyDealt?: boolean;
 };
 
-const THUMBNAIL_WIDTHS = [320, 480, 640];
 // How many cards show in the stack (and load their images) before the deal.
 const STACK_SIZE = 10;
 // The deal sends cards out in a wave: each later card, up to `staggerCap`,
 // takes `stagger` ms longer. Gathering brings them all back at once.
 const DEAL = { duration: 350, stagger: 19, staggerCap: 20, bounce: 0.2 };
 const GATHER = { duration: 350, bounce: 0 };
-// The list grows and shrinks without bounce, so the page below doesn't wobble.
-const RESIZE_DURATION = { deal: 400, gather: 300 };
 // The stack's shape at rest and while hovered: how much of the livestream's
 // width it spreads across, and how far apart its rows sit.
 const STACK_REST = { spread: 0.49, rowSpacing: 35 };
@@ -75,10 +72,9 @@ export let Jam2026PhotoDeck = clientEntry(
         if (!list) return;
         padStack();
         let reduceMotion = prefersReducedMotion();
-        let resize = spring({
-          duration: dealt ? RESIZE_DURATION.deal : RESIZE_DURATION.gather,
-          bounce: 0,
-        });
+        // The list grows and shrinks without bounce, so the page below
+        // doesn't wobble.
+        let resize = spring({ duration: dealt ? 400 : 300, bounce: 0 });
         if (!reduceMotion) {
           for (let move of cardMoves) move.cancel();
           let endHeight = list.offsetHeight;
@@ -107,7 +103,6 @@ export let Jam2026PhotoDeck = clientEntry(
         else scrollAlongCurve(pageScrollY, targetY, [...resize], handle.signal);
       });
     };
-    let deal = () => setDealt(true);
 
     // A card about to be opened starts loading its full-size photo: after a
     // short hover, as Remix's link prefetching waits, or at once on focus
@@ -131,16 +126,6 @@ export let Jam2026PhotoDeck = clientEntry(
     ];
     handle.signal.addEventListener("abort", () => clearTimeout(preloadTimer));
 
-    // The card is a real link the frame runtime follows; the viewer shows its
-    // photo before that navigation comes back. While the viewer closes, the
-    // close's navigation would undo the open, so the click waits it out.
-    let openPhoto = (event: MouseEvent, slug: string) => {
-      if (event.button !== 0 || event.metaKey || event.ctrlKey) return;
-      if (event.shiftKey || event.altKey) return;
-      if (!photoViewer.show(slug)) event.preventDefault();
-    };
-    let gather = () => setDealt(false);
-
     // Escape gathers the dealt photos from anywhere on the page, unless a
     // modal is open. That includes one animating closed, which has already
     // released the page but should still own the key.
@@ -154,7 +139,7 @@ export let Jam2026PhotoDeck = clientEntry(
           if (document.querySelector("[role='dialog'][aria-modal='true']")) {
             return;
           }
-          gather();
+          setDealt(false);
         },
         { signal: handle.signal },
       );
@@ -203,7 +188,10 @@ export let Jam2026PhotoDeck = clientEntry(
                     // The visible cards act as one: clicking any of them deals,
                     // including the button on top, whose click bubbles here.
                     stacked && index < STACK_SIZE
-                      ? [visibleStackCellStyle, on("click", deal)]
+                      ? [
+                          visibleStackCellStyle,
+                          on("click", () => setDealt(true)),
+                        ]
                       : null,
                   ]}
                   style={{
@@ -237,9 +225,16 @@ export let Jam2026PhotoDeck = clientEntry(
                           ref((link, signal) =>
                             photoViewer.registerCard(card.slug, link, signal),
                           ),
-                          on<HTMLAnchorElement, "click">("click", (event) =>
-                            openPhoto(event, card.slug),
-                          ),
+                          // A real link the frame runtime follows; the viewer
+                          // shows its photo before that navigation comes back.
+                          // While the viewer closes, the close's navigation
+                          // would undo the open, so the click waits it out.
+                          on<HTMLAnchorElement, "click">("click", (event) => {
+                            if (!isPlainClick(event)) return;
+                            if (!photoViewer.show(card.slug)) {
+                              event.preventDefault();
+                            }
+                          }),
                         ]}
                       />
                     )}
@@ -257,7 +252,7 @@ export let Jam2026PhotoDeck = clientEntry(
                               // finishes bubbling, and by then the top cards
                               // deal on click again.
                               event.stopPropagation();
-                              gather();
+                              setDealt(false);
                             }),
                           ]}
                           type="button"
@@ -282,10 +277,12 @@ export let Jam2026PhotoDeck = clientEntry(
                           loading="lazy"
                           sizes="(max-width: 639px) 50vw, (max-width: 1023px) 33vw, 280px"
                           src={resizeShopifyImage(card.url, 480)}
-                          srcSet={THUMBNAIL_WIDTHS.map(
-                            (width) =>
-                              `${resizeShopifyImage(card.url, width)} ${width}w`,
-                          ).join(", ")}
+                          srcSet={[320, 480, 640]
+                            .map(
+                              (width) =>
+                                `${resizeShopifyImage(card.url, width)} ${width}w`,
+                            )
+                            .join(", ")}
                           width={card.width}
                         />
                       )}

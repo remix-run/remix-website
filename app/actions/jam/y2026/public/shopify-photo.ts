@@ -22,9 +22,6 @@ export type PhotoViewerState = {
   timeline: (PhotoCard & { current: boolean })[];
 };
 
-// How many photos the viewer's filmstrip shows on each side of the open one.
-const TIMELINE_RADIUS = 4;
-
 /** The photo with this slug and its neighbors, wrapping around the ends. */
 export function findPhotoViewerState(
   cards: readonly PhotoCard[],
@@ -36,9 +33,9 @@ export function findPhotoViewerState(
   let count = cards.length;
   let at = (offset: number) =>
     cards[(((index + offset) % count) + count) % count];
-  // Wraps around like stepping does, without repeating a photo when there
-  // are too few to fill both sides.
-  let radius = Math.min(TIMELINE_RADIUS, Math.floor((count - 1) / 2));
+  // Up to four photos on each side of the open one, wrapping around like
+  // stepping does, without repeating a photo when there are too few.
+  let radius = Math.min(4, Math.floor((count - 1) / 2));
   let timeline = [];
   for (let offset = -radius; offset <= radius; offset++) {
     timeline.push({ ...at(offset), current: offset === 0 });
@@ -54,12 +51,9 @@ export function findPhotoViewerState(
   };
 }
 
-// The photo viewer's full-size image width.
-const VIEWER_IMAGE_WIDTH = 1920;
-
 /** The URL of the photo at the size the viewer shows it. */
 export function getViewerImageUrl(url: string) {
-  return resizeShopifyImage(url, VIEWER_IMAGE_WIDTH);
+  return resizeShopifyImage(url, 1920);
 }
 
 let preloadedViewerImages = new Set<string>();
