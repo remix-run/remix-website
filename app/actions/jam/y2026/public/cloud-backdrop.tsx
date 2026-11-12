@@ -63,7 +63,7 @@ async function mountCloudBackdrop(host: HTMLElement, signal: AbortSignal) {
       host,
       seed: 60,
       reducedMotion,
-      settings: createCloudSettings(DEFAULT_CLOUD_SETTINGS),
+      settings: createCloudSettings(DEFAULT_CLOUD_SETTINGS, host),
     });
   } catch {
     host.dataset.cloudState = "fallback";
@@ -75,13 +75,16 @@ async function mountCloudBackdrop(host: HTMLElement, signal: AbortSignal) {
   let lastRenderAt = 0;
   let lastElapsed = 0;
   let start = performance.now();
-
-  let resize = () => {
-    let rect = host.getBoundingClientRect();
-    renderer.resize(rect.width, rect.height);
-  };
+  // Resizing the canvas clears it, so a new size waits for the next frame
+  // and is drawn right away, instead of leaving the canvas blank until then.
+  let resizePending = true;
 
   let renderFrame = (now: number) => {
+    if (resizePending) {
+      resizePending = false;
+      let rect = host.getBoundingClientRect();
+      renderer.resize(rect.width, rect.height);
+    }
     let elapsed = reducedMotion ? 0 : (now - start) / 1000;
     let deltaSeconds = Math.max(0, elapsed - lastElapsed);
     lastElapsed = elapsed;
@@ -121,7 +124,7 @@ async function mountCloudBackdrop(host: HTMLElement, signal: AbortSignal) {
 
   let syncSettings = () => {
     settingsFrame = 0;
-    renderer.setSettings(createCloudSettings(DEFAULT_CLOUD_SETTINGS));
+    renderer.setSettings(createCloudSettings(DEFAULT_CLOUD_SETTINGS, host));
 
     if (reducedMotion) {
       renderFrame(performance.now());
@@ -134,11 +137,10 @@ async function mountCloudBackdrop(host: HTMLElement, signal: AbortSignal) {
   };
 
   let resizeObserver = new ResizeObserver(() => {
-    resize();
+    resizePending = true;
     requestSettingsSync();
   });
   resizeObserver.observe(host);
-  resize();
   renderFrame(performance.now());
   syncPausedState();
 
@@ -204,8 +206,9 @@ function isCloudPaused() {
 
 function createCloudSettings(
   defaults: CloudBackdropSettings,
+  host: HTMLElement,
 ): Partial<CloudBackdropSettings> {
-  let scrollProgress = getCloudScrollProgress();
+  let scrollProgress = getCloudScrollProgress(host);
   let positionZ =
     defaults.camera.position[2] +
     (scrollCloudClearing.maxCameraZ - defaults.camera.position[2]) *
@@ -252,8 +255,10 @@ function createCloudSettings(
   };
 }
 
-function getCloudScrollProgress() {
-  let clearDistance = window.innerHeight * scrollCloudClearing.distanceRatio;
+// Relative to the backdrop's height, which holds still as mobile toolbars
+// come and go (see cloudBackdropStyle), unlike the window's.
+function getCloudScrollProgress(host: HTMLElement) {
+  let clearDistance = host.clientHeight * scrollCloudClearing.distanceRatio;
   if (clearDistance <= 0) return 0;
   return Math.min(Math.max(window.scrollY / clearDistance, 0), 1);
 }
@@ -269,7 +274,12 @@ function getResolvedTheme() {
 
 let cloudBackdropStyle = css({
   position: "fixed",
-  inset: 0,
+  // As tall as the viewport with mobile browser toolbars hidden, so they can
+  // come and go as the page scrolls without resizing the canvas, which clears
+  // it. With the toolbars showing, the bottom sits behind them.
+  insetBlockStart: 0,
+  insetInline: 0,
+  height: "100lvh",
   zIndex: 0,
   pointerEvents: "none",
   overflow: "hidden",

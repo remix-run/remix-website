@@ -379,8 +379,12 @@ export class VolumetricCloudRenderer {
   }
 
   resize(width: number, height: number) {
-    this.viewportWidth = Math.max(width, 1);
-    this.viewportHeight = Math.max(height, 1);
+    width = Math.max(width, 1);
+    height = Math.max(height, 1);
+    // Setting the canvas's size clears it, even to the size it already has.
+    if (width === this.viewportWidth && height === this.viewportHeight) return;
+    this.viewportWidth = width;
+    this.viewportHeight = height;
     this.renderer.setSize(this.viewportWidth, this.viewportHeight, false);
     this.camera.aspect = this.viewportWidth / this.viewportHeight;
     this.camera.updateProjectionMatrix();
