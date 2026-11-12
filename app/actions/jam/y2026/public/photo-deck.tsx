@@ -1,9 +1,5 @@
 import { clientEntry, css, on, ref, type Handle } from "remix/component";
-import {
-  animateLayout,
-  prefersReducedMotion,
-  spring,
-} from "@remix-run/ui/animation";
+import { prefersReducedMotion, spring } from "@remix-run/ui/animation";
 import { jamTheme } from "./theme.ts";
 import { jam2026ModalConfig } from "./modal-contract.ts";
 import { photoGallery } from "./photo-gallery.ts";
@@ -50,24 +46,30 @@ export let Jam2026PhotoDeck = clientEntry(
     let dealt = handle.props.initiallyDealt ?? false;
     let hasDealt = dealt;
     let list: HTMLUListElement | null = null;
+    let cardMoves: Animation[] = [];
 
     // The stacked blob reaches above and below the single row it sits in.
     // Padding the list by that much keeps the space around the photos the same
     // stacked as dealt, so the deal doesn't shift what's above or below.
+    // Inline padding rather than custom properties, which every card would
+    // inherit and restyle for.
     let padStack = () => {
       if (!list) return;
-      let { top, bottom } = dealt
-        ? { top: 0, bottom: 0 }
-        : getStackOverflow(list);
-      list.style.setProperty("--stack-pad-top", `${top}px`);
-      list.style.setProperty("--stack-pad-bottom", `${bottom}px`);
+      let pad = dealt ? undefined : getStackOverflow(list);
+      list.style.paddingTop = pad ? `${pad.top}px` : "";
+      list.style.paddingBottom = pad ? `${pad.bottom}px` : "";
     };
 
     let setDealt = (next: boolean) => {
       if (dealt === next) return;
+      let cards = list ? ([...list.children] as HTMLElement[]) : [];
       let startHeight = list?.offsetHeight ?? 0;
+      let starts = cards.map((card) => card.getBoundingClientRect());
       dealt = next;
       hasDealt ||= next;
+      // Off the deal button before the deal removes it: removing the focused
+      // element forces a layout partway through the update.
+      if (dealt) list?.focus({ preventScroll: true });
       handle.update();
       handle.queueTask(() => {
         if (!list) return;
@@ -77,20 +79,17 @@ export let Jam2026PhotoDeck = clientEntry(
           duration: dealt ? RESIZE_DURATION.deal : RESIZE_DURATION.gather,
           bounce: 0,
         });
-        // Grow or shrink the list instead of snapping the content below it.
         if (!reduceMotion) {
+          for (let move of cardMoves) move.cancel();
+          let endHeight = list.offsetHeight;
+          cardMoves = moveCards(cards, starts, dealt);
+          // Grow or shrink the list instead of snapping the content below it.
           list.animate(
-            [
-              { height: `${startHeight}px` },
-              { height: `${list.offsetHeight}px` },
-            ],
+            [{ height: `${startHeight}px` }, { height: `${endHeight}px` }],
             { ...resize },
           );
         }
-        if (dealt) {
-          list.focus({ preventScroll: true });
-          return;
-        }
+        if (dealt) return;
         list
           .querySelector<HTMLElement>("button[data-deal]")
           ?.focus({ preventScroll: true });
@@ -164,7 +163,6 @@ export let Jam2026PhotoDeck = clientEntry(
     return () => {
       let { cards } = handle.props;
       handle.queueTask(() => photoGallery.set(cards));
-      let animate = !prefersReducedMotion();
 
       return (
         <div mix={deckStyle}>
@@ -198,27 +196,6 @@ export let Jam2026PhotoDeck = clientEntry(
                 <li
                   key={card.url}
                   mix={[
-                    // First, so it keeps its place in the mix list when the
-                    // conditional styles below drop out; a moved mixin remounts
-                    // and loses the stacked position it animates from. It's
-                    // configured for the move this render starts: back into
-                    // the stack, or out to the grid.
-                    animateLayout(
-                      animate && {
-                        size: false,
-                        ...spring(
-                          stacked
-                            ? GATHER
-                            : {
-                                duration:
-                                  DEAL.duration +
-                                  Math.min(index, DEAL.staggerCap) *
-                                    DEAL.stagger,
-                                bounce: DEAL.bounce,
-                              },
-                        ),
-                      },
-                    ),
                     cellStyle,
                     stacked ? stackedCellStyle : null,
                     stacked && index > 0 ? pileCellStyle : null,
@@ -336,6 +313,37 @@ export let Jam2026PhotoDeck = clientEntry(
 );
 
 /**
+ * Moves each card from where it was on screen to its new place: out to the
+ * grid in a wave when dealt, or all at once back into the stack. Every
+ * position is read in one pass and every move started in another; reading
+ * one card's place after moving another would make the browser restyle in
+ * between, for each of the hundred cards.
+ */
+function moveCards(cards: HTMLElement[], starts: DOMRect[], dealt: boolean) {
+  let ends = cards.map((card) => card.getBoundingClientRect());
+  let moves: Animation[] = [];
+  cards.forEach((card, index) => {
+    let x = starts[index].left - ends[index].left;
+    let y = starts[index].top - ends[index].top;
+    if (Math.abs(x) < 0.5 && Math.abs(y) < 0.5) return;
+    let timing = dealt
+      ? {
+          duration:
+            DEAL.duration + Math.min(index, DEAL.staggerCap) * DEAL.stagger,
+          bounce: DEAL.bounce,
+        }
+      : GATHER;
+    moves.push(
+      card.animate(
+        [{ transform: `translate(${x}px, ${y}px)` }, { transform: "none" }],
+        { ...spring(timing) },
+      ),
+    );
+  });
+  return moves;
+}
+
+/**
  * A fixed nudge for each stacked card, from -1 to 1 on each axis, so the
  * stack looks tossed together rather than laid out.
  */
@@ -415,7 +423,7 @@ let gridStyle = css({
 // Room for the stacked blob above and below its row (see padStack). Before
 // hydration measures it, a typical overflow keeps the page close.
 let stackedListStyle = css({
-  paddingBlock: "var(--stack-pad-top, 90px) var(--stack-pad-bottom, 90px)",
+  paddingBlock: "90px",
 });
 
 // Landscape cards span the cell; portrait cards share the same long edge, so
@@ -495,11 +503,22 @@ let stackedCardStyle = css({
   // Solid, unlike a lone window, so the cards behind don't show through.
   background: jamTheme.surfaceRaised,
   ...stackPose(STACK_REST),
-  ":is(ul:has(> li:hover, > li > button:focus-visible)) > li > &":
-    stackPose(STACK_HOVER),
+  // It spreads while hovered or while its button has keyboard focus. Hover
+  // only counts where there's a pointer to hover with: a tap applies :hover
+  // too, which would restyle the whole pile just as the deal starts.
+  ":is(ul:has(> li > button:focus-visible)) > li > &": stackPose(STACK_HOVER),
+  "@media (hover: hover)": {
+    ":is(ul:has(> li:hover)) > li > &": stackPose(STACK_HOVER),
+  },
   "@media (prefers-reduced-motion: reduce)": {
     // Lift the stack instead of fanning it.
-    ":is(ul:has(> li:hover, > li > button:focus-visible)) > li > &": {
+    ":is(ul:has(> li > button:focus-visible)) > li > &": {
+      ...stackPose(STACK_REST),
+      boxShadow: liftedShadow,
+    },
+  },
+  "@media (hover: hover) and (prefers-reduced-motion: reduce)": {
+    ":is(ul:has(> li:hover)) > li > &": {
       ...stackPose(STACK_REST),
       boxShadow: liftedShadow,
     },
@@ -559,8 +578,11 @@ let dealButtonStyle = css({
   whiteSpace: "nowrap",
   transition: "background-color 200ms ease",
   // Turns solid, so it stands out over the fanned-out cards.
-  ":is(ul:has(> li:hover, > li > button:focus-visible)) &": {
+  ":is(ul:has(> li > button:focus-visible)) &": {
     background: jamTheme.surfaceRaised,
+  },
+  "@media (hover: hover)": {
+    ":is(ul:has(> li:hover)) &": { background: jamTheme.surfaceRaised },
   },
   "&:focus-visible": {
     outline: `2px solid ${jamTheme.brandRed}`,
