@@ -13,10 +13,12 @@ import {
   resolveJam2026Discount,
   type Jam2026Discount,
 } from "./discount-code.ts";
-import { Jam2026TicketsModalFrame } from "./public/tickets-modal.tsx";
 import { Jam2026NewsletterSignup } from "./public/newsletter-signup.tsx";
 import { Jam2026HomePage } from "./home-page.tsx";
-import { ticketModalConfig } from "./public/tickets-modal-contract.ts";
+import { Jam2026ModalFrame } from "./modal-frame.tsx";
+import { getJam2026Photos, getPhotoCards } from "./photo-lookup.ts";
+import { findPhotoViewerState } from "./public/shopify-photo.ts";
+import { jam2026ModalConfig } from "./public/modal-contract.ts";
 import {
   getJam2026ThemePreference,
   serializeJam2026ThemePreference,
@@ -63,13 +65,14 @@ export default createController(routes.jam.y2026, {
 });
 
 /**
- * Renders the Jam 2026 page, or just the tickets modal when the request targets
- * the modal frame. Shared with the ticket route, which renders the same page
- * with the modal open.
+ * Renders the Jam 2026 page, or just the modal frame when the request targets
+ * it. Shared with the ticket and photo routes, which render the same page with
+ * the tickets modal or the photo viewer open.
  */
 export async function renderJam2026Page({
   cacheControl,
   discount,
+  photo,
   render,
   request,
   status = 200,
@@ -77,6 +80,8 @@ export async function renderJam2026Page({
 }: {
   cacheControl?: string;
   discount?: Jam2026Discount;
+  /** The slug of the photo to open in the viewer. */
+  photo?: string;
   render: AppRenderer;
   request: Request;
   status?: number;
@@ -87,8 +92,8 @@ export async function renderJam2026Page({
   discount ??= await resolveJam2026Discount(request);
   let ticketsModalOpen =
     requestUrl.pathname === routes.jam.y2026.ticket.index.href();
-  let isTicketsFrameRequest =
-    request.headers.get("x-remix-target") === ticketModalConfig.frameName;
+  let isModalFrameRequest =
+    request.headers.get("x-remix-target") === jam2026ModalConfig.frameName;
   let isServerResolvedFrame =
     request.headers.get("x-remix-ssr-frame") === "true";
   let theme = await getJam2026ThemePreference(request.headers.get("cookie"));
@@ -105,13 +110,25 @@ export async function renderJam2026Page({
   });
   if (discount.setCookie) headers.append("Set-Cookie", discount.setCookie);
 
+  // The modal frame needs the photos only to open one; the page always shows
+  // them.
+  let photos =
+    photo !== undefined || !isModalFrameRequest
+      ? getPhotoCards(await getJam2026Photos())
+      : [];
+  let photoViewer =
+    photo === undefined ? undefined : findPhotoViewerState(photos, photo);
+  // An unknown photo still renders the page, just without the viewer.
+  if (photo !== undefined && !photoViewer) status = 404;
+
   let responseInit = { status, headers };
 
-  if (isTicketsFrameRequest) {
+  if (isModalFrameRequest) {
     return render(
-      <Jam2026TicketsModalFrame
+      <Jam2026ModalFrame
         animateEntrance={!isServerResolvedFrame}
-        open={ticketsModalOpen}
+        photoViewer={photoViewer}
+        ticketsModalOpen={ticketsModalOpen}
         ticketCheckout={ticketCheckout}
       />,
       responseInit,
@@ -120,6 +137,8 @@ export async function renderJam2026Page({
 
   return render(
     <Jam2026HomePage
+      photos={photos}
+      photoViewer={photoViewer}
       requestUrl={request.url}
       schedule={await getJam2026Schedule()}
       ticketsModalOpen={ticketsModalOpen}

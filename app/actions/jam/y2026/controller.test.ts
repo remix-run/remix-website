@@ -1,13 +1,15 @@
-import { describe, it } from "remix/test";
+import { describe, it, type TestContext } from "remix/test";
 import { expect } from "remix/assert";
 
 import { DOCUMENT_REDIRECT_HEADER } from "../../public/document-redirect.ts";
 import { routes } from "../../../routes.ts";
+import { env } from "../../../utils/env.ts";
 import { createRouteTestRouter } from "../../../../test/setup.ts";
 import jam2026Controller from "./controller.tsx";
 import jam2026TicketController from "./ticket/controller.tsx";
+import jam2026PhotosController from "./photos/controller.tsx";
 import { remixJam2026Ticket } from "./public/ticket-data.ts";
-import { ticketModalConfig } from "./public/tickets-modal-contract.ts";
+import { jam2026ModalConfig } from "./public/modal-contract.ts";
 import {
   getJam2026ThemePreference,
   serializeJam2026ThemePreference,
@@ -16,6 +18,7 @@ import {
   getJam2026DiscountCode,
   serializeJam2026DiscountCode,
 } from "./discount-code.ts";
+import { clearJam2026PhotosCache } from "./photo-lookup.ts";
 
 describe("Remix Jam 2026 routes", () => {
   it("renders the livestream before the schedule without ticket navigation or scattered photos", async () => {
@@ -44,6 +47,32 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).not.toContain('href="/jam/2026/ticket"');
     expect(html).not.toContain('role="dialog"');
     expect(html).not.toContain('src="/jam/2026/photos/');
+  });
+
+  it("stacks a card per photo between the hero and the livestream, loading only the top ten", async (t) => {
+    mockStorefrontPhotos(
+      t,
+      Array.from({ length: 12 }, (_, index) => `DSC${index + 1}.jpg`),
+    );
+
+    let html = await renderJam2026Home();
+
+    expect(getCardFilenames(html)).toHaveLength(12);
+    expect(
+      html.match(/src="https:\/\/cdn\.shopify\.com\/files\//g),
+    ).toHaveLength(10);
+    // The deal button says how many photos the stack holds.
+    expect(html).toMatch(/<button[^>]*data-deal[^>]*>[^<]*\b12\b/);
+    expect(html.indexOf('id="photos"')).toBeLessThan(html.indexOf("<iframe"));
+    expect(html.indexOf("<iframe")).toBeLessThan(html.indexOf('id="schedule"'));
+  });
+
+  it("omits the photos section when there are no photos", async (t) => {
+    mockStorefrontPhotos(t, []);
+
+    let html = await renderJam2026Home();
+
+    expect(html).not.toContain('id="photos"');
   });
 
   it("renders the newsletter signup fragment", async () => {
@@ -75,7 +104,7 @@ describe("Remix Jam 2026 routes", () => {
       let response = await createJam2026TestRouter().fetch(
         new Request(appUrl(routes.jam.y2026.ticket.index), {
           headers: frame
-            ? { "x-remix-target": ticketModalConfig.frameName }
+            ? { "x-remix-target": jam2026ModalConfig.frameName }
             : {},
         }),
       );
@@ -87,7 +116,7 @@ describe("Remix Jam 2026 routes", () => {
       expect(html).toContain('aria-label="Close tickets"');
       expect(html).toContain('href="/jam/2026"');
       expect(html).toContain(
-        `data-rmx-target="${ticketModalConfig.frameName}"`,
+        `data-rmx-target="${jam2026ModalConfig.frameName}"`,
       );
       // The native disabled attribute protects checkout even before hydration.
       expect(html).toMatch(/<button[^>]*disabled[^>]*type="submit"/);
@@ -103,7 +132,7 @@ describe("Remix Jam 2026 routes", () => {
   it("renders the homepage route as closed modal frame content", async () => {
     let response = await createJam2026TestRouter().fetch(
       new Request(appUrl(routes.jam.y2026.index), {
-        headers: { "x-remix-target": ticketModalConfig.frameName },
+        headers: { "x-remix-target": jam2026ModalConfig.frameName },
       }),
     );
     expect(response.status).toBe(200);
@@ -183,10 +212,18 @@ describe("Remix Jam 2026 routes", () => {
 
   it("blocks stale and enhanced checkout submissions without contacting Shopify, even with a discount", async (t) => {
     let requests: string[] = [];
-    t.mock.method(globalThis, "fetch", async (input: RequestInfo | URL) => {
-      requests.push(String(input));
-      throw new Error("Closed ticket sales must not contact Shopify");
-    });
+    t.mock.method(
+      globalThis,
+      "fetch",
+      async (input: RequestInfo | URL, init?: RequestInit) => {
+        // The page's photo gallery may read its metaobject; checkout may not.
+        if (String(init?.body).includes('"remix-jam-2026"')) {
+          return Response.json({ data: { metaobject: null } });
+        }
+        requests.push(String(input));
+        throw new Error("Closed ticket sales must not contact Shopify");
+      },
+    );
     let cookie = await serializeJam2026DiscountCode("PARTNER-2026");
     for (let enhanced of [false, true]) {
       let formData = new FormData();
@@ -201,7 +238,7 @@ describe("Remix Jam 2026 routes", () => {
             ...(enhanced
               ? {
                   "X-Remix-Frame": "true",
-                  "x-remix-target": ticketModalConfig.frameName,
+                  "x-remix-target": jam2026ModalConfig.frameName,
                 }
               : {}),
           },
@@ -239,6 +276,205 @@ describe("Remix Jam 2026 routes", () => {
   });
 });
 
+describe("Remix Jam 2026 photo routes", () => {
+  let filenames = ["DSC01.jpg", "DSC02.jpg", "DSC03.jpg"];
+
+  function photoUrl(photo: string, headers?: HeadersInit) {
+    return new Request(
+      new URL(
+        routes.jam.y2026.photos.show.href({ photo }),
+        "http://localhost:3000",
+      ),
+      { headers },
+    );
+  }
+
+  it("opens a photo link with the viewer over the dealt photos", async (t) => {
+    mockStorefrontPhotos(t, filenames);
+
+    let response = await createJam2026TestRouter().fetch(photoUrl("DSC02"));
+    expect(response.status).toBe(200);
+    let html = await response.text();
+
+    expect(html).toContain("<title>DSC02.jpg | Remix Jam 2026</title>");
+    expect(html).toContain(
+      'rel="canonical" href="http://localhost:3000/jam/2026/photos/DSC02"',
+    );
+    expect(html).toMatch(
+      /role="dialog"[^>]*aria-labelledby="photo-viewer-title"|aria-labelledby="photo-viewer-title"[^>]*role="dialog"/,
+    );
+    expect(html).toContain("2 / 3");
+    expect(getLinkHref(html, "Previous photo")).toBe(
+      routes.jam.y2026.photos.show.href({ photo: "DSC01" }),
+    );
+    expect(getLinkHref(html, "Next photo")).toBe(
+      routes.jam.y2026.photos.show.href({ photo: "DSC03" }),
+    );
+    expect(getLinkHref(html, "Download DSC02.jpg")).toBe(
+      routes.jam.y2026.photos.download.href({ photo: "DSC02" }),
+    );
+    // Dealt behind the viewer: no stack to deal, and every card links in.
+    expect(html).not.toContain("data-deal");
+    for (let filename of filenames) {
+      expect(html).toContain(`aria-label="View ${filename}"`);
+    }
+  });
+
+  it("asks Shopify for the photos once, not on every viewer step", async (t) => {
+    let storefront = mockStorefrontPhotos(t, filenames);
+    let router = createJam2026TestRouter();
+    let frameHeaders = { "x-remix-target": jam2026ModalConfig.frameName };
+
+    for (let photo of ["DSC01", "DSC02", "DSC03"]) {
+      let response = await router.fetch(photoUrl(photo, frameHeaders));
+      expect(response.status).toBe(200);
+      expect(await response.text()).toContain(`${photo}.jpg`);
+    }
+
+    expect(storefront.mock.callCount()).toBe(1);
+  });
+
+  it("makes the page behind a photo link inert before anything hydrates", async (t) => {
+    mockStorefrontPhotos(t, filenames);
+
+    let html = await (
+      await createJam2026TestRouter().fetch(photoUrl("DSC02"))
+    ).text();
+    let background = html.match(
+      new RegExp(`<div[^>]*id="${jam2026ModalConfig.pageBackgroundId}"[^>]*>`),
+    )?.[0];
+
+    expect(background).toContain("inert");
+    expect(background).toContain('aria-hidden="true"');
+  });
+
+  it("names photos with header- and URL-safe filenames", async (t) => {
+    mockStorefrontPhotos(t, [
+      encodeURIComponent('Café "shot"\n#1.jpg'),
+      "DSC02.jpg",
+    ]);
+
+    let html = await (
+      await createJam2026TestRouter().fetch(photoUrl("Cafe-shot-1"))
+    ).text();
+    let download = await createJam2026TestRouter().fetch(
+      new URL(
+        routes.jam.y2026.photos.download.href({ photo: "Cafe-shot-1" }),
+        "http://localhost:3000",
+      ),
+    );
+
+    expect(html).toContain("<title>Cafe-shot-1.jpg | Remix Jam 2026</title>");
+    expect(download.status).toBe(200);
+    expect(download.headers.get("Content-Disposition")).toBe(
+      'attachment; filename="Cafe-shot-1.jpg"',
+    );
+  });
+
+  it("wraps the viewer's neighbors and filmstrip around the ends", async (t) => {
+    mockStorefrontPhotos(
+      t,
+      Array.from({ length: 12 }, (_, index) => `DSC${index + 10}.jpg`),
+    );
+
+    let html = await (
+      await createJam2026TestRouter().fetch(photoUrl("DSC10"))
+    ).text();
+    let filmstrip = html.slice(html.indexOf('aria-label="Nearby photos"'));
+    filmstrip = filmstrip.slice(0, filmstrip.indexOf("</ol>"));
+    let slugs = [
+      ...filmstrip.matchAll(/href="\/jam\/2026\/photos\/(\w+)"/g),
+    ].map(([, slug]) => slug);
+
+    expect(html).toContain("1 / 12");
+    expect(getLinkHref(html, "Previous photo")).toBe(
+      routes.jam.y2026.photos.show.href({ photo: "DSC21" }),
+    );
+    // Up to four photos on each side, wrapped around the start, with the open
+    // photo in the middle.
+    expect(slugs).toEqual([
+      "DSC18",
+      "DSC19",
+      "DSC20",
+      "DSC21",
+      "DSC10",
+      "DSC11",
+      "DSC12",
+      "DSC13",
+      "DSC14",
+    ]);
+    expect(filmstrip.match(/aria-current="true"/g)).toHaveLength(1);
+  });
+
+  it("renders just the modal frame for frame requests", async (t) => {
+    mockStorefrontPhotos(t, filenames);
+    let frameHeaders = { "x-remix-target": jam2026ModalConfig.frameName };
+
+    let photoFrame = await (
+      await createJam2026TestRouter().fetch(photoUrl("DSC03", frameHeaders))
+    ).text();
+    let closedFrame = await (
+      await createJam2026TestRouter().fetch(
+        new Request(appUrl(routes.jam.y2026.index), { headers: frameHeaders }),
+      )
+    ).text();
+
+    expect(photoFrame).not.toContain("<html");
+    expect(photoFrame).toContain('aria-labelledby="photo-viewer-title"');
+    expect(photoFrame).toContain("3 / 3");
+    expect(closedFrame).not.toContain("<html");
+    expect(closedFrame).not.toContain('role="dialog"');
+  });
+
+  it("renders the page without the viewer for unknown or invalid photos", async (t) => {
+    mockStorefrontPhotos(t, filenames);
+
+    let unknown = await createJam2026TestRouter().fetch(photoUrl("DSC99"));
+    let invalid = await createJam2026TestRouter().fetch(
+      photoUrl("x".repeat(201)),
+    );
+    let unsafe = await createJam2026TestRouter().fetch(
+      photoUrl(encodeURIComponent('DSC02"\n')),
+    );
+
+    expect(unknown.status).toBe(404);
+    expect(await unknown.text()).not.toContain('role="dialog"');
+    expect(invalid.status).toBe(400);
+    expect(await invalid.text()).not.toContain('role="dialog"');
+    expect(unsafe.status).toBe(400);
+  });
+
+  it("downloads the original photo as an attachment", async (t) => {
+    mockStorefrontPhotos(t, filenames);
+    let downloadUrl = (photo: string) =>
+      new URL(
+        routes.jam.y2026.photos.download.href({ photo }),
+        "http://localhost:3000",
+      );
+
+    let response = await createJam2026TestRouter().fetch(downloadUrl("DSC02"));
+    let missing = await createJam2026TestRouter().fetch(downloadUrl("DSC99"));
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Content-Disposition")).toBe(
+      'attachment; filename="DSC02.jpg"',
+    );
+    expect(response.headers.get("Content-Type")).toBe("image/jpeg");
+    expect(await response.text()).toBe(
+      "image bytes for https://cdn.shopify.com/files/DSC02.jpg",
+    );
+    expect(missing.status).toBe(404);
+  });
+});
+
+/** The `href` of the link with this accessible label. */
+function getLinkHref(html: string, label: string) {
+  let link = html
+    .match(/<a\b[^>]*>/g)
+    ?.find((tag) => tag.includes(`aria-label="${label}"`));
+  return link?.match(/href="([^"]*)"/)?.[1];
+}
+
 function appUrl(route: { href(): string }, search = "") {
   return new URL(`${route.href()}${search}`, "http://localhost:3000");
 }
@@ -246,6 +482,74 @@ function appUrl(route: { href(): string }, search = "") {
 function createJam2026TestRouter() {
   let router = createRouteTestRouter();
   router.map(routes.jam.y2026.ticket, jam2026TicketController);
+  router.map(routes.jam.y2026.photos, jam2026PhotosController);
   router.map(routes.jam.y2026, jam2026Controller);
   return router;
+}
+
+async function renderJam2026Home() {
+  let response = await createJam2026TestRouter().fetch(
+    appUrl(routes.jam.y2026.index),
+  );
+  return response.text();
+}
+
+function getCardFilenames(html: string) {
+  return [...html.matchAll(/>(DSC\d+\.jpg)</g)].map(([, filename]) => filename);
+}
+
+/** Serves `filenames` as the metaobject's photos, read at request time. */
+function mockStorefrontPhotos(t: TestContext, filenames: string[]) {
+  let originalToken = env.PUBLIC_STOREFRONT_API_TOKEN;
+  env.PUBLIC_STOREFRONT_API_TOKEN = "test-storefront-token";
+  // Each test brings its own photos; the cache would keep another test's.
+  clearJam2026PhotosCache();
+
+  let storefront = t.mock.method(
+    globalThis,
+    "fetch",
+    async (input: RequestInfo | URL, init?: RequestInit) => {
+      let url = String(input);
+      if (url.startsWith("https://cdn.shopify.com/files/")) {
+        return new Response(`image bytes for ${url}`, {
+          headers: { "Content-Type": "image/jpeg" },
+        });
+      }
+      if (url !== "https://jam.remix.run/api/2026-04/graphql.json") {
+        throw new Error(`Unexpected fetch: ${url}`);
+      }
+      expect(JSON.parse(String(init?.body)).variables.handle).toBe(
+        "remix-jam-2026",
+      );
+
+      return Response.json({
+        data: {
+          metaobject: {
+            fields: [
+              {
+                key: "photos",
+                references: {
+                  edges: filenames.map((filename) => ({
+                    node: {
+                      image: {
+                        url: `https://cdn.shopify.com/files/${filename}`,
+                        width: 1200,
+                        height: 800,
+                      },
+                    },
+                  })),
+                },
+              },
+            ],
+          },
+        },
+      });
+    },
+  );
+
+  t.after(() => {
+    env.PUBLIC_STOREFRONT_API_TOKEN = originalToken;
+    clearJam2026PhotosCache();
+  });
+  return storefront;
 }

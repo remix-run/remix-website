@@ -1,0 +1,27 @@
+import type { Handle, RemixNode } from "remix/component";
+
+import type { Jam2026ModalPhase } from "./modal.ts";
+import type { WindowTransitions } from "./photo-window-transition.ts";
+
+/** What the viewer's parts read from and ask of the frame that owns it. */
+export type PhotoViewerSession = {
+  readonly phase: Jam2026ModalPhase;
+  /** Shows just the card-sized preview, while the filmstrip is scrubbed. */
+  readonly previewOnly: boolean;
+  requestClose(event?: Event): void;
+  /** The window's moves to and from the gallery's cards. */
+  readonly windowTransitions: WindowTransitions;
+};
+
+// Hands the frame's session to the viewer's parts. A plain component, since
+// a client entry can be wrapped (by hot reloading, at least), which makes it
+// an unreliable context key.
+export function PhotoViewerSessionProvider(
+  handle: Handle<
+    { children: RemixNode; session: PhotoViewerSession },
+    PhotoViewerSession
+  >,
+) {
+  handle.context.set(handle.props.session);
+  return () => handle.props.children;
+}

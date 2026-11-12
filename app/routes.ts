@@ -33,6 +33,10 @@ export let routes = route({
     y2026: route("2026", {
       index: get("/"),
       newsletterSignup: get("newsletter-signup"),
+      photos: route("photos", {
+        show: get(":photo"),
+        download: get(":photo/download"),
+      }),
       theme: post("theme"),
       ticket: form("ticket"),
     }),

@@ -1,23 +1,29 @@
-import { clientEntry, css, navigate, on, type Handle } from "remix/component";
+import { clientEntry, css, on, type Handle } from "remix/component";
 import {
   animateEntrance,
   prefersReducedMotion,
   spring,
 } from "@remix-run/ui/animation";
+import { focusTrap } from "../../../../ui/public/focus-trap.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { theme } from "../../../../ui/public/theme.ts";
 
-import { syncDocumentHead } from "../../../../ui/public/document-head-sync.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
-import {
-  getJam2026ClientManagedHeadTags,
-  getJam2026HeadContent,
-} from "./head-content.ts";
+import { syncJam2026Head } from "./head-content.ts";
 import { remixJam2026Ticket } from "./ticket-data.ts";
 import { jamTheme } from "./theme.ts";
-import { ticketModalConfig } from "./tickets-modal-contract.ts";
+import { jam2026ModalConfig } from "./modal-contract.ts";
+import {
+  createJam2026Modal,
+  jam2026ModalBackdropStyle,
+  jam2026ModalScrimStyle,
+  jam2026ModalTitleStyle,
+  jam2026ModalTitlebarButtonStyle,
+  jam2026ModalTitlebarIconStyle,
+  jam2026ModalTitlebarStyle,
+  jam2026ModalWindowStyle,
+} from "./modal.ts";
 import { routes } from "../../../../routes.ts";
-import { createJam2026TicketsModalEffects } from "./tickets-modal-effects.ts";
 
 type Jam2026TicketsModalProps = {
   animateEntrance?: boolean;
@@ -40,110 +46,33 @@ let usdFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
 });
 
-function shouldAnimateEntrance(animateEntrance = true) {
-  return animateEntrance && !prefersReducedMotion();
-}
-
-function restoreScrollPosition(
-  scrollX: number,
-  scrollY: number,
-  signal?: AbortSignal,
-) {
-  if (typeof window === "undefined" || signal?.aborted) return;
-
-  window.scrollTo(scrollX, scrollY);
-  window.requestAnimationFrame(() => {
-    if (!signal?.aborted) window.scrollTo(scrollX, scrollY);
-  });
-}
-
 export let Jam2026TicketsModalFrame = clientEntry(
   import.meta.url,
   function Jam2026TicketsModalFrame(handle: Handle<Jam2026TicketsModalProps>) {
-    let modalClosing = false;
-    let closeNavigationTimer: ReturnType<typeof setTimeout> | undefined;
-    let modalEffects = createJam2026TicketsModalEffects(handle, {
-      isActive: () => isOpen() && !modalClosing,
-      requestClose,
+    let modal = createJam2026Modal(handle, {
+      getModalRoot: () =>
+        document.querySelector<HTMLElement>(
+          "[role='dialog'][aria-labelledby='tickets-modal-title']",
+        ),
+      hasContent: isOpen,
     });
-    let headSyncQueued = false;
-    let navigationEntrySyncQueued = false;
+    // Starts out matching the server-rendered head; synced when this modal
+    // opens or closes. The photo viewer shares the frame and owns the head
+    // while it's open.
+    let headSyncedOpen = isOpen();
 
     function isOpen() {
       return Boolean(handle.props.open);
     }
 
-    function requestClose(event?: Event) {
-      event?.preventDefault();
-      if (modalClosing || !isOpen()) return;
-
-      modalClosing = true;
-      let scrollX = window.scrollX;
-      let scrollY = window.scrollY;
-      handle.update();
-
-      let navigationDelay = prefersReducedMotion() ? 0 : 220;
-
-      closeNavigationTimer = setTimeout(() => {
-        closeNavigationTimer = undefined;
-        void navigate(routes.jam.y2026.index.href(), {
-          target: ticketModalConfig.frameName,
-          history: "replace",
-          resetScroll: "manual",
-          resetFocus: "manual",
-        }).finally(() => {
-          restoreScrollPosition(scrollX, scrollY, handle.signal);
-        });
-      }, navigationDelay);
-    }
-
-    handle.signal.addEventListener(
-      "abort",
-      () => {
-        if (closeNavigationTimer) clearTimeout(closeNavigationTimer);
-      },
-      { once: true },
-    );
-
-    function queueHeadSync() {
-      if (headSyncQueued) return;
-      headSyncQueued = true;
-
-      handle.queueTask(() => {
-        headSyncQueued = false;
-        let head = getJam2026HeadContent({
-          ticketsModalOpen: isOpen(),
-        });
-
-        syncDocumentHead(
-          {
-            title: head.title,
-            headTags: getJam2026ClientManagedHeadTags(head),
-          },
-          { syncTheme: false },
-        );
-      });
-    }
-
-    function queueNavigationEntrySync(open: boolean) {
-      if (navigationEntrySyncQueued) return;
-      navigationEntrySyncQueued = true;
-
-      handle.queueTask(() => {
-        navigationEntrySyncQueued = false;
-        if (handle.frame === handle.frames.top) return;
-        syncTicketModalNavigationEntry(open);
-      });
-    }
-
     return () => {
       let open = isOpen();
 
-      if (!open) modalClosing = false;
-
-      modalEffects.queueStateSync();
-      queueNavigationEntrySync(open);
-      queueHeadSync();
+      modal.queueStateSync();
+      if (headSyncedOpen !== open) {
+        headSyncedOpen = open;
+        handle.queueTask(() => syncJam2026Head({ ticketsModalOpen: open }));
+      }
 
       // The frame runtime needs a stable child when toggling between empty
       // frame content and the hydrated modal.
@@ -152,8 +81,8 @@ export let Jam2026TicketsModalFrame = clientEntry(
           {open ? (
             <Jam2026TicketsModalContent
               animateEntrance={handle.props.animateEntrance ?? true}
-              closing={modalClosing}
-              onRequestClose={requestClose}
+              closing={modal.phase.kind === "closing"}
+              onRequestClose={modal.requestClose}
               ticketCheckout={handle.props.ticketCheckout}
             />
           ) : null}
@@ -162,46 +91,6 @@ export let Jam2026TicketsModalFrame = clientEntry(
     };
   },
 );
-
-function syncTicketModalNavigationEntry(open: boolean) {
-  let navigation = window.navigation;
-  if (!navigation?.currentEntry) return;
-
-  let homeHref = routes.jam.y2026.index.href();
-  let ticketHref = routes.jam.y2026.ticket.index.href();
-  let pathname = window.location.pathname;
-
-  if (pathname !== homeHref && pathname !== ticketHref) return;
-
-  // Direct document loads start with top-frame history state. Once the named
-  // modal frame hydrates, mark Jam ticket entries as frame-owned so browser
-  // Back closes the modal without remounting the animated page.
-  let state = {
-    $rmx: true,
-    resetScroll: "manual",
-    resetFocus: "after-transition",
-    src: new URL(open ? ticketHref : homeHref, window.location.href).href,
-    target: ticketModalConfig.frameName,
-  };
-  let currentState = navigation.currentEntry.getState();
-
-  if (
-    isRecord(currentState) &&
-    currentState.$rmx === state.$rmx &&
-    currentState.resetScroll === state.resetScroll &&
-    currentState.resetFocus === state.resetFocus &&
-    currentState.src === state.src &&
-    currentState.target === state.target
-  ) {
-    return;
-  }
-
-  navigation.updateCurrentEntry({ state });
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
-}
 
 type Jam2026TicketsModalContentProps = {
   animateEntrance?: boolean;
@@ -216,6 +105,10 @@ export function Jam2026TicketsModalContent(
   let ticket = remixJam2026Ticket;
   let quantity = handle.props.ticketCheckout?.initialQuantity ?? 1;
   let submitting = false;
+  // Decided once, when the modal appears, so a later frame response with a
+  // different value can't replay the entrance.
+  let useEntranceMotion =
+    (handle.props.animateEntrance ?? true) && !prefersReducedMotion();
 
   function resetSubmitting() {
     if (!submitting) return;
@@ -249,26 +142,26 @@ export function Jam2026TicketsModalContent(
       ticketCheckout?.availableForSale && ticketCheckout.productId,
     );
     let checkoutDisabled = !checkoutEnabled || submitting;
-    let useEntranceMotion = shouldAnimateEntrance(handle.props.animateEntrance);
     let scrimMix = useEntranceMotion
       ? [
-          ticketsModalScrimStyle,
+          jam2026ModalScrimStyle,
           animateEntrance({
             opacity: 0,
             duration: 100,
             easing: "ease-out",
           }),
         ]
-      : ticketsModalScrimStyle;
+      : jam2026ModalScrimStyle;
     let windowMix = useEntranceMotion
       ? [
+          jam2026ModalWindowStyle,
           ticketsModalWindowStyle,
           animateEntrance({
             clipPath: "inset(0 0 100% 0 round 8px)",
             ...spring("snappy", { duration: 220 }),
           }),
         ]
-      : ticketsModalWindowStyle;
+      : [jam2026ModalWindowStyle, ticketsModalWindowStyle];
     let keyringMix = useEntranceMotion
       ? [ticketsModalFigureImageStyle, ticketsModalFigureImageEntranceStyle]
       : ticketsModalFigureImageStyle;
@@ -282,11 +175,11 @@ export function Jam2026TicketsModalContent(
           aria-label="Close tickets"
           href={routes.jam.y2026.index.href()}
           mix={[
-            ticketsModalBackdropStyle,
+            jam2026ModalBackdropStyle,
             on("click", (event) => handle.props.onRequestClose(event)),
           ]}
           data-rmx-reset-scroll="manual"
-          data-rmx-target={ticketModalConfig.frameName}
+          data-rmx-target={jam2026ModalConfig.frameName}
           tabIndex={-1}
         />
         <section
@@ -295,28 +188,28 @@ export function Jam2026TicketsModalContent(
           data-state={handle.props.closing ? "closing" : "open"}
           role="dialog"
           tabIndex={-1}
-          mix={windowMix}
+          mix={[windowMix, focusTrap(!handle.props.closing)]}
         >
-          <div mix={ticketsModalTitlebarStyle}>
+          <div mix={jam2026ModalTitlebarStyle}>
             <a
               aria-label="Close tickets"
               href={routes.jam.y2026.index.href()}
               mix={[
-                ticketsModalCloseStyle,
+                jam2026ModalTitlebarButtonStyle,
                 on("click", (event) => handle.props.onRequestClose(event)),
               ]}
               data-rmx-reset-scroll="manual"
-              data-rmx-target={ticketModalConfig.frameName}
+              data-rmx-target={jam2026ModalConfig.frameName}
             >
               <Icon
                 name="x-mark"
                 aria-hidden="true"
                 focusable="false"
-                mix={ticketsModalCloseIconStyle}
+                mix={jam2026ModalTitlebarIconStyle}
                 viewBox="0 0 14 14"
               />
             </a>
-            <p id="tickets-modal-title" mix={ticketsModalFilenameStyle}>
+            <p id="tickets-modal-title" mix={jam2026ModalTitleStyle}>
               TICKETS.TS
             </p>
           </div>
@@ -484,102 +377,11 @@ function formatCurrency(value: number) {
   return usdFormatter.format(value);
 }
 
-let ticketsModalScrimStyle = css({
-  alignItems: "center",
-  background: "rgb(0 0 0 / 0.85)",
-  display: "flex",
-  inset: 0,
-  justifyContent: "center",
-  padding: "16px",
-  position: "fixed",
-  transition: "background 120ms ease-out",
-  zIndex: 60,
-  "&[data-state='closing']": {
-    background: "rgb(0 0 0 / 0)",
-    pointerEvents: "none",
-  },
-  "@media (prefers-reduced-motion: reduce)": {
-    transition: "none",
-  },
-});
-
-let ticketsModalBackdropStyle = css({
-  background: "transparent",
-  display: "block",
-  inset: 0,
-  position: "absolute",
-});
-
 let ticketsModalWindowStyle = css({
-  background: "light-dark(rgb(255 255 255 / 0.82), rgb(10 29 39 / 0.82))",
-  borderRadius: "8px",
-  boxShadow:
-    "0 1px 2px light-dark(rgb(8 40 69 / 0.06), rgb(0 0 0 / 0.2)), 0 6px 16px light-dark(rgb(8 40 69 / 0.08), rgb(0 0 0 / 0.28)), 0 24px 60px light-dark(rgb(8 40 69 / 0.18), rgb(0 0 0 / 0.36)), 0 60px 120px light-dark(rgb(8 40 69 / 0.22), rgb(0 0 0 / 0.44))",
-  clipPath: "inset(0 0 0 0 round 8px)",
-  color: jamTheme.ink,
-  display: "flex",
-  flexDirection: "column",
   height: "100%",
   maxHeight: "868px",
   maxWidth: "854px",
-  overflow: "hidden",
-  transition: `clip-path ${spring("snappy", { duration: 180 })}`,
   width: "100%",
-  "&[data-state='closing']": {
-    clipPath: "inset(0 0 100% 0 round 8px)",
-  },
-  "@media (prefers-reduced-motion: reduce)": {
-    transition: "none",
-  },
-});
-
-let ticketsModalTitlebarStyle = css({
-  alignItems: "center",
-  display: "flex",
-  flexShrink: 0,
-  gap: "6px",
-  padding: "8px",
-  width: "100%",
-});
-
-let ticketsModalCloseStyle = css({
-  alignItems: "center",
-  background: "transparent",
-  borderRadius: "50%",
-  color: jamTheme.ink,
-  cursor: "pointer",
-  display: "inline-flex",
-  flexShrink: 0,
-  height: "16px",
-  justifyContent: "center",
-  padding: 0,
-  textDecoration: "none",
-  width: "16px",
-  "&:hover, &:focus-visible": {
-    opacity: 0.7,
-  },
-  "&:focus-visible": {
-    outline: `2px solid ${jamTheme.brandRed}`,
-    outlineOffset: "2px",
-  },
-});
-
-let ticketsModalCloseIconStyle = css({
-  display: "block",
-  height: "14px",
-  width: "14px",
-});
-
-let ticketsModalFilenameStyle = css({
-  color: jamTheme.ink,
-  fontFamily: theme.fontFamily.mono,
-  fontSize: "10px",
-  fontWeight: theme.fontWeight.normal,
-  letterSpacing: "0.02em",
-  lineHeight: 1.2,
-  margin: 0,
-  textTransform: "uppercase",
-  whiteSpace: "nowrap",
 });
 
 let ticketsModalBodyStyle = css({

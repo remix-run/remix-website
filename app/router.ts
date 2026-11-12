@@ -28,6 +28,7 @@ import jam2025Controller from "./actions/jam/y2025/controller.tsx";
 import jam2025GalleryController from "./actions/jam/y2025/gallery/controller.tsx";
 import jam2025TicketController from "./actions/jam/y2025/ticket/controller.tsx";
 import jam2026Controller from "./actions/jam/y2026/controller.tsx";
+import jam2026PhotosController from "./actions/jam/y2026/photos/controller.tsx";
 import jam2026TicketController from "./actions/jam/y2026/ticket/controller.tsx";
 import { createNewsletterController } from "./actions/newsletter/controller.tsx";
 import {
@@ -121,6 +122,7 @@ export function createAppRouter(
   appRouter.map(routes.jam.y2025.ticket, jam2025TicketController);
   appRouter.map(routes.jam.y2026, jam2026Controller);
   appRouter.map(routes.jam.y2026.ticket, jam2026TicketController);
+  appRouter.map(routes.jam.y2026.photos, jam2026PhotosController);
   appRouter.map(
     routes.newsletter,
     createNewsletterController(
