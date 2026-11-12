@@ -55,19 +55,10 @@ export function PhotoTimeline(
   // since the browser would snap each frame's position, and comes back once
   // the row lands. (2π / 300ms)² is a spring that settles in about a third of
   // a second.
-  let glide = new ScrollGlide(
-    {
-      get: () => row?.scrollLeft ?? 0,
-      set: (position) => {
-        if (row) row.scrollLeft = position;
-      },
-    },
-    ((2 * Math.PI) / 0.3) ** 2,
-    () => {
-      motion = { kind: "idle" };
-      if (row) row.dataset.snap = "";
-    },
-  );
+  let glide = new ScrollGlide(((2 * Math.PI) / 0.3) ** 2, () => {
+    motion = { kind: "idle" };
+    if (row) row.dataset.snap = "";
+  });
 
   handle.signal.addEventListener("abort", () => {
     clearTimeout(settleTimer);
@@ -101,7 +92,7 @@ export function PhotoTimeline(
         delete row.dataset.snap;
         motion = { kind: "gliding" };
       }
-      glide.to(left);
+      glide.to(row, left);
       return;
     }
     glide.stop();

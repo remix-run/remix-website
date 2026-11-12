@@ -3,7 +3,7 @@ import { prefersReducedMotion, spring } from "@remix-run/ui/animation";
 import { jamTheme } from "./theme.ts";
 import { jam2026ModalConfig } from "./modal-contract.ts";
 import { photoGallery } from "./photo-gallery.ts";
-import { pageScrollY, scrollAlongCurve } from "./scroll-animation.ts";
+import { scrollAlongCurve } from "./scroll-animation.ts";
 import { isPlainClick, photoViewer } from "./photo-viewer-controller.ts";
 import {
   preloadViewerImage,
@@ -100,7 +100,7 @@ export let Jam2026PhotoDeck = clientEntry(
         // On the list's own spring, not a native smooth scroll, which gets
         // cut short as the list shrinks under it.
         if (reduceMotion) window.scrollTo(0, targetY);
-        else scrollAlongCurve(pageScrollY, targetY, [...resize], handle.signal);
+        else scrollAlongCurve(targetY, [...resize], handle.signal);
       });
     };
 

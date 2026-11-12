@@ -1,28 +1,15 @@
-/** One axis of something that scrolls: read and set its position. */
-export type ScrollAxis = {
-  get(): number;
-  set(position: number): void;
-};
-
-/** The page's vertical scroll. */
-export const pageScrollY: ScrollAxis = {
-  get: () => window.scrollY,
-  set: (position) => window.scrollTo(0, position),
-};
-
 /**
- * Scrolls along a fixed curve, frame by frame: a `spring()` iterator's
- * positions, say, so the scroll keeps time with an animation on the same
- * spring. The reader can take the scroll back at any point with a wheel,
- * touch, or key.
+ * Scrolls the page along a fixed curve, frame by frame: a `spring()`
+ * iterator's positions, say, so the scroll keeps time with an animation on
+ * the same spring. The reader can take the scroll back at any point with a
+ * wheel, touch, or key.
  */
 export function scrollAlongCurve(
-  axis: ScrollAxis,
-  target: number,
+  targetY: number,
   curve: number[],
   signal: AbortSignal,
 ) {
-  let from = axis.get();
+  let from = window.scrollY;
   let start = performance.now();
   let stop = new AbortController();
   let frame = 0;
@@ -42,7 +29,7 @@ export function scrollAlongCurve(
       0,
       Math.min(curve.length - 1, Math.round((now - start) / (1000 / 60))),
     );
-    axis.set(from + (target - from) * curve[index]);
+    window.scrollTo(0, from + (targetY - from) * curve[index]);
     if (index < curve.length - 1) frame = requestAnimationFrame(step);
     else stop.abort();
   };
@@ -50,13 +37,12 @@ export function scrollAlongCurve(
 }
 
 /**
- * Glides a scroll to a target on a critically damped spring (as quick as it
- * can be without overshooting) that keeps its speed when the target moves, so
- * it can follow a target that keeps changing. A native smooth scroll restarts
- * from rest each time instead.
+ * Glides an element's horizontal scroll to a target on a critically damped
+ * spring (as quick as it can be without overshooting) that keeps its speed
+ * when the target moves, so it can follow a target that keeps changing. A
+ * native smooth scroll restarts from rest each time instead.
  */
 export class ScrollGlide {
-  #axis: ScrollAxis;
   #stiffness: number;
   #onStop: () => void;
   #glide:
@@ -73,24 +59,19 @@ export class ScrollGlide {
    * @param stiffness The spring's stiffness: (2π / settle time in seconds)².
    * @param onStop Called when the glide lands or is stopped.
    */
-  constructor(axis: ScrollAxis, stiffness: number, onStop: () => void) {
-    this.#axis = axis;
+  constructor(stiffness: number, onStop: () => void) {
     this.#stiffness = stiffness;
     this.#onStop = onStop;
   }
 
-  get gliding() {
-    return this.#glide !== undefined;
-  }
-
   /** Starts gliding to the target, or moves the target of the glide under way. */
-  to(target: number) {
+  to(element: HTMLElement, target: number) {
     if (this.#glide) {
       this.#glide.target = target;
       return;
     }
     let glide = {
-      x: this.#axis.get(),
+      x: element.scrollLeft,
       velocity: 0,
       target,
       time: performance.now(),
@@ -108,7 +89,7 @@ export class ScrollGlide {
       glide.x += glide.velocity * elapsed;
       let landed =
         Math.abs(glide.target - glide.x) < 0.5 && Math.abs(glide.velocity) < 20;
-      this.#axis.set(landed ? glide.target : glide.x);
+      element.scrollLeft = landed ? glide.target : glide.x;
       if (landed) this.stop();
       else glide.frame = requestAnimationFrame(step);
     };
