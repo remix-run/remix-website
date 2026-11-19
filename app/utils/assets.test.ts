@@ -6,18 +6,15 @@ import { expect } from "remix/assert";
 import { assets, getWebpHref } from "./assets.ts";
 
 let originalNodeEnv = process.env.NODE_ENV;
-let originalAssetBuildId = process.env.ASSET_BUILD_ID;
 let productionAssets: typeof import("./assets.ts");
 
 try {
   process.env.NODE_ENV = "production";
-  process.env.ASSET_BUILD_ID = "asset-test";
   productionAssets = (await import(
     new URL("./assets.ts?environment=production", import.meta.url).href
   )) as typeof import("./assets.ts");
 } finally {
   restoreEnv("NODE_ENV", originalNodeEnv);
-  restoreEnv("ASSET_BUILD_ID", originalAssetBuildId);
 }
 
 afterAll(() => productionAssets.assets.close());
@@ -111,7 +108,7 @@ describe("browser asset boundary", () => {
   });
 });
 
-function restoreEnv(name: "NODE_ENV" | "ASSET_BUILD_ID", value?: string) {
+function restoreEnv(name: "NODE_ENV", value?: string) {
   if (value === undefined) {
     delete process.env[name];
   } else {

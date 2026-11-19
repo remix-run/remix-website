@@ -20,7 +20,7 @@ export function Footer(handle: Handle<FooterProps>) {
           justifyContent: "center",
           gap: "16px",
           padding: "48px 24px 144px",
-          color: theme.colors.text.muted,
+          color: theme.colors.text.secondary,
           "& a": {
             color: "inherit",
             opacity: 0.8,

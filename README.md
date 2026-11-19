@@ -7,6 +7,8 @@ cp .env.example .env
 pnpm install
 ```
 
+`pnpm run dev`, `hmr`, and `preview` load `.env` and then `.env.local` (which wins) through Node's `--env-file-if-exists`; variables already set in the shell take precedence over both.
+
 ## Local Development
 
 ```sh

@@ -48,7 +48,13 @@ export function Jam2026Hero() {
           </div>
         </div>
       </div>
+    </section>
+  );
+}
 
+export function Jam2026Livestream() {
+  return () => (
+    <section aria-label="Livestream" mix={livestreamSectionStyle}>
       <div mix={[jam2026WindowSurfaceStyle, livestreamStyle]}>
         <p mix={jam2026WindowTitleStyle}>LIVESTREAM.MP4</p>
         <div
@@ -180,13 +186,13 @@ let heroVisualStyle = css({
     minHeight: "640px",
     paddingInline: "32px",
   },
+  // From here the mark scales with the width, so the hero sizes to its
+  // content (no fixed height the mark could outgrow into the livestream), and
+  // the gap below grows with it.
   [breakpointMedia.lg]: {
     minHeight: 0,
+    paddingBlockEnd: "clamp(40px, 4vw, 72px)",
     paddingInline: "max(32px, 5vw)",
-  },
-  [breakpointMedia.xl]: {
-    height: "760px",
-    paddingBlock: "96px 72px",
   },
 });
 
@@ -314,6 +320,14 @@ let yearBadgeStyle = css({
 
 let yearBadgePathStyle = css({
   fill: "currentColor",
+});
+
+// Spaced from the photos above like the schedule is from the livestream.
+let livestreamSectionStyle = css({
+  position: "relative",
+  paddingBlockStart: "72px",
+  [breakpointMedia.lg]: { paddingBlockStart: "40px" },
+  [breakpointMedia.xl]: { paddingBlockStart: "144px" },
 });
 
 let livestreamStyle = css({

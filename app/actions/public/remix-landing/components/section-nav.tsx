@@ -6,13 +6,12 @@ import { clamp } from "../utils/math.ts";
 const TRACK_WIDTH = 11;
 const ITEM_HEIGHT = 16;
 const ITEM_GAP = 8;
-const VIEWPORT_GUTTER = 24;
 
 const shellStyles = css({
   display: "none",
   position: "fixed",
-  bottom: `${VIEWPORT_GUTTER}px`,
-  left: `${VIEWPORT_GUTTER}px`,
+  bottom: theme.space.edge,
+  left: theme.space.edge,
   zIndex: "30",
   backdropFilter: "blur(18px)",
   background: colors.sectionNavBg,

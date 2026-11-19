@@ -1,5 +1,5 @@
 import { clientEntry, css, on, type Handle } from "remix/component";
-import { spring } from "@remix-run/ui/animation";
+import { prefersReducedMotion, spring } from "@remix-run/ui/animation";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { theme } from "../../../../ui/public/theme.ts";
 
@@ -35,9 +35,7 @@ function isPlainLeftClick(event: MouseEvent) {
 }
 
 function getReducedMotionScrollBehavior(): ScrollBehavior {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ? "auto"
-    : "smooth";
+  return prefersReducedMotion() ? "auto" : "smooth";
 }
 
 export let Jam2026Header = clientEntry(
@@ -154,7 +152,7 @@ export let Jam2026Header = clientEntry(
           <Jam2026Countdown />
 
           <div
-            data-lockup-visible={eventLockupVisible ? "true" : "false"}
+            data-lockup-visible={eventLockupVisible}
             mix={jam2026NavLogoStyle}
           >
             <a
@@ -192,7 +190,7 @@ export let Jam2026Header = clientEntry(
               <input name="theme" type="hidden" value={nextTheme} />
               <span
                 aria-hidden="true"
-                data-active={theme === "light" ? "true" : "false"}
+                data-active={theme === "light"}
                 data-theme-option="light"
                 mix={jam2026ThemeOptionStyle}
               >
@@ -230,7 +228,7 @@ export let Jam2026Header = clientEntry(
               </button>
               <span
                 aria-hidden="true"
-                data-active={theme === "dark" ? "true" : "false"}
+                data-active={theme === "dark"}
                 data-theme-option="dark"
                 mix={jam2026ThemeOptionStyle}
               >

@@ -62,7 +62,7 @@
   }
 
   .md-prose h2:where(.dark, .dark *) {
-    color: rgb(200 200 200);
+    color: var(--color-text-primary);
   }
 
   .md-prose h3 {
@@ -70,7 +70,7 @@
   }
 
   .md-prose h3:where(.dark, .dark *) {
-    color: rgb(200 200 200);
+    color: var(--color-text-primary);
   }
 
   .md-prose h4,
@@ -80,7 +80,7 @@
   }
 
   .md-prose strong:where(.dark, .dark *) {
-    color: rgb(200 200 200);
+    color: var(--color-text-primary);
   }
 
   .md-prose hr:where(.dark, .dark *) {
@@ -503,20 +503,24 @@
     scroll-margin-top: 1em;
   }
 
-  .md-prose :is(h1, h2, h3, h4, h5, h6) a {
+  .md-prose :is(h1, h2, h3, h4, h5, h6) a:has(> .icon-link) {
     position: absolute;
     left: -1.5rem;
     right: -0px;
     top: 0px;
-    z-index: 10;
     display: flex;
     height: 100%;
     align-items: center;
     line-height: 1;
   }
 
-  .md-prose :is(h1, h2, h3, h4, h5, h6):hover a,
-  .md-prose :is(h1, h2, h3, h4, h5, h6) a:hover {
+  /* Positioned content links paint after the prepended anchor overlay. */
+  .md-prose :is(h1, h2, h3, h4, h5, h6) a:not(:has(> .icon-link)) {
+    position: relative;
+  }
+
+  .md-prose :is(h1, h2, h3, h4, h5, h6):hover a:has(> .icon-link),
+  .md-prose :is(h1, h2, h3, h4, h5, h6) a:has(> .icon-link):hover {
     text-decoration-line: none;
   }
 
@@ -718,7 +722,7 @@
 
   .md-prose .md-testimonial {
     margin-block-start: 2.5rem;
-    color: light-dark(#121212, #c8c8c8);
+    color: var(--color-text-primary);
     font-size: 1.25rem;
     font-weight: 600;
     line-height: 2rem;
@@ -754,13 +758,13 @@
   }
 
   .md-prose .md-testimonial-author-name {
-    color: light-dark(#121212, #c8c8c8);
+    color: var(--color-text-primary);
     font-weight: 600;
   }
 
   .md-prose .md-testimonial-author-role {
     margin-block-start: 0.125rem;
-    color: light-dark(#515151, #818181);
+    color: var(--color-text-secondary);
     font-weight: 300;
   }
 }

@@ -14,6 +14,8 @@ const hmrRunner = run("server.ts", {
     HMR_PROXY_PORT: String(hmrProxyPort),
   },
   nodeArgs: [
+    "--env-file-if-exists=.env",
+    "--env-file-if-exists=.env.local",
     "--import",
     "remix/node-tsx",
     "--import",

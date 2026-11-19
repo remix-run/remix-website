@@ -55,7 +55,7 @@ export function createNewsletterFrameForm(
   let submitting = false;
   let requestSrc = `${routes.newsletter.subscribe.href()}?${new URLSearchParams({ frame: context })}`;
   let navigation = {
-    "data-rmx-reset-scroll": "false",
+    "data-rmx-reset-scroll": "manual",
     "data-rmx-src": requestSrc,
     "data-rmx-target": NEWSLETTER_SUBSCRIBE_FRAME_NAME,
   } as const;

@@ -4,6 +4,7 @@ import {
   animateExit,
   animateLayout,
   easings,
+  prefersReducedMotion,
   spring,
   tween,
 } from "@remix-run/ui/animation";
@@ -474,7 +475,7 @@ function AnimationPreview(
 
   function schedule(delay = 1600) {
     if (cycleTimer !== null) clearTimeout(cycleTimer);
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (prefersReducedMotion()) return;
 
     cycleTimer = setTimeout(async () => {
       cycleTimer = null;
@@ -625,7 +626,7 @@ function TweenPreview(handle: Handle<{ cycle: number }>) {
           handle.update();
         };
 
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        if (prefersReducedMotion()) {
           setValue(targetValue);
           return;
         }

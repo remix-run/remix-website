@@ -2,13 +2,12 @@ import { css, on, type Handle } from "remix/component";
 import { routes } from "../../../../routes.ts";
 import { Wordmark } from "../../../../ui/public/wordmark.tsx";
 import { brandContextMenu } from "../../../../ui/public/brand-context-menu.ts";
+import { theme } from "../../../../ui/public/theme.ts";
 import { clamp01, lerp } from "../utils/math.ts";
 import { reducedMotion } from "../utils/reduced-motion.ts";
 
 const SMALL_HEIGHT = 16;
 const LARGE_TOP = 92;
-const SMALL_TOP = 24;
-const LEFT = 24;
 const SCROLL_PX = 120;
 const SVG_RATIO = 440 / 43;
 const SMALL_WIDTH = SMALL_HEIGHT * SVG_RATIO;
@@ -24,6 +23,15 @@ const GHOST_TAUS = [0.018, 0.03, 0.045, 0.06, 0.08];
 const OPACITY_FALLOFF_PX = 18;
 const SETTLE_EPSILON = 0.2;
 
+// The collapsed logo sits in the corner at the shared page-chrome inset.
+function readEdgeInset() {
+  return parseFloat(
+    getComputedStyle(document.documentElement).getPropertyValue(
+      "--site-edge-inset",
+    ),
+  );
+}
+
 function getScrollProgress(scrollY: number) {
   const linear = clamp01(scrollY / SCROLL_PX);
   return linear < 0.5
@@ -34,7 +42,7 @@ function getScrollProgress(scrollY: number) {
 const shellStyles = css({
   position: "fixed",
   top: "0",
-  left: `${LEFT}px`,
+  left: theme.space.edge,
   zIndex: "25",
   pointerEvents: "none",
 });
@@ -99,7 +107,8 @@ async function replaceCurrentUrl(href: string) {
 }
 
 export function ScrollLogo(handle: Handle) {
-  let largeWidth = window.innerWidth - LEFT * 2;
+  let edgeInset = readEdgeInset();
+  let largeWidth = window.innerWidth - edgeInset * 2;
   let scrollY = 0;
 
   // Navigation resets scroll after creating the next page's components, so
@@ -137,7 +146,7 @@ export function ScrollLogo(handle: Handle) {
     scrollY = window.scrollY;
     const t = getScrollProgress(scrollY);
     const targetWidth = lerp(largeWidth, SMALL_WIDTH, t);
-    const targetTop = lerp(LARGE_TOP, SMALL_TOP, t);
+    const targetTop = lerp(LARGE_TOP, edgeInset, t);
 
     let active = false;
     for (let i = 0; i < GHOST_TAUS.length; i++) {
@@ -174,7 +183,7 @@ export function ScrollLogo(handle: Handle) {
     scrollY = window.scrollY;
     const t = getScrollProgress(scrollY);
     const width = lerp(largeWidth, SMALL_WIDTH, t);
-    const top = lerp(LARGE_TOP, SMALL_TOP, t);
+    const top = lerp(LARGE_TOP, edgeInset, t);
     for (const ghost of ghostState) {
       ghost.width = width;
       ghost.top = top;
@@ -208,7 +217,8 @@ export function ScrollLogo(handle: Handle) {
   window.addEventListener(
     "resize",
     () => {
-      largeWidth = window.innerWidth - LEFT * 2;
+      edgeInset = readEdgeInset();
+      largeWidth = window.innerWidth - edgeInset * 2;
       ensureLoop();
     },
     { signal: handle.signal },
@@ -221,7 +231,7 @@ export function ScrollLogo(handle: Handle) {
   return () => {
     const t = getScrollProgress(scrollY);
     const mainWidth = lerp(largeWidth, SMALL_WIDTH, t);
-    const mainTop = lerp(LARGE_TOP, SMALL_TOP, t);
+    const mainTop = lerp(LARGE_TOP, edgeInset, t);
     const isCollapsed = t >= 1;
 
     return (

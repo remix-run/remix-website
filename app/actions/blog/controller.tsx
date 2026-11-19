@@ -8,11 +8,12 @@ import { NewsletterSubscribe } from "../../ui/newsletter-subscribe.tsx";
 import {
   pageBodyStyle,
   pageMetaStyle,
+  pageSecondaryTextStyle,
   pageTitleExtraSmallStyle,
   pageTitleSmallStyle,
   pageTitleStyle,
 } from "../../ui/public/marketing-styles.ts";
-import { breakpointMedia } from "../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../ui/public/theme.ts";
 import { routes } from "../../routes.ts";
 import { getBlogPostListings } from "../../data/blog.ts";
 import {
@@ -20,6 +21,7 @@ import {
   getBlogImageAsset,
 } from "../../utils/blog-image-assets.ts";
 import { CACHE } from "../../utils/cache-control.ts";
+import { getCanonicalUrl } from "../../utils/public/canonical-url.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
 import { getBlogPost, getRawBlogPostMarkdown } from "../../data/blog.ts";
 import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
@@ -45,10 +47,15 @@ export default createController(routes.blog, {
 
       if (params.ext === "md") {
         try {
+          let htmlUrl = getCanonicalUrl(
+            new URL(request.url),
+            routes.blog.post.href({ slug }),
+          );
           return new Response(getRawBlogPostMarkdown(slug), {
             headers: {
               "Cache-Control": CACHE.RESOURCE,
               "Content-Type": "text/markdown; charset=utf-8",
+              Link: `<${htmlUrl}>; rel="canonical"`,
             },
           });
         } catch (error) {
@@ -80,6 +87,7 @@ export default createController(routes.blog, {
           images={images}
           socialImageUrl={getPostSocialImageUrl(post, slug, request.url)}
         />,
+        { headers: CACHE.PREFETCHABLE_DOCUMENT },
       );
     },
 
@@ -182,7 +190,10 @@ function BlogPageContent(
             >
               {latestPost ? (
                 <div mix={css({ marginBlockEnd: "56px" })}>
-                  <a href={routes.blog.post.href({ slug: latestPost.slug })}>
+                  <a
+                    href={routes.blog.post.href({ slug: latestPost.slug })}
+                    data-rmx-prefetch="intent"
+                  >
                     <div mix={blogImageFrameStyle}>
                       <img
                         mix={blogCardImageStyle}
@@ -197,7 +208,9 @@ function BlogPageContent(
                       />
                     </div>
                     <div mix={blogCardCopyStyle}>
-                      <p mix={pageMetaStyle}>{latestPost.dateDisplay}</p>
+                      <p mix={[pageMetaStyle, pageSecondaryTextStyle]}>
+                        {latestPost.dateDisplay}
+                      </p>
                       <p mix={pageTitleStyle}>{latestPost.title}</p>
                       <p mix={pageBodyStyle}>{latestPost.summary}</p>
                     </div>
@@ -217,7 +230,10 @@ function BlogPageContent(
               >
                 {posts.map((post) => (
                   <div key={post.slug}>
-                    <a href={routes.blog.post.href({ slug: post.slug })}>
+                    <a
+                      href={routes.blog.post.href({ slug: post.slug })}
+                      data-rmx-prefetch="intent"
+                    >
                       <div mix={blogImageFrameStyle}>
                         <img
                           mix={blogCardImageStyle}
@@ -237,7 +253,9 @@ function BlogPageContent(
                           css({ marginBlockEnd: "48px" }),
                         ]}
                       >
-                        <p mix={pageMetaStyle}>{post.dateDisplay}</p>
+                        <p mix={[pageMetaStyle, pageSecondaryTextStyle]}>
+                          {post.dateDisplay}
+                        </p>
                         <p mix={[pageTitleStyle, pageTitleExtraSmallStyle]}>
                           {post.title}
                         </p>
@@ -282,6 +300,7 @@ function BlogPageContent(
                       <div key={post.slug}>
                         <a
                           href={routes.blog.post.href({ slug: post.slug })}
+                          data-rmx-prefetch="intent"
                           mix={pageBodyStyle}
                         >
                           {post.title}
@@ -377,9 +396,7 @@ let blogContainerStyle = {
   boxSizing: "border-box",
   width: "100%",
   marginInline: "auto",
-  paddingInline: "24px",
-  [breakpointMedia.md]: { paddingInline: "32px" },
-  [breakpointMedia.lg]: { paddingInline: "40px" },
+  paddingInline: theme.space.edge,
 } as const;
 
 let blogImageFrameStyle = css({

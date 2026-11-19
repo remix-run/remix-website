@@ -2,7 +2,10 @@ import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
 import { routes } from "../../routes.ts";
-import { createRouteTestRouter } from "../../../test/setup.ts";
+import {
+  createRouteTestRouter,
+  expectPrefetchableDocument,
+} from "../../../test/setup.ts";
 import { createNewsletterController } from "./controller.tsx";
 import {
   NewsletterUpstreamUnavailableError as UpstreamError,
@@ -16,11 +19,13 @@ function makeIssue(
   number: number,
   dateIso: string,
   markdown: string,
+  preview = "",
 ): NewsletterIssue {
   return {
     number,
     date: new Date(dateIso),
     title: `Remix Newsletter #${number}`,
+    preview,
     markdown,
     image: {
       src: routes.newsletter.image.href({
@@ -111,9 +116,7 @@ describe("Newsletter index route", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Surrogate-Control")).toContain(
-      "stale-while-revalidate",
-    );
+    expectPrefetchableDocument(response);
     let html = await response.text();
 
     expect(html).not.toContain('role="status"');
@@ -226,6 +229,12 @@ describe("Newsletter index route", () => {
     let html = await response.text();
     expect(html).toContain(`action="${routes.newsletter.subscribe.href()}"`);
     expect(html).toContain("The archive is temporarily unavailable.");
+    // Retrying must bypass client frame navigation so a full reload happens.
+    expect(html).toMatch(
+      new RegExp(
+        `<a[^>]*href="${routes.newsletter.index.href()}"[^>]*data-rmx-document`,
+      ),
+    );
   });
 });
 
@@ -246,6 +255,7 @@ describe("Newsletter issue route", () => {
     );
 
     expect(response.status).toBe(200);
+    expectPrefetchableDocument(response);
     let html = await response.text();
 
     // Issue content starts with its title and the md-prose container.
@@ -273,6 +283,36 @@ describe("Newsletter issue route", () => {
 
     // Signup form present on the detail page.
     expect(html).toContain(`action="${routes.newsletter.subscribe.href()}"`);
+  });
+
+  it("uses the issue preview text for its descriptions", async () => {
+    let description = "Preview text from frontmatter.";
+    let repo = fakeRepository({
+      issues: new Map([
+        [
+          2,
+          makeIssue(2, "2024-02-01T00:00:00.000Z", NEWSLETTER_MD, description),
+        ],
+      ]),
+    });
+    let router = routerWith(repo);
+
+    let response = await router.fetch(
+      new URL(
+        routes.newsletter.issue.href({ number: 2 }),
+        "http://localhost:3000",
+      ),
+    );
+
+    expect(response.status).toBe(200);
+    let html = await response.text();
+    expect(html).toContain(`name="description" content="${description}"`);
+    expect(html).toContain(
+      `property="og:description" content="${description}"`,
+    );
+    expect(html).toContain(
+      `name="twitter:description" content="${description}"`,
+    );
   });
 
   it("returns 404 for a missing issue", async () => {

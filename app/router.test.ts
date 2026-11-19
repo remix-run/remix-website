@@ -2,6 +2,7 @@ import { expect } from "remix/assert";
 import { createTestServer } from "remix/node-fetch-server/test";
 import { beforeEach, describe, it } from "remix/test";
 
+import { getBlogPostListings } from "./data/blog.ts";
 import { createAppRouter } from "./router.ts";
 import { routes } from "./routes.ts";
 
@@ -109,6 +110,16 @@ describe("app router", () => {
     }
   });
 
+  it("keeps missing assets out of shared caches", async () => {
+    let response = await router.fetch(
+      "http://localhost/assets/blog-images/headers/missing.@abc123.png?transform=webp-480",
+    );
+
+    expect(response.status).toBe(404);
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
+    expect(response.headers.get("Surrogate-Key")).toBe(null);
+  });
+
   it("serves the blog RSS route", async () => {
     let response = await router.fetch(
       new URL(routes.blog.rss.href(), "http://localhost"),
@@ -170,13 +181,13 @@ describe("app router", () => {
   });
 
   it("maps legacy redirects from the redirects file", async () => {
-    let response = await router.fetch("http://localhost/login", {
+    let response = await router.fetch("http://localhost/discord", {
       redirect: "manual",
     });
 
     expect(response.status).toBe(302);
     expect(response.headers.get("Location")).toBe(
-      "https://remix-run.web.app/login",
+      "https://discord.com/invite/xwx7mMzVkA",
     );
   });
 
@@ -260,3 +271,70 @@ describe("app router", () => {
     expect(response.status).toBe(403);
   });
 });
+
+describe("canonical URLs", () => {
+  it("canonicalizes pages to remix.run without the query string", async () => {
+    let router = createAppRouter();
+    let response = await router.fetch(
+      "https://staging.example/blog?utm_source=test",
+    );
+
+    expect(response.status).toBe(200);
+    expect(getCanonicalLinks(await response.text())).toEqual([
+      "https://remix.run/blog",
+    ]);
+  });
+
+  it("keeps the local origin during development", async () => {
+    let router = createAppRouter();
+    let response = await router.fetch("http://localhost:44100/brand");
+
+    expect(getCanonicalLinks(await response.text())).toEqual([
+      "http://localhost:44100/brand",
+    ]);
+  });
+
+  it("does not canonicalize not-found pages", async () => {
+    let router = createAppRouter();
+    let response = await router.fetch("https://remix.run/not-a-route");
+
+    expect(response.status).toBe(404);
+    expect(getCanonicalLinks(await response.text())).toEqual([]);
+  });
+
+  it("points Markdown representations at their HTML pages", async () => {
+    let router = createAppRouter();
+    let [post] = getBlogPostListings();
+
+    let postMarkdown = await router.fetch(
+      new URL(
+        routes.blog.post.href({ slug: post.slug, ext: "md" }),
+        "https://remix.run",
+      ),
+    );
+    expect(postMarkdown.headers.get("Link")).toBe(
+      `<https://remix.run${routes.blog.post.href({ slug: post.slug })}>; rel="canonical"`,
+    );
+
+    let homeMarkdown = await router.fetch(
+      new URL(routes.homeMarkdown.href(), "https://remix.run"),
+    );
+    expect(homeMarkdown.headers.get("Link")).toContain(
+      '<https://remix.run/>; rel="canonical"',
+    );
+
+    let llms = await router.fetch(
+      new URL(routes.llms.href(), "https://remix.run"),
+    );
+    expect(llms.headers.get("Link")).toBe(
+      '<https://remix.run/>; rel="canonical"',
+    );
+  });
+});
+
+function getCanonicalLinks(html: string) {
+  return Array.from(
+    html.matchAll(/<link\b[^>]*\brel="canonical"[^>]*>/g),
+    (match) => match[0].match(/\bhref="([^"]+)"/)?.[1],
+  );
+}

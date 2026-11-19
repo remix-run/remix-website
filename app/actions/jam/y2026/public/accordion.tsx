@@ -1,6 +1,6 @@
 import * as accordion from "@remix-run/ui/accordion";
 import { spring } from "@remix-run/ui/animation";
-import { css, type Handle, type Props } from "remix/component";
+import { css, type Handle, type Props, type RemixNode } from "remix/component";
 
 export function Accordion(
   handle: Handle<
@@ -17,51 +17,46 @@ export function Accordion(
   };
 }
 
-export function AccordionItem(handle: Handle<accordion.AccordionItemProps>) {
-  return () => {
-    let { children, disabled, mix, value, ...props } = handle.props;
-    return (
-      <accordion.ItemContext disabled={disabled} value={value}>
-        <div {...props} mix={[itemStyle, accordion.item(), mix]}>
-          {children}
-        </div>
-      </accordion.ItemContext>
-    );
-  };
+type AccordionPartProps = {
+  children?: RemixNode;
+  mix?: Props<"div">["mix"];
+};
+
+export function AccordionItem(
+  handle: Handle<AccordionPartProps & { value: string }>,
+) {
+  return () => (
+    <accordion.ItemContext value={handle.props.value}>
+      <div mix={[itemStyle, accordion.item(), handle.props.mix]}>
+        {handle.props.children}
+      </div>
+    </accordion.ItemContext>
+  );
 }
 
 export function AccordionTrigger(
-  handle: Handle<accordion.AccordionTriggerProps>,
+  handle: Handle<{ children?: RemixNode; mix?: Props<"button">["mix"] }>,
 ) {
-  return () => {
-    let { children, mix, type, ...props } = handle.props;
-    return (
-      <h3 mix={headingStyle}>
-        <button
-          {...props}
-          type={type ?? "button"}
-          mix={[triggerStyle, accordion.trigger(), mix]}
-        >
-          <span>{children}</span>
-        </button>
-      </h3>
-    );
-  };
+  return () => (
+    <h3 mix={headingStyle}>
+      <button
+        type="button"
+        mix={[triggerStyle, accordion.trigger(), handle.props.mix]}
+      >
+        <span>{handle.props.children}</span>
+      </button>
+    </h3>
+  );
 }
 
-export function AccordionContent(
-  handle: Handle<accordion.AccordionContentProps>,
-) {
-  return () => {
-    let { children, mix, ...props } = handle.props;
-    return (
-      <div {...props} mix={[panelStyle, accordion.content(), mix]}>
-        <div mix={panelClipStyle}>
-          <div mix={bodyStyle}>{children}</div>
-        </div>
+export function AccordionContent(handle: Handle<AccordionPartProps>) {
+  return () => (
+    <div mix={[panelStyle, accordion.content(), handle.props.mix]}>
+      <div mix={panelClipStyle}>
+        <div mix={bodyStyle}>{handle.props.children}</div>
       </div>
-    );
-  };
+    </div>
+  );
 }
 
 let rootStyle = css({ display: "flex", flexDirection: "column", minWidth: 0 });

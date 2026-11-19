@@ -222,12 +222,11 @@ function BrandPageContent() {
           width: "100%",
           maxWidth: "100%",
           marginInline: "auto",
-          paddingInline: "24px",
+          paddingInline: theme.space.edge,
           lineHeight: 1.6,
           "& > p": { margin: "0 0 16px" },
           "& > h1, & > h2": { margin: "40px 0 16px" },
           "& > h1:first-child": { margin: "0 0 64px" },
-          [breakpointMedia.md]: { paddingInline: "32px" },
           [breakpointMedia.lg]: { maxWidth: "896px", paddingInline: "40px" },
         }),
       ]}

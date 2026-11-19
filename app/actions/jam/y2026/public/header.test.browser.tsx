@@ -12,14 +12,11 @@ describe("Jam2026Header", () => {
       "(prefers-color-scheme: dark)",
       true,
     );
-    let originalMatchMedia = window.matchMedia;
-    window.matchMedia = (query) =>
+    t.mock.method(window, "matchMedia", (query: string) =>
       query === systemTheme.media
         ? systemTheme
-        : createMediaQueryList(query, true);
-    t.after(() => {
-      window.matchMedia = originalMatchMedia;
-    });
+        : createMediaQueryList(query, true),
+    );
 
     let result = render(<Jam2026Header />);
     t.after(result.cleanup);
@@ -45,14 +42,14 @@ describe("Jam2026Header", () => {
 
   it("applies and persists an explicit theme choice", async (t) => {
     protectRootTheme(t);
-    let originalMatchMedia = window.matchMedia;
-    let originalFetch = window.fetch;
     let themeSubmission:
       | { method?: string; theme?: FormDataEntryValue | null; url: string }
       | undefined;
 
-    window.matchMedia = (query) => createMediaQueryList(query, false);
-    window.fetch = async (input, init) => {
+    t.mock.method(window, "matchMedia", (query: string) =>
+      createMediaQueryList(query, false),
+    );
+    let themeFetch: typeof fetch = async (input, init) => {
       let body = init?.body;
       themeSubmission = {
         method: init?.method,
@@ -61,10 +58,7 @@ describe("Jam2026Header", () => {
       };
       return new Response(null, { status: 204 });
     };
-    t.after(() => {
-      window.matchMedia = originalMatchMedia;
-      window.fetch = originalFetch;
-    });
+    t.mock.method(window, "fetch", themeFetch);
 
     let result = render(<Jam2026Header initialTheme="light" />);
     t.after(result.cleanup);

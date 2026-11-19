@@ -7,9 +7,17 @@ import { formData } from "remix/middleware/form-data";
 import { logger } from "remix/middleware/logger";
 import type { Router } from "remix/router";
 import { createRouter } from "remix/router";
+import { expect } from "remix/assert";
 
 import { loadAssetEntry } from "../app/middleware/asset-entry.ts";
 import { renderMiddleware } from "../app/middleware/render.ts";
+import { CACHE } from "../app/utils/cache-control.ts";
+
+export function expectPrefetchableDocument(response: Response) {
+  for (let [name, value] of Object.entries(CACHE.PREFETCHABLE_DOCUMENT)) {
+    expect(response.headers.get(name)).toBe(value);
+  }
+}
 
 export function globalSetup() {
   loadEnvFileIfExists(".env");

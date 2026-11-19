@@ -5,6 +5,7 @@ import { routes } from "../routes.ts";
 import { assetPaths } from "../utils/public/asset-paths.ts";
 import { assets } from "../utils/assets.ts";
 import { CACHE } from "../utils/cache-control.ts";
+import { getCanonicalUrl } from "../utils/public/canonical-url.ts";
 import { getNewsletterSubscriptionStatus } from "./newsletter/subscription.tsx";
 import { LandingNewsletterSubscribeForm } from "./public/remix-landing/components/feature-section.tsx";
 import { blogOgImageAction } from "./blog-og-image.tsx";
@@ -17,7 +18,15 @@ export default createController(routes, {
   actions: {
     async assets({ request }) {
       let response = await assets.fetch(request);
-      return response ?? new Response("Not found", { status: 404 });
+      // During a rolling deploy, one machine can 404 a fingerprint that the
+      // other machine just rendered. Keep that 404 out of Fastly.
+      return (
+        response ??
+        new Response("Not found", {
+          status: 404,
+          headers: { "Cache-Control": CACHE.PRIVATE },
+        })
+      );
     },
 
     blogOgImage: blogOgImageAction,
@@ -26,9 +35,9 @@ export default createController(routes, {
       return render(<BrandPage requestUrl={request.url} />);
     },
 
-    homeMarkdown() {
+    homeMarkdown({ request }) {
       return homeMarkdownResponse("text/markdown", {
-        Link: `<${routes.llms.href()}>; rel="describedby"`,
+        Link: `<${getCanonicalUrl(new URL(request.url), routes.home.href())}>; rel="canonical", <${routes.llms.href()}>; rel="describedby"`,
       });
     },
 
@@ -80,8 +89,10 @@ export default createController(routes, {
     },
 
     // The llms.txt index is the homepage Markdown at the conventional URL.
-    llms() {
-      return homeMarkdownResponse("text/plain");
+    llms({ request }) {
+      return homeMarkdownResponse("text/plain", {
+        Link: `<${getCanonicalUrl(new URL(request.url), routes.home.href())}>; rel="canonical"`,
+      });
     },
 
     // Keep healthcheck on a stable path so deploy checks never depend on the

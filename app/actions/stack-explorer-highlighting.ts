@@ -1,4 +1,8 @@
-import { getHighlighter, toShikiTheme } from "shiki";
+import {
+  getSingletonHighlighter,
+  type ThemeRegistration,
+  type ThemedToken,
+} from "shiki";
 
 import {
   stackExplorerCodeSamples,
@@ -8,8 +12,9 @@ import {
 
 const DEFAULT_TOKEN_COLOR = "#FFFFFF";
 
-const stackExplorerTheme = toShikiTheme({
+const stackExplorerTheme: ThemeRegistration = {
   name: "remix-stack-explorer",
+  type: "dark",
   settings: [
     {
       settings: {
@@ -42,9 +47,8 @@ const stackExplorerTheme = toShikiTheme({
       settings: { foreground: "#FA73DA" },
     },
   ],
-});
+};
 
-let highlighterPromise: ReturnType<typeof getHighlighter> | undefined;
 let codeHighlightsPromise: Promise<StackExplorerCodeHighlights> | undefined;
 
 export function getStackExplorerCodeHighlights(): Promise<StackExplorerCodeHighlights> {
@@ -52,35 +56,26 @@ export function getStackExplorerCodeHighlights(): Promise<StackExplorerCodeHighl
 }
 
 async function createStackExplorerCodeHighlights() {
-  let highlighter = await getStackExplorerHighlighter();
+  let highlighter = await getSingletonHighlighter({
+    themes: [stackExplorerTheme],
+    langs: ["tsx", "css", "sql"],
+  });
 
   return Object.fromEntries(
     stackExplorerCodeSamples.map((sample) => [
       sample.key,
       compactTokens(
-        highlighter.codeToThemedTokens(
-          sample.code,
-          sample.language,
-          stackExplorerTheme.name,
-          { includeExplanation: false },
-        ),
+        highlighter.codeToTokensBase(sample.code, {
+          lang: sample.language,
+          theme: stackExplorerTheme,
+          includeExplanation: false,
+        }),
       ),
     ]),
   );
 }
 
-function getStackExplorerHighlighter() {
-  return (highlighterPromise ??= getHighlighter({
-    themes: [stackExplorerTheme],
-    langs: ["tsx", "css", "sql"],
-  }));
-}
-
-function compactTokens(
-  lines: ReturnType<
-    Awaited<ReturnType<typeof getHighlighter>>["codeToThemedTokens"]
-  >,
-): StackExplorerCodeToken[] {
+function compactTokens(lines: ThemedToken[][]): StackExplorerCodeToken[] {
   let result: StackExplorerCodeToken[] = [];
 
   function append(content: string, color?: string) {

@@ -22,8 +22,27 @@ const shellStyles = css({
   paddingTop:
     "calc(clamp(128px, 92px + 7vw, 188px) + (100vw - 48px) * 43 / 440)",
   [WIDE_HERO_MEDIA]: {
-    background:
-      "radial-gradient(ellipse 42% 45% at 50% 54%, rgba(0, 0, 0, 0.58) 0%, rgba(0, 0, 0, 0.38) 48%, rgba(0, 0, 0, 0.16) 78%, rgba(0, 0, 0, 0.1) 100%)",
+    viewTimeline: "--landing-hero-scrim",
+    "&::before": {
+      content: '""',
+      position: "absolute",
+      inset: "0",
+      zIndex: "-1",
+      pointerEvents: "none",
+      background:
+        "radial-gradient(ellipse 42% 45% at 50% 54%, rgba(0, 0, 0, 0.58) 0%, rgba(0, 0, 0, 0.38) 48%, rgba(0, 0, 0, 0.16) 78%, rgba(0, 0, 0, 0.1) 100%)",
+      // The scrim never reaches transparent, so its bottom edge reads as a hard
+      // line once it scrolls into view. The hero is always taller than the
+      // viewport, so `contain` ends exactly as that edge enters from below.
+      "@supports (animation-timeline: view())": {
+        animation: "landing-hero-scrim-fade linear both",
+        animationTimeline: "--landing-hero-scrim",
+        animationRange: "contain 0% contain 100%",
+      },
+    },
+  },
+  "@keyframes landing-hero-scrim-fade": {
+    to: { opacity: "0" },
   },
 });
 

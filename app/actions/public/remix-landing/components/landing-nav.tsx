@@ -3,7 +3,11 @@ import * as popover from "@remix-run/ui/popover";
 import { routes } from "../../../../routes.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { isEditableKeyTarget } from "../../../../ui/public/keyboard.ts";
-import { breakpointMedia, breakpoints } from "../../../../ui/public/theme.ts";
+import {
+  breakpointMedia,
+  breakpoints,
+  theme,
+} from "../../../../ui/public/theme.ts";
 import { colors } from "../styles/tokens.ts";
 import { landingContent } from "../landing-content.ts";
 import { clamp01 } from "../utils/math.ts";
@@ -17,7 +21,7 @@ const headerStyles = css({
   display: "flex",
   alignItems: "flex-start",
   justifyContent: "space-between",
-  padding: "24px",
+  padding: theme.space.edge,
   pointerEvents: "none",
 });
 
@@ -284,7 +288,7 @@ export function LandingNav(
             <button
               type="button"
               aria-label={menuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={menuOpen ? "true" : "false"}
+              aria-expanded={menuOpen}
               aria-controls="mobile-nav-menu"
               mix={[
                 navItemStyles,

@@ -1,10 +1,14 @@
 import type { ManagedHeadTag } from "../../../../ui/public/document-head.ts";
+import { syncDocumentHead } from "../../../../ui/public/document-head-sync.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
+import { getCanonicalOrigin } from "../../../../utils/public/canonical-url.ts";
 import { createSocialHeadTags } from "../../../../utils/public/social-head-tags.ts";
 import { routes } from "../../../../routes.ts";
 
 type Jam2026HeadContentProps = {
   ticketsModalOpen?: boolean;
+  /** The filename of the photo open in the viewer, if any. */
+  photo?: string;
 };
 
 type Jam2026HeadTagsProps = {
@@ -15,19 +19,25 @@ type Jam2026HeadTagsProps = {
 };
 
 const JAM_2026_SHARE_IMAGE_ALT = "Remix Jam 2026 in Toronto";
-const JAM_2026_CANONICAL_ORIGIN = "https://remix.run";
 
 export function getJam2026HeadContent(props: Jam2026HeadContentProps = {}) {
-  let { ticketsModalOpen = false } = props;
-  return ticketsModalOpen
-    ? {
-        title: "Remix Jam 2026 Tickets",
-        description: "Get tickets for Remix Jam 2026 in Toronto.",
-      }
-    : {
-        title: "Remix Jam 2026",
-        description: "Remix Jam returns to Toronto on October 2, 2026.",
-      };
+  let { ticketsModalOpen = false, photo } = props;
+  if (ticketsModalOpen) {
+    return {
+      title: "Remix Jam 2026 Tickets",
+      description: "Get tickets for Remix Jam 2026 in Toronto.",
+    };
+  }
+  if (photo) {
+    return {
+      title: `${photo} | Remix Jam 2026`,
+      description: "A photo from Remix Jam 2026 in Toronto.",
+    };
+  }
+  return {
+    title: "Remix Jam 2026",
+    description: "Remix Jam returns to Toronto on October 2, 2026.",
+  };
 }
 
 function buildJam2026HeadTags(props: Jam2026HeadTagsProps) {
@@ -44,7 +54,16 @@ function buildJam2026HeadTags(props: Jam2026HeadTagsProps) {
   ] satisfies ManagedHeadTag[];
 }
 
-export function getJam2026ClientManagedHeadTags(head: {
+/** Brings the document head in line with a modal opened or closed in place. */
+export function syncJam2026Head(props: Jam2026HeadContentProps) {
+  let head = getJam2026HeadContent(props);
+  syncDocumentHead(
+    { title: head.title, headTags: getJam2026ClientManagedHeadTags(head) },
+    { syncTheme: false },
+  );
+}
+
+function getJam2026ClientManagedHeadTags(head: {
   title: string;
   description: string;
 }) {
@@ -53,7 +72,7 @@ export function getJam2026ClientManagedHeadTags(head: {
 
   if (typeof window !== "undefined") {
     let currentUrl = new URL(window.location.href);
-    let trustedOrigin = getJam2026TrustedOrigin(currentUrl);
+    let trustedOrigin = getCanonicalOrigin(currentUrl);
     pageUrl = `${trustedOrigin}${currentUrl.pathname}`;
     imageUrl = new URL(assetPaths.jam2026.shareImage, trustedOrigin).href;
   }
@@ -74,7 +93,7 @@ export function getJam2026ServerHeadTags(props: {
   requestUrl: string | URL;
 }) {
   let requestUrl = new URL(props.requestUrl);
-  let trustedOrigin = getJam2026TrustedOrigin(requestUrl);
+  let trustedOrigin = getCanonicalOrigin(requestUrl);
 
   return buildJam2026HeadTags({
     title: props.title,
@@ -82,17 +101,6 @@ export function getJam2026ServerHeadTags(props: {
     pageUrl: `${trustedOrigin}${requestUrl.pathname}`,
     imageUrl: new URL(assetPaths.jam2026.shareImage, trustedOrigin).toString(),
   });
-}
-
-function getJam2026TrustedOrigin(url: URL) {
-  if (
-    url.hostname === "localhost" ||
-    url.hostname === "127.0.0.1" ||
-    url.hostname === "[::1]"
-  ) {
-    return url.origin;
-  }
-  return JAM_2026_CANONICAL_ORIGIN;
 }
 
 let jam2026IconHeadTags: ManagedHeadTag[] = [

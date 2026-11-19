@@ -12,6 +12,7 @@ import {
   marketingPageStyle,
   pageBodyStyle,
   pageMetaStyle,
+  pageSecondaryTextStyle,
   pageTitleExtraSmallStyle,
   pageTitleStyle,
 } from "../../ui/public/marketing-styles.ts";
@@ -82,19 +83,18 @@ export function NewsletterIssuePage(
   }>,
 ) {
   let issue = handle.props.issue;
+  let description =
+    issue.preview ||
+    `Remix Newsletter #${issue.number} — ${formatNewsletterDate(issue.date)}`;
   return () => (
     <Document
       title={`${issue.title} | Remix`}
-      description={`Remix Newsletter #${issue.number} — ${formatNewsletterDate(
-        issue.date,
-      )}`}
+      description={description}
       stylesheets={["md"]}
       headTags={getSocialHeadTags({
         requestUrl: handle.props.requestUrl,
         title: issue.title,
-        description: `Remix Newsletter #${issue.number} — ${formatNewsletterDate(
-          issue.date,
-        )}`,
+        description,
         image: issue.image?.src,
         imageAlt: issue.image?.alt,
       })}
@@ -142,7 +142,7 @@ function NewsletterSignupSection(
           css({
             maxWidth: "672px",
             marginBlockStart: "64px",
-            color: theme.colors.text.marketingSecondary,
+            color: theme.colors.text.primary,
           }),
         ]}
       >
@@ -169,20 +169,18 @@ function NewsletterArchive(
       mix={css({ marginBlockStart: "64px" })}
     >
       {handle.props.unavailable ? (
-        <p role="alert" mix={[pageBodyStyle, newsletterSecondaryTextStyle]}>
+        <p role="alert" mix={pageBodyStyle}>
           The archive is temporarily unavailable. Please check back soon.{" "}
           <a
             href={routes.newsletter.index.href()}
-            rmx-document
+            data-rmx-document
             mix={newsletterArchiveLinkStyle}
           >
             Try again
           </a>
         </p>
       ) : handle.props.summaries.length === 0 ? (
-        <p mix={[pageBodyStyle, newsletterSecondaryTextStyle]}>
-          No issues yet.
-        </p>
+        <p mix={pageBodyStyle}>No issues yet.</p>
       ) : (
         <ol
           mix={css({
@@ -197,6 +195,7 @@ function NewsletterArchive(
                 href={routes.newsletter.issue.href({
                   number: summary.number,
                 })}
+                data-rmx-prefetch="intent"
                 mix={
                   summary.image
                     ? [
@@ -221,10 +220,7 @@ function NewsletterArchive(
                 >
                   <time
                     dateTime={summary.date.toISOString()}
-                    mix={[
-                      pageMetaStyle,
-                      css({ color: theme.colors.text.primary }),
-                    ]}
+                    mix={[pageMetaStyle, pageSecondaryTextStyle]}
                   >
                     {formatNewsletterDate(summary.date)}
                   </time>
@@ -232,9 +228,7 @@ function NewsletterArchive(
                     Remix Newsletter #{summary.number}
                   </h3>
                   {summary.preview ? (
-                    <p mix={[pageBodyStyle, newsletterSecondaryTextStyle]}>
-                      {summary.preview}
-                    </p>
+                    <p mix={pageBodyStyle}>{summary.preview}</p>
                   ) : null}
                 </div>
                 {summary.image ? (
@@ -281,9 +275,7 @@ let newsletterContainerStyle = {
   boxSizing: "border-box",
   width: "100%",
   marginInline: "auto",
-  paddingInline: "24px",
-  [breakpointMedia.md]: { paddingInline: "32px" },
-  [breakpointMedia.lg]: { paddingInline: "40px" },
+  paddingInline: theme.space.edge,
 } as const;
 
 let newsletterArchiveLinkStyle = css({
@@ -296,10 +288,6 @@ let newsletterArchiveLinkStyle = css({
   },
 });
 
-let newsletterSecondaryTextStyle = css({
-  color: theme.colors.text.marketingSecondary,
-});
-
 let newsletterCardStyle = css({
   display: "grid",
   gap: "20px",
@@ -307,7 +295,7 @@ let newsletterCardStyle = css({
   overflow: "hidden",
   borderRadius: "12px",
   padding: "24px",
-  color: theme.colors.text.newsletterCard,
+  color: theme.colors.text.primary,
   outline: "none",
   transition: "background-color 150ms ease-in-out",
   "&:hover, &:focus-within": {

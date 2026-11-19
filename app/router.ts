@@ -1,3 +1,5 @@
+import zlib from "node:zlib";
+
 import { asyncContext } from "remix/middleware/async-context";
 import { compression } from "remix/middleware/compression";
 import { cop } from "remix/middleware/cop";
@@ -26,6 +28,7 @@ import jam2025Controller from "./actions/jam/y2025/controller.tsx";
 import jam2025GalleryController from "./actions/jam/y2025/gallery/controller.tsx";
 import jam2025TicketController from "./actions/jam/y2025/ticket/controller.tsx";
 import jam2026Controller from "./actions/jam/y2026/controller.tsx";
+import jam2026PhotosController from "./actions/jam/y2026/photos/controller.tsx";
 import jam2026TicketController from "./actions/jam/y2026/ticket/controller.tsx";
 import { createNewsletterController } from "./actions/newsletter/controller.tsx";
 import {
@@ -60,7 +63,19 @@ let ignoreChromeDevToolsRequest: Middleware = (context, next) => {
 function createAppMiddleware() {
   return createMiddleware(
     securityHeaders(),
-    compression(),
+    compression({
+      // Node's default Brotli quality (11) took ~160 ms per streamed HTML
+      // response; 4 costs about the same as gzip. Cached assets keep 11.
+      brotli: (response) => ({
+        params: {
+          [zlib.constants.BROTLI_PARAM_QUALITY]: response.headers
+            .get("Content-Type")
+            ?.startsWith("text/html")
+            ? 4
+            : 11,
+        },
+      }),
+    }),
     ignoreChromeDevToolsRequest,
     rootPublicFiles(),
     cop(),
@@ -107,6 +122,7 @@ export function createAppRouter(
   appRouter.map(routes.jam.y2025.ticket, jam2025TicketController);
   appRouter.map(routes.jam.y2026, jam2026Controller);
   appRouter.map(routes.jam.y2026.ticket, jam2026TicketController);
+  appRouter.map(routes.jam.y2026.photos, jam2026PhotosController);
   appRouter.map(
     routes.newsletter,
     createNewsletterController(

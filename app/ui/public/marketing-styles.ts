@@ -47,6 +47,10 @@ export let pageMetaStyle = css({
   textTransform: "uppercase",
 });
 
+export let pageSecondaryTextStyle = css({
+  color: theme.colors.text.secondary,
+});
+
 export let marketingPageStyle = css({
   marginBlockStart: "clamp(2.5rem, 5vw, 4rem)",
 });

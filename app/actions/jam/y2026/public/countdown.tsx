@@ -1,3 +1,4 @@
+import { prefersReducedMotion } from "@remix-run/ui/animation";
 import { css, type Handle } from "remix/component";
 import { theme } from "../../../../ui/public/theme.ts";
 
@@ -120,7 +121,7 @@ export function Jam2026Countdown(handle: Handle) {
       liveInterval = window.setInterval(updateCountdownToLive, SECOND);
     };
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (prefersReducedMotion()) {
       startLiveCountdown();
       handle.signal.addEventListener(
         "abort",

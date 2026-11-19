@@ -1,5 +1,5 @@
 import { expect } from "remix/assert";
-import { describe, it } from "remix/test";
+import { describe, it, type TestContext } from "remix/test";
 
 import { routes } from "../../../../routes.ts";
 import { env } from "../../../../utils/env.ts";
@@ -42,12 +42,11 @@ describe("Jam 2025 gallery route", () => {
   });
 });
 
-function mockStorefrontPhotoRequests(t: { after(cleanup: () => void): void }) {
+function mockStorefrontPhotoRequests(t: TestContext) {
   let originalToken = env.PUBLIC_STOREFRONT_API_TOKEN;
-  let originalFetch = globalThis.fetch;
 
   env.PUBLIC_STOREFRONT_API_TOKEN = "test-storefront-token";
-  globalThis.fetch = async (input) => {
+  t.mock.method(globalThis, "fetch", async (input: RequestInfo | URL) => {
     let url = String(input);
 
     if (url === "https://jam.remix.run/api/2026-04/graphql.json") {
@@ -85,10 +84,9 @@ function mockStorefrontPhotoRequests(t: { after(cleanup: () => void): void }) {
     }
 
     throw new Error(`Unexpected fetch: ${url}`);
-  };
+  });
 
   t.after(() => {
     env.PUBLIC_STOREFRONT_API_TOKEN = originalToken;
-    globalThis.fetch = originalFetch;
   });
 }

@@ -1,4 +1,3 @@
-import { htmlEscape } from "escape-goat";
 import { expect } from "remix/assert";
 import { createTestServer } from "remix/node-fetch-server/test";
 import { describe, it } from "remix/test";
@@ -102,7 +101,7 @@ describe("homepage representations", () => {
     ].map((match) => match[1]);
     for (let item of landingContent.differentiators.items) {
       for (let match of item.body.matchAll(/`([^`]+)`/g)) {
-        expect(codeElements).toContain(htmlEscape(match[1]!));
+        expect(codeElements).toContain(escapeHtml(match[1]!));
       }
     }
   });
@@ -155,3 +154,12 @@ describe("homepage representations", () => {
     }
   });
 });
+
+function escapeHtml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}

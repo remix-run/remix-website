@@ -46,7 +46,6 @@ export let Jam2026FaqAccordion = clientEntry(
       <Accordion
         type="single"
         collapsible
-        headingLevel={3}
         value={openFaqId}
         onValueChange={(value) => {
           openFaqId = value;

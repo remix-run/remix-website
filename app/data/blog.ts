@@ -2,8 +2,8 @@ import assert from "node:assert";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { LRUCache } from "lru-cache";
-import parseFrontMatter from "front-matter";
 import yaml from "yaml";
+import { parseFrontmatter } from "./frontmatter.ts";
 import { processMarkdown } from "./md.ts";
 
 const DATA_DIRECTORY = path.join(process.cwd(), "data");
@@ -83,7 +83,7 @@ export function getBlogPostListings(): Array<MarkdownPostListing> {
 
   let listings: Array<MarkdownPostListing & { date: Date }> = [];
   for (let [slug, contents] of Object.entries(getPostContentsBySlug())) {
-    let { attributes } = parseFrontMatter(contents);
+    let { attributes } = parseFrontmatter(contents);
     assert(
       isMarkdownPostFrontmatter(attributes),
       `Invalid post frontmatter in ${slug}`,

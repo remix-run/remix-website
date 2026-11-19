@@ -7,12 +7,12 @@ import {
 // follows the llms.txt layout: H1, blockquote summary, heading-free details,
 // then H2 sections that only contain link lists.
 export function renderHomeMarkdown() {
-  let guides = landingContent.resources.find(
-    (resource) => resource.key === "G",
+  let quickstart = landingContent.storySections.find(
+    (section) => section.id === "test-drive",
   )!;
-  let api = landingContent.resources.find((resource) => resource.key === "A")!;
+  let docs = landingContent.resources.find((resource) => resource.key === "D")!;
   let github = landingContent.resources.find(
-    (resource) => resource.key === "H",
+    (resource) => resource.key === "G",
   )!;
   let skillHref =
     "https://raw.githubusercontent.com/remix-run/remix/main/.agents/skills/remix/SKILL.md";
@@ -26,7 +26,7 @@ ${packageRunners[0].command}
 cd ${landingContent.projectDirectory}
 npm install
 \`\`\``,
-    `Confirm it works with \`npm run typecheck\` and \`npm test\`. \`npm run dev\` starts a development server that runs until stopped, so coding agents should run it in the background. [Start here](${guides.markdownHref}) walks through the generated files and your first feature.`,
+    `Confirm it works with \`npm run typecheck\` and \`npm test\`. \`npm run dev\` starts a development server that runs until stopped, so coding agents should run it in the background. [${quickstart.ctaLabel}](${quickstart.ctaMarkdownHref}) walks through the generated files and your first feature.`,
     [
       "**Working in a Remix app:**",
       "",
@@ -36,8 +36,8 @@ npm install
     ].join("\n"),
     "## Learn more",
     [
-      `- [Guides](${guides.markdownHref}): Build your first app, then learn how each part of Remix fits together.`,
-      `- [API reference](${api.markdownHref}): Package overview and CLI commands.`,
+      `- [Start here](${quickstart.ctaMarkdownHref}): Build your first app, then learn how each part of Remix fits together.`,
+      `- [API reference](${docs.markdownHref}): Package overview and CLI commands.`,
       `- [Remix agent skill](${skillHref}): Instructions for building, reviewing, and testing Remix 3 apps.`,
       `- [Source code](${github.href}): Framework source and development history.`,
     ].join("\n"),

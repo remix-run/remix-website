@@ -2,6 +2,7 @@ import * as http from "node:http";
 import { createRequestListener } from "remix/node-fetch-server";
 import { router } from "./app/router.ts";
 import { assets } from "./app/utils/assets.ts";
+import { warmServer } from "./app/utils/warm-up.ts";
 
 const isHmr = Boolean(
   process.env.NODE_ENV === "development" && process.env.REMIX_NODE_HMR,
@@ -37,9 +38,20 @@ const server = http.createServer(
         return new Response("Internal Server Error", { status: 500 });
       }
     },
-    { trustProxy: isHmr },
+    {
+      trustProxy: isHmr,
+      // Fly terminates TLS (and force_https upgrades plain HTTP), so the app
+      // only sees HTTP connections. A fixed protocol keeps request URLs, and
+      // the redirects and absolute URLs built from them, on https without
+      // trusting client-spoofable forwarded headers.
+      protocol: process.env.FLY_APP_NAME ? "https:" : undefined,
+    },
   ),
 );
+
+if (process.env.NODE_ENV === "production") {
+  await warmServer(router, `http://localhost:${port}`);
+}
 
 server.listen(port, () => {
   if (isHmr) {

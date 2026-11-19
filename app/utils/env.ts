@@ -1,7 +1,5 @@
 import * as s from "remix/data-schema";
 
-loadEnvFiles();
-
 function createEnvSchema(nodeEnv: string | undefined) {
   return s
     .object({
@@ -24,16 +22,3 @@ export function parseEnv(
 }
 
 export const env = parseEnv(process.env);
-
-function loadEnvFiles() {
-  // React Router framework mode loaded `.env` during dev; after removing that
-  // integration we need to load env files explicitly for server-only handlers.
-  if (typeof process.loadEnvFile !== "function") return;
-
-  try {
-    process.loadEnvFile(".env");
-    process.loadEnvFile(".env.local");
-  } catch {
-    // Ignore missing/invalid local env files and rely on existing process.env.
-  }
-}
