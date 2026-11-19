@@ -51,8 +51,8 @@ export function createNewsletterFrameForm(
   handle: Handle<{ status?: NewsletterSubscriptionStatus | null }>,
   context: NewsletterSubscribeFrameContext,
 ) {
-  let form: HTMLFormElement | null = null;
   let submitting = false;
+  let failed = false;
   let requestSrc = `${routes.newsletter.subscribe.href()}?${new URLSearchParams({ frame: context })}`;
   let navigation = {
     "data-rmx-reset-scroll": "manual",
@@ -60,34 +60,42 @@ export function createNewsletterFrameForm(
     "data-rmx-target": NEWSLETTER_SUBSCRIBE_FRAME_NAME,
   } as const;
 
-  handle.frame.addEventListener(
-    "reloadComplete",
-    () => {
-      submitting = false;
-      if (handle.props.status === "success") form?.reset();
-      handle.update();
-    },
-    { signal: handle.signal },
-  );
-
   return {
     get state(): { status: NewsletterSubscribeFormStatus } {
-      return {
-        status: submitting ? "submitting" : (handle.props.status ?? "idle"),
-      };
+      if (submitting) return { status: "submitting" };
+      if (failed) return { status: "error" };
+      return { status: handle.props.status ?? "idle" };
     },
     submit: [
-      ref<HTMLFormElement>((element, signal) => {
-        form = element;
+      ref<HTMLFormElement>((element) => {
         element.action = handle.frames.top.src;
-        signal.addEventListener("abort", () => {
-          if (form === element) form = null;
-        });
       }),
-      on<HTMLFormElement>("submit", () => {
-        submitting = true;
-        handle.update();
-      }),
+      // `finished` settles after the response renders, so the new status prop
+      // is in place. It rejects when the request fails, which would otherwise
+      // leave the button stuck on "Subscribing...".
+      on<HTMLFormElement, "rmx:navigation">(
+        "rmx:navigation",
+        async (event, signal) => {
+          let form = event.currentTarget;
+          submitting = true;
+          failed = false;
+          handle.update();
+          try {
+            let navigationSignal = await event.finished;
+            if (
+              !navigationSignal.aborted &&
+              handle.props.status === "success"
+            ) {
+              form.reset();
+            }
+          } catch {
+            if (!signal.aborted) failed = true;
+          }
+          if (signal.aborted) return;
+          submitting = false;
+          handle.update();
+        },
+      ),
     ],
     navigation,
   };
@@ -101,87 +109,128 @@ export let NewsletterSubscribeForm = clientEntry(
     let form = createNewsletterFrameForm(handle, "newsletter");
 
     return () => (
-      <form
-        action={routes.newsletter.subscribe.href()}
-        method="post"
-        {...form.navigation}
-        mix={[
-          css({
-            display: "flex",
-            flexDirection: "column",
-            gap: "24px",
-            margin: 0,
-            [breakpointMedia.md]: { height: "56px", flexDirection: "row" },
-            "@container (max-width: 383px)": {
-              height: "auto",
+      <>
+        <form
+          action={routes.newsletter.subscribe.href()}
+          method="post"
+          {...form.navigation}
+          mix={[
+            css({
+              display: "flex",
               flexDirection: "column",
-            },
-          }),
-          ...form.submit,
-        ]}
-      >
-        <label htmlFor={handle.id} mix={visuallyHiddenStyle}>
-          Email address
-        </label>
-        <input
-          id={handle.id}
-          type="email"
-          name="email"
-          autoComplete="email"
-          placeholder="name@example.com"
-          mix={css({
-            boxSizing: "border-box",
-            display: "inline-block",
-            height: "56px",
-            flex: 1,
-            appearance: "none",
-            border: 0,
-            borderRadius: "8px",
-            backgroundColor: theme.surface.neutral100,
-            padding: "16px 24px",
-            fontSize: "1rem",
-            "&::placeholder": { color: theme.colors.text.tertiary },
-          })}
-          aria-invalid={
-            handle.props.status === "invalid-email" ? true : undefined
-          }
-        />
-        <button
-          type="submit"
-          mix={css({
-            boxSizing: "border-box",
-            display: "inline-flex",
-            height: "56px",
-            appearance: "none",
-            alignItems: "center",
-            justifyContent: "center",
-            border: "1px solid rgb(0 0 0 / 0.1)",
-            borderRadius: "8px",
-            backgroundColor: theme.colors.action.primary,
-            paddingInline: "24px",
-            color: theme.colors.action.primaryLabel,
-            boxShadow: theme.shadow.low,
-            fontSize: "1rem",
-            fontWeight: theme.fontWeight.semibold,
-            lineHeight: 1,
-            letterSpacing: "-0.025em",
-            transition: "all 150ms ease",
-            "&:hover": { opacity: 0.9 },
-            "&:focus-visible": {
-              outline: `2px solid ${theme.colors.action.primary}`,
-              outlineOffset: "2px",
-            },
-            "&:active": { opacity: 0.8, transform: "scale(0.98)" },
-            [breakpointMedia.md]: { width: "auto", whiteSpace: "nowrap" },
-            "@media (prefers-reduced-motion: reduce)": { transition: "none" },
-          })}
-          disabled={form.state.status === "submitting"}
+              gap: "24px",
+              margin: 0,
+              [breakpointMedia.md]: { height: "56px", flexDirection: "row" },
+              "@container (max-width: 383px)": {
+                height: "auto",
+                flexDirection: "column",
+              },
+            }),
+            ...form.submit,
+          ]}
         >
-          {form.state.status === "submitting" ? "Subscribing..." : "Subscribe"}
-        </button>
-      </form>
+          <label htmlFor={handle.id} mix={visuallyHiddenStyle}>
+            Email address
+          </label>
+          <input
+            id={handle.id}
+            type="email"
+            name="email"
+            autoComplete="email"
+            placeholder="name@example.com"
+            mix={css({
+              boxSizing: "border-box",
+              display: "inline-block",
+              height: "56px",
+              flex: 1,
+              appearance: "none",
+              border: 0,
+              borderRadius: "8px",
+              backgroundColor: theme.surface.neutral100,
+              padding: "16px 24px",
+              fontSize: "1rem",
+              "&::placeholder": { color: theme.colors.text.tertiary },
+            })}
+            aria-invalid={
+              handle.props.status === "invalid-email" ? true : undefined
+            }
+          />
+          <button
+            type="submit"
+            mix={css({
+              boxSizing: "border-box",
+              display: "inline-flex",
+              height: "56px",
+              appearance: "none",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "1px solid rgb(0 0 0 / 0.1)",
+              borderRadius: "8px",
+              backgroundColor: theme.colors.action.primary,
+              paddingInline: "24px",
+              color: theme.colors.action.primaryLabel,
+              boxShadow: theme.shadow.low,
+              fontSize: "1rem",
+              fontWeight: theme.fontWeight.semibold,
+              lineHeight: 1,
+              letterSpacing: "-0.025em",
+              transition: "all 150ms ease",
+              "&:hover": { opacity: 0.9 },
+              "&:focus-visible": {
+                outline: `2px solid ${theme.colors.action.primary}`,
+                outlineOffset: "2px",
+              },
+              "&:active": { opacity: 0.8, transform: "scale(0.98)" },
+              [breakpointMedia.md]: { width: "auto", whiteSpace: "nowrap" },
+              "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+            })}
+            disabled={form.state.status === "submitting"}
+          >
+            {form.state.status === "submitting"
+              ? "Subscribing..."
+              : "Subscribe"}
+          </button>
+        </form>
+        <NewsletterSubscriptionNotice status={form.state.status} />
+      </>
     );
   },
 );
 
+function NewsletterSubscriptionNotice(
+  handle: Handle<{ status: NewsletterSubscribeFormStatus }>,
+) {
+  return () => {
+    let { status } = handle.props;
+    if (status === "idle" || status === "submitting") return null;
+
+    return (
+      <div
+        role={status === "success" ? "status" : "alert"}
+        mix={
+          status === "success"
+            ? subscriptionNoticeStyle
+            : [subscriptionNoticeStyle, subscriptionErrorStyle]
+        }
+      >
+        {status === "success" ? (
+          <div>
+            <b mix={css({ color: theme.colors.brand.green })}>Got it!</b> Please
+            go <b mix={subscriptionErrorStyle}>check your email</b> to confirm
+            your subscription, otherwise you won&apos;t get our email.
+          </div>
+        ) : status === "invalid-email" ? (
+          "Please enter a valid email address."
+        ) : status === "invalid-tag" ? (
+          "The selected newsletter is not available."
+        ) : (
+          "Something went wrong. Please try again."
+        )}
+      </div>
+    );
+  };
+}
+
 let newsletterFrameHostStyle = css({ containerType: "inline-size" });
+let subscriptionNoticeStyle = css({ paddingBlock: "8px" });
+let subscriptionErrorStyle = css({ color: theme.colors.brand.red });

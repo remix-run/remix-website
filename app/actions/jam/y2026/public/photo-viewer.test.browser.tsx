@@ -305,14 +305,17 @@ describe("Jam2026PhotoViewerFrame", () => {
     // The reader scrolls to the third photo: it opens on the way, and is
     // fetched once the row stops.
     row.scrollLeft = centerOf("DSC03");
-    await waitFor(() => navigations.length > 0);
+    await t.waitFor(
+      () =>
+        expect(navigations).toEqual([
+          routes.jam.y2026.photos.show.href({ photo: "DSC03" }),
+        ]),
+      { timeout: 2000 },
+    );
 
     expect(
       result.container.querySelector("#photo-viewer-title")?.textContent,
     ).toBe("DSC03.jpg");
-    expect(navigations).toEqual([
-      routes.jam.y2026.photos.show.href({ photo: "DSC03" }),
-    ]);
   });
 
   it("opens as soon as a photo is chosen, ahead of the server", async (t) => {
@@ -438,14 +441,6 @@ function getLink(container: HTMLElement, label: string) {
 
 function pressKey(key: string) {
   document.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key }));
-}
-
-// Polls until the check passes or the time runs out.
-async function waitFor(check: () => boolean, timeout = 2000) {
-  let deadline = Date.now() + timeout;
-  while (!check() && Date.now() < deadline) {
-    await new Promise((resolve) => setTimeout(resolve, 20));
-  }
 }
 
 async function nextFrame(result: ReturnType<typeof render>) {

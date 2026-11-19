@@ -24,14 +24,12 @@ describe("Jam2026Countdown", () => {
   });
 
   it("finishes the intro deterministically and continues ticking live", async (t) => {
-    let now = new Date("2026-10-01T09:00:00-04:00").getTime();
-    let originalDateNow = Date.now;
-    Date.now = () => now;
-    t.after(() => {
-      Date.now = originalDateNow;
+    // The 9-tick intro takes 1,350ms, so it lands half a second before the
+    // countdown reaches one day.
+    let timers = t.useFakeTimers({
+      now: new Date("2026-10-01T08:59:58.150-04:00"),
     });
     t.after(mockMatchMedia(false));
-    let timers = installControlledIntervals(t);
     let result = render(<Jam2026Countdown />);
     t.after(result.cleanup);
     await result.act(() => {});
@@ -46,7 +44,6 @@ describe("Jam2026Countdown", () => {
       "00",
     ]);
 
-    now += 1_000;
     await result.act(() => timers.advance(1_000));
     expect(countdownValues(result.container)).toEqual([
       "000",
@@ -57,11 +54,7 @@ describe("Jam2026Countdown", () => {
   });
 
   it("skips the intro for reduced motion", async (t) => {
-    let originalDateNow = Date.now;
-    Date.now = () => new Date("2026-10-01T09:00:00-04:00").getTime();
-    t.after(() => {
-      Date.now = originalDateNow;
-    });
+    t.useFakeTimers({ now: new Date("2026-10-01T09:00:00-04:00") });
     t.after(mockMatchMedia(true));
     let result = render(<Jam2026Countdown />);
     t.after(result.cleanup);
@@ -99,39 +92,5 @@ function mockMatchMedia(matches: boolean) {
 
   return () => {
     window.matchMedia = originalMatchMedia;
-  };
-}
-
-function installControlledIntervals(t: { after(cleanup: () => void): void }) {
-  let originalSetInterval = window.setInterval;
-  let originalClearInterval = window.clearInterval;
-  let nextId = 1;
-  let intervals = new Map<number, { handler: TimerHandler; timeout: number }>();
-
-  window.setInterval = ((handler: TimerHandler, timeout = 0) => {
-    let id = nextId++;
-    intervals.set(id, { handler, timeout });
-    return id;
-  }) as typeof window.setInterval;
-  window.clearInterval = ((id?: number) => {
-    if (id !== undefined) intervals.delete(id);
-  }) as typeof window.clearInterval;
-
-  t.after(() => {
-    window.setInterval = originalSetInterval;
-    window.clearInterval = originalClearInterval;
-  });
-
-  return {
-    advance(timeout: number) {
-      for (let interval of intervals.values()) {
-        if (
-          interval.timeout === timeout &&
-          typeof interval.handler === "function"
-        ) {
-          interval.handler();
-        }
-      }
-    },
   };
 }
