@@ -3,6 +3,7 @@ import { RemixLandingEnhancements } from "./public/remix-landing/landing-enhance
 import { RUNNER_AVIF_SRC } from "./public/remix-landing/runner-media.ts";
 import { colors } from "./public/remix-landing/styles/tokens.ts";
 import { Document } from "../ui/document.tsx";
+import { routes } from "../routes.ts";
 import { LandingContent } from "./home-landing-content.tsx";
 import type { StackExplorerCodeHighlights } from "./public/remix-landing/components/stack-explorer-content.tsx";
 
@@ -23,6 +24,13 @@ export function HomePage(handle: Handle<HomePageProps>) {
       forceTheme="dark"
       stylesheets={["home"]}
       headTags={[
+        {
+          kind: "link",
+          rel: "alternate",
+          href: routes.homeMarkdown.href(),
+          type: "text/markdown",
+        },
+        { kind: "link", rel: "describedby", href: routes.llms.href() },
         {
           kind: "link",
           rel: "preload",

@@ -319,7 +319,14 @@ describe("canonical URLs", () => {
     let homeMarkdown = await router.fetch(
       new URL(routes.homeMarkdown.href(), "https://remix.run"),
     );
-    expect(homeMarkdown.headers.get("Link")).toBe(
+    expect(homeMarkdown.headers.get("Link")).toContain(
+      '<https://remix.run/>; rel="canonical"',
+    );
+
+    let llms = await router.fetch(
+      new URL(routes.llms.href(), "https://remix.run"),
+    );
+    expect(llms.headers.get("Link")).toBe(
       '<https://remix.run/>; rel="canonical"',
     );
   });

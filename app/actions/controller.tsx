@@ -36,19 +36,13 @@ export default createController(routes, {
     },
 
     homeMarkdown({ request }) {
-      let htmlUrl = getCanonicalUrl(new URL(request.url), routes.home.href());
-      return new Response(renderHomeMarkdown(), {
-        headers: {
-          "Content-Type": "text/markdown; charset=utf-8",
-          Link: `<${htmlUrl}>; rel="canonical"`,
-          ...(process.env.NODE_ENV === "development"
-            ? { "Cache-Control": "no-store" }
-            : CACHE.DOCUMENT),
-        },
+      return homeMarkdownResponse("text/markdown", {
+        Link: `${homeCanonicalLink(request)}, <${routes.llms.href()}>; rel="describedby"`,
       });
     },
 
     async home({ render, request }) {
+      let discoveryLinks = `<${routes.homeMarkdown.href()}>; rel="alternate"; type="text/markdown", <${routes.llms.href()}>; rel="describedby"`;
       let accept = Accept.from(request.headers.get("Accept"));
       let markdownQuality = accept.get("text/markdown") ?? 0;
       let htmlQuality =
@@ -64,14 +58,9 @@ export default createController(routes, {
         markdownQuality <= 1 &&
         markdownQuality >= htmlQuality
       ) {
-        return new Response(renderHomeMarkdown(), {
-          headers: {
-            "Content-Type": "text/markdown; charset=utf-8",
-            Vary: "Accept",
-            ...(process.env.NODE_ENV === "development"
-              ? { "Cache-Control": "no-store" }
-              : CACHE.DOCUMENT),
-          },
+        return homeMarkdownResponse("text/markdown", {
+          Link: discoveryLinks,
+          Vary: "Accept",
         });
       }
 
@@ -86,7 +75,7 @@ export default createController(routes, {
           pageUrl={pageUrl}
           previewImage={previewImage}
         />,
-        { headers: { Vary: "Accept" } },
+        { headers: { Link: discoveryLinks, Vary: "Accept" } },
       );
     },
 
@@ -97,6 +86,13 @@ export default createController(routes, {
         />,
         { headers: { "Cache-Control": CACHE.PRIVATE } },
       );
+    },
+
+    // The llms.txt index is the homepage Markdown at the conventional URL.
+    llms({ request }) {
+      return homeMarkdownResponse("text/plain", {
+        Link: homeCanonicalLink(request),
+      });
     },
 
     // Keep healthcheck on a stable path so deploy checks never depend on the
@@ -111,3 +107,22 @@ export default createController(routes, {
     },
   },
 });
+
+function homeMarkdownResponse(
+  contentType: "text/markdown" | "text/plain",
+  headers: Record<string, string> = {},
+) {
+  return new Response(renderHomeMarkdown(), {
+    headers: {
+      "Content-Type": `${contentType}; charset=utf-8`,
+      ...headers,
+      ...(process.env.NODE_ENV === "development"
+        ? { "Cache-Control": "no-store" }
+        : CACHE.DOCUMENT),
+    },
+  });
+}
+
+function homeCanonicalLink(request: Request) {
+  return `<${getCanonicalUrl(new URL(request.url), routes.home.href())}>; rel="canonical"`;
+}

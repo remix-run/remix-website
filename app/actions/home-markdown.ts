@@ -2,58 +2,46 @@ import {
   landingContent,
   packageRunners,
 } from "./public/remix-landing/landing-content.ts";
-import { stackCategories } from "./public/remix-landing/components/stack-explorer-content.tsx";
 
+// Served at `/` (Accept: text/markdown), `/index.md`, and `/llms.txt`, so it
+// follows the llms.txt layout: H1, blockquote summary, heading-free details,
+// then H2 sections that only contain link lists.
 export function renderHomeMarkdown() {
-  let mentalModel = landingContent.storySections.find(
-    (section) => section.id === "smaller-mental-model",
-  )!;
-  let agents = landingContent.storySections.find(
-    (section) => section.id === "humans-and-agents",
-  )!;
   let quickstart = landingContent.storySections.find(
     (section) => section.id === "test-drive",
   )!;
+  let docs = landingContent.resources.find((resource) => resource.key === "D")!;
+  let github = landingContent.resources.find(
+    (resource) => resource.key === "G",
+  )!;
+  let skillHref =
+    "https://raw.githubusercontent.com/remix-run/remix/main/.agents/skills/remix/SKILL.md";
   let markdown = [
     `# Remix 3 — ${landingContent.hero.title.join(" ")}`,
-    landingContent.hero.body.join(" "),
-    `## ${quickstart.title}`,
-    quickstart.body,
+    `> ${landingContent.hero.body.join(" ")}`,
+    "This is Remix 3, which has its own UI runtime; do not assume React hooks or Remix 2 route conventions. For apps on Remix 1 or 2, use the [legacy documentation](https://v2.remix.run/docs).",
+    `Create an app with the Remix CLI, replacing \`${landingContent.projectDirectory}\` with your app's directory name:`,
     `\`\`\`sh
 ${packageRunners[0].command}
 cd ${landingContent.projectDirectory}
 npm install
-npm run dev
 \`\`\``,
-    `[${quickstart.ctaLabel}](${quickstart.ctaMarkdownHref})`,
-    `## ${landingContent.stackTitle}`,
-    ...stackCategories.flatMap((category) => [
-      `### ${category.label}`,
-      category.introBody,
-      `[Learn more](${category.documentationHref})`,
-    ]),
-    `## ${mentalModel.title}`,
-    mentalModel.body,
-    mentalModel.points
-      .map((point) => `- **${point.title}:** ${point.body}`)
-      .join("\n"),
-    `## ${landingContent.differentiators.title}`,
-    landingContent.differentiators.body,
-    landingContent.differentiators.items
-      .map((item) => `- **${item.title}:** ${item.body}`)
-      .join("\n"),
-    `## ${agents.title}`,
-    agents.body,
-    agents.points
-      .map((point) => `- **${point.title}:** ${point.body}`)
-      .join("\n"),
+    `Confirm it works with \`npm run typecheck\` and \`npm test\`. \`npm run dev\` starts a development server that runs until stopped, so coding agents should run it in the background.`,
+    [
+      "**Working in a Remix app:**",
+      "",
+      `1. Check the installed version with \`npm ls remix\`, then read the app's \`AGENTS.md\` and \`.agents/skills/remix/SKILL.md\`. If the app has no skill, use the [Remix agent skill](${skillHref}).`,
+      "2. Search `node_modules/remix/INDEX.md` for the task or API and read the matching guide and package README. These match the installed version; the online docs follow the latest release.",
+      "3. Check your work with typechecks and focused tests, and run `npx remix doctor` after changing routes or configuration.",
+    ].join("\n"),
     "## Learn more",
-    landingContent.resources
-      .map(
-        (resource) =>
-          `- [${resource.label}](${"markdownHref" in resource ? resource.markdownHref : resource.href})`,
-      )
-      .join("\n"),
+    [
+      `- [Start here](${quickstart.ctaMarkdownHref}): Build your first app, then learn how each part of Remix fits together.`,
+      `- [Documentation](${docs.markdownHref}): Index of every guide and the API reference.`,
+      `- [API reference](https://docs.remix.run/api.md): Index of every Remix package and its API.`,
+      `- [Remix agent skill](${skillHref}): Instructions for building, reviewing, and testing Remix 3 apps.`,
+      `- [Source code](${github.href}): Framework source and development history.`,
+    ].join("\n"),
   ].join("\n\n");
 
   return `${markdown}\n`;
