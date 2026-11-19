@@ -1,7 +1,6 @@
-import * as f from "remix/data-schema/form-data";
 import * as s from "remix/data-schema";
 import * as c from "remix/data-schema/checks";
-import * as coerce from "remix/data-schema/coerce";
+import * as fd from "remix/data-schema/experimental/form";
 
 import {
   createCart,
@@ -130,16 +129,16 @@ export function createTicketCheckout({
   };
 }
 
-let submissionSchema = f.object({
-  ticketType: f.field(s.enum_([remixJam2026Ticket.type])),
-  productId: f.field(s.string()),
-  quantity: f.field(
-    coerce.number().pipe(c.min(1), c.max(remixJam2026Ticket.maxQuantity)),
+let submissionSchema = fd.object({
+  ticketType: fd.text(s.enum_([remixJam2026Ticket.type])),
+  productId: fd.text(s.string()),
+  quantity: fd.number(
+    s.number().pipe(c.min(1), c.max(remixJam2026Ticket.maxQuantity)),
   ),
 });
 
 function parseSubmission(formData: FormData) {
-  let result = s.parseSafe(submissionSchema, formData);
+  let result = fd.parseSafe(submissionSchema, formData);
   if (!result.success) {
     return { success: false as const, error: "Invalid ticket request" };
   }

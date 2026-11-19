@@ -1,4 +1,4 @@
-import { expect } from "@playwright/test";
+import { expect, type Route } from "@playwright/test";
 import { createTestServer } from "remix/node-fetch-server/test";
 import { describe, it } from "remix/test";
 
@@ -143,4 +143,49 @@ describe("Newsletter signup frame", () => {
     await expect(page.getByRole("alert")).toContainText("Something went wrong");
     await expect(emailInput).toHaveValue("hello@example.com");
   });
+
+  for (let [failure, respond] of [
+    [
+      "the server unexpectedly errors",
+      (route: Route) =>
+        route.fulfill({
+          status: 503,
+          contentType: "text/html",
+          body: "<p>Service unavailable</p>",
+        }),
+    ],
+    [
+      "the submission never reaches the server",
+      (route: Route) => route.abort("internetdisconnected"),
+    ],
+  ] as const) {
+    it(`stays retryable when ${failure}`, async (t) => {
+      let handler = swallowAbortErrors(
+        createAppRouter({ newsletterRepository: emptyNewsletterRepository }),
+      );
+      let page = await t.serve(await createTestServer(handler));
+      await page.route(
+        (url) => url.pathname === routes.newsletter.subscribe.href(),
+        (route) =>
+          route.request().method() === "POST"
+            ? respond(route)
+            : route.fallback(),
+      );
+
+      await page.goto(routes.newsletter.index.href());
+      await waitForNewsletterHydration(page);
+
+      let emailInput = page.getByPlaceholder("name@example.com");
+      await emailInput.fill("hello@example.com");
+      await page.getByRole("button", { name: "Subscribe" }).click();
+
+      await expect(page.getByRole("alert")).toContainText(
+        "Something went wrong",
+      );
+      await expect(
+        page.getByRole("button", { name: "Subscribe" }),
+      ).toBeEnabled();
+      await expect(emailInput).toHaveValue("hello@example.com");
+    });
+  }
 });

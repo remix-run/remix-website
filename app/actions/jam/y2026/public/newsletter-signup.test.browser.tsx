@@ -21,14 +21,38 @@ describe("Jam2026NewsletterSignup", () => {
       form.querySelector<HTMLInputElement>("input[name='tag']")?.value,
     ).toBe(String(newsletterTagIds.jam2026Updates));
 
-    let acceptedByBrowser = true;
-    await result.act(() => {
-      acceptedByBrowser = dispatchSubmit(result);
-    });
+    let navigation = createNavigationResult();
+    await result.act(() => dispatchNavigation(form, navigation.promise));
 
-    expect(acceptedByBrowser).toBe(true);
     expect(button.disabled).toBe(true);
     expect(button.textContent).toBe("Signing up...");
+
+    await result.act(async () => {
+      navigation.resolve(new AbortController().signal);
+      await navigation.promise;
+    });
+
+    expect(button.disabled).toBe(false);
+    expect(button.textContent).toBe("Sign up");
+  });
+
+  it("shows an error when the submission request fails", async (t) => {
+    let result = render(<Jam2026NewsletterSignup />);
+    t.after(result.cleanup);
+    let form = result.container.querySelector<HTMLFormElement>("form")!;
+    let navigation = createNavigationResult();
+    await result.act(() => dispatchNavigation(form, navigation.promise));
+
+    await result.act(async () => {
+      navigation.reject(new TypeError("Failed to fetch"));
+      await navigation.promise.catch(() => {});
+    });
+
+    let button = form.querySelector<HTMLButtonElement>(
+      "button[type='submit']",
+    )!;
+    expect(button.disabled).toBe(false);
+    expect(result.container.textContent).toContain("Something went wrong");
   });
 
   it("renders server success and error results", (t) => {
@@ -54,10 +78,26 @@ describe("Jam2026NewsletterSignup", () => {
   });
 });
 
-function dispatchSubmit(result: ReturnType<typeof render>) {
-  return result.container
-    .querySelector<HTMLFormElement>("form")!
-    .dispatchEvent(
-      new SubmitEvent("submit", { bubbles: true, cancelable: true }),
-    );
+function createNavigationResult() {
+  let resolve!: (signal: AbortSignal) => void;
+  let reject!: (error: unknown) => void;
+  let promise = new Promise<AbortSignal>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  return { promise, resolve, reject };
+}
+
+// Mirrors the event the frame runtime dispatches when it accepts a submission.
+function dispatchNavigation(
+  form: HTMLFormElement,
+  finished: Promise<AbortSignal>,
+) {
+  form.dispatchEvent(
+    Object.assign(new Event("rmx:navigation", { bubbles: true }), {
+      element: form,
+      method: "post",
+      finished,
+    }),
+  );
 }

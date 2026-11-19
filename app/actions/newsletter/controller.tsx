@@ -10,7 +10,7 @@ import {
   resolveNewsletterImageUrl,
 } from "./archive.ts";
 import { routes } from "../../routes.ts";
-import { NewsletterSubscribeFrame } from "./signup-frame.tsx";
+import { NewsletterSubscribeForm } from "../../ui/public/newsletter-subscribe.tsx";
 import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
 import { CACHE } from "../../utils/cache-control.ts";
 import { NewsletterIndexPage, NewsletterIssuePage } from "./pages.tsx";
@@ -60,7 +60,7 @@ export function createNewsletterController(repository: NewsletterRepository) {
 
       signup({ render, request }) {
         return render(
-          <NewsletterSubscribeFrame
+          <NewsletterSubscribeForm
             status={getNewsletterSubscriptionStatus(request)}
           />,
           { headers: { "Cache-Control": CACHE.PRIVATE } },

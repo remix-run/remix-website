@@ -3,7 +3,7 @@ import {
   importModule,
   preloadShim,
 } from "remix/multiple-import-maps-polyfill";
-import { run } from "remix/component";
+import { defaultResolveFrame, run } from "remix/component";
 import { DOCUMENT_REDIRECT_HEADER } from "./document-redirect.ts";
 import { initFathomAnalytics } from "./fathom.ts";
 
@@ -27,28 +27,34 @@ let app = run({
     return [];
   },
   async resolveFrame(src, options) {
-    let headers = new Headers();
-    headers.set("accept", "text/html");
-    headers.set("x-remix-frame", "true");
-    if (options?.target) headers.set("x-remix-target", options.target);
-
-    let res = await fetch(src, {
-      headers,
-      method: options?.method,
-      body: getRequestBody(
-        options?.formData,
-        options?.method,
-        options?.encType,
-      ),
-      signal: options?.signal,
-    });
-    let documentRedirect = res.headers.get(DOCUMENT_REDIRECT_HEADER);
-    if (documentRedirect) {
-      window.location.assign(new URL(documentRedirect, res.url).href);
-      return new Response(null);
+    // The default resolver rejects every 5xx. Page navigations should still
+    // render our HTML error documents, so hand those back ourselves. Named
+    // frames keep the rejection, letting their forms show a retryable error
+    // instead of a whole error page.
+    let serverError: Response | undefined;
+    try {
+      return await defaultResolveFrame(src, options, {
+        async fetch(url, init) {
+          let res = await fetch(url, init);
+          let documentRedirect = res.headers.get(DOCUMENT_REDIRECT_HEADER);
+          if (documentRedirect) {
+            window.location.assign(new URL(documentRedirect, res.url).href);
+            return new Response(null);
+          }
+          if (
+            !options?.target &&
+            res.status >= 500 &&
+            res.headers.get("Content-Type")?.toLowerCase().includes("text/html")
+          ) {
+            serverError = res;
+          }
+          return res;
+        },
+      });
+    } catch (error) {
+      if (serverError) return serverError;
+      throw error;
     }
-
-    return res;
   },
 });
 
@@ -66,20 +72,5 @@ if (import.meta.hot) {
 app.addEventListener("error", (event) => {
   console.error(event.error);
 });
-
-function getRequestBody(
-  formData?: FormData,
-  method?: string,
-  encType?: string,
-): BodyInit | undefined {
-  if (!formData || method?.toLowerCase() === "get") return;
-  if (encType !== "application/x-www-form-urlencoded") return formData;
-
-  let body = new URLSearchParams();
-  for (let [name, value] of formData) {
-    body.append(name, typeof value === "string" ? value : value.name);
-  }
-  return body;
-}
 
 await app.ready();

@@ -149,7 +149,7 @@ describe("Remix Jam 2026 routes", () => {
       }),
     );
     expect(response.status).toBe(200);
-    expect(response.headers.get("Vary")).toContain("cookie");
+    expect(response.headers.get("Vary")).toContain("Cookie");
     let html = await response.text();
     expect(html).toContain('data-theme="dark"');
     expect(html).toContain('style="color-scheme: dark;"');

@@ -1,13 +1,14 @@
 import * as s from "remix/data-schema";
 import * as c from "remix/data-schema/checks";
 import * as coerce from "remix/data-schema/coerce";
+import * as fd from "remix/data-schema/experimental/form";
 import { redirect } from "remix/response/redirect";
 
 import type { AppRenderer } from "../../middleware/render.ts";
 import { routes } from "../../routes.ts";
-import { NewsletterSubscribeFrame } from "./signup-frame.tsx";
 import {
   NEWSLETTER_SUBSCRIBE_FRAME_NAME,
+  NewsletterSubscribeForm,
   type NewsletterSubscribeFrameContext,
   type NewsletterSubscriptionStatus,
 } from "../../ui/public/newsletter-subscribe.tsx";
@@ -20,18 +21,15 @@ export async function submitNewsletter(
   formData: FormData,
   render: AppRenderer,
 ): Promise<Response> {
-  let result = s.parseSafe(newsletterSubmission, {
-    email: formData.get("email"),
-    tags: formData.getAll("tag"),
-  });
+  let result = fd.parseSafe(newsletterSubmission, formData);
 
   if (!result.success) {
-    let error = "Invalid Submission";
-    if (result.issues.some((issue) => issue.path?.includes("email"))) {
-      error = "Invalid Email";
-    } else if (result.issues.some((issue) => issue.path?.includes("tags"))) {
-      error = "Invalid Tag";
-    }
+    let { fields } = result.errors;
+    let error = fields.email
+      ? "Invalid Email"
+      : fields.tags
+        ? "Invalid Tag"
+        : "Invalid Submission";
 
     return createSubscriptionResponse(
       request,
@@ -92,11 +90,14 @@ class NewsletterSubscriptionError extends Error {
   }
 }
 
-let newsletterSubmission = s.object({
-  email: s.string().pipe(c.email()),
-  tags: s
-    .array(coerce.number())
-    .refine((tags) => tags.every(isAllowedNewsletterTagId), "Invalid Tag"),
+let newsletterSubmission = fd.object({
+  email: fd.text(s.string().pipe(c.email())),
+  tags: fd.fields(
+    s
+      .array(coerce.number())
+      .refine((tags) => tags.every(isAllowedNewsletterTagId), "Invalid Tag"),
+    { name: "tag" },
+  ),
 });
 
 const newsletterTargetResponseHeaders = {
@@ -128,7 +129,7 @@ function createSubscriptionResponse(
 
   if (isNewsletterSubscribeFrameRequest(request)) {
     return render(
-      <NewsletterSubscribeFrame status={getSubscriptionStatus(body)} />,
+      <NewsletterSubscribeForm status={getSubscriptionStatus(body)} />,
       {
         status,
         headers: newsletterTargetResponseHeaders,

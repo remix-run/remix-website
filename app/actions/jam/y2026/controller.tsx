@@ -1,4 +1,4 @@
-import * as f from "remix/data-schema/form-data";
+import * as fd from "remix/data-schema/experimental/form";
 import * as s from "remix/data-schema";
 import { SuperHeaders } from "remix/headers";
 import { redirect } from "remix/response/redirect";
@@ -44,7 +44,7 @@ export default createController(routes.jam.y2026, {
     },
 
     async theme({ formData }) {
-      let result = s.parseSafe(themeSubmissionSchema, formData);
+      let result = fd.parseSafe(themeSubmissionSchema, formData);
 
       if (!result.success) {
         return Response.json(
@@ -149,6 +149,6 @@ export async function renderJam2026Page({
   );
 }
 
-let themeSubmissionSchema = f.object({
-  theme: f.field(s.enum_(["light", "dark"])),
+let themeSubmissionSchema = fd.object({
+  theme: fd.text(s.enum_(["light", "dark"])),
 });

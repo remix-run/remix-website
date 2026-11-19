@@ -1,7 +1,6 @@
 import * as s from "remix/data-schema";
 import { max, min } from "remix/data-schema/checks";
-import * as coerce from "remix/data-schema/coerce";
-import * as f from "remix/data-schema/form-data";
+import * as fd from "remix/data-schema/experimental/form";
 import { css, type Handle } from "remix/component";
 
 import { getProduct, MAX_QUANTITY } from "../../../../data/jam-storefront.ts";
@@ -88,7 +87,7 @@ export function Jam2025TicketPage(
 type Jam2025TicketProduct = Awaited<ReturnType<typeof getProduct>>;
 
 export function parseTicketPurchaseSubmission(formData: FormData) {
-  let result = s.parseSafe(ticketPurchaseSubmissionSchema, formData);
+  let result = fd.parseSafe(ticketPurchaseSubmissionSchema, formData);
   if (!result.success) {
     return { success: false as const, error: "Invalid ticket request" };
   }
@@ -96,9 +95,9 @@ export function parseTicketPurchaseSubmission(formData: FormData) {
   return { success: true as const, value: result.value };
 }
 
-let ticketPurchaseSubmissionSchema = f.object({
-  productId: f.field(s.string()),
-  quantity: f.field(
-    coerce.number().refine(Number.isInteger).pipe(min(1), max(MAX_QUANTITY)),
+let ticketPurchaseSubmissionSchema = fd.object({
+  productId: fd.text(s.string()),
+  quantity: fd.number(
+    s.number().refine(Number.isInteger).pipe(min(1), max(MAX_QUANTITY)),
   ),
 });
