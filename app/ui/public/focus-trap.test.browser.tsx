@@ -29,6 +29,27 @@ describe("focusTrap", () => {
     await shiftTab();
     expect(document.activeElement).toBe(last);
   });
+
+  it("takes focus back when an iframe outside the trap focuses itself", async (t) => {
+    let result = render(<FocusTrapTest />);
+    t.after(result.cleanup);
+
+    let first = result.$("#first")!;
+    let iframe = document.createElement("iframe");
+    iframe.srcdoc = "<button>Play</button>";
+    let loaded = new Promise((resolve) =>
+      iframe.addEventListener("load", resolve, { once: true }),
+    );
+    document.body.append(iframe);
+    t.after(() => iframe.remove());
+    await loaded;
+
+    first.focus();
+    iframe.contentDocument!.querySelector("button")!.focus();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(document.activeElement).toBe(first);
+  });
 });
 
 function FocusTrapTest() {
