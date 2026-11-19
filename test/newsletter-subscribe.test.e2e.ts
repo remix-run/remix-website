@@ -144,6 +144,32 @@ describe("Newsletter signup frame", () => {
     await expect(emailInput).toHaveValue("hello@example.com");
   });
 
+  it("renders HTML error pages that the server returns with a 5xx", async (t) => {
+    let handler = swallowAbortErrors(
+      createAppRouter({ newsletterRepository: emptyNewsletterRepository }),
+    );
+    let page = await t.serve(await createTestServer(handler));
+    // Remix's default frame resolver rejects every 5xx; the app keeps HTML ones.
+    await page.route(
+      (url) => url.pathname === routes.newsletter.subscribe.href(),
+      (route) =>
+        route.request().method() === "POST"
+          ? route.fulfill({
+              status: 503,
+              contentType: "text/html",
+              body: '<p data-testid="server-error-page">Unavailable</p>',
+            })
+          : route.fallback(),
+    );
+
+    await page.goto(routes.newsletter.index.href());
+    await waitForNewsletterHydration(page);
+    await page.getByPlaceholder("name@example.com").fill("hello@example.com");
+    await page.getByRole("button", { name: "Subscribe" }).click();
+
+    await expect(page.getByTestId("server-error-page")).toBeVisible();
+  });
+
   it("recovers when the submission never reaches the server", async (t) => {
     let handler = swallowAbortErrors(
       createAppRouter({ newsletterRepository: emptyNewsletterRepository }),
