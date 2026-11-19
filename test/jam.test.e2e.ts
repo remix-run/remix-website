@@ -30,6 +30,16 @@ async function expectMarkerToStay(page: Page, marker: string) {
     .toBe(marker);
 }
 
+// Stand in for the YouTube livestream embed so tests stay off the network.
+async function stubLivestream(page: Page) {
+  await page.route("https://www.youtube.com/embed/**", (route) =>
+    route.fulfill({
+      contentType: "text/html",
+      body: "<button>Play</button>",
+    }),
+  );
+}
+
 async function waitForRuntime(page: Page) {
   await page.waitForFunction(() => {
     let walker = document.createTreeWalker(document, NodeFilter.SHOW_COMMENT);
@@ -51,6 +61,7 @@ describe("Jam", () => {
     mockStorefront(t);
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
+    await stubLivestream(page);
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto(routes.jam.y2026.ticket.index.href());
@@ -61,9 +72,17 @@ describe("Jam", () => {
     await expect(
       page.getByRole("button", { name: "Unavailable", exact: true }),
     ).toBeDisabled();
-    await expect(
-      page.getByRole("dialog").getByRole("link", { name: "Close tickets" }),
-    ).toBeFocused();
+    let close = page
+      .getByRole("dialog")
+      .getByRole("link", { name: "Close tickets" });
+    await expect(close).toBeFocused();
+
+    // The real player focuses itself after it loads, behind the open modal.
+    await page
+      .frameLocator('iframe[title="Remix Jam 2026 livestream"]')
+      .getByRole("button", { name: "Play" })
+      .focus();
+    await expect(close).toBeFocused();
 
     await page.keyboard.press("Escape");
     await page.waitForURL(`**${routes.jam.y2026.index.href()}`);
@@ -82,6 +101,7 @@ describe("Jam", () => {
     mockStorefront(t);
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
+    await stubLivestream(page);
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto(routes.jam.y2026.index.href());
@@ -162,6 +182,7 @@ describe("Jam", () => {
   it("jam 2026 mobile layout does not create horizontal document overflow", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
+    await stubLivestream(page);
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(routes.jam.y2026.index.href());
 
@@ -214,6 +235,7 @@ describe("Jam", () => {
   it("jam 2026 newsletter submits through its signup frame", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
+    await stubLivestream(page);
     let submittedEmail: string | null = null;
     let submittedTag: string | null = null;
     t.mock.method(globalThis, "fetch", (_input, init) => {

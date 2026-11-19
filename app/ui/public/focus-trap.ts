@@ -101,6 +101,25 @@ export let focusTrap = createMixin<HTMLElement, [enabled?: boolean]>(
         },
         { signal: handle.signal },
       );
+      // An iframe that focuses its own content (such as a YouTube embed on
+      // load) fires no focusin here, only a window blur. Refocusing during the
+      // blur moves activeElement but leaves keyboard input in the iframe, so
+      // wait for the focus change to finish.
+      window.addEventListener(
+        "blur",
+        () => {
+          setTimeout(() => {
+            let currentHost = host;
+            let active = document.activeElement;
+            if (!enabled || !currentHost) return;
+            if (!(active instanceof HTMLIFrameElement)) return;
+            if (currentHost.contains(active)) return;
+
+            focusBoundary("start");
+          });
+        },
+        { signal: handle.signal },
+      );
     });
 
     handle.addEventListener("remove", () => {
