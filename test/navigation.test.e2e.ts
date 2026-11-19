@@ -347,6 +347,37 @@ describe("Navigation", () => {
     ).toBe(undefined);
   });
 
+  it("renders HTML error documents from client navigations in place", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    // Remix's default frame resolver rejects every 5xx; the app keeps HTML
+    // error documents for page navigations.
+    await page.route(`**${routes.brand.href()}`, (route) =>
+      route.fulfill({
+        status: 500,
+        contentType: "text/html",
+        body: '<!doctype html><html><head><title>Server error</title></head><body><main data-testid="server-error-page">Error</main></body></html>',
+      }),
+    );
+    await page.goto(routes.home.href());
+    let marker = await markPage(page);
+
+    await page.evaluate((href) => {
+      let link = document.createElement("a");
+      link.href = href;
+      document.body.append(link);
+      link.click();
+    }, routes.brand.href());
+
+    await expect(page.getByTestId("server-error-page")).toBeVisible();
+    await expect(page).toHaveURL(new RegExp(`${routes.brand.href()}$`));
+    expect(
+      await page.evaluate(
+        () => (window as Window & { __navMarker?: string }).__navMarker,
+      ),
+    ).toBe(marker);
+  });
+
   it("Remix history page to Jam 2026 applies Jam head content", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));

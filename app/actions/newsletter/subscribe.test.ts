@@ -60,14 +60,18 @@ describe("Newsletter subscribe route", () => {
   }
 
   it("rejects invalid email and tag input", async () => {
-    let invalidEmail = await submitNewsletter(
+    for (let body of [
       new URLSearchParams({ email: "invalid-email" }),
-    );
-    expect(invalidEmail.status).toBe(400);
-    await expect(invalidEmail.json()).resolves.toEqual({
-      ok: false,
-      error: "Invalid Email",
-    });
+      new URLSearchParams({ email: "" }),
+      new URLSearchParams(),
+    ]) {
+      let invalidEmail = await submitNewsletter(body);
+      expect(invalidEmail.status).toBe(400);
+      await expect(invalidEmail.json()).resolves.toEqual({
+        ok: false,
+        error: "Invalid Email",
+      });
+    }
 
     for (let tag of ["not-a-number", "123"]) {
       let invalidTag = await submitNewsletter(

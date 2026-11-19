@@ -8,15 +8,17 @@ import jam2025TicketController from "./controller.tsx";
 import { parseTicketPurchaseSubmission } from "./page.tsx";
 
 describe("Jam 2025 ticket submission", () => {
-  it("rejects partially numeric quantities", () => {
-    let formData = new FormData();
-    formData.set("productId", "ticket-id");
-    formData.set("quantity", "2abc");
+  it("rejects missing, blank, and partially numeric quantities", () => {
+    for (let quantity of [null, "", "  ", "2abc"]) {
+      let formData = new FormData();
+      formData.set("productId", "ticket-id");
+      if (quantity !== null) formData.set("quantity", quantity);
 
-    expect(parseTicketPurchaseSubmission(formData)).toEqual({
-      success: false,
-      error: "Invalid ticket request",
-    });
+      expect(parseTicketPurchaseSubmission(formData)).toEqual({
+        success: false,
+        error: "Invalid ticket request",
+      });
+    }
   });
 
   it("rejects a mismatched product without contacting a real Storefront", async (t) => {

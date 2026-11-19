@@ -9,8 +9,11 @@ import {
 } from "./ticket-checkout.ts";
 
 describe("Jam 2026 ticket checkout", () => {
-  it("rejects malformed and out-of-range quantities", async () => {
+  it("rejects missing, malformed, and out-of-range quantities", async () => {
     for (let [quantity, error] of [
+      [null, "Invalid ticket request"],
+      ["", "Invalid ticket request"],
+      ["  ", "Invalid ticket request"],
       ["0", "Invalid ticket request"],
       ["1.5", "Invalid quantity"],
       ["11", "Invalid ticket request"],
@@ -89,11 +92,11 @@ describe("Jam 2026 ticket checkout", () => {
   });
 });
 
-function ticketFormData({ quantity = "2" }: { quantity?: string } = {}) {
+function ticketFormData({ quantity = "2" }: { quantity?: string | null } = {}) {
   let formData = new FormData();
   formData.set("ticketType", remixJam2026Ticket.type);
   formData.set("productId", "gid://shopify/ProductVariant/2026");
-  formData.set("quantity", quantity);
+  if (quantity !== null) formData.set("quantity", quantity);
   return formData;
 }
 

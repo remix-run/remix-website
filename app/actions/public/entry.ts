@@ -27,8 +27,10 @@ let app = run({
     return [];
   },
   async resolveFrame(src, options) {
-    // The default resolver rejects every 5xx, but our error pages are HTML
-    // worth rendering in place, so hand those back ourselves.
+    // The default resolver rejects every 5xx. Page navigations should still
+    // render our HTML error documents, so hand those back ourselves. Named
+    // frames keep the rejection, letting their forms show a retryable error
+    // instead of a whole error page.
     let serverError: Response | undefined;
     try {
       return await defaultResolveFrame(src, options, {
@@ -40,8 +42,9 @@ let app = run({
             return new Response(null);
           }
           if (
+            !options?.target &&
             res.status >= 500 &&
-            res.headers.get("Content-Type")?.includes("text/html")
+            res.headers.get("Content-Type")?.toLowerCase().includes("text/html")
           ) {
             serverError = res;
           }
