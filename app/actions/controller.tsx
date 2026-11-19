@@ -37,7 +37,7 @@ export default createController(routes, {
 
     homeMarkdown({ request }) {
       return homeMarkdownResponse("text/markdown", {
-        Link: `<${getCanonicalUrl(new URL(request.url), routes.home.href())}>; rel="canonical", <${routes.llms.href()}>; rel="describedby"`,
+        Link: `${homeCanonicalLink(request)}, <${routes.llms.href()}>; rel="describedby"`,
       });
     },
 
@@ -91,7 +91,7 @@ export default createController(routes, {
     // The llms.txt index is the homepage Markdown at the conventional URL.
     llms({ request }) {
       return homeMarkdownResponse("text/plain", {
-        Link: `<${getCanonicalUrl(new URL(request.url), routes.home.href())}>; rel="canonical"`,
+        Link: homeCanonicalLink(request),
       });
     },
 
@@ -121,4 +121,8 @@ function homeMarkdownResponse(
         : CACHE.DOCUMENT),
     },
   });
+}
+
+function homeCanonicalLink(request: Request) {
+  return `<${getCanonicalUrl(new URL(request.url), routes.home.href())}>; rel="canonical"`;
 }

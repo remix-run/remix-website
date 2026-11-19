@@ -19,14 +19,14 @@ export function renderHomeMarkdown() {
   let markdown = [
     `# Remix 3 — ${landingContent.hero.title.join(" ")}`,
     `> ${landingContent.hero.body.join(" ")}`,
-    "This site documents Remix 3. Remix 3 has its own UI runtime; do not assume React hooks or Remix 2 route conventions. For apps on Remix 1 or 2, use the [legacy documentation](https://v2.remix.run/docs).",
+    "This is Remix 3, which has its own UI runtime; do not assume React hooks or Remix 2 route conventions. For apps on Remix 1 or 2, use the [legacy documentation](https://v2.remix.run/docs).",
     `Create an app with the Remix CLI, replacing \`${landingContent.projectDirectory}\` with your app's directory name:`,
     `\`\`\`sh
 ${packageRunners[0].command}
 cd ${landingContent.projectDirectory}
 npm install
 \`\`\``,
-    `Confirm it works with \`npm run typecheck\` and \`npm test\`. \`npm run dev\` starts a development server that runs until stopped, so coding agents should run it in the background. [${quickstart.ctaLabel}](${quickstart.ctaMarkdownHref}) walks through the generated files and your first feature.`,
+    `Confirm it works with \`npm run typecheck\` and \`npm test\`. \`npm run dev\` starts a development server that runs until stopped, so coding agents should run it in the background.`,
     [
       "**Working in a Remix app:**",
       "",
@@ -37,7 +37,8 @@ npm install
     "## Learn more",
     [
       `- [Start here](${quickstart.ctaMarkdownHref}): Build your first app, then learn how each part of Remix fits together.`,
-      `- [API reference](${docs.markdownHref}): Package overview and CLI commands.`,
+      `- [Documentation](${docs.markdownHref}): Index of every guide and the API reference.`,
+      `- [API reference](https://docs.remix.run/api.md): Index of every Remix package and its API.`,
       `- [Remix agent skill](${skillHref}): Instructions for building, reviewing, and testing Remix 3 apps.`,
       `- [Source code](${github.href}): Framework source and development history.`,
     ].join("\n"),
