@@ -60,7 +60,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 
 Intentional conference-day difference: Jam 2026 retains `/jam/2026/ticket` with disabled checkout and blocks direct submissions, regardless of Shopify inventory. Unlike the 2025 ticket route, sales closure is enforced by the website.
 
-Intentional agent support addition: `/`, `/index.md`, and `/llms.txt` serve one generated homepage Markdown document in the llms.txt layout (H1, blockquote, heading-free details, then H2 link lists). Keep it in that shape when editing `app/actions/home-markdown.ts`. Homepage HTML `<link>` tags and HTTP `Link` headers advertise the Markdown representation (`rel="alternate"`) and `/llms.txt` (`rel="describedby"`). All three use the `documents` cache tag.
+Intentional agent support addition: `/`, `/index.md`, and `/llms.txt` serve one generated homepage Markdown document in the llms.txt layout (H1, blockquote, heading-free details, then H2 link lists). Keep it in that shape when editing `app/actions/home-markdown.ts`. Homepage HTML `<link>` tags and HTTP `Link` headers advertise the Markdown representation (`rel="alternate"`) and `/llms.txt` (`rel="describedby"`); `/index.md` and `/llms.txt` send a `rel="canonical"` `Link` header pointing at `/`. All three use the `documents` cache tag.
 
 Remaining differences vs the previous production site (small, shippable items):
 
