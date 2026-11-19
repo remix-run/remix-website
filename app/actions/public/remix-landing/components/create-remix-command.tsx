@@ -117,43 +117,6 @@ function PackageRunnerSelect(
     onChange: (runner: PackageRunner) => void;
   }>,
 ) {
-  // Workaround: as of remix 3.0.0-rc.4, opening the select focuses its list
-  // before the popover is anchored, which scrolls the page (~950px in the e2e
-  // test). Remember the scroll position when opening and put it back. Remove
-  // once the `@remix-run/ui/select` focus scroll is fixed upstream; the Home e2e
-  // test "keeps create-command menu keyboard interactions local" covers it.
-  let scrollPosition = { x: 0, y: 0 };
-  let restoreFrame = 0;
-
-  handle.signal.addEventListener("abort", () => {
-    cancelAnimationFrame(restoreFrame);
-  });
-
-  function rememberScrollPosition() {
-    scrollPosition.x = window.scrollX;
-    scrollPosition.y = window.scrollY;
-  }
-
-  function restoreScrollPosition() {
-    const restore = () => {
-      if (
-        window.scrollX !== scrollPosition.x ||
-        window.scrollY !== scrollPosition.y
-      ) {
-        window.scrollTo(scrollPosition.x, scrollPosition.y);
-      }
-    };
-
-    // The native focus scroll runs after focus handlers in some Chromium
-    // versions. Restore before the next paint as well as synchronously.
-    restore();
-    cancelAnimationFrame(restoreFrame);
-    restoreFrame = requestAnimationFrame(() => {
-      restoreFrame = 0;
-      if (!handle.signal.aborted) restore();
-    });
-  }
-
   return () => {
     return (
       <select.Context
@@ -165,12 +128,6 @@ function PackageRunnerSelect(
           aria-label="Choose a package runner"
           mix={[
             selectTriggerStyles,
-            on("click", rememberScrollPosition),
-            on("keydown", (event) => {
-              if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-                rememberScrollPosition();
-              }
-            }),
             select.trigger(),
             select.onSelectChange((event) => {
               const runner = PACKAGE_RUNNERS.find(
@@ -184,23 +141,8 @@ function PackageRunnerSelect(
           <Icon name="chevron-d" mix={[chevronStyles]} />
         </button>
         <popover.Context>
-          <div
-            mix={[
-              popoverSurfaceStyles,
-              select.popover(),
-              on("toggle", (event) => {
-                if (event.newState === "closed") restoreScrollPosition();
-              }),
-            ]}
-          >
-            <div
-              mix={[
-                optionListStyles,
-                select.list(),
-                on("focus", restoreScrollPosition),
-                on("keydown", restoreScrollPosition),
-              ]}
-            >
+          <div mix={[popoverSurfaceStyles, select.popover()]}>
+            <div mix={[optionListStyles, select.list()]}>
               {PACKAGE_RUNNERS.map((runner) => (
                 <div
                   key={runner.value}
@@ -252,13 +194,28 @@ const commandBarStyles = css({
   boxSizing: "border-box",
   border: `1px solid ${colors.line}`,
   borderRadius: "14px",
-  background:
-    "linear-gradient(135deg, rgba(12, 18, 30, 0.9), rgba(4, 7, 14, 0.82))",
   boxShadow:
     "0 18px 52px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.035)",
-  backdropFilter: "blur(14px)",
-  WebkitBackdropFilter: "blur(14px)",
   overflow: "visible",
+  position: "relative",
+  isolation: "isolate",
+  // The glass backdrop lives on a pseudo-element, not the bar. A backdrop-filter
+  // on the bar would make it the containing block for `position: fixed`
+  // descendants, and the popover renders there for its first frame before it
+  // reaches the top layer: it would flash at the wrong spot, and focusing it
+  // would scroll the page.
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    inset: "0",
+    zIndex: "-1",
+    borderRadius: "inherit",
+    background:
+      "linear-gradient(135deg, rgba(12, 18, 30, 0.9), rgba(4, 7, 14, 0.82))",
+    backdropFilter: "blur(14px)",
+    WebkitBackdropFilter: "blur(14px)",
+    pointerEvents: "none",
+  },
   [breakpointMedia.sm]: {
     "--runner-trigger-width": "128px",
     gridTemplateColumns: "var(--runner-trigger-width) minmax(0, 1fr) 58px",
